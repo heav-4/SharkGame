@@ -3,28 +3,17 @@
 var SharkGame = SharkGame || {};
 
 window.onmousemove = (event) => {
+    SharkGame.lastMouseActivity = _.now();
+
     const tooltip = document.getElementById("tooltipbox");
     if (!tooltip) return;
     const posX = event.clientX;
     const posY = event.clientY;
 
-    const tooltipStyle = getComputedStyle(tooltip);
-
-    // get visual width in px, plus 15px offset from cursor
-    const tooltipWidth = [
-        tooltipStyle.width,
-        tooltipStyle.paddingLeft,
-        tooltipStyle.paddingRight,
-        tooltipStyle.borderLeft,
-        tooltipStyle.borderRight,
-        tooltipStyle.marginLeft,
-        tooltipStyle.marginRight,
-    ].reduce((prev, cur) => prev + parseInt(cur), 0);
-
-    tooltip.style.top = posY - 20 + "px";
+    tooltip.style.top = Math.max(Math.min(posY - 20, window.innerHeight - tooltip.offsetHeight - 10), 20) + "px";
     // Would clip over right screen edge
-    if (tooltipWidth + posX + 35 > window.innerWidth) {
-        tooltip.style.left = posX - 10 - tooltipWidth + "px";
+    if (tooltip.offsetWidth + posX + 35 > window.innerWidth) {
+        tooltip.style.left = posX - 10 - tooltip.offsetWidth + "px";
     } else {
         tooltip.style.left = posX + 15 + "px";
     }
@@ -91,9 +80,14 @@ $.extend(SharkGame, {
     BIGGEST_SAFE_NUMBER: 1000000000000,
     MAX: 1e300,
 
+    IDLE_THRESHOLD: 120000,
+    IDLE_FADE_TIME: 5000,
+
     INTERVAL: 1000 / 10, // 20 FPS // I'm pretty sure 1000 / 10 comes out to 10 FPS
     dt: 1 / 10,
-    before: new Date(),
+    before: _.now(),
+    lastMouseActivity: _.now(),
+    savedMouseActivity: _.now(),
 
     timestampLastSave: false,
     timestampGameStart: false,
@@ -169,18 +163,57 @@ SharkGame.Main = {
         main.tickHandler = setInterval(main.tick, SharkGame.INTERVAL);
     },
 
-    // also functions as a reset
-    init(foregoLoad) {
+    // specifically wipe all progress
+    resetGame() {
+        SharkGame.Save.wipeSave();
+        main.wipeGame();
+        main.setUpGame();
+    },
+
+    // start the game
+    init() {
+        // wipe it
+        main.wipeGame();
+        // load a save if needed
+        main.restoreGame("load");
+        // then set up the game according to this data
+        main.setUpGame();
+    },
+
+    // reset all game variables to their defaults
+    // leaves a blank slate
+    wipeGame() {
         const now = _.now();
         SharkGame.before = now;
         SharkGame.timestampSimulated = now;
+        SharkGame.lastMouseActivity = now;
         if (SharkGame.GAME_NAME === null) {
             SharkGame.GAME_NAME = SharkGame.choose(SharkGame.GAME_NAMES);
             document.title = SharkGame.ACTUAL_GAME_NAME + ": " + SharkGame.GAME_NAME;
         }
+
+        SharkGame.timestampLastSave = now;
+        SharkGame.timestampGameStart = now;
+        SharkGame.timestampRunStart = now;
+
+        $("#game").removeClass("inGateway");
         $("#sidebar").hide();
-        const overlay = $("#overlay");
-        overlay.hide();
+        $("#overlay").hide();
+        $("#idle-overlay").hide();
+        SharkGame.sidebarHidden = true;
+        // remove any errant classes
+        $("#pane").removeClass("gateway");
+        $("#overlay").removeClass("gateway");
+
+        // clear any html and remove errant classes from tooltip
+        $("#tooltipbox")
+            .removeClass("forHomeButtonOrGrotto")
+            .removeClass("forIncomeTable")
+            .removeClass("forAspectTree")
+            .removeClass("forAspectTreeUnpurchased")
+            .removeClass("forAspectTreeAffordable")
+            .html("");
+
         $("#gameName").html("- " + SharkGame.GAME_NAME + " -");
         $("#versionNumber").html(
             `New Frontiers v ${SharkGame.VERSION} - ${SharkGame.VERSION_NAME}<br/>\
@@ -189,28 +222,19 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         $.getJSON("https://api.github.com/repos/Toby222/SharkGame/commits/alpha", (data) => {
             SharkGame.COMMIT_SHA = data.sha;
         });
-        SharkGame.sidebarHidden = true;
-        SharkGame.gameOver = false;
+        log.clearMessages(false);
 
-        // remove any errant classes
-        $("#pane").removeClass("gateway");
-        overlay.removeClass("gateway");
+        SharkGame.persistentFlags.totalPausedTime = 0;
+        SharkGame.persistentFlags.currentPausedTime = 0;
 
-        // initialise timestamps to something sensible
-        SharkGame.timestampLastSave = SharkGame.timestampLastSave || now;
-        SharkGame.timestampGameStart = SharkGame.timestampGameStart || now;
-        SharkGame.timestampRunStart = SharkGame.timestampRunStart || now;
-
-        // create the tooltip box
-
-        // initialise and reset resources
+        // wipe all resource tables
         SharkGame.Resources.init();
 
         // initialise world
         // MAKE SURE GATE IS INITIALISED AFTER WORLD!!
         SharkGame.World.init();
-        SharkGame.World.apply();
 
+        // reset planetpool and completed worlds and gameover and wongame
         SharkGame.Gateway.init();
 
         // generate requiredBy entries
@@ -229,46 +253,71 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         SharkGame.flags = {};
         SharkGame.persistentFlags = {};
 
-        SharkGame.TitleBarHandler.setUpTitleBar();
+        SharkGame.EventHandler.init();
 
-        SharkGame.Tabs.current = "home";
+        SharkGame.TitleBarHandler.init();
+        SharkGame.TabHandler.init();
+        SharkGame.PaneHandler.init();
 
-        // preserve settings or set defaults
-        $.each(SharkGame.Settings, (settingName, setting) => {
-            if (settingName === "current") {
-                return;
-            }
-            const currentSetting = SharkGame.Settings.current[settingName];
-            if (typeof currentSetting === "undefined") {
-                SharkGame.Settings.current[settingName] = setting.defaultSetting;
-            }
-            // apply all settings as a failsafe
-            if (_.has(setting, "onChange")) {
-                setting.onChange();
-            }
-        });
+        SharkGame.Resources.minuteHand.init();
+    },
 
-        // load save game data if present
-        if (SharkGame.Save.savedGameExists() && !foregoLoad) {
-            try {
-                SharkGame.Save.loadGame();
-                log.addMessage("Loaded game.");
-            } catch (err) {
-                log.addError(err);
-            }
-        } else {
-            SharkGame.AspectTree.applyAspects();
-            SharkGame.EventHandler.init();
-            res.reconstructResourcesTable();
-            res.minuteHand.init();
-            res.tokens.init();
+    // load stored game data, if there is anything to load
+    restoreGame(goal) {
+        switch (goal) {
+            case "load":
+                if (SharkGame.Save.savedGameExists()) {
+                    try {
+                        SharkGame.Save.loadGame();
+                        log.addMessage("Loaded game.");
+                    } catch (err) {
+                        log.addError(err);
+                    }
+                }
+                break;
+            case "loop":
+                // idk yet
+                break;
+            default:
+            // nothing to restore
         }
+    },
+
+    // interpret and use the data from the previous steps
+    setUpGame() {
+        const now = _.now();
+        SharkGame.timestampLastSave = SharkGame.timestampLastSave || now;
+        SharkGame.timestampGameStart = SharkGame.timestampGameStart || now;
+        SharkGame.timestampRunStart = SharkGame.timestampRunStart || now;
+
+        // first set up the world because it adds the world resource
+        SharkGame.World.setup();
+
+        // now set up resources because a lot depends on it
+        SharkGame.Resources.setup();
+
+        // refund aspects if necessary
+        SharkGame.AspectTree.setup();
+
+        // initialise tabs
+        SharkGame.Home.setup();
+        SharkGame.Lab.setup();
+        SharkGame.Stats.setup();
+        SharkGame.Recycler.setup();
+        SharkGame.Gate.setup();
+        SharkGame.Reflection.setup();
+        SharkGame.CheatsAndDebug.setup();
+
+        SharkGame.EventHandler.setup();
+
+        res.minuteHand.setup();
+        res.tokens.init();
+
+        // end game if necessary
+        SharkGame.Gateway.setup();
 
         // rename a game option if this is a first time run
         SharkGame.TitleBarHandler.correctTitleBar();
-
-        // discover actions that were present in last save
-        home.discoverActions();
 
         // set up tab after load
         SharkGame.TabHandler.setUpTab();
@@ -276,9 +325,15 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         // apply tick settings
         main.applyFramerate();
 
-        // add the hidden world resource
-        res.setResource("world", 1);
-        res.setTotalResource("world", 1);
+        // apply settings
+        $.each(SharkGame.Settings, (settingId, settingData) => {
+            if (!SharkGame.Settings.current[settingId]) {
+                SharkGame.Settings.current[settingId] = settingData.defaultSetting;
+                if (typeof settingData.onChange === "function") {
+                    settingData.onChange();
+                }
+            }
+        });
 
         if (main.autosaveHandler === -1) {
             main.autosaveHandler = setInterval(main.autosave, SharkGame.Settings.current.autosaveFrequency * 60000);
@@ -294,27 +349,164 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             }
         });
 
-        /*         if (main.isFirstTime()) {
-            SharkGame.PaneHandler.addPaneToStack("v0.2 OPEN ALPHA NOTICE", SharkGame.Panes.notice);
-        } */
+        if (SharkGame.persistentFlags.pause) {
+            if (!cad.pause) {
+                res.pause.togglePause();
+            }
+            main.showSidebarIfNeeded();
+            if (SharkGame.flags.needOfflineProgress) {
+                SharkGame.persistentFlags.currentPausedTime = SharkGame.flags.needOfflineProgress * 1000;
+            }
+            return;
+        }
+
+        if (SharkGame.flags.needOfflineProgress) {
+            const secondsElapsed = SharkGame.flags.needOfflineProgress;
+
+            if (SharkGame.Settings.current.idleEnabled && !SharkGame.gameOver) {
+                res.minuteHand.updateMinuteHand(secondsElapsed * 1000);
+            } else {
+                main.processSimTime(secondsElapsed, true);
+            }
+
+            // acknowledge long time gaps
+            // (update these messages some time later)
+            if (secondsElapsed > 3600) {
+                let notification = "Welcome back! It's been ";
+                const numHours = Math.floor(secondsElapsed / 3600);
+                if (numHours > 24) {
+                    const numDays = Math.floor(numHours / 24);
+                    if (numDays > 7) {
+                        const numWeeks = Math.floor(numDays / 7);
+                        if (numWeeks > 4) {
+                            const numMonths = Math.floor(numWeeks / 4);
+                            if (numMonths > 12) {
+                                const numYears = Math.floor(numMonths / 12);
+                                notification +=
+                                    "almost " +
+                                    (numYears === 1 ? "a" : numYears) +
+                                    " year" +
+                                    sharktext.plural(numYears) +
+                                    ", thanks for remembering this exists!";
+                            } else {
+                                notification +=
+                                    "like " +
+                                    (numMonths === 1 ? "a" : numMonths) +
+                                    " month" +
+                                    sharktext.plural(numMonths) +
+                                    ", it's getting kinda crowded.";
+                            }
+                        } else {
+                            notification +=
+                                "about " + (numWeeks === 1 ? "a" : numWeeks) + " week" + sharktext.plural(numWeeks) + ", you were gone a while!";
+                        }
+                    } else {
+                        notification +=
+                            (numDays === 1 ? "a" : numDays) + " day" + sharktext.plural(numDays) + ", and look at all the stuff you have now!";
+                    }
+                } else {
+                    notification += (numHours === 1 ? "an" : numHours) + " hour" + sharktext.plural(numHours) + " since you were seen around here!";
+                }
+                log.addMessage(notification);
+            }
+            SharkGame.flags.needOfflineProgress = 0;
+        }
+    },
+
+    purgeGame() {
+        // empty out all the containers!
+        $("#status").empty();
+        log.clearMessages();
+        $("#content").empty();
+    },
+
+    loopGame() {
+        if (SharkGame.gameOver) {
+            SharkGame.persistentFlags.totalPausedTime = 0;
+            SharkGame.persistentFlags.currentPausedTime = 0;
+
+            // populate save data object
+            let saveString = "";
+            const saveData = {
+                version: SharkGame.VERSION,
+                resources: {},
+                world: { type: world.worldType },
+                aspects: {},
+            };
+
+            _.each(SharkGame.ResourceCategories.special.resources, (resourceName) => {
+                saveData.resources[resourceName] = {
+                    amount: res.getResource(resourceName),
+                    totalAmount: res.getTotalResource(resourceName),
+                };
+            });
+
+            _.each(SharkGame.Aspects, ({ level }, aspectId) => {
+                if (level) saveData.aspects[aspectId] = level;
+            });
+
+            saveData.settings = _.cloneDeep(SharkGame.Settings.current);
+
+            saveData.completedWorlds = _.cloneDeep(SharkGame.Gateway.completedWorlds);
+            saveData.persistentFlags = _.cloneDeep(SharkGame.persistentFlags);
+            saveData.planetPool = _.cloneDeep(gateway.planetPool);
+
+            // add timestamp
+            saveData.timestampLastSave = _.now();
+            saveData.timestampGameStart = SharkGame.timestampGameStart;
+            saveData.timestampRunStart = _.now();
+            saveData.timestampRunEnd = SharkGame.timestampRunEnd;
+
+            saveData.saveVersion = SharkGame.Save.saveUpdaters.length - 1;
+            saveString = ascii85.encode(pako.deflate(JSON.stringify(saveData), { to: "string" }));
+
+            SharkGame.Save.importData(saveString);
+
+            res.minuteHand.applyHourHand();
+
+            try {
+                SharkGame.Save.saveGame();
+                log.addMessage("Game saved.");
+            } catch (err) {
+                log.addError(err);
+            }
+        }
     },
 
     tick() {
         if (cad.pause) {
+            SharkGame.persistentFlags.currentPausedTime += _.now() - SharkGame.before;
             SharkGame.before = _.now();
+            SharkGame.lastMouseActivity = _.now();
             return;
         }
         if (cad.stop) {
             return;
         }
+
         if (!SharkGame.gameOver) {
             SharkGame.EventHandler.handleEventTick("beforeTick");
+
+            if (SharkGame.persistentFlags.currentPausedTime) {
+                SharkGame.persistentFlags.totalPausedTime += SharkGame.persistentFlags.currentPausedTime;
+                SharkGame.persistentFlags.currentPausedTime = 0;
+            }
 
             // tick main game stuff
             const now = _.now();
             const elapsedTime = now - SharkGame.before;
 
-            res.minuteHand.updateMinuteHand(elapsedTime);
+            if (now - SharkGame.lastMouseActivity > SharkGame.IDLE_THRESHOLD && res.idleMultiplier === 1) {
+                main.startIdle(now, elapsedTime);
+            }
+
+            if (res.idleMultiplier < 1) {
+                main.continueIdle(now, elapsedTime);
+            }
+
+            if (res.minuteHand.active) {
+                res.minuteHand.updateMinuteHand(elapsedTime);
+            }
 
             // check if the sidebar needs to come back
             if (SharkGame.sidebarHidden) {
@@ -327,6 +519,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             } else {
                 main.processSimTime(SharkGame.dt);
             }
+
             res.updateResourcesTable();
 
             const tabCode = SharkGame.Tabs[SharkGame.Tabs.current].code;
@@ -337,6 +530,8 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             SharkGame.before = now;
 
             SharkGame.EventHandler.handleEventTick("afterTick");
+        } else {
+            SharkGame.lastMouseActivity = _.now();
         }
 
         //see if resource table tooltip needs updating
@@ -345,6 +540,42 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 res.tableTextEnter(null, document.getElementById("tooltipbox").attributes.current.value);
             }
         }
+    },
+
+    startIdle(now, elapsedTime) {
+        const idleOverlay = $("#idle-overlay");
+        idleOverlay.addClass("pointy").removeClass("click-passthrough");
+        idleOverlay.on("click", main.endIdle);
+        if (idleOverlay.is(":hidden")) {
+            $("#minute-hand-div").addClass("front");
+            idleOverlay.show().css("opacity", 0).animate({ opacity: 0.8 }, SharkGame.IDLE_FADE_TIME);
+        }
+        res.minuteHand.toggleOff();
+        SharkGame.savedMouseActivity = SharkGame.lastMouseActivity;
+        main.continueIdle(now, elapsedTime);
+    },
+
+    continueIdle(now, elapsedTime) {
+        const speedRatio = Math.min((now - SharkGame.savedMouseActivity - SharkGame.IDLE_THRESHOLD) / SharkGame.IDLE_FADE_TIME, 1);
+        res.idleMultiplier = 1 - speedRatio;
+
+        if (speedRatio > 0.8 && !SharkGame.persistentFlags.everIdled) {
+            res.minuteHand.allowMinuteHand();
+        }
+        res.minuteHand.updateMinuteHand(elapsedTime * speedRatio);
+    },
+
+    endIdle() {
+        const idleOverlay = $("#idle-overlay");
+        if (!idleOverlay.is(":hidden")) {
+            idleOverlay.stop(true).animate({ opacity: 0 }, 800, () => {
+                $("#minute-hand-div").removeClass("front");
+                idleOverlay.hide().stop(true);
+            });
+        }
+        idleOverlay.removeClass("pointy").addClass("click-passthrough");
+        SharkGame.lastMouseActivity = _.now();
+        res.idleMultiplier = 1;
     },
 
     processSimTime(numberOfSeconds, load = false) {
@@ -476,49 +707,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         }
     },
 
-    applyProgressionSpeed() {
-        switch (world.worldType) {
-            case "frigid":
-                res.applyModifier("planetaryIncome", "ice", -world.worldResources.get("ice").income);
-                res.applyModifier("planetaryIncome", "ice", 1 / main.getProgressionConstant());
-                res.reapplyModifiers("heater", "ice");
-                break;
-            case "abandoned":
-                res.reapplyModifiers("crystalMiner", "tar");
-                res.reapplyModifiers("sandDigger", "tar");
-                res.reapplyModifiers("fishMachine", "tar");
-                res.reapplyModifiers("skimmer", "tar");
-                res.reapplyModifiers("clamCollector", "tar");
-                res.reapplyModifiers("sprongeSmelter", "tar");
-                res.reapplyModifiers("eggBrooder", "tar");
-                res.reapplyModifiers("filter", "tar");
-                break;
-        }
-    },
-
-    getProgressionConstant(alternative) {
-        switch (alternative) {
-            case "2-scale":
-                switch (SharkGame.Settings.current.gameSpeed) {
-                    case "Idle":
-                        return 2;
-                    case "Inactive":
-                        return 1.5;
-                    default:
-                        return 1;
-                }
-            default:
-                switch (SharkGame.Settings.current.gameSpeed) {
-                    case "Idle":
-                        return 4;
-                    case "Inactive":
-                        return 2;
-                    default:
-                        return 1;
-                }
-        }
-    },
-
     endGame(loadingFromSave) {
         // stop autosaving
         clearInterval(main.autosaveHandler);
@@ -528,56 +716,12 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         SharkGame.gameOver = true;
 
         // grab end game timestamp
-        SharkGame.timestampRunEnd = _.now();
+        if (!loadingFromSave) {
+            SharkGame.timestampRunEnd = _.now();
+        }
 
         // kick over to passage
         gateway.enterGate(loadingFromSave);
-    },
-
-    purgeGame() {
-        // empty out all the containers!
-        $("#status").empty();
-        log.clearMessages();
-        $("#content").empty();
-    },
-
-    loopGame() {
-        if (SharkGame.gameOver) {
-            SharkGame.gameOver = false;
-            SharkGame.wonGame = false;
-            SharkGame.PaneHandler.wipeStack();
-
-            // copy over all special category resources
-            // aspects are preserved automatically within gateway file
-            const backup = { resources: {} };
-            _.each(SharkGame.ResourceCategories.special.resources, (resourceName) => {
-                backup.resources[resourceName] = {
-                    amount: res.getResource(resourceName),
-                    totalAmount: res.getTotalResource(resourceName),
-                };
-            });
-            backup.completedWorlds = SharkGame.Gateway.completedWorlds;
-            backup.persistentFlags = SharkGame.persistentFlags;
-
-            SharkGame.timestampRunStart = _.now();
-            main.init(true, true);
-            log.addMessage(world.getWorldEntryMessage());
-
-            // restore special resources
-            $.each(backup.resources, (resourceName, resourceData) => {
-                res.setResource(resourceName, resourceData.amount);
-                res.setTotalResource(resourceName, resourceData.totalAmount);
-            });
-            SharkGame.Gateway.completedWorlds = backup.completedWorlds;
-            SharkGame.persistentFlags = backup.persistentFlags;
-
-            try {
-                SharkGame.Save.saveGame();
-                log.addMessage("Game saved.");
-            } catch (err) {
-                log.addError(err);
-            }
-        }
     },
 
     isFirstTime() {
@@ -588,6 +732,13 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         SharkGame.timestampLastSave = _.now();
         SharkGame.timestampGameStart = _.now();
         SharkGame.timestampRunStart = _.now();
+    },
+
+    shouldShowTooltips() {
+        if (!(main.isFirstTime() && res.getResource("fish") < 35 && res.getResource("shark") < 3)) {
+            SharkGame.persistentFlags.tooltipUnlocked = true;
+        }
+        return SharkGame.persistentFlags.tooltipUnlocked;
     },
 };
 
@@ -633,6 +784,17 @@ SharkGame.FunFacts = [
 ];
 
 SharkGame.Changelog = {
+    "<a href='https://github.com/spencers145/SharkGame'>New Frontiers</a> 0.2 patch 20211109a": [
+        "Final revamp of the aspect tree. Not the final addition to it, though.",
+        "Added idle mode. The game will pause and accumulate idle time after 2 minutes of inactivity.",
+        "The minute hand now stores offline progress and idle time. You can use your stored time in the form of a multiplier.",
+        "Removed the playstyle choice because the new idle system does its job better.",
+        "Implemented scouting. You get more essence when you first play a world, but SOME aspects can't be used.",
+        "Implemented par times. If you beat a world faster than par, you get extra essence. Go even faster for even more.",
+        "Added and changed sprites.",
+        "Updated UI.",
+        "Fixed some out-of-place flavor text.",
+    ],
     "<a href='https://github.com/spencers145/SharkGame'>New Frontiers</a> 0.2 patch 20210814a": [
         "Added Shrouded worldtype.",
         "Retooled Haven worldtype.",

@@ -1,3 +1,4 @@
+"use strict";
 SharkGame.CheatsAndDebug = {
     tabId: "cheats",
     tabDiscovered: false,
@@ -129,7 +130,10 @@ SharkGame.CheatsAndDebug = {
 
     init() {
         SharkGame.TabHandler.registerTab(this);
-        main.applyProgressionSpeed();
+    },
+
+    setup() {
+        /* doesnt need to do anything */
     },
 
     switchTo() {

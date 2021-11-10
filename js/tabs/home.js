@@ -9,6 +9,8 @@ SharkGame.Home = {
     currentButtonTab: null,
     currentExtraMessageIndex: null,
 
+    buttonNamesList: [],
+
     // Priority: later messages display if available, otherwise earlier ones.
     extraMessages: {
         // FIRST RUN
@@ -19,32 +21,32 @@ SharkGame.Home = {
             },
             {
                 name: "start-shark",
-                unlock: { resource: { fish: 5 } },
+                unlock: { totalResource: { fish: 5 } },
                 message: "You attract the attention of a shark. Maybe they can help you catch fish!",
             },
             {
                 name: "start-sharks",
-                unlock: { resource: { shark: 1 } },
+                unlock: { resource: { shark: 2 } },
                 message: "More sharks swim over, curious and watchful.",
             },
             {
                 name: "start-ray",
-                unlock: { resource: { shark: 4 } },
+                unlock: { resource: { shark: 5 } },
                 message: "Some rays drift over.",
             },
             {
                 name: "start-quite-the-group",
-                unlock: { resource: { shark: 1, ray: 1 } },
+                unlock: { resource: { shark: 6, ray: 2 } },
                 message: "You have quite the group going now.",
             },
             {
                 name: "start-crab",
-                unlock: { resource: { shark: 9, ray: 4 } },
+                unlock: { resource: { shark: 10, ray: 4 } },
                 message: "Some curious crabs come over.",
             },
             {
                 name: "start-tribe",
-                unlock: { resource: { shark: 1, ray: 1, crab: 1 } },
+                unlock: { resource: { shark: 12, ray: 4, crab: 5 } },
                 message: "Your new tribe is at your command!",
             },
             {
@@ -93,19 +95,24 @@ SharkGame.Home = {
         marine: [
             {
                 name: "marine-default",
-                message: "The fish never run dry here. This place feels so familiar.",
+                message: "Schools of fish fill the vast, blue expanse. This place feels so familiar.",
             },
             {
-                name: "lobster-one",
-                unlock: { resource: { lobster: 20 }, homeAction: ["getLobster"] },
-                message: "The lobsters work, but seem carefree.<br>They worry about nothing.",
+                name: "marine-clams",
+                unlock: { upgrade: ["crystalContainer"] },
+                message: "You notice a bunch creatures scurrying around on the ocean floor. They look like crabs, but longer, and...redder?",
+            },
+            {
+                name: "marine-lobsters",
+                unlock: { totalResource: { lobster: 20 } },
+                message: "The lobsters work, but seem carefree. They worry about nothing.",
             },
         ],
 
         haven: [
             {
                 name: "haven-default",
-                message: "The oceans are rich with life. But it's still not home.",
+                message: "These oceans are rich with life. A thriving reef surrounds you.",
             },
             {
                 name: "haven-dolphin-observes",
@@ -117,13 +124,13 @@ SharkGame.Home = {
                 name: "haven-dolphins",
                 unlock: { totalResource: { dolphin: 1 }, homeAction: ["getDolphin"] },
                 message:
-                    "A dolphin joins the frenzy. We told it to go get fish, but it came back with coral.<br>It insists that the coral is more valuable.",
+                    "A dolphin joins the frenzy. We told it to go get fish, but it came back with coral. It insists that the coral is more valuable.",
             },
             {
                 name: "haven-dolphin-empire",
                 unlock: { totalResource: { dolphin: 20 } },
                 message:
-                    "The dolphin pods that work with us speak of a star-spanning empire of their kind.<br>They ask where our empire is. And they smile.",
+                    "The dolphin pods that work with us speak of a star-spanning empire of their kind. They ask where our empire is. And they smile.",
                 scales: true,
             },
             {
@@ -135,12 +142,12 @@ SharkGame.Home = {
                 name: "haven-stories",
                 unlock: { upgrade: ["delphineHistory"] },
                 message:
-                    "The dolphin's self-indulgent tales make frequent references to a mystical gate.<br>And, they don't know where it is. Of course they don't.",
+                    "The dolphin's self-indulgent tales make frequent references to a mystical gate. And, they don't know where it is. Of course they don't.",
             },
             {
                 name: "haven-whales",
                 unlock: { totalResource: { whale: 1 }, homeAction: ["getWhale"] },
-                message: "The whales speak rarely to us, working in silence as they sing to the ocean.<br>What do they sing for?",
+                message: "The whales speak rarely to us, working in silence as they sing to the ocean. What do they sing for?",
             },
             {
                 name: "haven-history",
@@ -170,24 +177,24 @@ SharkGame.Home = {
         violent: [
             {
                 name: "violent-default",
-                message: "Bursts of plenty from the scorching vents, but so hot.<br>No place for the young.",
+                message: "Bursts of plenty from the scorching vents, but so hot. No place for the young.",
             },
             {
                 name: "shrimp-one",
                 unlock: { resource: { shrimp: 50 }, homeAction: ["getShrimp"] },
-                message: "The shrimps are tiny, but hard-working.<br>They live for their sponge hives.",
+                message: "The shrimps are tiny, but hard-working. They live for their sponge hives.",
             },
         ],
 
         abandoned: [
             {
                 name: "abandoned-default",
-                message: "The tar clogs the gills of everyone here.<br>This dying world drags everyone down with it.",
+                message: "The tar clogs the gills of everyone here. This dying world drags everyone down with it.",
             },
             {
                 name: "abandoned-octopus-scrutinizes",
                 unlock: { upgrade: ["statsDiscovery"] },
-                message: "An octopus wanders over.<br>It scrutinizes your attempt at organization.",
+                message: "An octopus wanders over. It scrutinizes your attempt at organization.",
             },
             {
                 name: "abandoned-octopus",
@@ -203,34 +210,34 @@ SharkGame.Home = {
                 name: "abandoned-production",
                 unlock: { upgrade: ["octopusMethodology"] },
                 message:
-                    "The octopuses speak of production and correct action. They speak of unity through efficiency.<br>They regard us with cold, neutral eyes.",
+                    "The octopuses speak of production and correct action. They speak of unity through efficiency. They regard us with cold, neutral eyes.",
             },
             {
                 name: "abandoned-spronge",
                 unlock: { resource: { spronge: 1 } },
-                message: "Residue pumps through spronge like blood.<br>It pulses and throbs.",
+                message: "Residue pumps through spronge like blood. It pulses and throbs.",
             },
             {
                 name: "abandoned-exploration",
                 unlock: { upgrade: ["exploration"] },
-                message: "Great spires loom in the distance.<br>Loose cables are strung together on the horizon.",
+                message: "Great spires loom in the distance. Loose cables are strung together on the horizon.",
             },
             {
                 name: "abandoned-gate",
                 unlock: { upgrade: ["farAbandonedExploration"] },
                 message:
-                    "This gate stands inert and lifeless like the city around it.<br>The slots are already filled, but it looks like it's turned off.",
+                    "This gate stands inert and lifeless like the city around it. The slots are already filled, but it looks like it's turned off.",
             },
             {
                 name: "abandoned-reverse-engineering",
                 unlock: { upgrade: ["reverseEngineering"] },
                 message:
-                    "The components spin and whirr and click together, but their purpose eludes us.<br>What secrets are you hiding in your mechanisms?",
+                    "The components spin and whirr and click together, but their purpose eludes us. What secrets are you hiding in your mechanisms?",
             },
             {
                 name: "abandoned-high-energy-fusion",
                 unlock: { upgrade: ["highEnergyFusion"] },
-                message: "The light is blinding, but the output is worth it.<br>The pieces of a broken past unite to create a brighter future.",
+                message: "The light is blinding, but the output is worth it. The pieces of a broken past unite to create a brighter future.",
             },
             {
                 name: "abandoned-done",
@@ -240,12 +247,12 @@ SharkGame.Home = {
             {
                 name: "abandoned-tar-one",
                 unlock: { resource: { tar: 5 } },
-                message: "The tar is killing everything!<br>Maybe a filter could save us?",
+                message: "The tar is killing everything! Maybe a filter could save us?",
             },
             {
                 name: "abandoned-tar-two",
                 unlock: { resource: { tar: 200 } },
-                message: "Only machines will remain. All is lost.<br><span class='smallDesc'>All is lost.</span>",
+                message: "Only machines will remain. All is lost. <span class='smallDesc'>All is lost.</span>",
             },
         ],
 
@@ -257,46 +264,45 @@ SharkGame.Home = {
             {
                 name: "shrouded-eel-onlookers",
                 unlock: { upgrade: ["crystalContainer"] },
-                message: "Divers have reported sightings of 'skittish', wiggly creatures on the ocean floor.<br>What on earth...?",
+                message: "Divers have reported sightings of 'skittish', wiggly creatures on the ocean floor. What on earth...?",
             },
             {
                 name: "shrouded-eels",
                 unlock: { totalResource: { eel: 1 } },
-                message: "The eels chatter among their hiding places.<br>They like the sharks.",
+                message: "The eels chatter among their hiding places. They like the sharks.",
             },
             {
                 name: "shrouded-distant-chimaeras",
                 unlock: { upgrade: ["exploration"] },
-                message: "In the fog of darkness, the shapes of strange creatures can be made out.<br>They dart away when light approaches.",
+                message: "In the fog of darkness, the shapes of strange creatures can be made out. They dart away when light approaches.",
             },
             {
                 name: "shrouded-chimaeras",
                 unlock: { totalResource: { chimaera: 1 } },
                 message:
-                    "The chimaeras imply they are ancient kin of the shark kind, reunited through wild coincidence.<br>We don't understand, but they seem to think we do.",
+                    "The chimaeras imply they are ancient kin of the shark kind, reunited through wild coincidence. We don't understand, but they seem to think we do.",
             },
             {
                 name: "shrouded-arcana",
                 unlock: { totalResource: { arcana: 5 } },
-                message:
-                    "These hadal artifacts glow faintly, only in pitch blackness.<br>That glow makes you feel something that you don't understand.",
+                message: "These hadal artifacts glow faintly, only in pitch blackness. That glow makes you feel something that you don't understand.",
             },
             {
                 name: "shrouded-power",
                 unlock: { totalResource: { sacrifice: 100 } },
                 message:
-                    "Every broken shard disintegrates in a blinding flash of light. That familiar feeling washes over you with every sacrifice.<br>The sharp snap of broken arcana echoes in your mind.",
+                    "Every broken shard disintegrates in a blinding flash of light. That familiar feeling washes over you with every sacrifice. The sharp snap of broken arcana echoes in your mind.",
             },
             {
                 name: "shrouded-end",
                 unlock: { upgrade: ["arcaneActivation"] },
-                message: "The gate opens. It pulls, tugging at you.<br>The force is immense.",
+                message: "The gate opens. It pulls, tugging at you. The force is immense.",
             },
             {
                 name: "shrouded-essence",
                 unlock: { totalResource: { sacrifice: 1000000000000000 } },
                 message:
-                    "You see without light. You hear without sound. You feel without touching.<br>Everything pelts you from every direction. You can't make sense of it anymore. Any of it. It feels like it's all breaking down around you.<br>",
+                    "You see without light. You hear without sound. You feel without touching. Everything pelts you from every direction. You can't make sense of it anymore. Any of it. It feels like it's all breaking down around you.",
             },
         ],
 
@@ -313,64 +319,64 @@ SharkGame.Home = {
             {
                 name: "frigid-icy-doom",
                 unlock: { resource: { ice: 500 } },
-                message: "So cold. So hungry.<br><span class='smallDesc'>So hopeless.</span>",
+                message: "So cold. So hungry. <span class='smallDesc'>So hopeless.</span>",
             },
             {
                 name: "frigid-distant-village",
                 unlock: { totalResource: { science: 8 } },
-                message: "While scanning the horizon, you notice a gap in the ice.<br>You peer through it, and spot something else.",
+                message: "While scanning the horizon, you notice a gap in the ice. You peer through it, and spot something else.",
                 scales: true,
             },
             {
                 name: "frigid-village",
                 unlock: { upgrade: ["civilContact"] },
                 message:
-                    "A small village of squid greets you respectfully.<br>The water in this place is a little warmer, and you hear a quiet, ambient hum.",
+                    "A small village of squid greets you respectfully. The water in this place is a little warmer, and you hear a quiet, ambient hum.",
             },
             {
                 name: "frigid-urchins",
                 unlock: { totalResource: { urchin: 2 } },
                 message:
-                    "The urchins scuttle along the ground and hop about, gathering kelp and placing it into a large, central pile.<br>They know nothing but the kelp.",
+                    "The urchins scuttle along the ground and hop about, gathering kelp and placing it into a large, central pile. They know nothing but the kelp.",
             },
             {
                 name: "frigid-teamwork",
                 unlock: { totalResource: { extractionTeam: 1 } },
-                message: "The squid champion the value of teamwork and the necessity of cooperation.<br>They say they follow by example.",
+                message: "The squid champion the value of teamwork and the necessity of cooperation. They say they follow by example.",
             },
             {
                 name: "frigid-machine",
                 unlock: { totalResource: { squid: 125 } },
                 message:
-                    "In the center of the settlement lies a vibrating...thing, and a strange gate.<br>The thing buzzes loudly, casting enormous energy across the water.",
+                    "In the center of the settlement lies a vibrating...thing, and a strange gate. The thing buzzes loudly, casting enormous energy across the water.",
                 scales: true,
             },
             {
                 name: "frigid-squid",
                 unlock: { totalResource: { squid: 250 } },
-                message: "The squid speak of an ancient visitor who saved their world.<br>They ask if you too, have seen this visitor.",
+                message: "The squid speak of an ancient visitor who saved their world. They ask if you too, have seen this visitor.",
                 scales: true,
             },
             {
                 name: "frigid-suspicion",
                 unlock: { upgrade: ["automation"] },
-                message: "The squid describe the machine with fascination. They ask if we feel the same.<br>They see something we do not.",
+                message: "The squid describe the machine with fascination. They ask if we feel the same. They see something we do not.",
             },
             {
                 name: "frigid-battery",
                 unlock: { upgrade: ["internalInquiry"] },
                 message:
-                    "Buried deep within the complex lies a massive, dimly glowing battery.<br>The squid say replacing it will get the machine running at full power.",
+                    "Buried deep within the complex lies a massive, dimly glowing battery. The squid say replacing it will get the machine running at full power.",
             },
             {
                 name: "frigid-heat-returns",
                 unlock: { upgrade: ["rapidRecharging"] },
-                message: "A wave of heat washes over you, and the dingy complex comes back to life.<br>The gate turns on.",
+                message: "A wave of heat washes over you, and the dingy complex comes back to life. The gate turns on.",
             },
             /*{
                 name: "frigid-end",
                 unlock: { upgrade: ["rapidRepairs"] },
-                message: "The gate opens.<br>The squid bid you farewell.",
+                message: "The gate opens. The squid bid you farewell.",
             },*/
             //another one: "the maw of the gate opens"
         ],
@@ -383,10 +389,6 @@ SharkGame.Home = {
     },
 
     init() {
-        // rename home tab
-        const tabName = SharkGame.WorldTypes[world.worldType].name + " Ocean";
-        home.tabName = tabName;
-
         SharkGame.TabHandler.registerTab(this);
 
         // populate action discoveries (and reset removals)
@@ -400,7 +402,18 @@ SharkGame.Home = {
         home.currentButtonTab = "all";
     },
 
+    setup() {
+        // rename home tab
+        const tabName = SharkGame.WorldTypes[world.worldType].name + " Ocean";
+        home.tabName = tabName;
+        if (SharkGame.Tabs["home"]) {
+            SharkGame.Tabs["home"].name = tabName;
+        }
+        home.discoverActions();
+    },
+
     switchTo() {
+        this.buttonNamesList = [];
         const content = $("#content");
         const tabMessage = $("<div>").attr("id", "tabMessage");
         content.append(tabMessage);
@@ -411,22 +424,21 @@ SharkGame.Home = {
         content.append(buttonTabDiv);
         home.createButtonTabs();
         // buy amount buttons
-        main.createBuyButtons("buy", content, "append");
-        // button list
-        const buttonList = $("<div>").attr("id", "buttonList");
-        content.append(buttonList);
-        if (SharkGame.Settings.current.buttonDisplayType === "pile") {
-            buttonList.addClass("pileArrangement");
-        } else {
-            buttonList.removeClass("pileArrangement");
+        if (SharkGame.persistentFlags.revealedBuyButtons) {
+            main.createBuyButtons("buy", content, "append");
         }
+        // button list
+        const buttonList = $("<div>").attr("id", "buttonList").addClass("homeScreen");
+        content.append(buttonList);
         // background art!
         if (SharkGame.Settings.current.showTabImages) {
             tabMessage.css("background-image", "url('" + home.tabBg + "')");
         }
-        if (SharkGame.Settings.current.logLocation === "right") {
-            buttonList.addClass("smallerMargin");
+
+        if (SharkGame.Aspects.anythingAndEverything.level) {
+            this.everything.addEverythingButton();
         }
+        this.update();
     },
 
     discoverActions() {
@@ -441,6 +453,8 @@ SharkGame.Home = {
         const buttonTabList = $("<ul>").attr("id", "homeTabsList");
         buttonTabDiv.empty();
         let tabAmount = 0;
+
+        if (!SharkGame.persistentFlags.revealedBuyButtons) return;
 
         // add a header for each discovered category
         // make it a link if it's not the current tab
@@ -513,7 +527,11 @@ SharkGame.Home = {
         }
         home.currentButtonTab = tabToChangeTo;
         $("#buttonList").empty();
+        if (SharkGame.Aspects.anythingAndEverything.level) {
+            this.everything.addEverythingButton();
+        }
         home.createButtonTabs();
+        home.update();
     },
 
     updateMessage(suppressAnimation) {
@@ -527,13 +545,11 @@ SharkGame.Home = {
                 requirementsMet =
                     requirementsMet &&
                     _.every(extraMessage.unlock.resource, (requiredAmount, resourceId) => {
-                        requiredAmount *= extraMessage.scales ? main.getProgressionConstant() : 1;
                         return res.getResource(resourceId) >= requiredAmount;
                     });
                 requirementsMet =
                     requirementsMet &&
                     _.every(extraMessage.unlock.totalResource, (requiredAmount, resourceId) => {
-                        requiredAmount *= extraMessage.scales ? main.getProgressionConstant() : 1;
                         return res.getTotalResource(resourceId) >= requiredAmount;
                     });
                 requirementsMet =
@@ -561,8 +577,8 @@ SharkGame.Home = {
                     sceneDiv = $("<div>").attr("id", "tabSceneImage");
                 }
             }
-            let message = "You are a shark in a " + worldType.shortDesc + " sea.";
-            message += "<br><span id='extraMessage' class='medDesc'><br></span>";
+            let message = "<strong class='medDesc'>You are a shark in a " + worldType.shortDesc + " sea.</strong>";
+            message += "<br><strong id='extraMessage'><br></strong>";
             tabMessage.html(message).prepend(sceneDiv);
 
             const extraMessageSel = $("#extraMessage");
@@ -599,6 +615,7 @@ SharkGame.Home = {
                             actionData.newlyDiscovered = true;
                         }
                         home.addButton(actionName);
+                        home.createButtonTabs();
                     }
                 } else {
                     // button exists
@@ -627,7 +644,10 @@ SharkGame.Home = {
     },
 
     updateButton(actionName) {
-        const amountToBuy = Decimal(sharkmath.getBuyAmount());
+        if (!sharkmath.getBuyAmount()) {
+            return;
+        }
+        const amountToBuy = new Decimal(sharkmath.getBuyAmount());
 
         const button = $("#" + actionName);
         const actionData = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
@@ -645,14 +665,17 @@ SharkGame.Home = {
         if (amountToBuy.lessThan(0)) {
             // unlimited mode, calculate the highest we can go
             const max = home.getMax(actionData);
-            const divisor = Decimal(1).dividedBy(amountToBuy.times(-1));
+            const divisor = new Decimal(1).dividedBy(amountToBuy.times(-1));
             amount = max.times(divisor);
-            Decimal.set({ rounding: Decimal.ROUND_FLOOR });
-            amount = amount.round();
             if (amount.lessThan(1)) {
-                amount = Decimal(1);
-                enableButton = false;
+                if (amount.times(amountToBuy.times(-1)).greaterThanOrEqualTo(1 - SharkGame.EPSILON)) {
+                    enableButton = true;
+                } else {
+                    enableButton = false;
+                }
+                amount = new Decimal(1);
             }
+            amount = amount.round();
         }
         const actionCost = home.getCost(actionData, amount);
 
@@ -785,6 +808,8 @@ SharkGame.Home = {
     },
 
     addButton(actionName) {
+        this.buttonNamesList.push(actionName);
+
         const buttonListSel = $("#buttonList");
         const actionData = SharkGame.HomeActions.getActionTable()[actionName];
 
@@ -801,9 +826,17 @@ SharkGame.Home = {
         if (SharkGame.Settings.current.showAnimations) {
             buttonSelector.hide().css("opacity", 0).slideDown(50).animate({ opacity: 1.0 }, 50);
         }
-        if (actionData.newlyDiscovered) {
+        if (home.shouldBeNewlyDiscovered(actionName, actionData)) {
             buttonSelector.addClass("newlyDiscovered");
         }
+        // still need to add increases/decreases check here, but this is not relevant to the actual game yet so i dont care
+        if (home.doesButtonGiveNegativeThing(actionData)) {
+            buttonSelector.addClass("gives-consumer");
+        }
+    },
+
+    doesButtonGiveNegativeThing(actionData) {
+        let givesBadThing = false;
         $.each(actionData.effect.resource, (resourceName) => {
             // still need to add increases/decreases check here, but this is not relevant to the actual game yet so i dont care
             if (
@@ -814,10 +847,19 @@ SharkGame.Home = {
                         ((incomeAmount < 0 && !res.isInCategory(resource, "harmful")) || (res.isInCategory(resource, "harmful") && incomeAmount > 0))
                 )
             ) {
-                buttonSelector.addClass("gives-consumer");
+                givesBadThing = true;
                 return false;
             }
         });
+        return givesBadThing;
+    },
+
+    shouldBeNewlyDiscovered(actionName, actionData) {
+        if (SharkGame.Aspects.pathOfTime.level) {
+            if (actionName === "getCrab" && world.doesResourceExist("crab")) return false;
+            if (actionName === "getDiver" && world.doesResourceExist("diver")) return false;
+        }
+        return actionData.newlyDiscovered;
     },
 
     getActionCategory(actionName) {
@@ -826,36 +868,42 @@ SharkGame.Home = {
         });
     },
 
-    onHomeButton() {
-        const amountToBuy = Decimal(sharkmath.getBuyAmount());
-        // get related entry in home button table
-        const button = $(this);
+    onHomeButton(_placeholder, actionName) {
+        const amountToBuy = new Decimal(sharkmath.getBuyAmount());
+        let button;
+        if (!actionName) {
+            // get related entry in home button table
+            button = $(this);
+            actionName = button.attr("id");
+        } else {
+            button = $("#" + actionName);
+        }
         if (button.hasClass("disabled")) return;
-        const actionName = button.attr("id");
         const action = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
         let actionCost = {};
-        let amount = Decimal(0);
+        let amount = new Decimal(0);
         if (amountToBuy.lessThan(0)) {
             // unlimited mode, calculate the highest we can go
             const max = home.getMax(action);
             // floor max
             if (max > 0) {
                 // convert divisor from a negative number to a positive fraction
-                const divisor = Decimal(1).dividedBy(amountToBuy.times(-1));
+                const divisor = new Decimal(1).dividedBy(amountToBuy.times(-1));
                 amount = max.times(divisor);
                 // floor amount
-                Decimal.set({ rounding: Decimal.ROUND_FLOOR });
                 amount = amount.round();
                 // make it worth entering this function
-                if (amount.lessThan(1)) amount = Decimal(1);
+                if (amount.lessThan(1)) amount = new Decimal(1);
                 actionCost = home.getCost(action, amount);
+            } else {
+                return;
             }
         } else {
             actionCost = home.getCost(action, amountToBuy);
             amount = amountToBuy;
         }
 
-        if ($.isEmptyObject(actionCost)) {
+        if ($.isEmptyObject(actionCost) && !amount.equals(0)) {
             // free action
             // do not repeat or check for costs
             if (action.effect.resource) {
@@ -864,6 +912,25 @@ SharkGame.Home = {
             log.addMessage(SharkGame.choose(action.outcomes));
         } else if (amount.greaterThan(0)) {
             // cost action
+
+            // did the player just purchase sharkonium?
+            if (actionName === "transmuteSharkonium") {
+                // did they only buy one for some reason?
+                if (amountToBuy.equals(1)) {
+                    // keep track of how many times they've done that
+                    if (!SharkGame.persistentFlags.individuallyBoughtSharkonium) {
+                        SharkGame.persistentFlags.individuallyBoughtSharkonium = 0;
+                    }
+                    if (SharkGame.persistentFlags.individuallyBoughtSharkonium !== -1) {
+                        SharkGame.persistentFlags.individuallyBoughtSharkonium += 1;
+                    }
+                } else {
+                    // otherwise they know what they're doing, stop keeping track
+                    SharkGame.persistentFlags.individuallyBoughtSharkonium = -1;
+                }
+                // see remindAboutBuyMax event
+            }
+
             // check cost, only proceed if sufficient resources (prevention against lazy cheating, god, at least cheat in the right resources)
             if (res.checkResources(actionCost)) {
                 // take cost
@@ -871,7 +938,7 @@ SharkGame.Home = {
                 // execute effects
                 if (action.effect.resource) {
                     let resourceChange;
-                    if (amount !== 1) {
+                    if (!amount.equals(1)) {
                         resourceChange = res.scaleResourceList(action.effect.resource, amount);
                     } else {
                         resourceChange = action.effect.resource;
@@ -879,7 +946,7 @@ SharkGame.Home = {
                     res.changeManyResources(resourceChange);
                 }
                 // print outcome to log
-                if (!action.multiOutcomes || amount === 1) {
+                if (!action.multiOutcomes || amount.equals(1)) {
                     log.addMessage(SharkGame.choose(action.outcomes));
                 } else {
                     log.addMessage(SharkGame.choose(action.multiOutcomes));
@@ -896,8 +963,42 @@ SharkGame.Home = {
         button.addClass("disabled");
     },
 
+    everything: {
+        addEverythingButton() {
+            const buttonListSel = $("#buttonList");
+
+            const buttonSelector = SharkGame.Button.makeHoverscriptButton(
+                "anythingAndEverything",
+                "Anything and Everything",
+                buttonListSel,
+                home.everything.onEverythingButton,
+                home.everything.onEverythingHover,
+                home.onHomeUnhover
+            ); // box-shadow: 0 0 6px 3px #f00, 0 0 3px 1px #ff1a1a inset;
+            buttonSelector.html($("<span id='" + "anythingAndEverything" + "Label' class='click-passthrough'>Press anything and everything</span>"));
+        },
+
+        onEverythingButton() {
+            _.each(home.buttonNamesList, (actionName) => {
+                const actionData = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
+                if (!home.doesButtonGiveNegativeThing(actionData)) {
+                    home.onHomeButton("blah", actionName);
+                }
+            });
+        },
+
+        onEverythingHover() {
+            if (!SharkGame.Settings.current.showTooltips) {
+                return;
+            }
+
+            $("#tooltipbox").removeClass("forIncomeTable").attr("current", "").addClass("forHomeButtonOrGrotto");
+            $("#tooltipbox").html("Clicks every other button in the list without a red border, in order, from left to right and top to bottom.");
+        },
+    },
+
     onHomeHover(mouseEnterEvent, actionName) {
-        if (!SharkGame.Settings.current.showTooltips || (!actionName && !mouseEnterEvent)) {
+        if (!SharkGame.Settings.current.showTooltips || (!actionName && !mouseEnterEvent) || !main.shouldShowTooltips()) {
             return;
         }
 
@@ -908,7 +1009,8 @@ SharkGame.Home = {
 
         $("#tooltipbox").removeClass("gives-consumer");
 
-        const effects = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName).effect;
+        const actionData = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
+        const effects = actionData.effect;
         const validGenerators = {};
         $.each(effects.resource, (resource) => {
             $.each(SharkGame.ResourceMap.get(resource).income, (incomeResource) => {
@@ -920,17 +1022,23 @@ SharkGame.Home = {
         });
 
         let buyingHowMuch = 1;
-        if (!SharkGame.Settings.current.alwaysSingularTooltip) {
-            buyingHowMuch = sharkmath.getPurchaseAmount(
-                "doesntmatter",
-                home.getMax(SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName)).toNumber()
-            );
+        if (
+            !SharkGame.Settings.current.alwaysSingularTooltip &&
+            actionData.cost.length > 0 &&
+            !_.some(actionData.cost, (costData) => {
+                return costData.costFunction === "unique";
+            })
+        ) {
+            buyingHowMuch = sharkmath.getPurchaseAmount(undefined, home.getMax(actionData).toNumber());
             if (buyingHowMuch < 1) {
                 buyingHowMuch = 1;
             }
         }
 
-        const usePlural = buyingHowMuch > 1 || _.keys(effects.resource).length > 1 || _.some(effects.resource, (amount) => amount > 1);
+        const usePlural =
+            (_.some(effects.resource, (_amount, name) => sharktext.getDeterminer(name)) &&
+                (buyingHowMuch > 1 || _.some(effects.resource, (amount) => amount > 1))) ||
+            _.keys(effects.resource).length > 1;
         let addedAnyLabelsYet = false; // this keeps track of whether or not little tooltip text has already been appended
 
         // append valid stuff for generators like production
@@ -1173,9 +1281,9 @@ SharkGame.Home = {
 
         _.each(rawCost, (costObj) => {
             const resource = SharkGame.PlayerResources.get(action.max);
-            const currAmount = Decimal(resource.amount);
-            const priceIncrease = Decimal(costObj.priceIncrease);
-            let cost = Decimal(0);
+            const currAmount = new Decimal(resource.amount);
+            const priceIncrease = new Decimal(costObj.priceIncrease);
+            let cost = new DecimalHalfRound(0);
 
             switch (costObj.costFunction) {
                 case "constant":
@@ -1188,7 +1296,6 @@ SharkGame.Home = {
                     cost = sharkmath.uniqueCost(currAmount, amount, priceIncrease);
                     break;
             }
-            Decimal.set({ rounding: Decimal.ROUND_HALF_FLOOR });
             if (cost.abs().minus(cost.round()).lessThan(SharkGame.EPSILON)) {
                 cost = cost.round();
             }
@@ -1198,20 +1305,20 @@ SharkGame.Home = {
     },
 
     getMax(action) {
-        let max = Decimal(1);
+        let max = new Decimal(1);
         if (action.max) {
             // max is used as the determining resource for linear cost functions
             const resource = SharkGame.PlayerResources.get(action.max);
-            const currAmount = Decimal(resource.amount);
-            max = Decimal(1e308);
+            const currAmount = new Decimal(resource.amount);
+            max = new Decimal(1e308);
             _.each(action.cost, (costObject) => {
-                const costResource = Decimal(SharkGame.PlayerResources.get(costObject.resource).amount);
-                const priceIncrease = Decimal(costObject.priceIncrease);
-                let subMax = Decimal(-1);
+                const costResource = new Decimal(SharkGame.PlayerResources.get(costObject.resource).amount);
+                const priceIncrease = new Decimal(costObject.priceIncrease);
+                let subMax = new DecimalHalfRound(-1);
 
                 switch (costObject.costFunction) {
                     case "constant":
-                        subMax = sharkmath.constantMax(typeof costResource === "object" ? Decimal(0) : 0, costResource, priceIncrease);
+                        subMax = sharkmath.constantMax(typeof costResource === "object" ? new Decimal(0) : 0, costResource, priceIncrease);
                         break;
                     case "linear":
                         subMax = sharkmath.linearMax(currAmount, costResource, priceIncrease).minus(currAmount);
@@ -1221,14 +1328,13 @@ SharkGame.Home = {
                         break;
                 }
                 // prevent flashing action costs
-                Decimal.set({ rounding: Decimal.ROUND_HALF_FLOOR });
                 if (subMax.minus(subMax.round()).abs().lessThan(SharkGame.EPSILON)) {
                     subMax = subMax.round();
                 }
+                subMax = new Decimal(subMax);
                 max = Decimal.min(max, subMax);
             });
         }
-        Decimal.set({ rounding: Decimal.ROUND_FLOOR });
         return max.round();
     },
 };

@@ -9,7 +9,7 @@ SharkGame.Lab = {
     sceneImage: "img/events/misc/scene-lab.png",
     sceneDoneImage: "img/events/misc/scene-lab-done.png",
 
-    discoveryReq: { resource: { science: 10 } },
+    discoverReq: { resource: { science: 10 } },
 
     listEmpty: true,
 
@@ -23,6 +23,10 @@ SharkGame.Lab = {
         SharkGame.TabHandler.registerTab(this);
         // add default purchased state to each upgrade
         lab.resetUpgrades();
+    },
+
+    setup() {
+        /* doesnt need to do anything */
     },
 
     resetUpgrades() {
@@ -60,7 +64,7 @@ SharkGame.Lab = {
         tabMessageSel.html(message);
         content.append(tabMessageSel);
         const buttonListContainer = $("<div>").attr("id", "buttonLeftContainer");
-        buttonListContainer.append($("<div>").attr("id", "buttonList").append($("<h3>").html("Available Upgrades")));
+        buttonListContainer.append($("<div>").attr("id", "buttonList").addClass("lab").append($("<h3>").html("Available Upgrades")));
         content.append(buttonListContainer);
         content.append($("<div>").attr("id", "upgradeList"));
         content.append($("<div>").addClass("clear-fix"));
@@ -129,9 +133,7 @@ SharkGame.Lab = {
                 if (upgrade.required) {
                     // check previous upgrades
                     if (upgrade.required.upgrades) {
-                        prereqsMet =
-                            prereqsMet &&
-                            _.every(upgrade.required.upgrades, (requiredUpgradeId) => SharkGame.Upgrades.purchased.includes(requiredUpgradeId));
+                        prereqsMet = prereqsMet && this.areRequiredUpgradePrereqsPurchased(upgradeId);
                     }
                     // validate if upgrade is possible
                     prereqsMet = prereqsMet && lab.isUpgradePossible(upgradeId) && lab.isUpgradeVisible(upgradeId);
@@ -164,6 +166,15 @@ SharkGame.Lab = {
                 }
             }
         });
+    },
+
+    areRequiredUpgradePrereqsPurchased(upgradeId) {
+        const upgradeData = SharkGame.Upgrades.getUpgradeData(SharkGame.Upgrades.getUpgradeTable(), upgradeId);
+
+        if (upgradeData.required) {
+            return _.every(upgradeData.required.upgrades, (requiredUpgradeId) => SharkGame.Upgrades.purchased.includes(requiredUpgradeId));
+        }
+        return true;
     },
 
     updateLabButton(upgradeName) {
@@ -267,6 +278,7 @@ SharkGame.Lab = {
             }
 
             console.debug(`Added upgrade ${upgrade.name} at: ${sharktext.formatTime(_.now() - SharkGame.timestampRunStart)}`);
+            res.updateResourcesTable();
         }
     },
 
@@ -280,6 +292,24 @@ SharkGame.Lab = {
             }
         });
         return allDone;
+    },
+
+    findAllAffordableUpgrades() {
+        const which = [];
+        const table = SharkGame.Upgrades.getUpgradeTable();
+        $.each(table, (upgradeName) => {
+            if (!this.isUpgradePossible(upgradeName) || !this.isUpgradeVisible(upgradeName) || SharkGame.Upgrades.purchased.includes(upgradeName)) {
+                return true;
+            }
+
+            if (
+                res.checkResources(SharkGame.Upgrades.getUpgradeData(table, upgradeName).cost) &&
+                this.areRequiredUpgradePrereqsPurchased(upgradeName)
+            ) {
+                which.push(upgradeName);
+            }
+        });
+        return which;
     },
 
     isUpgradePossible(upgradeName) {

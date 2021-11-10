@@ -20,7 +20,6 @@ SharkGame.MathUtil = {
     // returns: absolute max items that can be held with invested and current resources
     constantMax(current, available, cost) {
         if (typeof current === "object") {
-            Decimal.set({ rounding: Decimal.ROUND_FLOOR });
             return available.dividedBy(cost).plus(current);
         }
         available = Math.floor(Math.floor(available) * (1 - 1e-9) + 0.1); //safety margin
@@ -68,7 +67,7 @@ SharkGame.MathUtil = {
             if (current.lessThan(1) && current.plus(difference).lessThanOrEqualTo(2)) {
                 return cost;
             } else {
-                return Decimal(Number.POSITIVE_INFINITY);
+                return new Decimal(Number.POSITIVE_INFINITY);
             }
         }
         if (current < 1 && current + difference <= 2) {
@@ -80,7 +79,7 @@ SharkGame.MathUtil = {
 
     // this takes an argument to know whether or not to return a Decimal or a Number
     uniqueMax(current) {
-        return typeof current === "object" ? Decimal(1) : 1;
+        return typeof current === "object" ? new Decimal(1) : 1;
     },
 
     getBuyAmount(noMaxBuy) {
@@ -125,9 +124,21 @@ SharkGame.TextUtil = {
         //note to self: make the next line not suck
         // Possibly add an "uncountable" property to resources somehow? Manual works fine though
         if (
-            ["sand", "algae", "coral", "spronge", "delphinium", "coralglass", "sharkonium", "residue", "tar", "ice", "science", "arcana"].includes(
-                name
-            )
+            [
+                "kelp",
+                "sand",
+                "algae",
+                "coral",
+                "spronge",
+                "delphinium",
+                "coralglass",
+                "sharkonium",
+                "residue",
+                "tar",
+                "ice",
+                "science",
+                "arcana",
+            ].includes(name)
         ) {
             return "";
         } else if ("aeiou".includes(firstLetter)) {
@@ -154,6 +165,7 @@ SharkGame.TextUtil = {
                 "ice",
                 "science",
                 "arcana",
+                "kelp",
             ].includes(name) ||
             amount === 1
         ) {

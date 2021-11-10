@@ -14,81 +14,65 @@ SharkGame.Gateway = {
 
     init() {
         this.completedWorlds = [];
+        this.planetPool = [];
+        SharkGame.wonGame = false;
+        SharkGame.gameOver = false;
+    },
+
+    setup() {
+        if (SharkGame.gameOver) {
+            main.endGame(true);
+        } else {
+            gateway.updateScoutingStatus();
+            SharkGame.persistentFlags.wasOnScoutingMission = undefined;
+        }
     },
 
     enterGate(loadingFromSave) {
         SharkGame.PaneHandler.wipeStack();
-        // award essence (and mark world completion)
-        let essenceReward = 0;
-        let patienceReward = 0;
-        if (!loadingFromSave) {
-            if (SharkGame.wonGame) {
-                essenceReward = 4;
-                gateway.markWorldCompleted(world.worldType);
-                SharkGame.persistentFlags.destinyRolls = SharkGame.Aspects.destinyGamble.level;
-                gateway.preparePlanetSelection(gateway.NUM_PLANETS_TO_SHOW);
 
-                if (SharkGame.persistentFlags.patience) {
-                    SharkGame.persistentFlags.patience -= 1;
-                    if (SharkGame.persistentFlags.patience === 0) {
-                        patienceReward += 2 * (SharkGame.Aspects.patience.level + 1) ** 2;
-                    }
-                }
-            } else {
-                essenceReward = 0;
-            }
-            res.changeResource("essence", essenceReward + patienceReward);
+        //ensure buy buttons will be revealed
+        SharkGame.persistentFlags.revealedBuyButtons = true;
+
+        //be sure minute hand is off
+        res.minuteHand.toggleOff();
+        //be sure we're not paused
+        if (cad.pause) {
+            res.pause.togglePause();
+        }
+
+        tree.resetScoutingRestrictions();
+        gateway.updateWasScoutingStatus();
+
+        if (!loadingFromSave && SharkGame.wonGame) {
+            gateway.markWorldCompleted(world.worldType);
+            SharkGame.persistentFlags.destinyRolls = SharkGame.Aspects.destinyGamble.level;
+            gateway.preparePlanetSelection(gateway.NUM_PLANETS_TO_SHOW);
         }
 
         if (this.planetPool.length === 0) {
             gateway.preparePlanetSelection(gateway.NUM_PLANETS_TO_SHOW);
         }
 
+        // make sure the player is flagged as having idled so the minute hand shows up from now on
+        res.minuteHand.allowMinuteHand();
+
+        const baseReward = gateway.getBaseReward(loadingFromSave);
+        const patienceReward = gateway.getPatienceReward(loadingFromSave);
+        const speedReward = gateway.getSpeedReward(loadingFromSave);
+        const gumptionBonus = gateway.getGumptionBonus(loadingFromSave);
+
+        gateway.prepareBasePane(baseReward, patienceReward, speedReward, gumptionBonus);
+        gateway.grantEssenceReward(baseReward, patienceReward, speedReward);
+
         // RESET COMPLETED GATE REQUIREMENTS
         SharkGame.Gate.completedRequirements = {};
-
-        // clear non-persistent flags
+        // clear non-persistent flags just in case
         SharkGame.flags = {};
-
         // SAVE
         SharkGame.Save.saveGame();
 
-        // PREPARE GATEWAY PANE
-        // set up classes
-        let pane;
-        if (!SharkGame.paneGenerated) {
-            pane = SharkGame.PaneHandler.buildPane();
-        } else {
-            pane = $("#pane");
-        }
-        pane.addClass("gateway");
-
-        const overlay = $("#overlay");
-        overlay.addClass("gateway");
-
-        // make overlay opaque
-        if (SharkGame.Settings.current.showAnimations) {
-            gateway.transitioning = true;
-            overlay
-                .show()
-                .css("opacity", 0)
-                .animate(
-                    {
-                        opacity: 1.0,
-                    },
-                    1000,
-                    "swing",
-                    () => {
-                        // put back to 4000
-                        gateway.cleanUp();
-                        gateway.showGateway(essenceReward, patienceReward);
-                    }
-                );
-        } else {
-            overlay.show().css("opacity", 1.0);
-            gateway.cleanUp();
-            gateway.showGateway(essenceReward, patienceReward);
-        }
+        $("#game").addClass("inGateway");
     },
 
     cleanUp() {
@@ -96,7 +80,9 @@ SharkGame.Gateway = {
         main.purgeGame();
     },
 
-    showGateway(essenceRewarded, patienceReward) {
+    showGateway(baseReward, patienceReward, speedReward, gumptionRatio = gateway.getGumptionBonus()) {
+        const gumptionBonus = Math.ceil(gumptionRatio * (baseReward + speedReward));
+
         // get some useful numbers
         const essenceHeld = res.getResource("essence");
         const numenHeld = res.getResource("numen");
@@ -109,37 +95,59 @@ SharkGame.Gateway = {
         }
         gatewayContent.append($("<p>").html(sharktext.boldString("Something unseen says,")).addClass("medDesc"));
         gatewayContent.append($("<em>").attr("id", "gatewayVoiceMessage").html(gateway.getVoiceMessage()));
-        if (essenceRewarded > 0) {
+        if (baseReward > 0) {
             gatewayContent.append(
                 $("<p>").html(
                     "Entering this place has changed you, granting you <span class='essenceCount'>" +
-                        sharktext.beautify(essenceRewarded) +
+                        sharktext.beautify(baseReward) +
                         "</span> essence."
+                )
+            );
+        }
+        if (speedReward > 0) {
+            gatewayContent.append(
+                $("<p>").html(
+                    "You completed this world " +
+                        sharktext.beautify(gateway.getMinutesBelowPar()) +
+                        " minutes faster than par, granting you <span class='essenceCount'>" +
+                        sharktext.beautify(speedReward) +
+                        "</span> additional essence."
+                )
+            );
+        } else if (SharkGame.wonGame && !gateway.wasOnScoutingMission() && !gateway.getMinutesBelowPar()) {
+            gatewayContent.append($("<p>").html("You didn't beat this world fast enough to get below par. If you did, you would get more essence."));
+        }
+        if (gumptionBonus) {
+            gatewayContent.append(
+                $("<p>").html(
+                    "Your gumption lets you scrounge up <span class='essenceCount'>" +
+                        sharktext.beautify(gumptionBonus, false, 2) +
+                        "</span> extra essence."
                 )
             );
         }
         if (patienceReward > 0) {
             gatewayContent.append(
                 $("<p>").html(
-                    "Your patience pays off, granting you <span class='essenceCount'>" + sharktext.beautify(patienceReward) + "</span> essence."
+                    "Your patience pays off, granting you <span class='essenceCount'>" +
+                        sharktext.beautify(patienceReward) +
+                        "</span> additional essence."
                 )
             );
-        } else {
-            if (SharkGame.persistentFlags.patience) {
-                gatewayContent.append(
-                    $("<p>").html(
-                        SharkGame.persistentFlags.patience +
-                            " more world" +
-                            (SharkGame.persistentFlags.patience > 1 ? "s" : "") +
-                            " until your patience pays off."
-                    )
-                );
-            }
+        }
+        if (speedReward || gumptionBonus || patienceReward) {
+            gatewayContent.append(
+                $("<p>").html(
+                    "You gained <span class='essenceCount'>" +
+                        sharktext.beautify(speedReward + patienceReward + baseReward + gumptionBonus, false, 2) +
+                        "</span> essence overall."
+                )
+            );
         }
         gatewayContent.append(
             $("<p>").html(
                 sharktext.boldString(
-                    "You have <span id='essenceHeldDisplay' class='essenceCount'>" + sharktext.beautify(essenceHeld) + "</span> essence."
+                    "You have <span id='essenceHeldDisplay' class='essenceCount'>" + sharktext.beautify(essenceHeld, false, 2) + "</span> essence."
                 )
             )
         );
@@ -163,45 +171,74 @@ SharkGame.Gateway = {
         SharkGame.Button.makeButton("backToGateway", "aspects", navButtons, () => {
             gateway.switchViews(gateway.showAspects);
         });
-        SharkGame.Button.makeButton("backToGateway", "options", navButtons, SharkGame.PaneHandler.showOptions);
-        SharkGame.Button.makeButton("backToGateway", "worlds", navButtons, () => {
-            gateway.switchViews(gateway.showPlanets);
-        });
+        SharkGame.Button.makeButton("toOptions", "options", navButtons, SharkGame.PaneHandler.showOptions);
+        SharkGame.Button.makeHoverscriptButton(
+            "toWorlds",
+            "worlds",
+            navButtons,
+            () => {
+                if (SharkGame.Aspects.pathOfEnlightenment.level) {
+                    gateway.switchViews(gateway.showPlanets);
+                }
+            },
+            () => {
+                if (!SharkGame.Aspects.pathOfEnlightenment.level) {
+                    $("#tooltipbox").addClass("forAspectTreeUnpurchased").html("You're not yet sure what this means.");
+                }
+            },
+            () => {
+                $("#tooltipbox").removeClass("forAspectTreeUnpurchased").html("");
+            }
+        );
         gatewayContent.append(navButtons);
 
         SharkGame.PaneHandler.swapCurrentPane("GATEWAY", gatewayContent, true, 500, true);
         gateway.transitioning = false;
+        if (!SharkGame.Aspects.pathOfEnlightenment.level) {
+            $("#toWorlds").addClass("disabled");
+        }
         if (SharkGame.missingAspects) {
             SharkGame.PaneHandler.showAspectWarning();
         }
     },
 
     showRunEndInfo(containerDiv) {
-        containerDiv.append(
-            $("<p>")
-                .html("<em>Time spent within last ocean:</em><br/>")
-                .append(sharktext.formatTime(SharkGame.timestampRunEnd - SharkGame.timestampRunStart))
-        );
+        containerDiv.append($("<p>").html("<em>Time spent within last ocean:</em><br/>").append(gateway.getTimeInLastWorld()));
     },
 
     showAspects() {
+        tree.updateRequirementReference();
         const aspectTreeContent = $("<div>");
         aspectTreeContent.append(
             $("<strong>")
                 .attr("id", "essenceCount")
-                .html(sharktext.beautify(res.getResource("essence")) + " ESSENCE")
+                .html(sharktext.beautify(res.getResource("essence"), false, 2) + " ESSENCE")
         );
         aspectTreeContent.append($("<p>").html("Your will flows into solid shapes beyond your control.<br>Focus."));
         aspectTreeContent.append(tree.drawTree(SharkGame.Settings.current.doAspectTable === "table"));
 
-        tree.setUp();
+        tree.resetTreeCamera();
         tree.render();
 
+        const buttonDiv = $("<div>").attr("id", "aspectTreeNavButtons").addClass("gatewayButtonList");
+
         // add return to gateway button
-        SharkGame.Button.makeButton("backToGateway", "return to gateway", aspectTreeContent, () => {
+        SharkGame.Button.makeButton("backToGateway", "return to gateway", buttonDiv, () => {
             gateway.switchViews(gateway.showGateway);
             $("#tooltipbox").empty().removeClass("forAspectTree forAspectTreeUnpurchased");
         });
+
+        if (SharkGame.Aspects.cleanSlate.level) {
+            SharkGame.Button.makeButton("respecModeButton", "respec mode", buttonDiv, tree.toggleRefundMode);
+            SharkGame.Button.makeButton("respecButton", "respec all", buttonDiv, () => {
+                if (confirm("Are you sure you want to respec all refundable aspects?")) {
+                    tree.respecTree();
+                }
+            });
+        }
+        tree.refundMode = false;
+
+        aspectTreeContent.append(buttonDiv);
 
         SharkGame.PaneHandler.swapCurrentPane("ASPECT TREE", aspectTreeContent, true, 500, true);
 
@@ -224,9 +261,7 @@ SharkGame.Gateway = {
         planetSelectionContent.append(planetPool);
 
         planetSelectionContent.append(
-            $("<p>").html(
-                "NOTE: v0.2 alpha <b>ONLY</b> CONTAINS <b>4 WORLDS</b> at the moment.<br/>Once you beat them, you can keep going, but there's nothing else to see yet."
-            )
+            $("<p>").html("NOTE: When you first visit a world, you are SCOUTING it. If you choose to replay it, you are NOT SCOUTING it.")
         );
 
         if (SharkGame.Aspects.destinyGamble.level > 0) {
@@ -272,12 +307,29 @@ SharkGame.Gateway = {
 
     confirmWorld() {
         const selectedWorldData = SharkGame.WorldTypes[gateway.selectedWorld];
+        const seenWorldYet = gateway.completedWorlds.includes(gateway.selectedWorld);
 
         // construct the gateway content
-        const gatewayContent = $("<div>").append($("<p>").html("Travel to the " + selectedWorldData.name + " World?"));
+        const gatewayContent = $("<div>").append(
+            $("<p>").html((seenWorldYet ? "Replay the " + selectedWorldData.name + " W" : "Scout this w") + "orld?")
+        );
+
+        gatewayContent.append(
+            $("<p>").html(
+                "This would grant you <strong>" +
+                    sharktext.beautify(
+                        Math.ceil((1 + gateway.getGumptionBonus()) * ((seenWorldYet ? 2 : 4) + SharkGame.Aspects.patience.level)),
+                        false,
+                        2
+                    ) +
+                    "</strong> " +
+                    sharktext.getResourceName("essence") +
+                    "."
+            )
+        );
 
         // add world image
-        const spritename = "planets/" + gateway.selectedWorld;
+        const spritename = seenWorldYet ? "planets/" + gateway.selectedWorld : "planets/missing";
         const iconDiv = SharkGame.changeSprite(SharkGame.spriteIconPath, spritename, null, "planets/missing");
         if (iconDiv) {
             iconDiv.addClass("planetDisplay");
@@ -290,12 +342,32 @@ SharkGame.Gateway = {
         gateway.showPlanetAttributes(selectedWorldData, attributeDiv);
         gatewayContent.append(attributeDiv);
 
+        if (seenWorldYet && selectedWorldData.par) {
+            gatewayContent.append(
+                $("<p>").html("Par: <strong>" + selectedWorldData.par + " minutes</strong><br>Beat the world faster for extra essence.")
+            );
+        }
+
         // add confirm button
         const confirmButtonDiv = $("<div>");
         SharkGame.Button.makeButton("progress", "proceed", confirmButtonDiv, () => {
-            // kick back to main to start up the game again
-            world.worldType = gateway.selectedWorld;
-            main.loopGame();
+            function checkAspects() {
+                let doProceed = true;
+                $.each(SharkGame.Aspects, (_aspectName, aspectData) => {
+                    if (aspectData.level && !aspectData.core) {
+                        doProceed = confirm(
+                            "Woah, hold on! Only CORE ASPECTS work when scouting, but you have some that aren't! If you continue, these non-core aspects will stop working until you leave. Are you sure that you want to proceed?"
+                        );
+                        return false;
+                    }
+                });
+                return doProceed;
+            }
+            if (gateway.completedWorlds.includes(gateway.selectedWorld) || checkAspects()) {
+                // kick back to main to start up the game again
+                world.worldType = gateway.selectedWorld;
+                main.loopGame();
+            }
         });
         gatewayContent.append(confirmButtonDiv);
 
@@ -380,12 +452,19 @@ SharkGame.Gateway = {
         _.each(gateway.planetPool, (planetData) => {
             const buttonSel = $("#planet-" + planetData.type);
             if (buttonSel.length > 0) {
+                const seenWorldYet = gateway.completedWorlds.includes(planetData.type);
                 const deeperPlanetData = SharkGame.WorldTypes[planetData.type];
-                const label = sharktext.boldString(deeperPlanetData.name) + "<br>" + deeperPlanetData.desc;
+                const label =
+                    sharktext.boldString(seenWorldYet ? deeperPlanetData.name : "???") +
+                    "<br>" +
+                    deeperPlanetData.desc +
+                    (seenWorldYet && gateway.getPar(planetData.type)
+                        ? "<br>Par: <strong>" + gateway.getPar(planetData.type) + " minutes</strong>"
+                        : "");
 
                 buttonSel.html(label);
 
-                const spritename = "planets/" + planetData.type;
+                const spritename = seenWorldYet ? "planets/" + planetData.type : "planets/missing";
                 if (SharkGame.Settings.current.showIcons) {
                     const iconDiv = SharkGame.changeSprite(SharkGame.spriteIconPath, spritename, null, "planets/missing");
                     if (iconDiv) {
@@ -431,16 +510,13 @@ SharkGame.Gateway = {
 
     showPlanetAttributes(worldData, contentDiv) {
         /* eslint-disable no-fallthrough */
-        switch (SharkGame.Aspects.pathOfEnlightenment.level) {
+        contentDiv.prepend($("<p>").html(worldData.foresight.longDesc));
+        switch (SharkGame.Aspects.distantForesight.level) {
             case 1:
                 if (worldData.foresight.missing.length > 0) {
                     const missingList = $("<ul>").addClass("gatewayPropertyList");
                     _.each(worldData.foresight.missing, (missingResource) => {
-                        missingList.append(
-                            $("<li>")
-                                .html("<strong>This world has no " + sharktext.getResourceName(missingResource, false, 2) + ".</strong>")
-                                .addClass("largeDesc")
-                        );
+                        missingList.append($("<li>").html("This world has no " + sharktext.getResourceName(missingResource, false, 2) + "."));
                     });
                     contentDiv.prepend(missingList);
                 }
@@ -448,15 +524,13 @@ SharkGame.Gateway = {
                     const presentList = $("<ul>").addClass("gatewayPropertyList");
                     _.each(worldData.foresight.present, (presentResource) => {
                         presentList.append(
-                            $("<li>")
-                                .html(
-                                    "<strong>You feel the presence of " +
-                                        (gateway.playerHasSeenResource(presentResource)
-                                            ? sharktext.getResourceName(presentResource, false, 2)
-                                            : sharktext.applyResourceColoration(presentResource, gateway.PresenceFeelings[presentResource])) +
-                                        ".</strong>"
-                                )
-                                .addClass("largeDesc")
+                            $("<li>").html(
+                                "You feel the presence of " +
+                                    (gateway.playerHasSeenResource(presentResource)
+                                        ? sharktext.getResourceName(presentResource, false, 2)
+                                        : sharktext.applyResourceColoration(presentResource, gateway.PresenceFeelings[presentResource])) +
+                                    "."
+                            )
                         );
                     });
                     contentDiv.prepend(presentList);
@@ -466,34 +540,25 @@ SharkGame.Gateway = {
                     _.each(worldData.modifiers, (modifier) => {
                         if (gateway.playerHasSeenResource(modifier.resource) || !(worldData.foresight.present.indexOf(modifier.resource) > -1)) {
                             modifierList.append(
-                                $("<li>")
-                                    .html(
-                                        "<strong>" +
-                                            SharkGame.ModifierReference.get(modifier.modifier).effectDescription(modifier.amount, modifier.resource) +
-                                            "</strong>"
-                                    )
-                                    .addClass("largeDesc")
+                                $("<li>").html(
+                                    SharkGame.ModifierReference.get(modifier.modifier).effectDescription(modifier.amount, modifier.resource)
+                                )
                             );
                         } else {
                             modifierList.append(
-                                $("<li>")
-                                    .html(
-                                        "<strong>" +
-                                            SharkGame.ModifierReference.get(modifier.modifier)
-                                                .effectDescription(modifier.amount, modifier.resource)
-                                                .replace(new RegExp(modifier.resource, "g"), gateway.PresenceFeelings[modifier.resource]) +
-                                            "</strong>"
-                                    )
-                                    .addClass("largeDesc")
+                                $("<li>").html(
+                                    SharkGame.ModifierReference.get(modifier.modifier)
+                                        .effectDescription(modifier.amount, modifier.resource)
+                                        .replace(new RegExp(modifier.resource, "g"), gateway.PresenceFeelings[modifier.resource])
+                                )
                             );
                         }
                     });
                     contentDiv.prepend(modifierList);
-                    contentDiv.prepend($("<p>").html("ATTRIBUTES:").addClass("largeDesc"));
+                    contentDiv.prepend($("<p>").html("ATTRIBUTES:"));
                 } else {
                     contentDiv.prepend($("<p>").html("NO KNOWN ATTRIBUTES"));
                 }
-                contentDiv.prepend($("<p>").html(worldData.foresight.longDesc));
         }
         /* eslint-enable no-fallthrough */
     },
@@ -502,18 +567,149 @@ SharkGame.Gateway = {
         if (res.isCategory(resource)) {
             return true;
         }
-        const seenResources = [];
-        _.each(gateway.completedWorlds, (completedWorld) => {
-            _.each(SharkGame.WorldTypes[completedWorld].foresight.present, (seenResource) => {
-                seenResources.push(seenResource);
-            });
-        });
-        return seenResources.indexOf(resource) > -1;
+        return _.some(gateway.completedWorlds, (completedWorld) =>
+            _.some(SharkGame.WorldTypes[completedWorld].foresight.present, (seenResource) => seenResource === resource)
+        );
     },
 
     markWorldCompleted(worldType) {
         if (!gateway.completedWorlds.includes(worldType)) {
             gateway.completedWorlds.push(worldType);
+        }
+    },
+
+    getTimeInLastWorld(formatLess) {
+        if (!SharkGame.persistentFlags.totalPausedTime) {
+            SharkGame.persistentFlags.totalPausedTime = 0;
+        }
+        const time = SharkGame.timestampRunEnd - SharkGame.timestampRunStart - SharkGame.persistentFlags.totalPausedTime;
+        return formatLess ? time : sharktext.formatTime(time);
+    },
+
+    updateWasScoutingStatus() {
+        if (!_.isUndefined(SharkGame.persistentFlags.scouting)) {
+            SharkGame.persistentFlags.wasScouting = SharkGame.persistentFlags.scouting;
+            SharkGame.persistentFlags.scouting = undefined;
+        } else if (_.isUndefined(SharkGame.persistentFlags.wasScouting)) {
+            // failsafe, assume we were indeed scouting
+            SharkGame.persistentFlags.wasScouting = true;
+        }
+    },
+
+    updateScoutingStatus() {
+        SharkGame.persistentFlags.scouting = !gateway.completedWorlds.includes(world.worldType);
+    },
+
+    wasOnScoutingMission() {
+        if (!_.isUndefined(SharkGame.persistentFlags.scouting)) {
+            gateway.updateWasScoutingStatus();
+        }
+        return SharkGame.persistentFlags.wasScouting;
+    },
+
+    currentlyOnScoutingMission() {
+        if (!SharkGame.gameOver && _.isUndefined(SharkGame.persistentFlags.scouting)) {
+            gateway.updateScoutingStatus();
+        }
+        return SharkGame.persistentFlags.scouting;
+    },
+
+    getMinutesBelowPar() {
+        const time = gateway.getPar() - gateway.getTimeInLastWorld(true) / 60000;
+        if (time < 0) {
+            return 0;
+        }
+        return time;
+    },
+
+    getPar(type = world.worldType) {
+        return SharkGame.WorldTypes[type].par;
+    },
+
+    getSpeedReward(loadingFromSave) {
+        let reward = 0;
+        if (gateway.getPar() && !loadingFromSave && SharkGame.wonGame) {
+            let timeBelowPar = gateway.getMinutesBelowPar();
+            if (timeBelowPar > 0) {
+                let timeBelowFive = 5 - gateway.getTimeInLastWorld() / 60000;
+                for (let halfPower = 1; timeBelowFive > 0; halfPower++) {
+                    timeBelowFive -= 5 / 2 ** halfPower;
+                    reward += 1;
+                }
+
+                while (timeBelowPar > 0) {
+                    timeBelowPar -= 5;
+                    reward += 1;
+                }
+            }
+        }
+        return reward;
+    },
+
+    getBaseReward(loadingFromSave) {
+        let reward = 0;
+        if (!loadingFromSave && SharkGame.wonGame) {
+            reward = gateway.wasOnScoutingMission() ? 4 : 2;
+        }
+        return reward;
+    },
+
+    getPatienceReward(loadingFromSave) {
+        if (!loadingFromSave && SharkGame.wonGame) {
+            return SharkGame.Aspects.patience.level;
+        }
+        return 0;
+    },
+
+    getGumptionBonus(loadingFromSave) {
+        if (!loadingFromSave && SharkGame.wonGame) {
+            const bonus = SharkGame.Aspects.gumption.level * 0.01 * res.getResource("essence");
+            return Math.min(1, bonus);
+        }
+        return 0;
+    },
+
+    grantEssenceReward(essenceReward, patienceReward, speedReward) {
+        const gumptionBonus = gateway.getGumptionBonus();
+        res.changeResource("essence", Math.ceil((1 + gumptionBonus) * (essenceReward + speedReward) + patienceReward));
+    },
+
+    prepareBasePane(baseReward, patienceReward, speedReward, gumptionBonus) {
+        // PREPARE GATEWAY PANE
+        // set up classes
+        let pane;
+        if (!SharkGame.paneGenerated) {
+            pane = SharkGame.PaneHandler.buildPane();
+        } else {
+            pane = $("#pane");
+        }
+        pane.addClass("gateway");
+
+        const overlay = $("#overlay");
+        overlay.addClass("gateway");
+
+        // make overlay opaque
+        if (SharkGame.Settings.current.showAnimations) {
+            gateway.transitioning = true;
+            overlay
+                .show()
+                .css("opacity", 0)
+                .animate(
+                    {
+                        opacity: 1.0,
+                    },
+                    1000,
+                    "swing",
+                    () => {
+                        // put back to 4000
+                        gateway.cleanUp();
+                        gateway.showGateway(baseReward, patienceReward, speedReward, gumptionBonus);
+                    }
+                );
+        } else {
+            overlay.show().css("opacity", 1.0);
+            gateway.cleanUp();
+            gateway.showGateway(baseReward, patienceReward, speedReward, gumptionBonus);
         }
     },
 };
@@ -606,9 +802,9 @@ SharkGame.Gateway.Messages = {
         marine: [
             "Did your last ocean feel all too familiar?",
             "Do you bring life, or do you bring death, worldbuilder?",
-            "Was that world not your home?",
             "A blue world. A dream of a former life, perhaps.",
-            "Do you wonder where the lobsters came from?",
+            "Do you wonder where the lobsters' former machines are?",
+            "A tragedy: or, perhaps, merely the cost of progress.",
         ],
         haven: [
             "A beautiful paradise. It may be a while before you find a world so peaceful.",

@@ -29,10 +29,16 @@ SharkGame.Gate = {
     completedRequirements: {},
 
     init() {
-        const gate = SharkGame.Gate;
         // register tab
         SharkGame.TabHandler.registerTab(this);
-        gate.opened = false;
+        SharkGame.Gate.opened = false;
+        // redundant reset of gate requirements
+        SharkGame.Gate.requirements = {};
+        SharkGame.Gate.completedRequirements = {};
+    },
+
+    setup() {
+        /* doesnt need to do anything */
     },
 
     createSlots(gateRequirements, gateCostMultiplier) {
@@ -51,13 +57,13 @@ SharkGame.Gate = {
         }
 
         if (gateRequirements.upgrades) {
-            gate.requirements.upgrades = {};
+            gate.requirements.upgrades = [];
             gate.completedRequirements.upgrades = {};
             // FIXME: https://discord.com/channels/747861699486285974/795148648837021716/845279763077136424
             // "the way that i set up the system, it needs a key value pair later down the line, but it'll only use the key.
             // so i set the key to the name of the upgrade and then just make a placeholder value so that it sticks"
             $.each(gateRequirements.upgrades, (_index, upgradeId) => {
-                gate.requirements.upgrades[upgradeId] = "__this_string_is_here_because_this_needs_to_be_an_object__";
+                gate.requirements.upgrades.push(upgradeId);
                 gate.completedRequirements.upgrades[upgradeId] = false;
             });
         }
@@ -171,7 +177,11 @@ SharkGame.Gate = {
 
         // if there are any required upgrades in the first place, return the number of still required upgrades
         // if there are not any required upgrades, return false to identify this fact
-        return _.size(gate.requirements.upgrades) === 0 ? incompleteUpgrades : false;
+        if (gate.requirements.upgrades) {
+            return gate.requirements.upgrades.length === 0 ? incompleteUpgrades : false;
+        } else {
+            return false;
+        }
     },
 
     getResourcesLeft() {

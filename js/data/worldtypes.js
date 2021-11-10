@@ -1,3 +1,4 @@
+"use strict";
 SharkGame.WorldTypes = {
     test: {
         name: "Test",
@@ -30,7 +31,7 @@ SharkGame.WorldTypes = {
         },
         entry: "You enter a familiar blue sea, all your previous knowledge a dim memory.",
         style: "default",
-        includedResources: ["sharks", "rays", "crabs", "basicmaterials", "kelpstuff", "sharkmachines", "essence", "world"],
+        includedResources: ["sharks", "rays", "crabs", "basicmaterials", "kelpstuff", "sharkmachines", "essence", "world", "aspectAffect"],
         modifiers: [],
         // initial gate cost, scaled by planetary level
         gateRequirements: {
@@ -38,33 +39,39 @@ SharkGame.WorldTypes = {
                 fish: 1e7,
                 sand: 1e6,
                 crystal: 1e6,
-                kelp: 1e5,
-                seaApple: 1e5,
-                sharkonium: 1e6,
+                kelp: 1e6,
+                seaApple: 5e5,
+                sharkonium: 8e5,
             },
         },
     },
     marine: {
         name: "Marine",
-        desc: "A serene blue world. Peaceful, beautiful, so close to home.",
+        desc: "A serene, blue marble. Peaceful and beautiful.",
         shortDesc: "strange blue",
-        entry: "You enter a familiar blue sea, all your previous knowledge a dim memory.",
+        foresight: {
+            longDesc: "A vast, blue ocean, swarming with fish. A great place to be a shark, surely.",
+            missing: ["laser"],
+            present: ["clam", "lobster"],
+            tip: "",
+        },
+        entry: "You enter a serene blue sea, all your previous knowledge a dim memory.",
         style: "default",
-        /* includedResources: [
+        includedResources: [
+            "essence",
             "sharks",
             "rays",
             "crabs",
             "lobsters",
-            "shrimps",
             "basicmaterials",
             "kelpstuff",
             "sharkmachines",
-            "crustaceanmachines",
-            "coral",
-            "
-        ], */
-        absentResources: ["tar", "ice", "heater", "shrimp", "chimaera", "eel", "jellyfish"],
-        modifiers: [{ type: "multiplier", modifier: "planetaryResourceBoost", resource: "fish", amount: 1.5 }],
+            "clam",
+            "lobstermachines",
+            "aspectAffect",
+        ],
+        absentResources: ["laser"],
+        modifiers: [{ type: "multiplier", modifier: "planetaryResourceBoost", resource: "fish", amount: 2 }],
         gateRequirements: {
             slots: {
                 fish: 1e9,
@@ -103,6 +110,7 @@ SharkGame.WorldTypes = {
             "chorus",
             "essence",
             "world",
+            "aspectAffect",
         ],
         absentResources: ["laser"],
         modifiers: [
@@ -110,6 +118,7 @@ SharkGame.WorldTypes = {
             { type: "multiplier", modifier: "planetaryResourceBoost", resource: "fish", amount: 1 },
         ],
         gateRequirements: { resources: { chorus: 1 } },
+        par: 35,
     },
     tempestuous: {
         name: "Tempestuous",
@@ -225,6 +234,7 @@ SharkGame.WorldTypes = {
             "filter",
             "ancientPart",
             "world",
+            "aspectAffect",
         ],
         absentResources: ["kelp", "seaApple", "planter"],
         modifiers: [
@@ -237,6 +247,7 @@ SharkGame.WorldTypes = {
             { type: "multiplier", modifier: "planetaryIncome", resource: "tar", amount: -0.02 },
         ],
         gateRequirements: { upgrades: ["artifactAssembly"] },
+        par: 45,
     },
     shrouded: {
         name: "Shrouded",
@@ -264,12 +275,14 @@ SharkGame.WorldTypes = {
             "scholar",
             "jellyfish",
             "sacrifice",
+            "aspectAffect",
         ],
         absentResources: ["laser"],
         modifiers: [{ type: "multiplier", modifier: "planetaryIncomeReciprocalMultiplier", resource: "scientist", amount: 1 }],
         gateRequirements: {
             upgrades: ["arcaneActivation"],
         },
+        par: 50,
     },
     frigid: {
         name: "Frigid",
@@ -291,15 +304,26 @@ SharkGame.WorldTypes = {
         },
         entry: "The arctic water freezes away whatever thoughts you may have had. So cold.",
         style: "frigid",
-        includedResources: ["sharks", "crabs", "squids", "urchins", "basicmaterials", "kelp", "sharkmachines", "ice", "heater", "essence", "world"],
+        includedResources: [
+            "sharks",
+            "crabs",
+            "squids",
+            "urchins",
+            "basicmaterials",
+            "kelp",
+            "sharkmachines",
+            "ice",
+            "heater",
+            "essence",
+            "world",
+            "aspectAffect",
+        ],
         modifiers: [
             {
                 type: "multiplier",
                 modifier: "planetaryIncome",
                 resource: "ice",
-                get amount() {
-                    return 1 / main.getProgressionConstant();
-                },
+                amount: 1,
             },
         ],
         gateRequirements: {
@@ -312,6 +336,7 @@ SharkGame.WorldTypes = {
                 fish: 2e8,
             },
         },
+        par: 45,
     },
     template: {
         name: "",

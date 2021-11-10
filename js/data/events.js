@@ -101,4 +101,73 @@ SharkGame.Events = {
             }
         },
     },
+    revealBuyButtons: {
+        handlingTime: "beforeTick",
+        priority: 0,
+        getAction() {
+            if (SharkGame.persistentFlags.revealedBuyButtons) {
+                return "remove";
+            }
+            if (res.getTotalResource("crab") > 12 || res.getTotalResource("crystal") > 12) {
+                return "trigger";
+            }
+            return "pass";
+        },
+        trigger() {
+            SharkGame.persistentFlags.revealedBuyButtons = true;
+            SharkGame.TabHandler.setUpTab();
+        },
+    },
+    /*getAllAffordableUpgrades*/
+    updateLabNotifier: {
+        handlingTime: "afterTick",
+        priority: 0,
+        getAction() {
+            if (SharkGame.TabHandler.isTabUnlocked("lab")) {
+                return "trigger";
+            }
+            return "pass";
+        },
+        trigger() {
+            if (SharkGame.Lab.findAllAffordableUpgrades().length) {
+                $("#tab-lab").html("(<strong>!</strong>) Laboratory");
+            } else {
+                $("#tab-lab").html("Laboratory");
+            }
+            return true;
+        },
+    },
+    remindAboutBuyMax: {
+        handlingTime: "afterTick",
+        priority: 0,
+        getAction() {
+            if (SharkGame.persistentFlags.individuallyBoughtSharkonium === -1) {
+                return "remove";
+            }
+            if (SharkGame.persistentFlags.individuallyBoughtSharkonium >= 50) {
+                return "trigger";
+            }
+            return "pass";
+        },
+        trigger() {
+            if (sharkmath.getBuyAmount() === 1 && SharkGame.Tabs.current === "home") {
+                $("#buy--1").addClass("reminderShadow");
+            } else {
+                $("#buy--1").removeClass("reminderShadow");
+                SharkGame.persistentFlags.individuallyBoughtSharkonium = 49;
+            }
+            return true;
+        },
+    },
+    aspectRefresh: {
+        handlingTime: "beforeTick",
+        priority: 0,
+        getAction() {
+            return "trigger";
+        },
+        trigger() {
+            res.reapplyModifiers("aspectAffect", "crystal");
+            return true;
+        },
+    },
 };

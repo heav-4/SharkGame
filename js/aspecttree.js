@@ -64,6 +64,7 @@ SharkGame.AspectTree = {
             },
         },
     },
+    requirementReference: {},
 
     init() {
         $.each(SharkGame.Aspects, (aspectId, aspectData) => {
@@ -77,9 +78,58 @@ SharkGame.AspectTree = {
                 }
                 SharkGame.Aspects[prerequisite].requiredBy.push(aspectId);
             });
+            // wipe all levels
+            aspectData.level = 0;
+
+            // redundant removal of persistent flags
+            if (SharkGame.persistentFlags.destinyRolls) {
+                SharkGame.persistentFlags.destinyRolls = 0;
+            }
+            if (SharkGame.persistentFlags.patience) {
+                SharkGame.persistentFlags.patience = 0;
+            }
         });
+
+        // turn off refund mode
+        tree.refundMode = false;
     },
-    setUp() {
+
+    setup() {
+        if (SharkGame.missingAspects) {
+            res.setResource("essence", res.getTotalResource("essence"));
+            _.each(SharkGame.Aspects, (aspectData) => {
+                // wipe all levels
+                aspectData.level = 0;
+            });
+            SharkGame.PaneHandler.showAspectWarning();
+        } else {
+            // try to refund deprecated aspects
+            _.each(SharkGame.Aspects, (aspectData) => {
+                if (aspectData.deprecated) {
+                    tree.refundLevels(aspectData);
+                }
+            });
+        }
+        tree.applyAspects();
+
+        if (SharkGame.persistentFlags.patience) {
+            if (SharkGame.Aspects.patience.level) {
+                res.changeResource("essence", 2 * (SharkGame.Aspects.patience.level + 1) ** 2);
+            }
+            SharkGame.persistentFlags.patience = undefined;
+        }
+
+        res.setResource("aspectAffect", 1);
+        res.setTotalResource("aspectAffect", 1);
+
+        tree.resetScoutingRestrictions();
+        tree.applyScoutingRestrictionsIfNeeded();
+
+        tree.generateRequirementReference();
+    },
+
+    resetTreeCamera() {
+        // remember to figure out this nonsense
         this.dragStart = { posX: 0, posY: 0 };
         this.cameraZoom = 1;
         this.cameraOffset = { posX: 0, posY: 0 };
@@ -92,23 +142,23 @@ SharkGame.AspectTree = {
             return tree.drawCanvas();
         }
     },
-    drawTable(table = document.createElement("table")) {
-        table.innerHTML = "";
-        table.id = "aspectTable";
 
-        const headerRow = document.createElement("tr");
-        headerRow.innerHTML = "<th>Name</th><th>Description</th><th>Level</th><th>Essence Cost</th>";
+    drawTable(table = $("<table>")) {
+        table.html("").attr("id", "aspectTable");
 
-        table.appendChild(headerRow);
+        const headerRow = $("<thead>").append($("<th>").html(`Name`).attr("scope", "col"));
+        headerRow.append($("<th>").html(`Description`).attr("scope", "col"));
+        headerRow.append($("<th>").html(`Level`).attr("scope", "col"));
+        headerRow.append($("<th>").html(`Cost`).attr("scope", "col"));
+
+        table.append(headerRow);
 
         function clickCallback(event) {
             const aspectId = event.currentTarget.getAttribute("data-aspectId");
             const aspect = SharkGame.Aspects[aspectId];
             // console.debug(aspect);
 
-            if (_.every(aspect.prerequisites, (prerequisite) => SharkGame.Aspects[prerequisite].level > 0)) {
-                aspect.clicked(event);
-            }
+            aspect.clicked(event);
 
             tree.updateEssenceCounter();
 
@@ -117,49 +167,76 @@ SharkGame.AspectTree = {
             });
         }
 
+        const tableBody = $("<tbody>");
+
         $.each(SharkGame.Aspects, (aspectId, aspectData) => {
-            if (aspectData.getUnlocked() || !_.every(aspectData.prerequisites, (prerequisite) => SharkGame.Aspects[prerequisite].level > 0)) {
-                return true;
+            if (aspectData.deprecated) return;
+            const reqref = tree.requirementReference[aspectId];
+            if (!reqref.revealed) return;
+
+            let basicText = "";
+            let cantBuyText = "";
+            if (!reqref.prereqsMet && aspectData.level === 0) {
+                cantBuyText = "With your infinite vision, you can see this aspect, but cannot buy it.";
+            } else if (reqref.locked) {
+                cantBuyText = "This aspect is locked. " + reqref.locked;
+            } else if (reqref.isolated) {
+                cantBuyText = "This aspect's prerequisites aren't met, even though you have levels in it.";
             }
-            const aspectTableRowCurrent = document.createElement("tr");
+            basicText =
+                " A" +
+                (aspectData.level ? " level " + aspectData.level : "") +
+                (aspectData.core ? " core aspect" : aspectData.level ? " aspect" : "n aspect") +
+                (aspectData.core && aspectData.noRefunds ? "," : "") +
+                (aspectData.noRefunds ? " with no refunds" : "") +
+                ". ";
+
+            const aspectNameTableData = $("<th>").html(aspectData.name).addClass("aspectTableName").attr("rowspan", "3").attr("scope", "rowgroup");
+            const specialData = $("<td>").append(basicText + cantBuyText);
+            const aspectTableDescriptionRow = $("<tr>").append(aspectNameTableData).append(specialData);
+            aspectTableDescriptionRow.append($(`<td>`));
+            aspectTableDescriptionRow.append(
+                $(`<td>`)
+                    .html(!reqref.max ? aspectData.getCost(aspectData.level) : "n/A")
+                    .attr("rowspan", "3")
+            );
+
+            const aspectTableRowCurrent = $("<tr>");
+
+            if (aspectData.level > 0) {
+                aspectTableRowCurrent.append($(`<td>`).html(`CURRENT: ${aspectData.getEffect(aspectData.level)}`));
+            } else {
+                aspectTableRowCurrent.append($(`<td>`).html(`CURRENT: Not bought, no effect.`));
+            }
+            aspectTableRowCurrent.append($(`<td>`).html(aspectData.level));
 
             //aspectTableRowCurrent.classList.add("aspect-table-row");
             //aspectTableRowCurrent.id = "aspect-table-row-" + aspectId;
 
-            const aspectNameTableData = document.createElement("td");
-            aspectNameTableData.innerText = aspectData.name;
-            aspectNameTableData.classList.add("aspectTableName");
-            aspectNameTableData.setAttribute("rowspan", "2");
-
-            if (aspectData.level > 0) {
-                aspectTableRowCurrent.innerHTML = `<td>CURRENT: ${aspectData.getEffect(aspectData.level)}</td><td>${
-                    aspectData.level
-                }</td><td rowspan="2">${aspectData.level < aspectData.max ? aspectData.getCost(aspectData.level) : "n/A"}</td>`;
+            const aspectTableRowNext = $("<tr>");
+            if (!reqref.max) {
+                //${aspectData.level + 1}`
+                aspectTableRowNext.append($(`<td>`).html(`NEXT: ${aspectData.getEffect(aspectData.level + 1)}`));
+                aspectTableRowNext.append($(`<td>`).html(`${aspectData.level + 1}`));
             } else {
-                aspectTableRowCurrent.innerHTML = `<td>CURRENT: Not bought, no effect.</td><td>${
-                    aspectData.level
-                }</td><td rowspan="2">${aspectData.getCost(aspectData.level)}</td>`;
-            }
-            aspectTableRowCurrent.prepend(aspectNameTableData);
-
-            const aspectTableRowNext = document.createElement("tr");
-            if (aspectData.level < aspectData.max) {
-                aspectTableRowNext.innerHTML = `<td>NEXT: ${aspectData.getEffect(aspectData.level + 1)}</td><td>${aspectData.level + 1}</td>`;
-            } else {
-                aspectTableRowNext.innerHTML = `<td>NEXT: Already at maximum level</td><td>n/A</td>`;
+                aspectTableRowNext.append($(`<td>`).html(`NEXT: Already at maximum level.`));
+                aspectTableRowNext.append($(`<td>`).html(`n/A`));
             }
 
-            $([aspectTableRowNext, aspectTableRowCurrent])
+            $([aspectTableDescriptionRow, aspectTableRowNext, aspectTableRowCurrent])
                 .attr("data-aspectId", aspectId)
                 .on("click", clickCallback)
                 .attr("aria-role", "button")
-                .attr("disabled", _.every(aspectData.prerequisites, (prerequisite) => SharkGame.Aspects[prerequisite].level > 0).toString());
+                .attr("disabled", reqref.prereqsMet.toString());
 
-            table.appendChild(aspectTableRowCurrent);
-            table.appendChild(aspectTableRowNext);
+            tableBody.append(aspectTableDescriptionRow);
+            tableBody.append(aspectTableRowCurrent);
+            tableBody.append(aspectTableRowNext);
         });
+        table.append(tableBody);
         return table;
     },
+
     drawCanvas() {
         const canvas = document.createElement("canvas");
         canvas.id = "treeCanvas";
@@ -177,6 +254,7 @@ SharkGame.AspectTree = {
 
         return canvas;
     },
+
     /**
      * @param {HTMLCanvasElement} canvas
      * @param {MouseEvent} event
@@ -188,6 +266,7 @@ SharkGame.AspectTree = {
         const result = { posX, posY };
         return result;
     },
+
     /** @param {MouseEvent} event */
     getButtonUnderMouse(event) {
         const context = tree.context;
@@ -207,8 +286,12 @@ SharkGame.AspectTree = {
             return staticButton;
         }
 
-        const aspect = _.find(SharkGame.Aspects, ({ posX, posY, width, height, prerequisites }) => {
-            if (_.some(prerequisites, (prerequisite) => SharkGame.Aspects[prerequisite].level === 0)) {
+        const aspect = _.find(SharkGame.Aspects, ({ posX, posY, width, height, prerequisites, level }) => {
+            if (
+                _.some(prerequisites, (prerequisite) => SharkGame.Aspects[prerequisite].level === 0) &&
+                !SharkGame.Aspects.infinityVision.level &&
+                !level
+            ) {
                 return;
             }
             return (
@@ -220,59 +303,14 @@ SharkGame.AspectTree = {
         });
         return aspect;
     },
+
     /** @param {MouseEvent} event */
     updateMouse(event) {
-        const context = tree.context;
-
         const button = tree.getButtonUnderMouse(event);
-        const tooltipBox = $("#tooltipbox");
-        if (button === undefined) {
-            context.canvas.style.cursor = "grab";
-            tooltipBox.empty().removeClass("forAspectTree forAspectTreeUnpurchased");
-        } else {
-            context.canvas.style.cursor = "pointer";
-            tooltipBox.addClass("forAspectTree").removeClass("forAspectTreeUnpurchased");
 
-            // FIXME: Hard-coded color "#ace3d1"
-            if (button.getUnlocked && button.getUnlocked()) {
-                tooltipBox.addClass("forAspectTreeUnpurchased").html(sharktext.boldString(button.getUnlocked()));
-            } else if (button.level === 0) {
-                const tooltipText =
-                    sharktext.boldString(button.name) +
-                    `<br/>${button.getEffect(button.level + 1)}<br/>` +
-                    `<span class='littleTooltipText'>${button.description}</span><br/>` +
-                    `<span class='bold'>COST: <span style='text-shadow: 0 0 .6em #ace3d1'>` +
-                    `${button.getCost(button.level)}</span></span>`;
-                tooltipBox.addClass("forAspectTreeUnpurchased").html(tooltipText);
-            } else if (button.level < button.max) {
-                const tooltipText =
-                    sharktext.boldString(button.name) +
-                    `<br /><span class='littleTooltipText' class='bold'> level ${button.level}</span><br />` +
-                    button.getEffect(button.level) +
-                    `<br /><span class='littleTooltipText'>${button.description}</span>` +
-                    "<br /><span class='littleTooltipText' class='bold'>NEXT LEVEL:</span><br />" +
-                    button.getEffect(button.level + 1) +
-                    "<br /><span class='bold'>COST: <span style='text-shadow: 0 0 .6em #ace3d1'>" +
-                    button.getCost(button.level) +
-                    "</span>";
-                tooltipBox.html(tooltipText);
-            } else if (button.level === undefined) {
-                const tooltipText =
-                    sharktext.boldString(button.name) +
-                    `<br />${button.getEffect(button.level)}` +
-                    `<br /><span class='littleTooltipText'>${button.description}</span>`;
-                tooltipBox.html(tooltipText);
-            } else {
-                const tooltipText =
-                    sharktext.boldString(button.name) +
-                    `<br /><span class='littleTooltipText bold'> level ${button.level}</span>` +
-                    `<br />${button.getEffect(button.level)}` +
-                    `<br /><span class='littleTooltipText'>${button.description}</span>` +
-                    "<br /><b>MAXIMUM LEVEL.</b></span>";
-                tooltipBox.html(tooltipText);
-            }
-        }
+        tree.updateTooltip(button);
     },
+
     /** @param {MouseEvent} event */
     click(event) {
         const button = tree.getButtonUnderMouse(event);
@@ -284,6 +322,7 @@ SharkGame.AspectTree = {
         }
         requestAnimationFrame(tree.render);
     },
+
     /** @param {MouseEvent} event */
     startPan(event) {
         if (tree.getButtonUnderMouse(event) !== undefined) {
@@ -294,6 +333,7 @@ SharkGame.AspectTree = {
         $(tree.context.canvas).on("mousemove", tree.pan);
         $(tree.context.canvas).on("mouseup mouseleave", tree.endPan);
     },
+
     /** @param {MouseEvent} event */
     pan(event) {
         const offsetX = clamp(event.clientX / tree.cameraZoom - tree.dragStart.posX, RIGHT_EDGE, LEFT_EDGE - CANVAS_WIDTH);
@@ -302,10 +342,12 @@ SharkGame.AspectTree = {
         tree.cameraOffset.posY = offsetY;
         requestAnimationFrame(tree.render);
     },
+
     endPan() {
         $(tree.context.canvas).off("mousemove", tree.pan);
         $(tree.context.canvas).off("mouseup mouseleave", tree.endPan);
     },
+
     render() {
         const context = tree.context;
         if (context === undefined) return;
@@ -335,15 +377,43 @@ SharkGame.AspectTree = {
         context.scale(tree.cameraZoom, tree.cameraZoom);
         context.translate(-context.canvas.width / 2 + tree.cameraOffset.posX, -context.canvas.height / 2 + tree.cameraOffset.posY);
 
+        if (gateway.completedWorlds.length >= 3) {
+            context.save();
+            context.lineWidth = 5;
+            context.strokeStyle = buttonColor;
+            context.setLineDash([15, 15]);
+            context.beginPath();
+            context.moveTo(420, -1000);
+            context.lineTo(420, 2000);
+            context.stroke();
+            context.restore();
+
+            context.save();
+            context.fillStyle = getComputedStyle(document.getElementById("backToGateway")).color;
+            context.fillText("you can only bring core aspects", 440, 60);
+            context.fillText("on scouting missions", 440, 75);
+            context.fillText("non-core aspects ->", 440, 110);
+            context.fillText("<- core aspects", 300, 110);
+            context.fillText("you can only bring core aspects", 440, 710);
+            context.fillText("on scouting missions", 440, 725);
+            context.fillText("non-core aspects ->", 440, 680);
+            context.fillText("<- core aspects", 300, 680);
+            context.restore();
+        }
+
         // Lines between aspects
         context.save();
         context.lineWidth = 5;
-        _.each(SharkGame.Aspects, ({ posX, posY, requiredBy, width, height, level }) => {
-            if (level > 0) {
+        _.each(SharkGame.Aspects, ({ level, posX, posY, width, height, requiredBy, deprecated }) => {
+            if (deprecated) return;
+
+            if (level) {
                 // requiredBy: array of aspectId that depend on this aspect
                 _.each(requiredBy, (requiringId) => {
-                    context.save();
                     const requiring = SharkGame.Aspects[requiringId];
+                    if (requiring.deprecated) return;
+
+                    context.save();
 
                     const startX = posX + width / 2;
                     const startY = posY + height / 2;
@@ -380,20 +450,28 @@ SharkGame.AspectTree = {
         context.lineWidth = 1;
         context.fillStyle = buttonColor;
         context.strokeStyle = borderColor;
-        _.each(SharkGame.Aspects, ({ posX, posY, width, height, icon, eventSprite, prerequisites, level, getUnlocked }, name) => {
+        _.each(SharkGame.Aspects, ({ posX, posY, width, height, icon, eventSprite, level, deprecated }, name) => {
+            if (deprecated) return;
+
             context.save();
-            if (_.some(prerequisites, (prereq) => SharkGame.Aspects[prereq].level === 0)) {
-                // if any prerequisite is unmet, don't render
+            const reqref = tree.requirementReference[name];
+            if (!reqref.revealed) {
+                // if any prerequisite is unmet and we dont have infinity vision, and it's level 0, don't render
                 return;
             } else if (level === 0) {
-                if (getUnlocked()) {
+                if (reqref.locked) {
                     // if not unlocked, render even darker and more saturated
-                    context.filter = "brightness(40%) saturate(150%)";
+                    context.filter = "brightness(25%) saturate(160%)";
+                } else if (reqref.prereqsMet) {
+                    // if not bought but can be bought, render a little darker and more saturated
+                    context.filter = "brightness(70%) saturate(150%)";
                 } else {
-                    // if not bought, render darker and more saturated
-                    context.filter = "brightness(65%) saturate(150%)";
+                    // if we reach this statement then it is revealed by infinity vision
+                    // render darker and more saturated
+                    context.filter = "brightness(40%) saturate(150%)";
                 }
             }
+
             tree.renderButton(context, posX, posY, width, height, icon, eventSprite, name);
 
             context.restore();
@@ -418,6 +496,7 @@ SharkGame.AspectTree = {
         // update essence count
         tree.updateEssenceCounter();
     },
+
     /**
      * Draws a rounded rectangle using the current state of the canvas
      * @param {CanvasRenderingContext2D} context
@@ -471,18 +550,21 @@ SharkGame.AspectTree = {
             context.fillStyle = getComputedStyle(document.getElementById("backToGateway")).backgroundColor;
         }
     },
+
     getLittleLevelText(aspectName) {
-        if (SharkGame.Aspects[aspectName] && !SharkGame.Aspects[aspectName].getUnlocked()) {
-            const currentLevel = SharkGame.Aspects[aspectName].level;
-            const maxLevel = SharkGame.Aspects[aspectName].max;
-            if (currentLevel < maxLevel) {
-                return currentLevel + " / " + maxLevel;
+        const reqref = tree.requirementReference[aspectName];
+        if (!reqref) return;
+
+        if (!reqref.locked && reqref.prereqsMet) {
+            if (!reqref.max) {
+                return SharkGame.Aspects[aspectName].level + " / " + SharkGame.Aspects[aspectName].max;
             }
             return "MAX";
         }
     },
+
     increaseLevel(aspect) {
-        if (aspect.level >= aspect.max || aspect.getUnlocked()) {
+        if (aspect.level >= aspect.max || aspect.getUnlocked() || _.some(aspect.prerequisites, (prereq) => SharkGame.Aspects[prereq].level === 0)) {
             return;
         }
 
@@ -495,17 +577,256 @@ SharkGame.AspectTree = {
         if (typeof aspect.apply === "function") {
             aspect.apply("levelUp");
         }
+        tree.updateRequirementReference();
     },
+
     updateEssenceCounter() {
         if (document.getElementById("essenceCount")) {
-            document.getElementById("essenceCount").innerHTML = sharktext.beautify(res.getResource("essence")) + " ESSENCE";
+            document.getElementById("essenceCount").innerHTML = sharktext.beautify(res.getResource("essence"), false, 2) + " ESSENCE";
         }
     },
+
     applyAspects() {
         _.each(SharkGame.Aspects, (aspectData) => {
             if (aspectData.level && typeof aspectData.apply === "function") {
                 aspectData.apply("init");
             }
         });
+    },
+
+    respecTree(totalWipe) {
+        if (!totalWipe) {
+            _.each(SharkGame.Aspects, (aspect) => {
+                if (!aspect.noRefunds) {
+                    this.refundLevels(aspect);
+                }
+            });
+        } else {
+            _.each(SharkGame.Aspects, (aspect) => {
+                this.refundLevels(aspect);
+            });
+        }
+        tree.updateRequirementReference();
+        if (SharkGame.Settings.current.doAspectTable === "table") {
+            this.drawTable(document.getElementById("aspectTable"));
+            this.updateEssenceCounter();
+        } else {
+            requestAnimationFrame(tree.render);
+        }
+    },
+
+    refundLevels(aspectData) {
+        while (aspectData.level) {
+            res.changeResource("essence", aspectData.getCost(aspectData.level - 1));
+            aspectData.level -= 1;
+        }
+    },
+
+    applyScoutingRestrictionsIfNeeded() {
+        if (gateway.currentlyOnScoutingMission()) {
+            if (!SharkGame.persistentFlags.aspectStorage) {
+                SharkGame.persistentFlags.aspectStorage = {};
+            }
+            $.each(SharkGame.Aspects, (aspectName, aspectData) => {
+                if (aspectData.core) {
+                    return true;
+                }
+                SharkGame.persistentFlags.aspectStorage[aspectName] = aspectData.level;
+                SharkGame.Aspects[aspectName].level = 0;
+            });
+        }
+    },
+
+    resetScoutingRestrictions() {
+        if (!SharkGame.persistentFlags.aspectStorage) {
+            SharkGame.persistentFlags.aspectStorage = {};
+        }
+        $.each(SharkGame.Aspects, (aspectName) => {
+            if (!_.isUndefined(SharkGame.persistentFlags.aspectStorage[aspectName])) {
+                SharkGame.Aspects[aspectName].level = SharkGame.persistentFlags.aspectStorage[aspectName];
+                SharkGame.persistentFlags.aspectStorage[aspectName] = undefined;
+            }
+        });
+    },
+
+    updateTooltip(button) {
+        const tooltipBox = $("#tooltipbox");
+        const context = tree.context;
+        if (button === undefined) {
+            context.canvas.style.cursor = "grab";
+            tooltipBox.empty().removeClass("forAspectTree forAspectTreeUnpurchased");
+        } else {
+            let name;
+            _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
+                if (aspectData.name === button.name) {
+                    name = aspectName;
+                    return false;
+                }
+            });
+            if (!name) {
+                tooltipBox.empty().removeClass("forAspectTree forAspectTreeUnpurchased");
+                return;
+            }
+            const reqref = tree.requirementReference[name];
+
+            const cost = button.getCost(button.level);
+
+            if (!reqref.prereqsMet) {
+                if (button.level) {
+                    context.canvas.style.cursor = "not-allowed";
+                } else {
+                    context.canvas.style.cursor = "grab";
+                }
+            } else {
+                context.canvas.style.cursor = "pointer";
+            }
+
+            tooltipBox.addClass("forAspectTree").removeClass("forAspectTreeUnpurchased").removeClass("forAspectTreeAffordable");
+            if (reqref.locked) {
+                tooltipBox.addClass("forAspectTreeUnpurchased").html(sharktext.boldString(button.getUnlocked()));
+                return;
+            }
+
+            const refundValue = tree.getTheoreticalRefundValue(button);
+            if (tree.refundMode) {
+                if (refundValue && !button.noRefunds) {
+                    tooltipBox.addClass("forAspectTreeAffordable");
+                }
+            } else if (reqref.affordable && !reqref.max && reqref.prereqsMet) {
+                tooltipBox.addClass("forAspectTreeAffordable");
+            }
+
+            let tooltipText = "";
+            if (button.level === 0) {
+                let costText = ``;
+                if (tree.refundMode) {
+                    if (button.noRefunds) {
+                        costText = `NO REFUNDS`;
+                    }
+                } else {
+                    costText = `COST: <span class='${reqref.affordable ? "can-afford-aspect" : "cant-afford-aspect"}'>${cost}</span>`;
+                }
+
+                const levelText =
+                    (button.core ? " core aspect" : "") + (button.core && button.noRefunds ? ", " : "") + (button.noRefunds ? "no refunds" : "");
+
+                tooltipText =
+                    sharktext.boldString(button.name) +
+                    `<br /><span class='littleTooltipText'>${levelText}</span>` +
+                    `<br/>${button.getEffect(1)}<br/>` +
+                    `<span class='littleTooltipText'>${button.description}</span><br/>` +
+                    "<hr class='hrForTooltipJuxtapositionInGateway'>" +
+                    `<span class='bold'>${costText}</span>`;
+                tooltipBox.addClass("forAspectTreeUnpurchased");
+            } else if (button.level < button.max) {
+                let costText = ``;
+                if (tree.refundMode) {
+                    if (button.noRefunds) {
+                        costText = `NO REFUNDS`;
+                    } else {
+                        costText = `REFUND VALUE: <span class="can-afford-aspect">${refundValue}</span>`;
+                    }
+                } else {
+                    costText = `COST: <span class='${reqref.affordable ? "can-afford-aspect" : "cant-afford-aspect"}'>${cost}</span>`;
+                }
+
+                const levelText =
+                    "<strong>level " +
+                    button.level +
+                    "</strong> " +
+                    (button.core ? " core aspect" : " aspect") +
+                    (button.noRefunds ? ", no refunds" : "");
+
+                tooltipText =
+                    sharktext.boldString(button.name) +
+                    `<br /><span class='littleTooltipText'>${levelText}</span><br />` +
+                    button.getEffect(button.level) +
+                    `<br /><span class='littleTooltipText'>${button.description}</span>` +
+                    "<hr class='hrForTooltipSeparationInGateway'>" +
+                    "<span class='littleTooltipText' class='bold'>NEXT LEVEL:</span><br />" +
+                    button.getEffect(button.level + 1) +
+                    "<hr class='hrForTooltipJuxtapositionInGateway'>" +
+                    `<span class='bold'>${costText}</span>`;
+            } else if (button.level === undefined) {
+                const levelText =
+                    (button.core ? " core aspect" : "") + (button.core && button.noRefunds ? ", " : "") + (button.noRefunds ? "no refunds" : "");
+                tooltipText =
+                    sharktext.boldString(button.name) +
+                    `<br /><span class='littleTooltipText'>${levelText}</span>` +
+                    `<br />${button.getEffect(button.level)}` +
+                    `<br /><span class='littleTooltipText'>${button.description}</span>`;
+            } else {
+                let costText = ``;
+                if (tree.refundMode) {
+                    if (button.noRefunds) {
+                        costText = `NO REFUNDS`;
+                    } else {
+                        costText = `REFUND VALUE: <span class="can-afford-aspect">${refundValue}</span>`;
+                    }
+                } else {
+                    costText = `MAXIMUM LEVEL.`;
+                }
+
+                const levelText =
+                    "<strong>level " +
+                    button.level +
+                    "</strong> " +
+                    (button.core ? " core aspect" : " aspect") +
+                    (button.noRefunds ? ", no refunds" : "");
+                tooltipText =
+                    sharktext.boldString(button.name) +
+                    `<br /><span class='littleTooltipText'>${levelText}</span>` +
+                    `<br />${button.getEffect(button.level)}` +
+                    `<br /><span class='littleTooltipText'>${button.description}</span>` +
+                    "<hr class='hrForTooltipJuxtapositionInGateway'>" +
+                    `<strong>${costText}</strong></span>`;
+            }
+            tooltipBox.html(tooltipText);
+        }
+    },
+
+    generateRequirementReference() {
+        tree.requirementReference = {};
+        _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
+            if (aspectData.deprecated) return;
+            tree.requirementReference[aspectName] = {};
+        });
+        tree.updateRequirementReference();
+    },
+
+    updateRequirementReference() {
+        const reqref = tree.requirementReference;
+
+        _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
+            if (aspectData.deprecated) return;
+            reqref[aspectName].affordable = aspectData.getCost(aspectData.level) <= res.getResource("essence");
+            reqref[aspectName].locked = aspectData.getUnlocked() || false;
+            reqref[aspectName].prereqsMet = !_.some(aspectData.prerequisites, (prereq) => SharkGame.Aspects[prereq].level === 0);
+            reqref[aspectName].isolated = aspectData.level && !reqref[aspectName].prereqsMet;
+            reqref[aspectName].revealed = reqref[aspectName].prereqsMet || SharkGame.Aspects.infinityVision.level || aspectData.level;
+            reqref[aspectName].max = aspectData.level >= aspectData.max;
+        });
+    },
+
+    toggleRefundMode() {
+        if (tree.refundMode) {
+            tree.refundMode = false;
+            $("#respecModeButton").removeClass("respecMode");
+        } else {
+            tree.refundMode = true;
+            $("#respecModeButton").addClass("respecMode");
+        }
+    },
+
+    getTheoreticalRefundValue(aspect) {
+        if (!aspect.level || aspect.noRefunds) return 0;
+
+        let value = 0;
+        let level = aspect.level - 1;
+        while (level >= 0) {
+            value += aspect.getCost(level);
+            level -= 1;
+        }
+        return value;
     },
 };
