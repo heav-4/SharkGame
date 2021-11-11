@@ -110,6 +110,10 @@ SharkGame.AspectTree = {
                 }
             });
         }
+
+        tree.resetScoutingRestrictions();
+        tree.applyScoutingRestrictionsIfNeeded();
+
         tree.applyAspects();
 
         if (SharkGame.persistentFlags.patience) {
@@ -121,9 +125,6 @@ SharkGame.AspectTree = {
 
         res.setResource("aspectAffect", 1);
         res.setTotalResource("aspectAffect", 1);
-
-        tree.resetScoutingRestrictions();
-        tree.applyScoutingRestrictionsIfNeeded();
 
         tree.generateRequirementReference();
     },
@@ -223,11 +224,12 @@ SharkGame.AspectTree = {
                 aspectTableRowNext.append($(`<td>`).html(`n/A`));
             }
 
-            $([aspectTableDescriptionRow, aspectTableRowNext, aspectTableRowCurrent])
-                .attr("data-aspectId", aspectId)
-                .on("click", clickCallback)
-                .attr("aria-role", "button")
-                .attr("disabled", reqref.prereqsMet.toString());
+            _.each([aspectTableDescriptionRow, aspectTableRowNext, aspectTableRowCurrent], (row) => {
+                row.attr("data-aspectId", aspectId)
+                    .on("click", clickCallback)
+                    .attr("aria-role", "button")
+                    .attr("disabled", reqref.prereqsMet.toString());
+            });
 
             tableBody.append(aspectTableDescriptionRow);
             tableBody.append(aspectTableRowCurrent);
