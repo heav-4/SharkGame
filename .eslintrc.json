@@ -27,6 +27,9 @@
         "sharktext": "readonly",
         "sharkmath": "readonly",
         "sharkcolor": "readonly",
+        "sharkmisc": "readonly",
+        "sharkflags": "readonly",
+        "sharkpersflags": "readonly",
         "cad": "readonly"
     },
     "ignorePatterns": ["js/lib/**"],

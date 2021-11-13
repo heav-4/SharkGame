@@ -294,7 +294,7 @@ SharkGame.Aspects = {
             }
         },
         apply(when) {
-            if (when === "init" && res.getResource("crab") === 0 && !SharkGame.flags.pathOfTimeApplied) {
+            if (when === "init" && res.getResource("crab") === 0 && !sharkflags.pathOfTimeApplied) {
                 const base = 25 * 2 ** this.level;
                 switch (world.worldType) {
                     case "shrouded":
@@ -303,7 +303,7 @@ SharkGame.Aspects = {
                     default:
                         res.changeResource("crab", base);
                 }
-                SharkGame.flags.pathOfTimeApplied = true;
+                sharkflags.pathOfTimeApplied = true;
             }
         },
     },
@@ -550,10 +550,10 @@ SharkGame.Aspects = {
         },
         apply(when) {
             if (when === "levelUp") {
-                if (_.isUndefined(SharkGame.persistentFlags.destinyRolls)) {
-                    SharkGame.persistentFlags.destinyRolls = this.level;
+                if (_.isUndefined(sharkpersflags.destinyRolls)) {
+                    sharkpersflags.destinyRolls = this.level;
                 } else {
-                    SharkGame.persistentFlags.destinyRolls += 1;
+                    sharkpersflags.destinyRolls += 1;
                 }
             }
         },
