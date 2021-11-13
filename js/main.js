@@ -231,8 +231,8 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         SharkGame.Settings.current["buyAmount"] = 1;
 
         // here to stop timer from saying NaN
-        sharkpersflags.totalPausedTime = 0;
-        sharkpersflags.currentPausedTime = 0;
+        SharkGame.persistentFlags.totalPausedTime = 0;
+        SharkGame.persistentFlags.currentPausedTime = 0;
 
         // wipe all resource tables
         SharkGame.Resources.init();
@@ -355,19 +355,19 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             }
         });
 
-        if (sharkpersflags.pause) {
+        if (SharkGame.persistentFlags.pause) {
             if (!cad.pause) {
                 res.pause.togglePause();
             }
             main.showSidebarIfNeeded();
-            if (sharkflags.needOfflineProgress) {
-                sharkpersflags.currentPausedTime = sharkflags.needOfflineProgress * 1000;
+            if (SharkGame.flags.needOfflineProgress) {
+                SharkGame.persistentFlags.currentPausedTime = SharkGame.flags.needOfflineProgress * 1000;
             }
-            sharkflags.needOfflineProgress = 0;
+            SharkGame.flags.needOfflineProgress = 0;
         }
 
-        if (sharkflags.needOfflineProgress) {
-            const secondsElapsed = sharkflags.needOfflineProgress;
+        if (SharkGame.flags.needOfflineProgress) {
+            const secondsElapsed = SharkGame.flags.needOfflineProgress;
 
             if (SharkGame.Settings.current.idleEnabled && !SharkGame.gameOver) {
                 res.minuteHand.updateMinuteHand(secondsElapsed * 1000);
@@ -415,7 +415,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 }
                 log.addMessage(notification);
             }
-            sharkflags.needOfflineProgress = 0;
+            SharkGame.flags.needOfflineProgress = 0;
         }
 
         // set up tab after load
@@ -431,8 +431,8 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
     loopGame() {
         if (SharkGame.gameOver) {
-            sharkpersflags.totalPausedTime = 0;
-            sharkpersflags.currentPausedTime = 0;
+            SharkGame.persistentFlags.totalPausedTime = 0;
+            SharkGame.persistentFlags.currentPausedTime = 0;
 
             // populate save data object
             let saveString = "";
@@ -457,7 +457,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             saveData.settings = _.cloneDeep(SharkGame.Settings.current);
 
             saveData.completedWorlds = _.cloneDeep(SharkGame.Gateway.completedWorlds);
-            saveData.persistentFlags = _.cloneDeep(sharkpersflags);
+            saveData.persistentFlags = _.cloneDeep(SharkGame.persistentFlags);
             saveData.planetPool = _.cloneDeep(gateway.planetPool);
 
             // add timestamp
@@ -488,7 +488,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         }
 
         if (cad.pause) {
-            sharkpersflags.currentPausedTime += _.now() - SharkGame.before;
+            SharkGame.persistentFlags.currentPausedTime += _.now() - SharkGame.before;
             SharkGame.before = _.now();
             SharkGame.lastActivity = _.now();
             switch (SharkGame.Tabs.current) {
@@ -512,9 +512,9 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         if (!SharkGame.gameOver) {
             SharkGame.EventHandler.handleEventTick("beforeTick");
 
-            if (sharkpersflags.currentPausedTime) {
-                sharkpersflags.totalPausedTime += sharkpersflags.currentPausedTime;
-                sharkpersflags.currentPausedTime = 0;
+            if (SharkGame.persistentFlags.currentPausedTime) {
+                SharkGame.persistentFlags.totalPausedTime += SharkGame.persistentFlags.currentPausedTime;
+                SharkGame.persistentFlags.currentPausedTime = 0;
             }
 
             // tick main game stuff
@@ -584,7 +584,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         const speedRatio = Math.min((now - SharkGame.savedMouseActivity - SharkGame.IDLE_THRESHOLD) / SharkGame.IDLE_FADE_TIME, 1);
         res.idleMultiplier = 1 - speedRatio;
 
-        if (speedRatio > 0.8 && !sharkpersflags.everIdled) {
+        if (speedRatio > 0.8 && !SharkGame.persistentFlags.everIdled) {
             res.minuteHand.allowMinuteHand();
         }
         res.minuteHand.updateMinuteHand(elapsedTime * speedRatio);
@@ -762,9 +762,9 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
     shouldShowTooltips() {
         if (!(main.isFirstTime() && res.getResource("fish") < 35 && res.getResource("shark") < 3)) {
-            sharkpersflags.tooltipUnlocked = true;
+            SharkGame.persistentFlags.tooltipUnlocked = true;
         }
-        return sharkpersflags.tooltipUnlocked;
+        return SharkGame.persistentFlags.tooltipUnlocked;
     },
 };
 

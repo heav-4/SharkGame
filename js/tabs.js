@@ -37,10 +37,10 @@ SharkGame.TabHandler = {
 
             if (tab.discoverReq.flag) {
                 $.each(tab.discoverReq.flag, (flagName, matchedValue) => {
-                    if (sharkflags[flagName]) {
-                        reqsMet = reqsMet && sharkflags[flagName] === matchedValue;
-                    } else if (sharkpersflags[flagName]) {
-                        reqsMet = reqsMet && sharkpersflags[flagName] === matchedValue;
+                    if (SharkGame.flags[flagName]) {
+                        reqsMet = reqsMet && SharkGame.flags[flagName] === matchedValue;
+                    } else if (SharkGame.persistentFlags[flagName]) {
+                        reqsMet = reqsMet && SharkGame.persistentFlags[flagName] === matchedValue;
                     } else {
                         reqsMet = false;
                         return false;
