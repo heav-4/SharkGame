@@ -34,42 +34,13 @@ function clamp(num, min, max) {
 }
 
 SharkGame.AspectTree = {
-    dragStart: { posX: 0, posY: 0 },
-    cameraZoom: 1,
-    cameraOffset: { posX: 0, posY: 0 },
     /** @type {CanvasRenderingContext2D} */
     context: undefined,
     staticButtons: {
-        zoom: {
-            posX: 10,
-            posY: 10,
-            width: 30,
-            height: 30,
-
-            name: "Zoom",
-            description: "Change the zoom level.",
-            getEffect() {
-                if (tree.cameraZoom === 1) {
-                    return "Zoom out.";
-                } else {
-                    return "Zoom in.";
-                }
-            },
-            clicked() {
-                if (tree.cameraZoom === 1) {
-                    tree.cameraZoom = 0.5;
-                } else {
-                    tree.cameraZoom = 1;
-                }
-            },
-            getOn() {
-                return tree.cameraZoom !== 1;
-            },
-        },
         respec: {
             posX: 10,
             get posY() {
-                return tree.staticButtons.zoom.posY + tree.staticButtons.zoom.height + 10;
+                return 10;
             },
             width: 30,
             height: 30,
@@ -210,13 +181,6 @@ SharkGame.AspectTree = {
         tree.generateRequirementReference();
     },
 
-    resetTreeCamera() {
-        // remember to figure out this nonsense
-        this.dragStart = { posX: 0, posY: 0 };
-        this.cameraZoom = 1;
-        this.cameraOffset = { posX: 0, posY: 0 };
-    },
-
     drawTree(disableCanvas = true) {
         if (disableCanvas) {
             return tree.drawTable();
@@ -328,64 +292,10 @@ SharkGame.AspectTree = {
 
         $(canvas).on("mouseenter mousemove mouseleave", tree.updateMouse);
 
-        $(canvas).on("mousedown", tree.startPan);
-
         $(canvas).on("click", tree.click);
         $(canvas).on("click", tree.updateMouse);
 
         tree.context = canvas.getContext("2d", { alpha: false, desynchronized: true });
-
-        // tree doesn't work with touch screens so convert touch events to mouse events
-        // https://stackoverflow.com/questions/1517924/javascript-mapping-touch-events-to-mouse-events
-        function touchHandler(event) {
-            const touches = event.changedTouches;
-            const first = touches[0];
-            let type = "";
-            switch (event.type) {
-                case "touchstart":
-                    type = "mousedown";
-                    break;
-                case "touchmove":
-                    type = "mousemove";
-                    break;
-                case "touchend":
-                    type = "mouseup";
-                    break;
-                default:
-                    return;
-            }
-
-            // initMouseEvent(type, canBubble, cancelable, view, clickCount,
-            //                screenX, screenY, clientX, clientY, ctrlKey,
-            //                altKey, shiftKey, metaKey, button, relatedTarget);
-
-            const simulatedEvent = document.createEvent("MouseEvent");
-            simulatedEvent.initMouseEvent(
-                type,
-                true,
-                true,
-                window,
-                1,
-                first.screenX,
-                first.screenY,
-                first.clientX,
-                first.clientY,
-                false,
-                false,
-                false,
-                false,
-                0 /*left*/,
-                null
-            );
-
-            first.target.dispatchEvent(simulatedEvent);
-            event.preventDefault();
-        }
-
-        canvas.addEventListener("touchstart", touchHandler, true);
-        canvas.addEventListener("touchmove", touchHandler, true);
-        canvas.addEventListener("touchend", touchHandler, true);
-        canvas.addEventListener("touchcancel", touchHandler, true);
 
         return canvas;
     },
@@ -462,31 +372,6 @@ SharkGame.AspectTree = {
         requestAnimationFrame(tree.render);
     },
 
-    /** @param {MouseEvent} event */
-    startPan(event) {
-        if (tree.getButtonUnderMouse(event) !== undefined) {
-            return;
-        }
-        tree.dragStart.posX = event.clientX / tree.cameraZoom - tree.cameraOffset.posX;
-        tree.dragStart.posY = event.clientY / tree.cameraZoom - tree.cameraOffset.posY;
-        $(tree.context.canvas).on("mousemove", tree.pan);
-        $(tree.context.canvas).on("mouseup mouseleave", tree.endPan);
-    },
-
-    /** @param {MouseEvent} event */
-    pan(event) {
-        const offsetX = clamp(event.clientX / tree.cameraZoom - tree.dragStart.posX, RIGHT_EDGE, LEFT_EDGE - CANVAS_WIDTH);
-        const offsetY = clamp(event.clientY / tree.cameraZoom - tree.dragStart.posY, BOTTOM_EDGE, TOP_EDGE - CANVAS_HEIGHT);
-        tree.cameraOffset.posX = offsetX;
-        tree.cameraOffset.posY = offsetY;
-        requestAnimationFrame(tree.render);
-    },
-
-    endPan() {
-        $(tree.context.canvas).off("mousemove", tree.pan);
-        $(tree.context.canvas).off("mouseup mouseleave", tree.endPan);
-    },
-
     render() {
         const context = tree.context;
         if (context === undefined) return;
@@ -511,10 +396,6 @@ SharkGame.AspectTree = {
         context.fillStyle = "#155c4b";
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
         context.restore();
-
-        context.translate(context.canvas.width / 2, context.canvas.height / 2);
-        context.scale(tree.cameraZoom, tree.cameraZoom);
-        context.translate(-context.canvas.width / 2 + tree.cameraOffset.posX, -context.canvas.height / 2 + tree.cameraOffset.posY);
 
         if (gateway.completedWorlds.length >= 3) {
             context.save();
@@ -620,9 +501,6 @@ SharkGame.AspectTree = {
         // Static buttons
         context.save();
         // revert zooming
-        context.translate(context.canvas.width / 2 - tree.cameraOffset.posX, context.canvas.height / 2 - tree.cameraOffset.posY);
-        context.scale(1 / tree.cameraZoom, 1 / tree.cameraZoom);
-        context.translate(-context.canvas.width / 2, -context.canvas.height / 2);
 
         context.lineWidth = 1;
         context.fillStyle = buttonColor;
