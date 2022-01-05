@@ -525,8 +525,8 @@ SharkGame.AspectTree = {
 
     initTree() {
         this.panzoom = panzoom($("canvas")[0], {
-            // maxZoom: 2,
-            // minZoom: 0.8,
+            maxZoom: 2,
+            minZoom: 0.8,
             bounds: {
                 top: BOTTOM_EDGE + CANVAS_HEIGHT,
                 right: LEFT_EDGE - CANVAS_WIDTH,
@@ -536,6 +536,9 @@ SharkGame.AspectTree = {
             boundsDisabledForZoom: true,
             smoothScroll: {
                 amplitude: 0.05,
+            },
+            onTouch: function () {
+                return false;
             },
         });
         this.panzoom.on("transform", () => {
