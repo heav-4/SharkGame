@@ -366,8 +366,6 @@ SharkGame.AspectTree = {
     },
 
     render() {
-        console.log(tree.panzoom.getTransform());
-
         const context = tree.context;
         if (context === undefined) return;
         const transform = tree.panzoom.getTransform();
@@ -723,7 +721,6 @@ SharkGame.AspectTree = {
     },
 
     updateTooltip(button) {
-        // console.log("test");
         const tooltipBox = $("#tooltipbox");
         const context = tree.context;
         if (button === undefined) {
