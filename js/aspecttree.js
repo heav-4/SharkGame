@@ -29,10 +29,6 @@ const EVENT_SPRITE_SHEET = new Image();
 SPRITE_SHEET.src = "img/sharksprites.png";
 EVENT_SPRITE_SHEET.src = "img/sharkeventsprites.png";
 
-function clamp(num, min, max) {
-    return num <= min ? min : num >= max ? max : num;
-}
-
 SharkGame.AspectTree = {
     /** @type {CanvasRenderingContext2D} */
     context: undefined,
@@ -338,12 +334,11 @@ SharkGame.AspectTree = {
             ) {
                 return;
             }
-            return (
-                CANVAS_WIDTH / 2 - (CANVAS_WIDTH / 2 - mousePos.posX) / transform.scale - transform.x >= posX &&
-                CANVAS_HEIGHT / 2 - (CANVAS_HEIGHT / 2 - mousePos.posY) / transform.scale - transform.y >= posY &&
-                CANVAS_WIDTH / 2 - (CANVAS_WIDTH / 2 - mousePos.posX) / transform.scale - transform.x <= posX + width &&
-                CANVAS_HEIGHT / 2 - (CANVAS_HEIGHT / 2 - mousePos.posY) / transform.scale - transform.y <= posY + height
-            );
+
+            const computedY = (mousePos.posY - transform.y) / transform.scale;
+            const computedX = (mousePos.posX - transform.x) / transform.scale;
+
+            return computedX >= posX && computedY >= posY && computedX <= posX + width && computedY <= posY + height;
         });
         return aspect;
     },
@@ -353,7 +348,6 @@ SharkGame.AspectTree = {
     updateMouse(event) {
         const button = tree.getButtonUnderMouse(event);
         if (button !== tree.previousButton) {
-            console.log("different");
             tree.previousButton = button;
             tree.updateTooltip(button);
         }
@@ -507,8 +501,8 @@ SharkGame.AspectTree = {
         context.save();
         // revert zooming
 
-        context.translate(-transform.x, -transform.y);
         context.scale(1 / transform.scale, 1 / transform.scale);
+        context.translate(-transform.x, -transform.y);
 
         context.lineWidth = 1;
         context.fillStyle = buttonColor;
@@ -531,8 +525,8 @@ SharkGame.AspectTree = {
 
     initTree() {
         this.panzoom = panzoom($("canvas")[0], {
-            maxZoom: 2,
-            minZoom: 0.8,
+            // maxZoom: 2,
+            // minZoom: 0.8,
             bounds: {
                 top: BOTTOM_EDGE + CANVAS_HEIGHT,
                 right: LEFT_EDGE - CANVAS_WIDTH,
@@ -540,6 +534,9 @@ SharkGame.AspectTree = {
                 left: RIGHT_EDGE + CANVAS_WIDTH,
             },
             boundsDisabledForZoom: true,
+            smoothScroll: {
+                amplitude: 0.05,
+            },
         });
         this.panzoom.on("transform", () => {
             requestAnimationFrame(tree.render);
