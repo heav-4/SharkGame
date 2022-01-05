@@ -316,8 +316,7 @@ SharkGame.AspectTree = {
     getButtonUnderMouse(event) {
         const context = tree.context;
         const mousePos = tree.getCursorPositionInCanvas(context.canvas, event);
-        const offset = tree.cameraOffset;
-        const zoom = tree.cameraZoom;
+        const transform = this.panzoom.getTransform();
 
         // this fixes one piece of the sticky tooltip bug on the tree
         if (gateway.transitioning) {
@@ -340,10 +339,10 @@ SharkGame.AspectTree = {
                 return;
             }
             return (
-                CANVAS_WIDTH / 2 - (CANVAS_WIDTH / 2 - mousePos.posX) / zoom - offset.posX >= posX &&
-                CANVAS_HEIGHT / 2 - (CANVAS_HEIGHT / 2 - mousePos.posY) / zoom - offset.posY >= posY &&
-                CANVAS_WIDTH / 2 - (CANVAS_WIDTH / 2 - mousePos.posX) / zoom - offset.posX <= posX + width &&
-                CANVAS_HEIGHT / 2 - (CANVAS_HEIGHT / 2 - mousePos.posY) / zoom - offset.posY <= posY + height
+                CANVAS_WIDTH / 2 - (CANVAS_WIDTH / 2 - mousePos.posX) / transform.scale - transform.x >= posX &&
+                CANVAS_HEIGHT / 2 - (CANVAS_HEIGHT / 2 - mousePos.posY) / transform.scale - transform.y >= posY &&
+                CANVAS_WIDTH / 2 - (CANVAS_WIDTH / 2 - mousePos.posX) / transform.scale - transform.x <= posX + width &&
+                CANVAS_HEIGHT / 2 - (CANVAS_HEIGHT / 2 - mousePos.posY) / transform.scale - transform.y <= posY + height
             );
         });
         return aspect;
@@ -373,8 +372,11 @@ SharkGame.AspectTree = {
     },
 
     render() {
+        console.log(tree.panzoom.getTransform());
+
         const context = tree.context;
         if (context === undefined) return;
+        const transform = tree.panzoom.getTransform();
 
         // For some reason, it scrolls indefinitely if you don't set this every frame
         // I have no idea how or why
@@ -396,6 +398,9 @@ SharkGame.AspectTree = {
         context.fillStyle = "#155c4b";
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
         context.restore();
+
+        context.translate(transform.x, transform.y);
+        context.scale(transform.scale, transform.scale);
 
         if (gateway.completedWorlds.length >= 3) {
             context.save();
@@ -502,6 +507,9 @@ SharkGame.AspectTree = {
         context.save();
         // revert zooming
 
+        context.translate(-transform.x, -transform.y);
+        context.scale(1 / transform.scale, 1 / transform.scale);
+
         context.lineWidth = 1;
         context.fillStyle = buttonColor;
         context.strokeStyle = borderColor;
@@ -519,6 +527,23 @@ SharkGame.AspectTree = {
 
         // update essence count
         tree.updateEssenceCounter();
+    },
+
+    initTree() {
+        this.panzoom = panzoom($("canvas")[0], {
+            maxZoom: 2,
+            minZoom: 0.8,
+            bounds: {
+                top: BOTTOM_EDGE + CANVAS_HEIGHT,
+                right: LEFT_EDGE - CANVAS_WIDTH,
+                bottom: TOP_EDGE - CANVAS_HEIGHT,
+                left: RIGHT_EDGE + CANVAS_WIDTH,
+            },
+            boundsDisabledForZoom: true,
+        });
+        this.panzoom.on("transform", () => {
+            requestAnimationFrame(tree.render);
+        });
     },
 
     /**
