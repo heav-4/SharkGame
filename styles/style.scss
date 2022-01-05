@@ -1431,6 +1431,7 @@ button.gateway {
         width: 800px;
         height: 600px;
         touch-action: none;
+        -webkit-tap-highlight-color: transparent;
     }
 }
 

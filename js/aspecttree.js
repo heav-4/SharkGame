@@ -544,6 +544,8 @@ SharkGame.AspectTree = {
         this.panzoom.on("transform", () => {
             requestAnimationFrame(tree.render);
         });
+
+        $("body").css("overscroll-behavior-x", "none");
     },
 
     /**

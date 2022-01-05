@@ -237,6 +237,7 @@ SharkGame.Gateway = {
         // add return to gateway button
         SharkGame.Button.makeButton("backToGateway", "return to gateway", buttonDiv, () => {
             gateway.switchViews(gateway.showGateway);
+            $("body").css("overscroll-behavior-x", "initial");
             $("#tooltipbox").empty().removeClass("forAspectTree forAspectTreeUnpurchased");
         });
 
