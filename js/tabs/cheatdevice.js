@@ -276,7 +276,10 @@ SharkGame.CheatsAndDebug = {
     },
 
     setup() {
-        /* doesnt need to do anything */
+        if (SharkGame.persistentFlags.debug) {
+            // unlock cheats for anyone who already has debug mode access
+            gateway.unlockCheats();
+        }
     },
 
     switchTo() {
@@ -477,16 +480,19 @@ SharkGame.CheatsAndDebug = {
 
     debug() {
         SharkGame.persistentFlags.debug = true;
+        SharkGame.persistentFlags.unlockedDebug = true;
     },
 
     hideDebug() {
         SharkGame.persistentFlags.debug = false;
         SharkGame.Tabs.cheats.discovered = false;
         SharkGame.Tabs.cheats.seen = false;
-        if (SharkGame.Tabs.current === "cheats") {
-            SharkGame.Tabs.current = "home";
+        if (!SharkGame.gameOver) {
+            if (SharkGame.Tabs.current === "cheats") {
+                SharkGame.Tabs.current = "home";
+            }
+            SharkGame.TabHandler.setUpTab();
         }
-        SharkGame.TabHandler.setUpTab();
     },
 
     toggleDebugButton() {

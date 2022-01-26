@@ -84,7 +84,7 @@ SharkGame.MathUtil = {
 
     getBuyAmount(noMaxBuy) {
         if (SharkGame.Settings.current.buyAmount === "custom") {
-            return Math.floor($("#custom-input")[0].valueAsNumber) >= 1 && $("#custom-input")[0].valueAsNumber < 1e18
+            return $("#custom-input")[0] && Math.floor($("#custom-input")[0].valueAsNumber) >= 1 && $("#custom-input")[0].valueAsNumber < 1e18
                 ? Math.floor($("#custom-input")[0].valueAsNumber)
                 : 1;
         } else {
@@ -278,6 +278,7 @@ SharkGame.TextUtil = {
     },
 
     formatTime(milliseconds) {
+        const numCentiseconds = Math.floor((milliseconds % 1000) / 10);
         const numSeconds = Math.floor(milliseconds / 1000);
         const numMinutes = Math.floor(numSeconds / 60);
         const numHours = Math.floor(numMinutes / 60);
@@ -286,7 +287,9 @@ SharkGame.TextUtil = {
         const numMonths = Math.floor(numWeeks / 4);
         const numYears = Math.floor(numMonths / 12);
 
-        const formatSeconds = (numSeconds % 60).toString(10).padStart(2, "0");
+        const formatCentiseconds =
+            (milliseconds / 1000 < 10 ? "." + numCentiseconds.toString(10).padStart(2, "0") : "") + (numMinutes === 0 ? "s" : "");
+        const formatSeconds = (numSeconds % 60).toString(10).padStart(numSeconds >= 60 ? 2 : 0, "0");
         const formatMinutes = numMinutes > 0 ? (numMinutes % 60).toString(10).padStart(2, "0") + ":" : "";
         const formatHours = numHours > 0 ? (numHours % 24).toString() + ":" : "";
         const formatDays = numDays > 0 ? (numDays % 7).toString() + "D, " : "";
@@ -294,7 +297,7 @@ SharkGame.TextUtil = {
         const formatMonths = numMonths > 0 ? (numMonths % 12).toString() + "M, " : "";
         const formatYears = numYears > 0 ? numYears.toString() + "Y, " : "";
 
-        return formatYears + formatMonths + formatWeeks + formatDays + formatHours + formatMinutes + formatSeconds;
+        return formatYears + formatMonths + formatWeeks + formatDays + formatHours + formatMinutes + formatSeconds + formatCentiseconds;
     },
 
     getResourceName(resourceName, darken, arbitraryAmount, background) {
