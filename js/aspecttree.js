@@ -538,6 +538,12 @@ SharkGame.AspectTree = {
             onTouch: function () {
                 return false;
             },
+            beforeMouseDown: (event) => {
+                return event.target.id !== "treeCanvas";
+            },
+            beforeWheel: function (event) {
+                return event.target.id !== "treeCanvas";
+            },
         });
         this.panzoom.on("transform", () => {
             requestAnimationFrame(tree.render);
