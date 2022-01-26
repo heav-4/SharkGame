@@ -535,15 +535,9 @@ SharkGame.AspectTree = {
             smoothScroll: {
                 amplitude: 0.05,
             },
-            onTouch: function () {
-                return false;
-            },
-            beforeMouseDown: (event) => {
-                return event.target.id !== "treeCanvas";
-            },
-            beforeWheel: function (event) {
-                return event.target.id !== "treeCanvas";
-            },
+            onTouch: () => false,
+            beforeMouseDown: (event) => event.target.id !== "treeCanvas" || this.getButtonUnderMouse(event) !== undefined,
+            beforeWheel: (event) => event.target.id !== "treeCanvas",
         });
         this.panzoom.on("transform", () => {
             requestAnimationFrame(tree.render);
