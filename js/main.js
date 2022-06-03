@@ -99,9 +99,9 @@ $.extend(SharkGame, {
     ],
     GAME_NAME: null,
     ACTUAL_GAME_NAME: "Shark Game",
-    VERSION: "0.2 OPEN ALPHA",
+    VERSION: "202205??a",
     ORIGINAL_VERSION: 0.71,
-    VERSION_NAME: "New Perspectives",
+    VERSION_NAME: "The Marine Update",
     EPSILON: 1e-6, // floating point comparison is a joy
     // agreed, already had to deal with it on recycler revisions
     // did you know that reducing a float like 1.2512351261 to 1.25 by literally removing the decimal and multiplying by 100 gives you something like 125.0000001?
@@ -849,6 +849,17 @@ SharkGame.FunFacts = [
 ];
 
 SharkGame.Changelog = {
+    "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> 0.2 patch 20220603a": [
+        "Added Marine worldtype.",
+        "Planet descriptions are now much more vague until you've visited them.",
+        "Distant Foresight greatly decreases vagueness of planet descriptions now.",
+        "Swapped the order of some aspects on the tree.",
+        "Revised the ending of the Abandoned world.",
+        "Revised bits of the Shrouded world's story.",
+        "By popular demand, added auto-transmuter to Shrouded.",
+        "Fixed some miscellaneous bugs.",
+        "Ixbix - tweaked text visibility system",
+    ],
     "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> 0.2 patch 20220125a": [
         "Added keybinds. You can now bind a large array of actions to different key combinations.",
         "Added backup saves. You can now back up your saves as you wish, with three slots!",

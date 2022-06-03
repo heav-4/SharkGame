@@ -76,14 +76,15 @@ SharkGame.WorldTypes = {
         modifiers: [{ type: "multiplier", modifier: "planetaryResourceBoost", resource: "fish", amount: 2 }],
         gateRequirements: {
             slots: {
-                fish: 1e9,
-                sand: 1e7,
-                crystal: 1e7,
-                kelp: 1e7,
-                seaApple: 1e6,
-                sharkonium: 1e6,
+                fish: 1e11,
+                clam: 1e22,
+                crystal: 1e11,
+                kelp: 1e9,
+                calcinium: 1e10,
+                sharkonium: 1e10,
             },
         },
+        par: 55,
     },
     haven: {
         name: "Haven",
@@ -198,7 +199,7 @@ SharkGame.WorldTypes = {
     },
     abandoned: {
         name: "Abandoned",
-        vagueDesc: "Feels lonely.",
+        vagueDesc: "Feels grimy.",
         desc: "A dying world filled with machinery.",
         shortDesc: "murky dark green",
         foresight: {
@@ -206,7 +207,9 @@ SharkGame.WorldTypes = {
             get longDesc() {
                 return (
                     "The water here is dank and tinted green by " +
-                    (gateway.completedWorlds.indexOf("abandoned") > -1 ? sharktext.getResourceName("tar") + "." : "an unrecognizable substance.") +
+                    (gateway.completedWorlds.indexOf("abandoned") > -1
+                        ? sharktext.getResourceName("tar", undefined, undefined, sharkcolor.getElementColor("pane")) + "."
+                        : "an unrecognizable substance.") +
                     " Husks of machinery litter the ocean floor."
                 );
             },
@@ -216,7 +219,7 @@ SharkGame.WorldTypes = {
                 return (
                     "This ocean is polluted with " +
                     (gateway.completedWorlds.indexOf("abandoned") > -1
-                        ? sharktext.getResourceName("tar")
+                        ? sharktext.getResourceName("tar", undefined, undefined, sharkcolor.getElementColor("pane"))
                         : "an unrecognizable substance" + ". It is only harmful when machines produce it.")
                 );
             },
@@ -265,7 +268,8 @@ SharkGame.WorldTypes = {
                 return `This place is completely shrouded in darkness. Glowing ${sharktext.getResourceName(
                     `crystal`,
                     false,
-                    69
+                    69,
+                    sharkcolor.getElementColor("pane")
                 )} litter the water and strange figures lurk among the endless shadows.`;
             },
             missing: ["kelp", "crab", "laser"],
@@ -302,16 +306,16 @@ SharkGame.WorldTypes = {
         desc: "An arctic ocean dangling on the edge of frozen doom.",
         shortDesc: "freezing white",
         foresight: {
-            vagueLongDesc: "From afar, bitter cold stings your mind.",
+            vagueLongDesc: "Bitter cold stings your mind from afar.",
             longDesc: "The world is mostly frozen, but a small pocket of warmer water seems to preserve what little chance life has here.",
             missing: ["seaApple", "ray"],
             present: ["squid", "urchin"],
             get tip() {
                 return (
                     "This world has " +
-                    sharktext.getResourceName("ice") +
+                    sharktext.getResourceName("ice", undefined, undefined, sharkcolor.getElementColor("pane")) +
                     ". " +
-                    sharktext.getResourceName("ice") +
+                    sharktext.getResourceName("ice", undefined, undefined, sharkcolor.getElementColor("pane")) +
                     " will slow some of the frenzy, and will be present from the start."
                 );
             },
