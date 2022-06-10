@@ -44,7 +44,7 @@
       width: 30vw;
       height: 100px;
     }
-    body.no-save .save-only {
+    body:not(.old-save) .save-only {
       display: none;
     }
   </style>
@@ -52,8 +52,8 @@
     function onLoad() {
       var oldSave = localStorage.getItem('sharkGameSave');
       console.log(oldSave)
-      if(!oldSave) {
-        document.body.classList.toggle('no-save', true)
+      if(oldSave) {
+        document.body.classList.toggle('old-save', true)
       } else {
         document.getElementById('save-text').textContent = oldSave;
       }
