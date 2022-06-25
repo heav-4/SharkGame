@@ -6,7 +6,10 @@
         "jquery": true,
         "es2021": true
     },
-    "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+    "parserOptions": {
+        "ecmaVersion": 2021
+    },
+    "extends": ["eslint:recommended", "standard", "plugin:prettier/recommended"],
     "globals": {
         "_": "readonly",
         "ascii85": "readonly",
@@ -28,6 +31,7 @@
         "sharkmath": "readonly",
         "sharkcolor": "readonly",
         "sharkmisc": "readonly",
+        "sharktime": "readonly",
         "cad": "readonly"
     },
     "ignorePatterns": ["js/lib/**"],

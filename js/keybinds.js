@@ -136,7 +136,6 @@ SharkGame.Keybinds = {
 
         keyID = this.cleanID(keyID);
         keyID = this.composeKeys(keyID);
-        //console.log(keyID);
 
         const boundAction = this.keybinds[keyID];
         if (this.bindMode && boundAction !== "bind home ocean button") {
@@ -158,7 +157,6 @@ SharkGame.Keybinds = {
 
         keyID = this.cleanID(keyID);
         keyID = this.composeKeys(keyID);
-        //console.log(keyID);
 
         const boundAction = this.keybinds[keyID];
         if (this.bindMode && boundAction !== "bind home ocean button") {
@@ -187,7 +185,6 @@ SharkGame.Keybinds = {
                     } else {
                         return false;
                     }
-                //console.log(actionType);
             }
             return true;
         }
@@ -199,10 +196,10 @@ SharkGame.Keybinds = {
         if (!this.tempDisableBind && actionType) {
             switch (actionType) {
                 case "test":
-                    console.log("test successful");
                     break;
                 case "open bind menu":
                     // do nothing for now
+                    // TODO: Implement this, I suppose
                     break;
                 case "bind home ocean button":
                     if (!this.bindModeLock) {
@@ -347,7 +344,6 @@ SharkGame.Keybinds = {
                     }
                     break;
                 default:
-                    //console.log(actionType);
                     if (SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionType)) {
                         $(`#${actionType}`).addClass(`keep-button-pressed`);
                     } else {
@@ -356,6 +352,7 @@ SharkGame.Keybinds = {
             }
             return true;
         }
+        return false;
     },
 
     addKeybind(keyID, actionType) {
@@ -459,10 +456,8 @@ SharkGame.Keybinds = {
 
         if (SharkGame.PaneHandler.isStackClosable() && SharkGame.Tabs.current === `home`) {
             if (this.bindMode) {
-                //console.log(`off`);
                 this.bindMode = false;
             } else {
-                //console.log(`on`);
                 this.bindMode = true;
                 SharkGame.PaneHandler.tryWipeStack();
             }

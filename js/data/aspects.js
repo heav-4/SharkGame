@@ -1,23 +1,5 @@
 "use strict";
 
-/**
- * @type {Record<string, {
- *     requiredBy: string[] | undefined
- *     eventSprite: boolean // Whether to use the event spritesheet
- *     icon: string
- *     posX: number
- *     posY: number
- *     width: number
- *     height: number
- *     level: number
- *     prerequisites: string[]
- *     getCost(level: number): number
- *     getEffect(level: number): string
- *     getUnlocked(): string // tells you if miscellaneous requirements have been met. if they have, returns nothing. if they have not, returns a message stating why not.
- *     clicked(): void
- *     apply(time: string): void
- * }>
- */
 // idea: aspect which helps to reveal more of the tree
 SharkGame.Aspects = {
     apotheosis: {
@@ -177,7 +159,7 @@ SharkGame.Aspects = {
             switch (level) {
                 case 1:
                     return "Reveals basic information about a world before you choose to visit it.";
-                //case 2:
+                // case 2:
                 //    return "Reveals basic information about a world before you choose to visit it, and identifies unknown resources.";
             }
         },
@@ -504,7 +486,7 @@ SharkGame.Aspects = {
                 SharkGame.Button.makeButton("respecModeButton", "respec mode", $("#aspectTreeNavButtons"), tree.toggleRefundMode);
                 SharkGame.Button.makeButton("respecButton", "respec all", $("#aspectTreeNavButtons"), () => {
                     if (confirm("Are you sure you want to respec all refundable aspects?")) {
-                        tree.respecTree;
+                        tree.respecTree();
                     }
                 });
             }
@@ -632,7 +614,7 @@ SharkGame.Aspects = {
             }
         },
         getUnlocked() {
-            //return SharkGame.Gateway.completedWorlds.includes("tempestuous") ? "" : "Complete the Tempestuous worldtype to unlock this aspect.";
+            // return SharkGame.Gateway.completedWorlds.includes("tempestuous") ? "" : "Complete the Tempestuous worldtype to unlock this aspect.";
         },
         prerequisites: ["internalCalculator"],
         clicked(_event) {
@@ -662,7 +644,13 @@ SharkGame.Aspects = {
             return 3 + level;
         },
         getEffect(level) {
-            return "The Minute Hand starts with " + sharktext.boldString(60 * level + "s") + " when entering a new world.";
+            return (
+                "The Minute Hand starts with " +
+                sharktext.boldString(60 * level + "s") +
+                " when entering a world. " +
+                (level === 1 ? "This doesn't" : "These don't") +
+                " count against your world-time when used."
+            );
         },
         getUnlocked() {
             if (gateway.completedWorlds.length < 2) {
