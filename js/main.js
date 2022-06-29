@@ -75,13 +75,12 @@ $.extend(SharkGame, {
         "Shark Box",
         "Dolphin Heroes",
         "Maws",
-        "Sharky's Strange Crusade: Part 6",
+        "Part 6, Stone Ocean",
         "Sailor Crab",
         "League of Lobsters",
         "Eel Team Six",
         "Dungeons And Dolphins",
         "Gameshark",
-        "Sharkiplier Plays",
         "Five Nights in Frigid",
         "The Shark of Wall Street",
         ":the shark game:",
@@ -95,16 +94,21 @@ $.extend(SharkGame, {
         "To Be Continued",
         "what the crab doin",
         "#TeamSeas",
-        "2",
+        "Sharks of Rage",
+        "Bedrock Edition",
+        "Javascript Edition",
+        "You are a Shark",
+        "Mystery of Shark City",
+        "Modded",
+        "8 hours later...",
+        "Seas of Loathing",
     ],
     GAME_NAME: null,
     ACTUAL_GAME_NAME: "Shark Game",
-    VERSION: "202206??a",
+    VERSION: "20220629a",
     ORIGINAL_VERSION: 0.71,
     VERSION_NAME: "The Volcanic Update",
     EPSILON: 1e-6, // floating point comparison is a joy
-    // agreed, already had to deal with it on recycler revisions
-    // did you know that reducing a float like 1.2512351261 to 1.25 by literally removing the decimal and multiplying by 100 gives you something like 125.0000001?
     BIGGEST_SAFE_NUMBER: 1000000000000,
     MAX: 1e300,
 
@@ -260,10 +264,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         log.clearMessages(false);
         SharkGame.Settings.current.buyAmount = 1;
 
-        // here to stop timer from saying NaN
-        SharkGame.persistentFlags.totalPausedTime = 0;
-        SharkGame.persistentFlags.currentPausedTime = 0;
-
         // wipe all resource tables
         SharkGame.Resources.init();
 
@@ -398,10 +398,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 res.pause.togglePause();
             }
             main.showSidebarIfNeeded();
-            if (SharkGame.flags.needOfflineProgress) {
-                SharkGame.persistentFlags.currentPausedTime += SharkGame.flags.needOfflineProgress * 1000;
-            }
-            SharkGame.flags.needOfflineProgress = 0;
         }
 
         if (SharkGame.flags.needOfflineProgress) {
@@ -470,9 +466,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
     loopGame() {
         if (SharkGame.gameOver) {
-            SharkGame.persistentFlags.totalPausedTime = 0;
-            SharkGame.persistentFlags.currentPausedTime = 0;
-
             // populate save data object
             let saveString = "";
             const saveData = {
@@ -529,7 +522,10 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         }
 
         if (cad.pause) {
-            SharkGame.persistentFlags.currentPausedTime += _.now() - SharkGame.before;
+            if (!SharkGame.persistentFlags.everIdled) {
+                res.minuteHand.allowMinuteHand();
+            }
+            res.minuteHand.updateMinuteHand(_.now() - SharkGame.before);
             SharkGame.before = _.now();
             SharkGame.lastActivity = _.now();
             switch (SharkGame.Tabs.current) {
@@ -552,11 +548,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
         if (!SharkGame.gameOver) {
             SharkGame.EventHandler.handleEventTick("beforeTick");
-
-            if (SharkGame.persistentFlags.currentPausedTime) {
-                SharkGame.persistentFlags.totalPausedTime += SharkGame.persistentFlags.currentPausedTime;
-                SharkGame.persistentFlags.currentPausedTime = 0;
-            }
 
             // tick main game stuff
             const now = _.now();
@@ -1057,6 +1048,11 @@ SharkGame.FunFacts = {
 };
 
 SharkGame.Changelog = {
+    "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20220629a": [
+        "Fixed a bug with a certain sponge button not appearing.",
+        "Fixed a bug with pressing buttons that don't exist anymore.",
+        "Updated the pause button, which now activates idle mode at will.",
+    ],
     "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20220625a": [
         "Added Volcanic worldtype.",
         "Added FUN FACTS! Press to receive a random fun fact! You get different ones based on where you are and what you own!",
