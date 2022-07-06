@@ -32,6 +32,8 @@ EVENT_SPRITE_SHEET.src = "img/sharkeventsprites.png";
 SharkGame.AspectTree = {
     /** @type {CanvasRenderingContext2D} */
     context: undefined,
+    pointerType: "mouse",
+    previousButton: undefined,
     staticButtons: {
         respec: {
             posX: 10,
@@ -239,7 +241,7 @@ SharkGame.AspectTree = {
             aspectTableDescriptionRow.append($(`<td>`));
             aspectTableDescriptionRow.append(
                 $(`<td>`)
-                    .html(!reqref.max ? aspectData.getCost(aspectData.level) : "n/A")
+                    .html(!reqref.max ? aspectData.getCost(aspectData.level) : "N/A")
                     .attr("rowspan", "3")
             );
 
@@ -262,7 +264,7 @@ SharkGame.AspectTree = {
                 aspectTableRowNext.append($(`<td>`).html(`${aspectData.level + 1}`));
             } else {
                 aspectTableRowNext.append($(`<td>`).html(`NEXT: Already at maximum level.`));
-                aspectTableRowNext.append($(`<td>`).html(`n/A`));
+                aspectTableRowNext.append($(`<td>`).html(`N/A`));
             }
 
             _.each([aspectTableDescriptionRow, aspectTableRowNext, aspectTableRowCurrent], (row) => {
@@ -286,10 +288,8 @@ SharkGame.AspectTree = {
         canvas.setAttribute("width", "800px");
         canvas.setAttribute("height", "600px");
 
-        $(canvas).on("mouseenter mousemove mouseleave", tree.updateMouse);
-
+        $(canvas).on("mouseenter mousemove mouseleave wheel click", tree.updateMouse);
         $(canvas).on("click", tree.click);
-        $(canvas).on("click", tree.updateMouse);
 
         tree.context = canvas.getContext("2d", { alpha: false, desynchronized: true });
 
@@ -302,8 +302,8 @@ SharkGame.AspectTree = {
      */
     getCursorPositionInCanvas(canvas, event) {
         const rect = canvas.getBoundingClientRect();
-        const posX = event.clientX - rect.left;
-        const posY = event.clientY - rect.top;
+        const posX = (event.clientX || event.targetTouches[0].clientX) - rect.left;
+        const posY = (event.clientY || event.targetTouches[0].clientY) - rect.top;
         const result = { posX, posY };
         return result;
     },
@@ -343,13 +343,12 @@ SharkGame.AspectTree = {
         return aspect;
     },
 
-    previousButton: undefined,
     /** @param {MouseEvent} event */
     updateMouse(event) {
-        const button = tree.getButtonUnderMouse(event);
-        if (button !== tree.previousButton) {
+        const button = event.type === "mouseleave" ? undefined : tree.getButtonUnderMouse(event);
+        tree.updateTooltip(button);
+        if (button === undefined) {
             tree.previousButton = button;
-            tree.updateTooltip(button);
         }
     },
 
@@ -359,9 +358,14 @@ SharkGame.AspectTree = {
         if (button === undefined) {
             return;
         }
-        if (typeof button.clicked === "function") {
+
+        // If it was clicked using touch, first touch on a button opens the tooltip and second touch purchases
+        // if unsure, treat it as a touch
+        const isMouseClick = event.pointerType === "mouse" || event.originalEvent.mozInputSource === 1 || event.originalEvent.mozInputSource === 2;
+        if (typeof button.clicked === "function" && (isMouseClick || tree.previousButton?.name === button?.name)) {
             button.clicked(event);
         }
+        tree.previousButton = button;
         requestAnimationFrame(tree.render);
     },
 

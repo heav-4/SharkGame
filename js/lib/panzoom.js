@@ -504,6 +504,11 @@
                 }
                 function onTouch(e) {
                     beforeTouch(e);
+
+                    // custom change to conditionally disable panning iniated using a touch
+                    if (beforeMouseDown(e))
+                        return;
+                        
                     if (e.touches.length === 1) {
                         return handleSingleFingerTouch(e, e.touches[0])
                     } else if (e.touches.length === 2) {
@@ -608,6 +613,11 @@
                 }
                 function onDoubleClick(e) {
                     beforeDoubleClick(e);
+
+                    // custom modification - don't zoom in if hovering over aspect
+                    if (beforeMouseDown(e))
+                        return;
+
                     var offset = getOffsetXY(e);
                     if (transformOrigin) {
                         offset = getTransformOriginOffset()
