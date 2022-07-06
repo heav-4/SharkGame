@@ -289,7 +289,7 @@ SharkGame.AspectTree = {
         canvas.setAttribute("width", "800px");
         canvas.setAttribute("height", "600px");
 
-        $(canvas).on("mouseenter mousemove mouseleave wheel click", tree.updateMouse);
+        $(canvas).on("mouseenter mousemove mouseleave wheel click touchstart touchmove touchend touchcancel", tree.updateMouse);
         $(canvas).on("click", tree.click);
 
         tree.context = canvas.getContext("2d", { alpha: false, desynchronized: true });
@@ -303,8 +303,8 @@ SharkGame.AspectTree = {
      */
     getCursorPositionInCanvas(canvas, event) {
         const rect = canvas.getBoundingClientRect();
-        const posX = (event.clientX || event.targetTouches[0].clientX) - rect.left;
-        const posY = (event.clientY || event.targetTouches[0].clientY) - rect.top;
+        const posX = (event.clientX || event.targetTouches[0]?.clientX || event.changedTouches[0].clientX) - rect.left;
+        const posY = (event.clientY || event.targetTouches[0]?.clientY || event.changedTouches[0].clientY) - rect.top;
         const result = { posX, posY };
         return result;
     },

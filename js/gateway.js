@@ -558,9 +558,6 @@ SharkGame.Gateway = {
             aspectTreeContent.append($("<p>").html("Your will flows into solid shapes beyond your control.<br>Focus."));
             aspectTreeContent.append(tree.drawTree(SharkGame.Settings.current.doAspectTable === "table"));
 
-            tree.resetTreeCamera();
-            tree.render();
-
             const buttonDiv = $("<div>").attr("id", "aspectTreeNavButtons").addClass("gatewayButtonList");
 
             // add return to gateway button
@@ -590,6 +587,9 @@ SharkGame.Gateway = {
             aspectTreeContent.append(buttonDiv);
 
             SharkGame.PaneHandler.swapCurrentPane("ASPECT TREE", aspectTreeContent, true, 500, true);
+
+            tree.initTree(aspectTreeContent);
+            tree.render();
 
             gateway.transitioning = false;
         },
