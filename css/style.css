@@ -1253,6 +1253,8 @@ button.respecMode.gateway, button.respecMode.newlyDiscovered {
   box-shadow: 0 0 5px 5px #ace3d1;
   width: 800px;
   height: 600px;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #overlay.gateway {

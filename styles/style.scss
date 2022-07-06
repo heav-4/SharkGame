@@ -1490,6 +1490,8 @@ button.gateway {
         @include box-shadow(0, 0, 5px, 5px, $color-discovery);
         width: 800px;
         height: 600px;
+        touch-action: none;
+        -webkit-tap-highlight-color: transparent;
     }
 }
 
