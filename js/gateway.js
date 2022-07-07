@@ -588,6 +588,10 @@ SharkGame.Gateway = {
 
             SharkGame.PaneHandler.swapCurrentPane("ASPECT TREE", aspectTreeContent, true, 500, true);
 
+            if (SharkGame.Settings.current.doAspectTable === "tree") {
+                tree.initTree();
+            }
+
             gateway.transitioning = false;
         },
 

@@ -294,7 +294,13 @@ SharkGame.AspectTree = {
 
         tree.context = canvas.getContext("2d", { alpha: false, desynchronized: true });
 
-        this.panzoom = panzoom($(canvas)[0], {
+        $("body").css("overscroll-behavior-x", "none");
+
+        return canvas;
+    },
+
+    initTree() {
+        this.panzoom = panzoom($("canvas")[0], {
             maxZoom: 2,
             minZoom: 0.8,
             bounds: {
@@ -314,12 +320,7 @@ SharkGame.AspectTree = {
         this.panzoom.on("transform", () => {
             requestAnimationFrame(tree.render);
         });
-
-        $("body").css("overscroll-behavior-x", "none");
-
         tree.render();
-
-        return canvas;
     },
 
     /**
