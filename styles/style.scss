@@ -1533,6 +1533,18 @@ button.gateway {
     }
 }
 
+.gateway input {
+    background-color: $color-discovery-dark3;
+    border-color: $color-discovery;
+    color: $color-text;
+    text-align: right;
+    width: 4em;
+}
+
+.gateway ::-webkit-inner-spin-button {
+    margin-left: 2px;
+}
+
 #planetContainer {
     text-align: center;
     margin: 0.5em auto;
