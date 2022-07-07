@@ -294,6 +294,31 @@ SharkGame.AspectTree = {
 
         tree.context = canvas.getContext("2d", { alpha: false, desynchronized: true });
 
+        this.panzoom = panzoom($(canvas)[0], {
+            maxZoom: 2,
+            minZoom: 0.8,
+            bounds: {
+                top: BOTTOM_EDGE + CANVAS_HEIGHT,
+                right: LEFT_EDGE - CANVAS_WIDTH,
+                bottom: TOP_EDGE - CANVAS_HEIGHT,
+                left: RIGHT_EDGE + CANVAS_WIDTH,
+            },
+            boundsDisabledForZoom: true,
+            smoothScroll: {
+                amplitude: 0.05,
+            },
+            onTouch: () => false,
+            beforeMouseDown: (event) => event.target.id !== "treeCanvas" || this.getButtonUnderMouse(event) !== undefined,
+            beforeWheel: (event) => event.target.id !== "treeCanvas",
+        });
+        this.panzoom.on("transform", () => {
+            requestAnimationFrame(tree.render);
+        });
+
+        $("body").css("overscroll-behavior-x", "none");
+
+        tree.render();
+
         return canvas;
     },
 
@@ -526,31 +551,6 @@ SharkGame.AspectTree = {
         tree.updateEssenceCounter();
     },
 
-    initTree() {
-        this.panzoom = panzoom($("canvas")[0], {
-            maxZoom: 2,
-            minZoom: 0.8,
-            bounds: {
-                top: BOTTOM_EDGE + CANVAS_HEIGHT,
-                right: LEFT_EDGE - CANVAS_WIDTH,
-                bottom: TOP_EDGE - CANVAS_HEIGHT,
-                left: RIGHT_EDGE + CANVAS_WIDTH,
-            },
-            boundsDisabledForZoom: true,
-            smoothScroll: {
-                amplitude: 0.05,
-            },
-            onTouch: () => false,
-            beforeMouseDown: (event) => event.target.id !== "treeCanvas" || this.getButtonUnderMouse(event) !== undefined,
-            beforeWheel: (event) => event.target.id !== "treeCanvas",
-        });
-        this.panzoom.on("transform", () => {
-            requestAnimationFrame(tree.render);
-        });
-
-        $("body").css("overscroll-behavior-x", "none");
-    },
-
     /**
      * Draws a rounded rectangle using the current state of the canvas
      * @param {CanvasRenderingContext2D} context
@@ -729,6 +729,8 @@ SharkGame.AspectTree = {
     updateTooltip(button) {
         const tooltipBox = $("#tooltipbox");
         const context = tree.context;
+        // tooltips aren't needed on the aspect table
+        if (!context) return;
         if (button === undefined) {
             context.canvas.style.cursor = "grab";
             tooltipBox.empty().removeClass("forAspectTree forAspectTreeUnpurchased forAspectTreeAffordable");

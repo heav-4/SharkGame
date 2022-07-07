@@ -588,9 +588,6 @@ SharkGame.Gateway = {
 
             SharkGame.PaneHandler.swapCurrentPane("ASPECT TREE", aspectTreeContent, true, 500, true);
 
-            tree.initTree(aspectTreeContent);
-            tree.render();
-
             gateway.transitioning = false;
         },
 
