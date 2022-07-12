@@ -5,7 +5,6 @@ window.onmousemove = (event) => {
     SharkGame.lastActivity = _.now();
 
     const tooltip = document.getElementById("tooltipbox");
-    if (!tooltip || tooltip.innerHTML === "") return;
     const posX = event.clientX;
     const posY = event.clientY;
 
@@ -105,7 +104,7 @@ $.extend(SharkGame, {
     ],
     GAME_NAME: null,
     ACTUAL_GAME_NAME: "Shark Game",
-    VERSION: "20220630a",
+    VERSION: "20220712a",
     ORIGINAL_VERSION: 0.71,
     VERSION_NAME: "The Volcanic Update",
     EPSILON: 1e-6, // floating point comparison is a joy
@@ -305,6 +304,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
         SharkGame.Resources.minuteHand.init();
         SharkGame.Resources.pause.init();
+        SharkGame.Resources.dial.init();
     },
 
     // load stored game data, if there is anything to load
@@ -397,6 +397,8 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             }
         });
 
+        if (!SharkGame.persistentFlags.dialSetting) SharkGame.persistentFlags.dialSetting = 1;
+
         if (SharkGame.persistentFlags.pause) {
             if (!cad.pause) {
                 res.pause.togglePause();
@@ -414,8 +416,12 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             if (SharkGame.Settings.current.idleEnabled && !SharkGame.gameOver) {
                 res.minuteHand.allowMinuteHand();
                 res.minuteHand.updateMinuteHand(secondsElapsed * 1000);
+                if (SharkGame.Aspects.overtime.level) {
+                    res.minuteHand.updateMinuteHand(secondsElapsed * 200 * SharkGame.Aspects.overtime.level);
+                    res.minuteHand.addBonusTime(secondsElapsed * 200 * SharkGame.Aspects.overtime.level);
+                }
             } else {
-                main.processSimTime(secondsElapsed, true);
+                main.processSimTime(secondsElapsed / SharkGame.persistentFlags.dialSetting, true);
             }
 
             // acknowledge long time gaps
@@ -517,6 +523,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             SharkGame.Save.importData(saveString);
 
             res.minuteHand.applyHourHand();
+            res.minuteHand.giveRequestedTime();
 
             try {
                 SharkGame.Save.saveGame();
@@ -532,6 +539,9 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             return;
         }
 
+        const now = _.now();
+        const elapsedTime = now - SharkGame.before;
+
         if (cad.pause) {
             if (SharkGame.Settings.current.truePause) {
                 SharkGame.persistentFlags.currentPausedTime += _.now() - SharkGame.before;
@@ -539,19 +549,19 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 if (!SharkGame.persistentFlags.everIdled) {
                     res.minuteHand.allowMinuteHand();
                 }
-                res.minuteHand.updateMinuteHand(_.now() - SharkGame.before);
+                res.minuteHand.updateMinuteHand(elapsedTime * (1 + SharkGame.Aspects.overtime.level * 0.2));
+                res.minuteHand.addBonusTime(elapsedTime * SharkGame.Aspects.overtime.level * 0.2);
             }
-
-            SharkGame.before = _.now();
-            SharkGame.lastActivity = _.now();
+            SharkGame.before = now;
+            SharkGame.lastActivity = now;
             switch (SharkGame.Tabs.current) {
                 case "home":
-                    $.each($("#content").children()[3].children, (_index, button) => {
+                    $.each($("#buttonList").children(), (_index, button) => {
                         $(button).addClass("disabled");
                     });
                     break;
                 case "lab":
-                    $.each($("#content").children()[1].children[0].children, (_index, button) => {
+                    $.each($("#buttonList").children(), (_index, button) => {
                         $(button).addClass("disabled");
                     });
                     break;
@@ -571,9 +581,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             }
 
             // tick main game stuff
-            const now = _.now();
-            const elapsedTime = now - SharkGame.before;
-
             if (now - SharkGame.lastActivity > SharkGame.IDLE_THRESHOLD && res.idleMultiplier === 1 && SharkGame.Settings.current.idleEnabled) {
                 main.startIdle(now, elapsedTime);
             }
@@ -584,6 +591,9 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
             if (res.minuteHand.active) {
                 res.minuteHand.updateMinuteHand(elapsedTime);
+            } else if (SharkGame.Aspects.overtime.level) {
+                res.minuteHand.updateMinuteHand(elapsedTime * 0.2 * SharkGame.Aspects.overtime.level);
+                res.minuteHand.addBonusTime(elapsedTime * 0.2 * SharkGame.Aspects.overtime.level);
             }
 
             // check if the sidebar needs to come back
@@ -1069,6 +1079,16 @@ SharkGame.FunFacts = {
 };
 
 SharkGame.Changelog = {
+    "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20220712a": [
+        "Time in the minute hand can now persist between worlds, with a few caveats.",
+        "Added 3 new aspects that complement the changes to minute hand time.",
+        "Changed the pricing and location of aspects on the tree.",
+        "Disabling idle time accruing in the minute hand no longer completely removes it from the UI.",
+        "Added a choice to use SI units.",
+        "Fixed a bug where tooltips would persist when changing tabs via hotkey.",
+        "Fixed a bug where the game throws errors when trying to disable buttons while paused.",
+        "Greatly improved aspect tree on touchscreen devices.",
+    ],
     "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20220630a": [
         "Added a setting to disable idle time from the pause button.",
     ],

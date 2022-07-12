@@ -1490,6 +1490,8 @@ button.gateway {
         @include box-shadow(0, 0, 5px, 5px, $color-discovery);
         width: 800px;
         height: 600px;
+        touch-action: none;
+        -webkit-tap-highlight-color: transparent;
     }
 }
 
@@ -1529,6 +1531,18 @@ button.gateway {
     li {
         padding-left: 0;
     }
+}
+
+.gateway input {
+    background-color: $color-discovery-dark3;
+    border-color: $color-discovery;
+    color: $color-text;
+    text-align: right;
+    width: 4em;
+}
+
+.gateway ::-webkit-inner-spin-button {
+    margin-left: 2px;
 }
 
 #planetContainer {
