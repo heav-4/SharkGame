@@ -101,6 +101,7 @@ $.extend(SharkGame, {
         "Modded",
         "8 hours later...",
         "Seas of Loathing",
+        "Raiders of the Lost Shark",
     ],
     GAME_NAME: null,
     ACTUAL_GAME_NAME: "Shark Game",
