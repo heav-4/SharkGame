@@ -101,10 +101,11 @@ $.extend(SharkGame, {
         "Modded",
         "8 hours later...",
         "Seas of Loathing",
+        "Raiders of the Lost Shark",
     ],
     GAME_NAME: null,
     ACTUAL_GAME_NAME: "Shark Game",
-    VERSION: "20220630a",
+    VERSION: "20220712a",
     ORIGINAL_VERSION: 0.71,
     VERSION_NAME: "The Volcanic Update",
     EPSILON: 1e-6, // floating point comparison is a joy
@@ -1080,7 +1081,7 @@ SharkGame.FunFacts = {
 };
 
 SharkGame.Changelog = {
-    "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 2022070?a": [
+    "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20220712a": [
         "Time in the minute hand can now persist between worlds, with a few caveats.",
         "Added 3 new aspects that complement the changes to minute hand time.",
         "Changed the pricing and location of aspects on the tree.",
@@ -1088,6 +1089,7 @@ SharkGame.Changelog = {
         "Added a choice to use SI units.",
         "Fixed a bug where tooltips would persist when changing tabs via hotkey.",
         "Fixed a bug where the game throws errors when trying to disable buttons while paused.",
+        "Greatly improved aspect tree on touchscreen devices.",
     ],
     "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20220630a": [
         "Added a setting to disable idle time from the pause button.",
