@@ -31,7 +31,7 @@ SharkGame.WorldTypes = {
         },
         entry: "You enter a familiar blue sea, all your previous knowledge a dim memory.",
         style: "default",
-        includedResources: ["sharks", "rays", "crabs", "basicmaterials", "kelpstuff", "sharkmachines", "essence", "world", "aspectAffect"],
+        includedResources: ["basics", "sharks", "rays", "crabs", "basicmaterials", "kelpstuff", "sharkmachines"],
         modifiers: [],
         // initial gate cost, scaled by planetary level
         gateRequirements: {
@@ -60,7 +60,7 @@ SharkGame.WorldTypes = {
         entry: "You enter a serene blue sea, all your previous knowledge a dim memory.",
         style: "default",
         includedResources: [
-            "essence",
+            "basics",
             "sharks",
             "rays",
             "crabs",
@@ -70,7 +70,6 @@ SharkGame.WorldTypes = {
             "sharkmachines",
             "clam",
             "lobstermachines",
-            "aspectAffect",
         ],
         absentResources: ["laser"],
         modifiers: [{ type: "multiplier", modifier: "planetaryResourceBoost", resource: "fish", amount: 2 }],
@@ -101,7 +100,7 @@ SharkGame.WorldTypes = {
         entry: "Remembering nothing, you find yourself in a beautiful atoll. Life will be good here.",
         style: "haven",
         includedResources: [
-            "essence",
+            "basics",
             "sharks",
             "rays",
             "crabs",
@@ -112,9 +111,6 @@ SharkGame.WorldTypes = {
             "dolphinmachines",
             "coral",
             "chorus",
-            "essence",
-            "world",
-            "aspectAffect",
         ],
         absentResources: ["laser"],
         modifiers: [
@@ -127,27 +123,28 @@ SharkGame.WorldTypes = {
     tempestuous: {
         name: "Tempestuous",
         desc: "A swirling maelstrom where nothing rests.",
-        shortDesc: "stormy grey",
-        entry: "You recall nothing and know only the storms. The unrelenting, restless storms scattering your possessions and allies.",
+        vagueDesc: "Feels turbulent.",
+        shortDesc: "swirling grey",
+        foresight: {
+            vagueLongDesc: "It's hard to feel out this place. Everything's constantly moving.",
+            longDesc:
+                "A terrible storm has taken up residence here. It's hard to think, much less get anything done, with all the strong currents whipping stuff around.",
+            missing: ["kelp", "seaApple"],
+            present: ["swordfish", "seagrass"],
+        },
+        entry: "You recall nothing and know only the storms. The unrelenting, restless storms scattering your possessions and casting you astray.",
         style: "tempestuous",
-        /* includedResources: [
+        includedResources: [
+            "basics",
             "sharks",
             "rays",
             "crabs",
+            "swordfishes", // gramatically awful but thats just how it is
             "basicmaterials",
-            "kelpstuff",
+            "seagrass",
             "sharkmachines",
-        ], */
-        modifiers: [
-            { type: "multiplier", modifier: "planetaryIncome", resource: "sand", amount: -0.5 },
-            { type: "multiplier", modifier: "planetaryIncome", resource: "kelp", amount: -0.5 },
-            { type: "multiplier", modifier: "planetaryIncome", resource: "coral", amount: -0.1 },
-            { type: "multiplier", modifier: "planetaryIncome", resource: "algae", amount: -1 },
-            { type: "multiplier", modifier: "planetaryIncome", resource: "frenzy", amount: -0.001 },
-            { type: "multiplier", modifier: "planetaryIncome", resource: "specialists", amount: -0.0005 },
-            { type: "multiplier", modifier: "planetaryIncome", resource: "breeders", amount: -0.0005 },
-            { type: "multiplier", modifier: "planetaryResourceBoost", resource: "stuff", amount: 0.5 },
         ],
+        modifiers: [],
         gateRequirements: {
             slots: {
                 junk: 1e9,
@@ -173,6 +170,7 @@ SharkGame.WorldTypes = {
         entry: "The burning waters sear the last traces of your past experiences from you. From beneath, the vents spew forth a heavy cloud of smoke.",
         style: "volcanic",
         includedResources: [
+            "basics",
             "rays",
             "shoveler",
             "crabs",
@@ -186,10 +184,6 @@ SharkGame.WorldTypes = {
             "sponge",
             "algae",
             "coral",
-            "essence",
-            "world",
-            "aspectAffect",
-            "specialResourceOne",
         ],
         absentResources: ["crystal", "laser", "planter"],
         modifiers: [{ type: "multiplier", modifier: "planetaryFishMultiplier", resource: "ray", amount: 15 }],

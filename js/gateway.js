@@ -6,7 +6,7 @@ SharkGame.Gateway = {
     transitioning: false,
     selectedWorld: "",
 
-    allowedWorlds: ["abandoned", "haven", "frigid", "shrouded", "marine", "volcanic"],
+    allowedWorlds: ["abandoned", "haven", "frigid", "shrouded", "marine", "volcanic", "tempestuous"],
 
     completedWorlds: [],
 
@@ -1199,7 +1199,8 @@ SharkGame.Gateway.PresenceFeelings = {
     eel: "slithering hunters?",
     tar: "something dirty?",
     algae: "something slimy?",
-    // swordfish: "wary hunters",
+    seagrass: "some plants?",
+    swordfish: "resolute survivalists?",
 };
 
 SharkGame.Gateway.Messages = {

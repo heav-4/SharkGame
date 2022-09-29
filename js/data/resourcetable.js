@@ -23,6 +23,8 @@ SharkGame.ResourceTable = {
             switch (world.worldType) {
                 case `volcanic`:
                     return `vents`;
+                case `tempestuous`:
+                    return `the storm`;
                 default:
                     return `the world`;
             }
@@ -31,6 +33,8 @@ SharkGame.ResourceTable = {
             switch (world.worldType) {
                 case `volcanic`:
                     return `vents`;
+                case `tempestuous`:
+                    return `the storm`;
                 default:
                     return `the world`;
             }
@@ -229,6 +233,14 @@ SharkGame.ResourceTable = {
         desc: "Slimy sponge feeders.",
         color: "#549572",
         value: 0.4,
+    },
+
+    seagrass: {
+        name: "seagrass",
+        singleName: "seagrass",
+        desc: "", // set this
+        color: "#828FB5", // set this
+        value: 10, // set this
     },
 
     /* gravel: {
@@ -632,7 +644,41 @@ SharkGame.ResourceTable = {
 
     // TEMPESTUOUS
 
-    // nothing here yet lol
+    swordfish: {
+        name: "swordfish",
+        singleName: "swordfish",
+        desc: "Battered, but never beaten.", // set this
+        color: "#BEC7CC", // set this
+        income: {
+            fish: 2,
+        },
+        jobs: ["swordfishExplorer"], // set this
+        value: 1000,
+    },
+
+    stormgoer: {
+        name: "crab stormgoers",
+        singleName: "crab stormgoer",
+        desc: "Courage.",
+        color: "#BEC7CC", // set this
+        value: 1000,
+    },
+
+    mechanic: {
+        name: "crab mechanics",
+        singleName: "crab mechanic",
+        desc: ".", // set this
+        color: "#BEC7CC", // set this
+        value: 1000,
+    },
+
+    swordfishExplorer: {
+        name: "swordfish explorers",
+        singleName: "swordfish explorer",
+        desc: "The great pioneers.",
+        color: "#CCCCCC", // set this
+        value: 1000,
+    },
 
     // HAVEN
 
@@ -1214,6 +1260,13 @@ SharkGame.GeneratorIncomeAffectorsOriginal = {
             coralFarm: 0.01,
         },
     },
+    mechanic: {
+        multiply: {
+            crystalMiner: 0.01,
+            sandDigger: 0.01,
+            fishMachine: 0.01,
+        },
+    },
     // cool tooltip test crab
     /*     crab: {
         exponentiate: {
@@ -1351,7 +1404,7 @@ SharkGame.ResourceCategories = {
             "Was it something they said?",
             "Are you happy with what you've done?",
         ],
-        resources: ["shark", "ray", "crab", "shrimp", "lobster", "dolphin", "whale", "chimaera", "octopus", "eel", "squid", "urchin"],
+        resources: ["shark", "ray", "crab", "shrimp", "lobster", "dolphin", "whale", "chimaera", "octopus", "eel", "squid", "urchin", "swordfish"],
     },
     animals: {
         name: "Animals",
@@ -1549,6 +1602,10 @@ SharkGame.InternalCategories = {
         name: "Chimaeras",
         resources: ["chimaera", "explorer"],
     },
+    swordfishes: {
+        name: "Swordfish",
+        resources: ["swordfish", "swordfishExplorer"],
+    },
     sharkmachines: {
         name: "Shark Machines",
         resources: ["sharkonium", "fishMachine", "sandDigger", "crystalMiner", "skimmer", "autoTransmuter"],
@@ -1570,5 +1627,8 @@ SharkGame.InternalCategories = {
     },
     kelpstuff: {
         resources: ["kelp", "seaApple"],
+    },
+    basics: {
+        resources: ["essence", "world", "aspectAffect", "specialResourceOne", "specialResourceTwo"],
     },
 };

@@ -211,7 +211,7 @@ SharkGame.Home = {
         tempestuous: [
             {
                 name: "tempestuous-default",
-                message: "The storm never ends, and many are lost to its violent throes.",
+                message: "Horrible wind whips you around.",
             },
         ],
 
