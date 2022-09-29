@@ -199,7 +199,7 @@ SharkGame.ResourceTable = {
     crystal: {
         name: "crystals",
         singleName: "crystal",
-        desc: "Inscrutable secrets in solid form.",
+        desc: "A strange, glowing material.",
         color: "#6FD9CC",
         value: 10,
     },
