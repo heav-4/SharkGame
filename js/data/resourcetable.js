@@ -173,6 +173,7 @@ SharkGame.ResourceTable = {
     jellyfish: {
         name: "jellyfish",
         singleName: "jellyfish",
+        desc: "Squishy. Painful.",
         color: "#E3B8FF",
         value: 110,
     },
@@ -775,6 +776,7 @@ SharkGame.ResourceTable = {
     pit: {
         name: "eel pits",
         singleName: "eel pit",
+        desc: "Never too many.",
         color: "#3F6E86",
         income: {
             eel: 0.02,
@@ -804,6 +806,7 @@ SharkGame.ResourceTable = {
     explorer: {
         name: "chimaera explorers",
         singleName: "chimaera explorer",
+        desc: "Treasure lies in the deep.",
         color: "#FFF2D6",
         income: {
             arcana: 0.004,
@@ -814,6 +817,7 @@ SharkGame.ResourceTable = {
     sifter: {
         name: "eel sifters",
         singleName: "eel sifter",
+        desc: "The sand hides many secrets.",
         color: "#A3915A",
         income: {
             sand: 100,
