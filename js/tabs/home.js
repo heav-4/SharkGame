@@ -258,7 +258,7 @@ SharkGame.Home = {
             {
                 name: "volcanic-noticed",
                 unlock: { upgrade: ["glassTempering"] },
-                message: "The king has finally caught wind of your plans, rumors say. They say he plans to destroy the entire frenzy.",
+                message: "Rumors say the king has caught wind of your plans. They say he plans to destroy the entire frenzy.",
             },
             {
                 name: "volcanic-acolytes",

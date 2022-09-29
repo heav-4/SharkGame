@@ -480,6 +480,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
     },
 
     loopGame() {
+        $("body").css("overscroll-behavior-x", "unset");
         if (SharkGame.gameOver) {
             SharkGame.persistentFlags.totalPausedTime = 0;
             SharkGame.persistentFlags.currentPausedTime = 0;
