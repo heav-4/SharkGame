@@ -1591,6 +1591,14 @@ SharkGame.Sprites = {
         sourceSize: { w: 50, h: 50 },
         pivot: { x: 0, y: 0 },
     },
+    "actions/getCoralFarm": {
+        frame: { x: 2982, y: 100, w: 50, h: 50 },
+        rotated: false,
+        trimmed: false,
+        spriteSourceSize: { x: 0, y: 0, w: 50, h: 50 },
+        sourceSize: { w: 50, h: 50 },
+        pivot: { x: 0, y: 0 },
+    },
     "actions/getCrab": {
         frame: { x: 470, y: 104, w: 50, h: 50 },
         rotated: false,
@@ -1865,6 +1873,14 @@ SharkGame.Sprites = {
     },
     "actions/getSifter": {
         frame: { x: 2068, y: 100, w: 50, h: 50 },
+        rotated: false,
+        trimmed: false,
+        spriteSourceSize: { x: 0, y: 0, w: 50, h: 50 },
+        sourceSize: { w: 50, h: 50 },
+        pivot: { x: 0, y: 0 },
+    },
+    "actions/getSpongeFarm": {
+        frame: { x: 2982, y: 50, w: 50, h: 50 },
         rotated: false,
         trimmed: false,
         spriteSourceSize: { x: 0, y: 0, w: 50, h: 50 },
