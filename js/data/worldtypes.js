@@ -206,7 +206,7 @@ SharkGame.WorldTypes = {
             get longDesc() {
                 return (
                     "The water here is dank and tinted green by " +
-                    (gateway.completedWorlds.indexOf("abandoned") > -1
+                    (gateway.isWorldBeaten("abandoned")
                         ? sharktext.getResourceName("tar", undefined, undefined, sharkcolor.getElementColor("pane")) + "."
                         : "an unrecognizable substance.") +
                     " Husks of machinery litter the ocean floor."
@@ -217,7 +217,7 @@ SharkGame.WorldTypes = {
             get tip() {
                 return (
                     "This ocean is polluted with " +
-                    (gateway.completedWorlds.indexOf("abandoned") > -1
+                    (gateway.isWorldBeaten("abandoned")
                         ? sharktext.getResourceName("tar", undefined, undefined, sharkcolor.getElementColor("pane"))
                         : "an unrecognizable substance" + ". It is only harmful when machines produce it.")
                 );
