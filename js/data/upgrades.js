@@ -3204,7 +3204,7 @@ SharkGame.Upgrades = {
             name: "Secret Smelting",
             desc: "The shrimps in our frenzy have a secret recipe...",
             researchedMessage:
-                "It's called porite, and it's made with sand and sponges. Unfortunately, it's a lot of sand. Forunately, this is the ocean.",
+                "It's called porite, and it's made with sand and sponges. Unfortunately, it's a lot of sand. Fortunately, this is the ocean.",
             effectDesc: `Learned the secret of porite from the shrimp. Glass has never been so useful, probably.`,
             cost: {
                 sponge: 40000000,
