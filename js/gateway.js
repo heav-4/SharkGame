@@ -345,6 +345,10 @@ SharkGame.Gateway = {
         res.changeResource("essence", Math.ceil((1 + gumptionBonus) * (essenceReward + speedReward) + patienceReward));
     },
 
+    isWorldBeaten(worldType = "") {
+        return gateway.completedWorlds.indexOf(worldType) > -1;
+    },
+
     shouldCheatsBeUnlocked() {
         return res.getTotalResource("essence") >= 1000 && !SharkGame.persistentFlags.unlockedDebug;
     },
