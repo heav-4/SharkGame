@@ -132,18 +132,21 @@ SharkGame.WorldTypes = {
             missing: ["kelp", "seaApple"],
             present: ["swordfish", "seagrass"],
         },
-        entry: "You recall nothing and know only the storms. The unrelenting, restless storms scattering your possessions and casting you astray.",
+        entry: "You recall nothing and know only the storms. The unrelenting, restless storms scattering your possessions and allies.",
         style: "tempestuous",
         includedResources: [
             "basics",
             "sharks",
             "rays",
             "crabs",
+            "stormgoer",
             "swordfishes", // gramatically awful but thats just how it is
+            "sharkmachines",
             "basicmaterials",
             "seagrass",
-            "sharkmachines",
+            "chart",
         ],
+        absentResources: ["planter"],
         modifiers: [],
         gateRequirements: {
             slots: {

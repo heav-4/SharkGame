@@ -4298,6 +4298,166 @@ SharkGame.HomeActions = {
             helpText: "Pick a spot and set up a coral farm there.",
         },
     },
+    tempestuous: {
+        catchFish: {},
+
+        debugbutton: {},
+
+        // CONVERSIONS ////////////////////////////////////////////////////////////////////////////////
+
+        seagrassToScience: {
+            name: "Study seagrass flowers",
+            effect: {
+                resource: {
+                    science: 1,
+                },
+            },
+            cost: [{ resource: "seagrass", costFunction: "constant", priceIncrease: 2 }],
+            max: "seagrass",
+            prereq: {
+                resource: {
+                    seagrass: 1,
+                },
+                upgrade: ["xenobiology"],
+            },
+            outcomes: [],
+            helpText: "Dissect seagrass flowers to further the cause of science. Research!",
+        },
+
+        // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
+
+        transmuteSharkonium: {},
+
+        // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
+
+        getShark: {},
+
+        getManta: {},
+
+        getCrab: {},
+
+        getSwordfish: {
+            name: "Fetch swordfish",
+            effect: {
+                resource: {
+                    swordfish: 1,
+                },
+            },
+            cost: [{ resource: "fish", costFunction: "linear", priceIncrease: 10 }],
+            max: "swordfish",
+            prereq: {
+                resource: {
+                    fish: 10,
+                },
+                upgrade: ["cavernousContact"],
+            },
+            outcomes: [],
+            multiOutcomes: [],
+            helpText: "",
+        },
+
+        // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
+
+        getScientist: {},
+
+        getNurse: {},
+
+        // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
+
+        getLaser: {},
+
+        getMaker: {},
+
+        // CRAB JOBS ////////////////////////////////////////////////////////////////////////////////
+
+        getStormgoer: {
+            name: "Gear up crab stormgoer",
+            effect: {
+                resource: {
+                    stormgoer: 1,
+                },
+            },
+            cost: [
+                { resource: "crab", costFunction: "constant", priceIncrease: 1 },
+                { resource: "seagrass", costFunction: "constant", priceIncrease: 10 },
+                { resource: "sand", costFunction: "linear", priceIncrease: 100 },
+            ],
+            max: "stormgoer",
+            prereq: {
+                resource: {
+                    crab: 1,
+                },
+                upgrade: ["sandbagging"],
+            },
+            outcomes: [],
+            multiOutcomes: [],
+            helpText: "Weigh down a crab with sand to keep it from being carried away in the storm.",
+        },
+
+        getBrood: {},
+
+        // SWORDFISH JOBS ////////////////////////////////////////////////////////////////////////////////
+
+        getSwordfishExplorer: {
+            name: "Equip swordfish explorer",
+            effect: {
+                resource: {
+                    swordfishExplorer: 1,
+                },
+            },
+            cost: [
+                { resource: "swordfish", costFunction: "constant", priceIncrease: 1 },
+                { resource: "seagrass", costFunction: "linear", priceIncrease: 15 },
+                { resource: "crystal", costFunction: "linear", priceIncrease: 3 },
+            ],
+            max: "swordfishExplorer",
+            prereq: {
+                resource: {
+                    fish: 10,
+                },
+                upgrade: ["magicBottles"],
+            },
+            outcomes: [],
+            multiOutcomes: [],
+            helpText: "",
+        },
+
+        getSwordfishMechanic: {
+            name: "Instruct swordfish mechanic",
+            effect: {
+                resource: {
+                    swordfishMechanic: 1,
+                },
+            },
+            cost: [
+                { resource: "swordfish", costFunction: "constant", priceIncrease: 1 },
+                { resource: "seagrass", costFunction: "linear", priceIncrease: 15 },
+                { resource: "crystal", costFunction: "linear", priceIncrease: 3 },
+            ],
+            max: "swordfishMechanic",
+            prereq: {
+                resource: {
+                    fish: 10,
+                },
+                upgrade: ["theExpedition"],
+            },
+            outcomes: [],
+            multiOutcomes: [],
+            helpText: "",
+        },
+
+        // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
+
+        getCrystalMiner: {},
+
+        getSandDigger: {},
+
+        getFishMachine: {},
+
+        getAutoTransmuter: {},
+
+        getSkimmer: {},
+    },
 };
 
 SharkGame.HomeActionCategories = {
@@ -4358,6 +4518,8 @@ SharkGame.HomeActionCategories = {
             "getCuriousCrab",
             "getResearcher",
             "getAcolyte",
+            "getSwordfishExplorer",
+            "getSwordfishMechanic",
         ],
     },
 

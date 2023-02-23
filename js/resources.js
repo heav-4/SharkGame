@@ -295,14 +295,12 @@ SharkGame.Resources = {
     getProductAmountFromGeneratorResource(generator, product, numGenerator = res.getResource(generator)) {
         const baseIncome = SharkGame.ResourceMap.get(generator).income[product];
         return (
-            (baseIncome *
-                numGenerator *
-                res.getSpecialMultiplier() *
-                res.getNetworkIncomeModifier("generator", generator) *
-                res.getNetworkIncomeModifier("resource", product, baseIncome) *
-                cad.speed *
-                res.idleMultiplier) /
-            SharkGame.persistentFlags.dialSetting
+            baseIncome *
+            numGenerator *
+            res.getSpecialMultiplier() *
+            res.getNetworkIncomeModifier("generator", generator) *
+            res.getNetworkIncomeModifier("resource", product, baseIncome) *
+            res.getGameSpeedModifier()
         );
     },
 
@@ -341,6 +339,10 @@ SharkGame.Resources = {
             }
         }
         return multiplier;
+    },
+
+    getGameSpeedModifier() {
+        return (cad.speed * res.idleMultiplier) / SharkGame.persistentFlags.dialSetting;
     },
 
     getSpecialMultiplier() {
@@ -412,7 +414,7 @@ SharkGame.Resources = {
             category.name !== "Hidden" &&
             _.some(category.resources, (resourceName) => {
                 const resource = SharkGame.PlayerResources.get(resourceName);
-                return (resource.totalAmount > 0 || resource.discovered) && world.doesResourceExist(resourceName);
+                return resource && (resource.totalAmount > 0 || resource.discovered) && world.doesResourceExist(resourceName);
             })
         );
     },

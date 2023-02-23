@@ -399,4 +399,91 @@ SharkGame.Events = {
             return true;
         },
     },
+    tempestuousHandleStorm: {
+        handlingTime: "beforeTick",
+        priority: 0,
+        getAction() {
+            if (SharkGame.World.worldType !== "tempestuous") {
+                return "remove";
+            }
+            return "trigger";
+        },
+        trigger() {
+            if (!SharkGame.flags.storm) {
+                SharkGame.flags.storm = {
+                    fish: -0.02,
+                    sand: -0.02,
+                    crystal: -0.02,
+                    shark: -0.02,
+                    ray: -0.02,
+                    crab: -0.02,
+                    stormgoer: -0.01,
+                    swordfishExplorer: -0.01,
+                };
+            }
+
+            const storm = SharkGame.ResourceMap.get("world");
+            const predictedTimeUntilNextTick = res.getGameSpeedModifier();
+            if (!storm.baseIncome) {
+                storm.baseIncome = {};
+                storm.income = {};
+            }
+            $.each(SharkGame.flags.storm, (resourceName, removalRatio) => {
+                if (world.doesResourceExist(resourceName)) {
+                    storm.baseIncome[resourceName] =
+                        (predictedTimeUntilNextTick * res.getResource(resourceName) * removalRatio) / (1 - predictedTimeUntilNextTick * removalRatio);
+                }
+                res.reapplyModifiers("world", resourceName);
+            });
+            $.each(SharkGame.flags.storm, (name, ratio) => {
+                if (ratio === 0) {
+                    delete SharkGame.flags.storm[name];
+                }
+            });
+            return true;
+        },
+    },
+    tempestuousFindCave: {
+        handlingTime: "beforeTick",
+        priority: 0,
+        getAction() {
+            return "remove";
+        },
+        trigger() {
+            SharkGame.flags.storm.fish = 0;
+            SharkGame.flags.storm.sand = 0;
+            SharkGame.flags.storm.crystal = 0;
+            SharkGame.flags.storm.shark = 0;
+            SharkGame.flags.storm.ray = 0;
+            SharkGame.flags.storm.crab = 0;
+        },
+    },
+    tempestuousGiveSeagrass: {
+        handlingTime: "beforeTick",
+        priority: 0,
+        getAction() {
+            return "remove";
+        },
+        trigger() {
+            if (!SharkGame.flags.gaveSeagrass) {
+                SharkGame.flags.gaveSeagrass = true;
+                res.changeResource("seagrass", 20);
+            }
+        },
+    },
+    tempestuousEmergencySeagrass: {
+        handlingTime: "afterTick",
+        priority: 0,
+        getAction() {
+            if (SharkGame.World.worldType !== "tempestuous") {
+                return "remove";
+            } else if (SharkGame.flags.gaveSeagrass && res.getResource("seagrass") < 10 && res.getResource("stormgoer") < 1) {
+                return "trigger";
+            }
+            return "pass";
+        },
+        trigger() {
+            res.setResource("seagrass", 20);
+        },
+    },
 };

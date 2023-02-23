@@ -644,15 +644,18 @@ SharkGame.ResourceTable = {
 
     // TEMPESTUOUS
 
+    // through to getting your chart, tempestuous has no machines and no sharkonium.
+    // once you get to the facility, you unlock it.
+
     swordfish: {
         name: "swordfish",
         singleName: "swordfish",
-        desc: "Battered, but never beaten.", // set this
+        desc: "Battered, but never broken.",
         color: "#BEC7CC", // set this
         income: {
             fish: 2,
         },
-        jobs: ["swordfishExplorer"], // set this
+        jobs: ["swordfishExplorer", "swordfishMechanic"], // set this
         value: 1000,
     },
 
@@ -661,14 +664,10 @@ SharkGame.ResourceTable = {
         singleName: "crab stormgoer",
         desc: "Courage.",
         color: "#BEC7CC", // set this
-        value: 1000,
-    },
-
-    mechanic: {
-        name: "crab mechanics",
-        singleName: "crab mechanic",
-        desc: ".", // set this
-        color: "#BEC7CC", // set this
+        income: {
+            crystal: 0.1,
+            seagrass: 0.1,
+        },
         value: 1000,
     },
 
@@ -676,6 +675,33 @@ SharkGame.ResourceTable = {
         name: "swordfish explorers",
         singleName: "swordfish explorer",
         desc: "The great pioneers.",
+        color: "#CCCCCC", // set this
+        income: {
+            chart: 0.1,
+        },
+        value: 1000,
+    },
+
+    chart: {
+        name: "charts",
+        singleName: "chart",
+        desc: "It's what we've found.",
+        color: "#CCCCCC", // set this
+        value: 100,
+    },
+
+    map: {
+        name: "map",
+        singleName: "map",
+        desc: "It's what we've been looking for.",
+        color: "#CCCCCC", // set this
+        value: 100,
+    },
+
+    swordfishMechanic: {
+        name: "swordfish mechanics",
+        singleName: "swordfish mechanic",
+        desc: "", // set this
         color: "#CCCCCC", // set this
         value: 1000,
     },
@@ -1260,7 +1286,7 @@ SharkGame.GeneratorIncomeAffectorsOriginal = {
             coralFarm: 0.01,
         },
     },
-    mechanic: {
+    swordfishMechanic: {
         multiply: {
             crystalMiner: 0.01,
             sandDigger: 0.01,
@@ -1287,7 +1313,6 @@ SharkGame.ResourceIncomeAffectorsOriginal = {
             ice: -0.00125,
         },
     },
-
     historian: {
         multiply: {
             science: 0.01,
@@ -1377,6 +1402,8 @@ SharkGame.ResourceCategories = {
         ],
         resources: [
             "science",
+            "chart",
+            "map",
             // "knowledge",
         ],
     },
@@ -1436,6 +1463,7 @@ SharkGame.ResourceCategories = {
             "kelp",
             "coral",
             "algae",
+            "seagrass",
             // "stone",
             // "gravel",
         ],
@@ -1494,6 +1522,8 @@ SharkGame.ResourceCategories = {
             "shoveler",
             "researcher",
             "acolyte",
+            "swordfishExplorer",
+            "swordfishMechanic",
             // "prospector",
             // "shoveler",
             // "miller",
@@ -1604,7 +1634,7 @@ SharkGame.InternalCategories = {
     },
     swordfishes: {
         name: "Swordfish",
-        resources: ["swordfish", "swordfishExplorer"],
+        resources: ["swordfish", "swordfishExplorer", "swordfishMechanic"],
     },
     sharkmachines: {
         name: "Shark Machines",

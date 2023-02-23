@@ -26,6 +26,8 @@ SharkGame.Lab = {
 
     get discoverReq() {
         switch (world.worldType) {
+            case "tempestuous":
+                return { resource: { crab: 5 } };
             default:
                 return { resource: { science: 10 } };
         }
