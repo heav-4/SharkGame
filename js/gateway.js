@@ -81,6 +81,9 @@ SharkGame.Gateway = {
         gateway.ui.prepareBasePane(baseReward, patienceReward, speedReward, gumptionBonus, storedTime);
         gateway.grantEssenceReward(baseReward, patienceReward, speedReward);
 
+        // store memories
+        SharkGame.Memories.elevateMemories();
+
         // RESET COMPLETED GATE REQUIREMENTS
         SharkGame.Gate.completedRequirements = {};
         // clear non-persistent flags just in case

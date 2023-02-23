@@ -278,6 +278,9 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         // reset planetpool and completed worlds and gameover and wongame
         SharkGame.Gateway.init();
 
+        // create homeEvent lookup
+        SharkGame.Memories.init();
+
         // generate requiredBy entries
         SharkGame.AspectTree.init();
 
@@ -342,6 +345,8 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         // refund aspects if necessary
         // create restrictions
         SharkGame.AspectTree.setup();
+
+        SharkGame.Memories.setup();
 
         // now set up resources because a lot depends on it
         SharkGame.Resources.setup();

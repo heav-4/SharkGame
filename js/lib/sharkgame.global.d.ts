@@ -348,6 +348,24 @@ declare global {
         generateActionTable(worldType?: WorldName): Record<HomeActionName, HomeAction>;
     };
 
+    type HomeEventsModule = {
+        messages: Record<
+            WorldName,
+            {
+                name: string;
+                message: string;
+                scales?: boolean;
+                unlock?: Partial<{
+                    resource: Record<ResourceName, number>;
+                    totalResource: Record<ResourceName, number>;
+                    homeAction: HomeActionName[];
+                    upgrade: UpgradeName[];
+                    custom(): boolean;
+                }>;
+            }[]
+        >;
+    };
+
     type UpgradesModule = {
         purchased: UpgradeName;
         /** Generated cache on-demand */
@@ -688,21 +706,6 @@ declare global {
     type HomeTab = SharkGameTabBase & {
         currentButtonTab: null | HomeActionCategory;
         currentExtraMessageIndex: number;
-        extraMessages: Record<
-            WorldName,
-            {
-                name: string;
-                message: string;
-                scales?: boolean;
-                unlock?: Partial<{
-                    resource: Record<ResourceName, number>;
-                    totalResource: Record<ResourceName, number>;
-                    homeAction: HomeActionName[];
-                    upgrade: UpgradeName[];
-                    custom(): boolean;
-                }>;
-            }[]
-        >;
         discoverActions(): void;
         createButtonTabs(): void;
         updateTab(tabToUpdate: string): void;
@@ -805,6 +808,7 @@ declare global {
         EventHandler: EventHandlerModule;
         Gateway: GatewayModule;
         HomeActions: HomeActionsModule;
+        HomeEvents: HomeEventsModule;
         Log: LogModule;
         Main: MainModule;
         MathUtil: MathUtilModule;

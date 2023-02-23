@@ -28,6 +28,7 @@
         "home": "readonly",
         "tree": "readonly",
         "log": "readonly",
+        "mem": "readonly",
         "sharktext": "readonly",
         "sharkmath": "readonly",
         "sharkcolor": "readonly",
