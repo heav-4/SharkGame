@@ -417,8 +417,6 @@ SharkGame.Events = {
                     shark: -0.02,
                     ray: -0.02,
                     crab: -0.02,
-                    stormgoer: -0.01,
-                    swordfishExplorer: -0.01,
                 };
             }
 

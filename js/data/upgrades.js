@@ -3740,7 +3740,7 @@ SharkGame.Upgrades = {
             name: "Cavernous Contact",
             desc: "The scientists have reported noises from the dark backside of the cave.",
             researchedMessage: "Found weird long-nose fish. Long, pointy noses... It was an awkward first encounter.",
-            effectDesc: "Swordfish can be recruited to brave the storm for more fish. ",
+            effectDesc: "Swordfish can be recruited to brave the storm for more fish.",
             cost: {
                 science: 50,
             },
@@ -3786,26 +3786,6 @@ SharkGame.Upgrades = {
                 },
             },
         },
-        crystalSpear: {
-            name: "Crystal Spear",
-            desc: "Our sword-wielding friends could use an upgrade.",
-            researchedMessage: "Designed various implements for swordfish to use, making it easier to catch dodgier fish.",
-            effectDesc: "Swordfish catch fish two and a half times faster thanks to a diversified toolset.",
-            cost: {
-                science: 100,
-                fish: 1000,
-                crystal: 25,
-            },
-            required: {
-                upgrades: ["cavernousContact"],
-                seen: ["swordfish"],
-            },
-            effect: {
-                incomeMultiplier: {
-                    swordfish: 2.5,
-                },
-            },
-        },
         crystalContainer: {
             name: "Crystal Containers",
             desc: "Make weird bottle things from the crystals we have. Maybe useful??",
@@ -3824,13 +3804,33 @@ SharkGame.Upgrades = {
                 },
             },
         },
+        crystalSpear: {
+            name: "Crystal Spear",
+            desc: "Our sword-wielding friends could use an upgrade.",
+            researchedMessage: "Designed various pointy implements for swordfish to use, making it easier to catch dodgy fish.",
+            effectDesc: "Swordfish catch fish two and a half times faster thanks to a diversified toolset.",
+            cost: {
+                science: 125,
+                fish: 1000,
+                crystal: 25,
+            },
+            required: {
+                upgrades: ["cavernousContact"],
+                seen: ["swordfish"],
+            },
+            effect: {
+                incomeMultiplier: {
+                    swordfish: 2.5,
+                },
+            },
+        },
         seabedGeology: {
             name: "Seabed Geology",
             desc: "The swordfish have volunteered to survey the seafloor for us. It's a risky mission, but it's a necessary one.",
             researchedMessage: "They came back with a bunch weird stuff, including some so-called 'seagrass.'",
             effectDesc: "Rays are twice as effective with their understanding of the seabed and its varieties of sediment. Also got seagrass. Yay?",
             cost: {
-                science: 175,
+                science: 250,
                 sand: 750,
             },
             required: {
@@ -3864,11 +3864,11 @@ SharkGame.Upgrades = {
         },
         sandbagging: {
             name: "Sandbagging",
-            desc: "If we venture out too far, we risk getting lost. The swordfish have a suggestion.",
+            desc: "If crabs venture out too far, they risk getting lost. The swordfish have a suggestion.",
             researchedMessage: "The swordfish showed us how to tie seagrass into bundles. By filling them with sand, we can weigh down crabs!",
-            effectDesc: "We can now equip crabs with sandbags to extend how far they can venture from the cave, turning them into stormgoers.",
+            effectDesc: "We can equip crabs with sandbags to make them into stormgoers. They can venture much farther from the cave.",
             cost: {
-                science: 400,
+                science: 500,
                 sand: 5000,
                 seagrass: 10,
             },
@@ -3878,11 +3878,11 @@ SharkGame.Upgrades = {
         },
         xenobiology: {
             name: "Xenobiology",
-            desc: "This seagrass is mostly just green plant stuff, but what is that THING growing on it?",
+            desc: "This seagrass is mostly just green plant stuff, but what are these THINGS growing on it?",
             researchedMessage: "Results inconclusive! Further research required. It could be such a benefit for science!",
             effectDesc: "We can now dissect seagrass flowers to further the cause of science.",
             cost: {
-                science: 400,
+                science: 750,
                 seagrass: 200,
             },
             required: {
@@ -3896,11 +3896,25 @@ SharkGame.Upgrades = {
             researchedMessage: "This is a wondrous, unending source of heat! Something good must come from this.",
             effectDesc: "A power source for future technologies has been discovered.",
             cost: {
-                science: 750,
+                science: 3000,
                 sand: 2000,
             },
             required: {
                 upgrades: ["seabedGeology"],
+            },
+        },
+        laserRays: {
+            name: "Laser Rays",
+            desc: "Using arcane shark mystery science, capture the heat of the vents for use by rays.",
+            researchedMessage: "The rays can now be granted gear that will let them fuse sand into crystal! Future!",
+            effectDesc: "Laser rays can now be geared up to burn the very sand to glassy crystal.",
+            cost: {
+                science: 750,
+                sand: 10000,
+                crystal: 75,
+            },
+            required: {
+                upgrades: ["thermalVents"],
             },
         },
         biology: {
@@ -3910,10 +3924,10 @@ SharkGame.Upgrades = {
             effectDesc:
                 "Sharks are twice as effective, and nurse sharks can be bought. Did you know shark eggs don't actually form just because a shark wills them to exist?",
             cost: {
-                science: 1200,
+                science: 3500,
             },
             required: {
-                upgrades: ["underwaterChemistry"],
+                upgrades: ["xenobiology"],
             },
             effect: {
                 incomeMultiplier: {
@@ -3921,18 +3935,25 @@ SharkGame.Upgrades = {
                 },
             },
         },
-        laserRays: {
-            name: "Laser Rays",
-            desc: "Using arcane shark mystery science, capture the heat of the vents for use by rays.",
-            researchedMessage: "The rays can now be granted gear that will let them fuse sand into crystal! Future!",
-            effectDesc: "Laser rays can now be geared up to burn the very sand to glassy crystal.",
+        crabBiology: {
+            name: "Crab Biology",
+            desc: "Crabs are a mystery. They keep to themselves and dig up crystals or tear up grass. What is even up with that? What ARE crabs??",
+            researchedMessage:
+                "It turns out crabs are friendly crustaceans that have revealed to the sharks the secrets of crab generation. It involves eggs, or something. Squirmy eggs.",
+            effectDesc:
+                "Crabs and crab stormgoers are four and two times as effective, respectively, and crab broods are available. Crabs are alright but they are also sort of terrifying and weird. Good thing they're on our side!",
             cost: {
-                science: 1500,
-                sand: 10000,
-                crystal: 75,
+                science: 1000,
+                seagrass: 2000,
             },
             required: {
-                upgrades: ["thermalVents"],
+                upgrades: ["biology"],
+            },
+            effect: {
+                incomeMultiplier: {
+                    crab: 4,
+                    stormgoer: 2,
+                },
             },
         },
         rayBiology: {
@@ -3941,50 +3962,32 @@ SharkGame.Upgrades = {
             researchedMessage:
                 "Apparently we could have just asked. We learned how rays make more rays. It's kinda similar to sharks, really, but rays.",
             effectDesc:
-                "Rays and laser rays are twice as effective, and ray makers are available. We may never repair the shark-ray relations to their former state after how awkward this whole affair was.",
+                "Rays and laser rays are four times more effective, and ray makers are available. We may never repair the shark-ray relations to their former state after how awkward this whole affair was.",
             cost: {
-                science: 1500,
-                sand: 10000,
+                science: 7500,
+                sand: 25000,
             },
             required: {
                 upgrades: ["biology", "laserRays"],
             },
             effect: {
                 incomeMultiplier: {
-                    ray: 2,
-                    laser: 2,
+                    ray: 4,
                 },
-            },
-        },
-        crabBiology: {
-            name: "Crab Biology",
-            desc: "Crabs are a mystery. They keep to themselves and dig up crystals or put down plants. What is even up with that? What ARE crabs??",
-            researchedMessage:
-                "It turns out crabs are friendly crustaceans that have revealed to the sharks the secrets of crab generation. It involves eggs, or something. Squirmy eggs.",
-            effectDesc:
-                "Crabs and planter crabs are four and two times as effective, respectively, and crab broods are available. Crabs are alright but they are also sort of terrifying and weird. Good thing they're on our side!",
-            cost: {
-                science: 8500,
-                kelp: 1000,
-            },
-            required: {
-                upgrades: ["biology"],
-            },
-            effect: {
-                incomeMultiplier: {
-                    crab: 4,
-                    planter: 2,
+                incomeBoost: {
+                    laser: 4,
                 },
             },
         },
         swordfishBiology: {
             name: "Swordfish Biology",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
+            desc: "We still don't really understand our lance-wielding friends. They zip around in the water and slash at stuff, but what are they REALLY?",
+            researchedMessage: "So, let me get this straight. Swordfish are basically just big fish with funny noses. Like...FOOD fish?",
+            effectDesc:
+                "Swordfish are four times more effective, and swordfish pairs are available. I swear, our scientists must be losing it. Too much seagrass research.",
             cost: {
-                science: 8500,
-                kelp: 1000,
+                science: 12500,
+                fish: 20000,
             },
             required: {
                 upgrades: ["biology"],
@@ -3992,64 +3995,81 @@ SharkGame.Upgrades = {
             },
             effect: {
                 incomeMultiplier: {
-                    swordfish: 2,
+                    swordfish: 4,
                 },
             },
         },
         heavySifting: {
-            name: "Sun Observation",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
+            name: "Heavy Sifting",
+            desc: "The swordfish have pointed out that our method of sandbagging could still use a little work.",
+            researchedMessage:
+                "We helped the swordfish jerry-rig some seagrass sifters. Now we can filter the heaviest sand for sandbagging, and leave the rest!",
+            effectDesc:
+                "Stormgoers cost 75% less sand, and rays are twice as effective at picking up sand. We have so, so much to learn about sand...",
             cost: {
-                science: 7500,
+                science: 12500,
+                seagrass: 1000,
             },
             required: {
-                upgrades: ["agriculture", "kelpHorticulture"],
+                upgrades: ["crabBiology"],
             },
             effect: {
-                incomeMultiplier: {
-                    planter: 2,
+                sandMultiplier: {
+                    ray: 4,
                 },
             },
-        },
-        transmutation: {
-            name: "Transmutation",
-            desc: "By heating things up and doing science things to them, maybe new things can be made!",
-            researchedMessage: "A new form of material has been discovered! It has been named after its discoverer, Dr. Sharkonium.",
-            effectDesc: "Enables transmutation of some random junk we have lying around into sharkonium, material of the future.",
-            cost: {
-                science: 3500,
-                crystal: 1500,
-                sand: 15000,
-            },
-            required: {
-                upgrades: ["thermalVents", "underwaterChemistry"],
-            },
-        },
-        automation: {
-            name: "Automation",
-            desc: "Using sharkonium, we can make things to do things so we don't have to do the things!",
-            researchedMessage: "Now we don't have to do all the work, machines can do it for us! Future!!",
-            effectDesc: "Machines can be built to supplement population duties. This is efficient.",
-            cost: {
-                science: 3500,
-                sharkonium: 250,
-            },
-            required: {
-                upgrades: ["transmutation"],
+            customEffect(background) {
+                return `${sharktext.getResourceName(`stormgoer`, false, 2, background)} cost 75% less ${sharktext.getResourceName(
+                    `sand`,
+                    false,
+                    2,
+                    background
+                )}`;
             },
         },
         magicBottles: {
             name: "Magic Bottles",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
+            desc: "The swordfish speak of a way to make bottles that amplify the natural magic of our crystals.",
+            researchedMessage: "Something's wrong. These bottles...they have wind coming out of them!",
+            effectDesc: "We can now make magic bottles that spew endless wind. Further study is DEFINITELY required.",
             cost: {
-                science: 7500,
+                crystal: 12500,
             },
             required: {
-                upgrades: ["sunObservation", "swordfishBiology"],
+                upgrades: ["underwaterChemistry", "crystalSpear"],
+            },
+        },
+        sunObservation: {
+            name: "Sun Observation",
+            desc: "We must determine what is with the weird glare on the surface of the water.",
+            researchedMessage:
+                "Shark science has discovered the sun! It has also discovered that looking directly into the sun hurts. But the plants seem to like it.",
+            effectDesc:
+                "Stormgoers are four times as effective. Is a suns worth many fish? We can see a sun, but where is it really? And what is it made of?",
+            cost: {
+                science: 20000,
+            },
+            required: {
+                upgrades: ["crabBiology"],
+            },
+            effect: {
+                incomeMultiplier: {
+                    stormgoer: 4,
+                },
+            },
+        },
+        powerfulPropulsion: {
+            name: "Powerful Propulsion",
+            desc: "The storm makes wind, right? So...what if we used wind to fight it?",
+            researchedMessage:
+                "Eureka! We've devised a mechanism that can turn swordfish into high-speed explorers! No more getting lost if they venture too far!",
+            effectDesc:
+                "Bottles and an elaborate system of pulleys to operate them can make swordfish into explorers. It's time to go see what's out there.",
+            cost: {
+                seagrass: 100000,
+            },
+            required: {
+                upgrades: ["magicBottles"],
             },
         },
         senseOfDirection: {
@@ -4061,19 +4081,8 @@ SharkGame.Upgrades = {
                 science: 7500,
             },
             required: {
-                upgrades: ["magicBottles"],
-            },
-        },
-        stormAnchors: {
-            name: "Storm Anchors",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
-            cost: {
-                science: 7500,
-            },
-            required: {
-                upgrades: ["magicBottles"],
+                seen: ["chart"],
+                upgrades: ["sunObservation", "powerfulPropulsion"],
             },
         },
         exploration: {
@@ -4095,18 +4104,6 @@ SharkGame.Upgrades = {
                 },
             },
         },
-        despositDiscoveries: {
-            name: "Desposit Discoveries",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
-            cost: {
-                science: 7500,
-            },
-            required: {
-                upgrades: ["exploration"],
-            },
-        },
         routing: {
             name: "Routing",
             desc: "",
@@ -4117,27 +4114,6 @@ SharkGame.Upgrades = {
             },
             required: {
                 upgrades: ["senseOfDirection"],
-            },
-        },
-        engineering: {
-            name: "Engineering",
-            desc: "The machines sort of suck. Let's make them better by learning how!",
-            researchedMessage: "The machines are twice as good now! We've figured out new designs in the process, too!",
-            effectDesc: "Machines are twice as effective. Skimmers and auto-transmuters are now possible to create.",
-            cost: {
-                science: 5000,
-                sharkonium: 1750,
-            },
-            required: {
-                upgrades: ["automation"],
-                seen: ["fishMachine", "crystalMiner", "sandDigger"],
-            },
-            effect: {
-                incomeMultiplier: {
-                    crystalMiner: 2,
-                    fishMachine: 2,
-                    sandDigger: 2,
-                },
             },
         },
         farExploration: {
@@ -4164,10 +4140,99 @@ SharkGame.Upgrades = {
             researchedMessage: "",
             effectDesc: "",
             cost: {
-                science: 7500,
+                science: 750000,
             },
             required: {
                 upgrades: ["routing"],
+            },
+        },
+        cartographicCompleteness: {
+            name: "Cartographic Completeness",
+            desc: "Once we've charted enough of the world, we can assemble the pieces into a map.",
+            researchedMessage: "",
+            effectDesc: "",
+            cost: {
+                chart: 1000000,
+            },
+            required: {
+                upgrades: ["powerfulPropulsion"],
+                seen: ["chart"],
+            },
+            customEffect(background) {
+                return `1 ${sharktext.getResourceName(`map`, false, 1, background)}`;
+            },
+        },
+        theExpedition: {
+            // gate discovery here
+            name: "The Expedition",
+            desc: "",
+            researchedMessage: "",
+            effectDesc: "",
+            cost: {
+                science: 7500,
+            },
+            required: {
+                upgrades: ["cartographicCompleteness"],
+            },
+        },
+        transmutation: {
+            name: "Transmutation",
+            desc: "By heating things up and doing science things to them, maybe new things can be made!",
+            researchedMessage: "A new form of material has been discovered! It has been named after its discoverer, Dr. Sharkonium.",
+            effectDesc: "Enables transmutation of some random junk we have lying around into sharkonium, material of the future.",
+            cost: {
+                science: 3500,
+                crystal: 1500,
+                sand: 15000,
+            },
+            required: {
+                upgrades: ["theExpedition"],
+            },
+        },
+        automation: {
+            name: "Automation",
+            desc: "Using sharkonium, we can make things to do things so we don't have to do the things!",
+            researchedMessage: "Now we don't have to do all the work, machines can do it for us! Future!!",
+            effectDesc: "Machines can be built to supplement population duties. This is efficient.",
+            cost: {
+                science: 3500,
+                sharkonium: 250,
+            },
+            required: {
+                upgrades: ["transmutation"],
+            },
+        },
+        engineering: {
+            name: "Engineering",
+            desc: "The machines sort of suck. Let's make them better by learning how!",
+            researchedMessage: "The machines are twice as good now! We've figured out new designs in the process, too!",
+            effectDesc: "Machines are twice as effective. Skimmers and auto-transmuters are now possible to create.",
+            cost: {
+                science: 5000,
+                sharkonium: 1750,
+            },
+            required: {
+                upgrades: ["automation"],
+                seen: ["fishMachine", "crystalMiner", "sandDigger"],
+            },
+            effect: {
+                incomeMultiplier: {
+                    crystalMiner: 2,
+                    fishMachine: 2,
+                    sandDigger: 2,
+                },
+            },
+        },
+        stormAnchors: {
+            name: "Storm Anchors",
+            desc: "for crystal miners, allows them to even be built",
+            researchedMessage: "",
+            effectDesc: "",
+            cost: {
+                science: 7500,
+            },
+            required: {
+                upgrades: ["magicBottles"],
             },
         },
         iterativeDesign: {
@@ -4194,18 +4259,6 @@ SharkGame.Upgrades = {
                 },
             },
         },
-        cartographicCompleteness: {
-            name: "Cartographic Completeness",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
-            cost: {
-                science: 7500,
-            },
-            required: {
-                upgrades: ["magicBottles"],
-            },
-        },
         precisionPlacement: {
             name: "Precision Placement",
             desc: "",
@@ -4216,6 +4269,18 @@ SharkGame.Upgrades = {
             },
             required: {
                 upgrades: ["cartographicCompleteness"],
+            },
+        },
+        despositDiscoveries: {
+            name: "Desposit Discoveries",
+            desc: "",
+            researchedMessage: "",
+            effectDesc: "",
+            cost: {
+                science: 7500,
+            },
+            required: {
+                upgrades: ["exploration"],
             },
         },
         recyclerDiscovery: {
@@ -4230,19 +4295,6 @@ SharkGame.Upgrades = {
             },
             required: {
                 upgrades: ["engineering"],
-            },
-        },
-        theExpedition: {
-            // gate discovery here
-            name: "The Expedition",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
-            cost: {
-                science: 7500,
-            },
-            required: {
-                upgrades: ["cartographicCompleteness"],
             },
         },
         superprocessing: {
@@ -4276,9 +4328,9 @@ SharkGame.Upgrades = {
             name: "Cumulus Control",
             desc: "",
             researchedMessage:
-                "Mechanics drop their tools. Swordfish stop what they are doing. They head outside, and see it. All that's left of the storm is a strong current.",
+                "Mechanics drop their tools. Scientists drop their beakers. They head outside, and see it. All that's left of the storm is a gentle current.",
             effectDesc:
-                "Defeated the storm. As it drew its final breath, you overheard two swordfish talking. One asked the other why the legend of the visitor never came true.",
+                "As the storm drew its final breath, you overheard two swordfish talking. One asked the other why the visitor never returned.",
             cost: {
                 science: 7500,
             },

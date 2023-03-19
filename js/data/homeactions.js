@@ -4322,8 +4322,14 @@ SharkGame.HomeActions = {
                 },
                 upgrade: ["xenobiology"],
             },
-            outcomes: [],
-            helpText: "Dissect seagrass flowers to further the cause of science. Research!",
+            outcomes: [
+                "There's science inside these things, surely!",
+                "The cause of science is advanced!",
+                "This is perhaps maybe insightful!",
+                "Why are we even doing this? Who knows! Science!",
+                "Results still inconclusive! Unsurpsingly...",
+            ],
+            helpText: "Dissect seagrass flowers to further the cause of science. This is research, probably!",
         },
 
         // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
@@ -4354,13 +4360,22 @@ SharkGame.HomeActions = {
                 upgrade: ["cavernousContact"],
             },
             outcomes: [],
-            multiOutcomes: [],
-            helpText: "",
+            multiOutcomes: [
+                "The swordfish, they come! En garde, storm!",
+                "You swear you heard the clink of swords from within the school you just summoned.",
+                "Brave the storm, friends. Brave the storm.",
+                "",
+            ],
+            helpText: "Fetch a swordfish from the back of the cave and ask them to help us catch fish.",
         },
 
         // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
 
-        getScientist: {},
+        getScientist: {
+            prereq: {
+                upgrade: ["statsDiscovery"],
+            },
+        },
 
         getNurse: {},
 
@@ -4382,7 +4397,13 @@ SharkGame.HomeActions = {
             cost: [
                 { resource: "crab", costFunction: "constant", priceIncrease: 1 },
                 { resource: "seagrass", costFunction: "constant", priceIncrease: 10 },
-                { resource: "sand", costFunction: "linear", priceIncrease: 100 },
+                {
+                    resource: "sand",
+                    costFunction: "linear",
+                    get priceIncrease() {
+                        return SharkGame.Upgrades.purchased.includes(`heavySifting`) ? 25 : 100;
+                    },
+                },
             ],
             max: "stormgoer",
             prereq: {
@@ -4391,14 +4412,37 @@ SharkGame.HomeActions = {
                 },
                 upgrade: ["sandbagging"],
             },
-            outcomes: [],
-            multiOutcomes: [],
+            outcomes: [
+                "Here comes one crab ready to not collect crystals just because.",
+                "Heavy-duty crab coming right up.",
+            ],
+            multiOutcomes: ["These crabs are NOT fat! Stop calling them that!"],
             helpText: "Weigh down a crab with sand to keep it from being carried away in the storm.",
         },
 
         getBrood: {},
 
         // SWORDFISH JOBS ////////////////////////////////////////////////////////////////////////////////
+
+        getSwordfishPair: {
+            name: "Match swordfish pair",
+            effect: {
+                resource: {
+                    swordfishPair: 1,
+                },
+            },
+            cost: [
+                { resource: "swordfish", costFunction: "constant", priceIncrease: 2 },
+                { resource: "fish", costFunction: "linear", priceIncrease: 250 },
+            ],
+            max: "swordfishPair",
+            prereq: {
+                upgrade: ["swordfishBiology"],
+            },
+            outcomes: [],
+            multiOutcomes: [],
+            helpText: "",
+        },
 
         getSwordfishExplorer: {
             name: "Equip swordfish explorer",
@@ -4409,14 +4453,11 @@ SharkGame.HomeActions = {
             },
             cost: [
                 { resource: "swordfish", costFunction: "constant", priceIncrease: 1 },
-                { resource: "seagrass", costFunction: "linear", priceIncrease: 15 },
-                { resource: "crystal", costFunction: "linear", priceIncrease: 3 },
+                { resource: "seagrass", costFunction: "linear", priceIncrease: 1000 },
+                { resource: "crystal", costFunction: "linear", priceIncrease: 15 },
             ],
             max: "swordfishExplorer",
             prereq: {
-                resource: {
-                    fish: 10,
-                },
                 upgrade: ["magicBottles"],
             },
             outcomes: [],
@@ -4538,6 +4579,7 @@ SharkGame.HomeActionCategories = {
             "getPit",
             "getCollective",
             "getSpawner",
+            "getSwordfishPair",
         ],
     },
 

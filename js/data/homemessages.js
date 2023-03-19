@@ -214,7 +214,13 @@ SharkGame.HomeMessages = {
             {
                 name: "tempestuous-sandbags",
                 unlock: { resource: { stormgoer: 10 } },
-                message: "Stormgoers tredge slowly across the seabed. They start ",
+                message:
+                    "Stormgoers tredge slowly across the seabed. They dig through the sand extracting buried seagrass, but are too heavy to bring back crystals.",
+            },
+            {
+                name: "tempestuous-stories",
+                unlock: { upgrade: ["swordfishBiology"] },
+                message: "The swordfish tell stories of life before the storm, and stories of an ancient visitor who wrought the storm upon them.",
             },
             /*
                 name: "tempestuous-special",
@@ -222,37 +228,32 @@ SharkGame.HomeMessages = {
                 message: "The swordfish watch you with awe. Hope glimmers in their eyes.",
             }, */
             {
-                name: "tempestuous-stories",
-                unlock: { upgrade: [""] },
-                message: "The swordfish tell stories of an ancient visitor who brought them prosperity...and destroyed their world.",
-            },
-            {
-                name: "tempestuous-legends",
-                unlock: { upgrade: [""] },
-                message: "Legends say the visitor will one day return to right his wrongs and make the land whole again.",
-            },
-            {
                 name: "tempestuous-bottles",
-                unlock: { upgrade: [""] },
-                message: "A silent wind swirls gently in each bottle. No matter how much you release, the storm lives on.",
+                unlock: { upgrade: ["magicBottles"] },
+                message: "A silent wind swirls gently in each bottle.",
+            },
+            {
+                name: "tempestuous-expeditions",
+                unlock: { resource: { chart: 100 } },
+                message: "The swordfish line up in droves to volunteer for expeditions. They don't need convincing, just equipment.",
             },
             {
                 name: "tempestuous-map",
-                unlock: { upgrade: [""] },
-                message: "A grand map lays stretched out against the cavern wall. All that's left is to plan the expedition.",
+                unlock: { upgrade: ["cartographicCompleteness"] },
+                message: "A grand map lays stretched out against the cavern wall. In the top right corner is a strange shape with a door.",
             },
             {
                 name: "tempestuous-machine",
                 unlock: { upgrade: [""] },
-                message: "The hallways of the facility echo with sounds of turning cogs.",
+                message: "The hallways of the facility echo with sounds of turning cogs. Swordfish swim rapidly up and down the halls.",
             },
             {
                 name: "tempestuous-generator",
                 unlock: { upgrade: [""] },
-                message: "The generator ",
+                message: "The generator is completely disabled, yet the facility is still running. The wind howls outside.",
             },
             {
-                name: "tempestuous-done",
+                name: "tempestuous-legends",
                 unlock: { upgrade: ["cumulusControl"] },
                 message: "",
             },

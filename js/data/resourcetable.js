@@ -238,8 +238,8 @@ SharkGame.ResourceTable = {
     seagrass: {
         name: "seagrass",
         singleName: "seagrass",
-        desc: "", // set this
-        color: "#828FB5", // set this
+        desc: "Little plants.", // set this
+        color: "#5AC766", // set this
         value: 10, // set this
     },
 
@@ -663,10 +663,9 @@ SharkGame.ResourceTable = {
         name: "crab stormgoers",
         singleName: "crab stormgoer",
         desc: "Courage.",
-        color: "#BEC7CC", // set this
+        color: "#568F5C", // set this
         income: {
-            crystal: 0.1,
-            seagrass: 0.1,
+            seagrass: 1,
         },
         value: 1000,
     },
@@ -686,23 +685,34 @@ SharkGame.ResourceTable = {
         name: "charts",
         singleName: "chart",
         desc: "It's what we've found.",
-        color: "#CCCCCC", // set this
+        color: "#D9D1B6", // set this
         value: 100,
     },
 
     map: {
-        name: "map",
+        name: "maps",
         singleName: "map",
         desc: "It's what we've been looking for.",
-        color: "#CCCCCC", // set this
+        color: "#7A7254", // set this
         value: 100,
     },
 
     swordfishMechanic: {
         name: "swordfish mechanics",
         singleName: "swordfish mechanic",
-        desc: "", // set this
+        desc: "The great inventors.",
         color: "#CCCCCC", // set this
+        value: 1000,
+    },
+
+    swordfishPair: {
+        name: "swordfish pairs",
+        singleName: "swordfish pair",
+        desc: "Together.",
+        color: "#485054", // set this
+        income: {
+            swordfish: 0.02,
+        },
         value: 1000,
     },
 
@@ -1489,7 +1499,7 @@ SharkGame.ResourceCategories = {
             "You sure you want to disrupt this accelerated growth curve?",
             "Back to a simpler life, maybe.",
         ],
-        resources: ["nurse", "maker", "brood", "queen", "berrier", "biologist", "pit", "collective", "spawner"],
+        resources: ["nurse", "maker", "brood", "queen", "berrier", "biologist", "pit", "collective", "spawner", "swordfishPair"],
     },
     specialists: {
         name: "Specialists",
@@ -1524,6 +1534,7 @@ SharkGame.ResourceCategories = {
             "acolyte",
             "swordfishExplorer",
             "swordfishMechanic",
+            "stormgoer",
             // "prospector",
             // "shoveler",
             // "miller",
@@ -1634,7 +1645,7 @@ SharkGame.InternalCategories = {
     },
     swordfishes: {
         name: "Swordfish",
-        resources: ["swordfish", "swordfishExplorer", "swordfishMechanic"],
+        resources: ["swordfish", "swordfishExplorer", "swordfishMechanic", "swordfishPair"],
     },
     sharkmachines: {
         name: "Shark Machines",
