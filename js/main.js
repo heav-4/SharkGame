@@ -937,7 +937,7 @@ SharkGame.FunFacts = {
             messages: [
                 "This world was originally called Violent, now it's Volcanic. Playtesters got confused and thought the world had violence, when really, it just has the threat of violence.",
                 "Hydrothermal vents do not spew fire in real life. They spew smoke.",
-                "Hydrothermal vents support a diverse array of sea life due to their high output of minerals. Bacteria eat these minerals, starting a food chain.",
+                "Hydrothermal vents support a diverse array of sea life due to their high output of minerals. Bacteria eat these minerals, forming the base of a food chain.",
                 "Hydrothermal vents are found at fault lines in the earth's crust, where water becomes superheated due to magma rising close to the ocean floor.",
             ],
             areRequirementsMet() {
@@ -955,6 +955,9 @@ SharkGame.FunFacts = {
             },
         },
         marine: {},
+        tempestuous: {
+            messages: ["'Tempestuous' does not mean stormy. It means emotionally turbulent. But it's close enough."],
+        },
     },
 
     resourceBased: {
@@ -970,11 +973,13 @@ SharkGame.FunFacts = {
             "A shark is worth one in the bush, and a bunch in the sea water. Don't put sharks in bushes.",
             "Sharks are very old, evolutionarily speaking. The first sharks emerged some time around 400 million years ago.",
             "Sharks have very rough skin, like sandpaper. In fact, shark skin was literally used as sandpaper in the past.",
+            "Sharks do not have bones. Neither do rays.",
         ],
         crystal: ["Magic crystals are probably not real."],
         ray: [
             "Rays can be thought of as flattened sharks. The two are very closely related evolutionarily.",
             "Rays are pancakes of the sea. (note: probably not true)",
+            "Rays do not have bones. Neither do sharks.",
         ],
         crab: [
             "Throughout history, many species crustaceans have independently evovled into crabs for no discernable reason. The phenomenon is called carcinisation.",
@@ -1030,11 +1035,17 @@ SharkGame.FunFacts = {
             "Chimaera are closely related to sharks and rays.",
             "Chimaera are deep-sea animals, usually found more than 500 meters (~1500 feet) below the surface of the ocean.",
             "Chimaera have a venomous spine in front of their dorsal fin.",
-            "Chimaera are not purple, they are completely pale, because deep-sea animals like chimaera have no reason to invest in any kind of colors, it's just too dark to care.",
+            "Chimaera are not purple, they are completely pale, because deep-sea animals like chimaera have no reason to invest in colors, it's just too dark to care.",
+            "Chimaera do not have bones. Neither do sharks or rays.",
+        ],
+        swordfish: [
+            "Swordfish are indeed a kind of fish, unlike sharks and rays.",
+            "The top speed of marlins and swordfish is commonly reported to be 60 mph, but this is not accurate. It's actually closer to 30 mph.",
+            "The bill of a swordfish is used to slash like a sword, not stab like a spear.",
         ],
         seaApple: [
             "Sea apples are a type of sea cucumber. They feed on debris and detritus.",
-            "Sea apples are in no way actually attracted to kelp. It's just a convenient mechanic.",
+            "Sea apples are in no way actually attracted to kelp. The apples in this game are weird.",
         ],
         jellyfish: [
             // "Sharks would definitely not have a way of acquiring most kinds of jellyfish in real life.",
@@ -1046,7 +1057,12 @@ SharkGame.FunFacts = {
             "The idea for porite comes from the structure of bones, which have spongey insides that reduce their weight while retaining their strength.",
         ],
         calcinium: ["Calcinium was inspired by the appearance and texture of limestone."],
-        laser: ["Sharks with lasers were overdone, okay? At least 'laser ray' is a pun."],
+        laser: [
+            "Sharks with lasers were overdone, okay? 'Laser ray' is a pun, so it's obviously superior.",
+            "Sand probably does not actually fuse into magic crystals. Unless you count glass.",
+            "We do not know how the rays strap lasers to themselves. It is known only to the sharks.",
+            "Laser rays take power directly from the heat of hydrothermal vents, so they are each tethered to a small operating area.",
+        ],
         coral: [
             "Some coral can actually catch small fish.",
             "Coral is not a plant, it is an animal. A weird, stationary animal.",
@@ -1063,12 +1079,12 @@ SharkGame.FunFacts = {
         algae: [
             "Algae comes in many different shapes, sizes, and forms, like 'valonia ventricosa,' a species where every individual cell can grow larger than a grape. Look it up, it's insane.",
             "Algae is neither plant nor animal. It is something else entirely (a protist?).",
-            "Kelp is a kind of algae. In fact, all seaweed is algae. The sea is mostly just advanced algae and a bunch of animals, with very few actual plants.",
+            "Kelp is a kind of algae. In fact, all seaweed is algae. The sea has very few true plants.",
         ],
-        kelp: ["Kelp is not a plant. It's a kind of algae, and algae isn't a plant, so kelp isn't a plant."],
+        kelp: ["Kelp is not a plant, it's a kind of algae. Algae is also not a plant."],
         arcana: ["Arcane, super-charged energy crystals are definitely not real."],
         ice: ["In the original shark game, ice used to eat away your resources instead of slowing their production."],
-        tar: ["In the original shark game, tar was gained passively. Machines produced basically none."],
+        tar: ["In the original shark game, tar was gained passively. Machines produced basically none of it."],
     },
 
     default: [
