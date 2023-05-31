@@ -103,7 +103,8 @@ SharkGame.HomeMessages = {
             {
                 name: "marine-lobsters-talk",
                 unlock: { totalResource: { lobster: 125 } },
-                message: "When the lobsters talk, they speak of the good old days. They talk a lot.",
+                message:
+                    "The lobsters tell tales of grandiose adventures and vast riches from a time long past. They ask themselves why they ever abandoned that life.",
             },
             {
                 name: "marine-calcinium",
@@ -439,7 +440,8 @@ SharkGame.HomeMessages = {
             {
                 name: "shrouded-truth",
                 unlock: { totalResource: { sacrifice: 9000000000000000 } },
-                message: "A team of eels get your attention. They show you something that they found in the caverns. It's a book on making arcana.",
+                message:
+                    "A team of eels get your attention. They have something from the caverns: it's the schematic for the arcana battery. So it really WAS real...",
             },
         ],
 
@@ -468,7 +470,7 @@ SharkGame.HomeMessages = {
                 name: "frigid-village",
                 unlock: { upgrade: ["civilContact"] },
                 message:
-                    "A small village of squid greets you respectfully. The water in this place is a little warmer, and you hear a quiet, ambient hum.",
+                    "A small village of squid greet you respectfully. The water in this place is a little warmer, and you hear a quiet, ambient hum.",
             },
             {
                 name: "frigid-urchins",
