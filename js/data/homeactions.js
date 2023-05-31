@@ -4364,7 +4364,18 @@ SharkGame.HomeActions = {
 
         // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
 
-        getLaser: {},
+        getLaser: {
+            cost: [
+                { resource: "ray", costFunction: "constant", priceIncrease: 1 },
+                {
+                    resource: "crystal",
+                    costFunction: "linear",
+                    get priceIncrease() {
+                        return SharkGame.Upgrades.purchased.includes(`laserLenses`) ? 10 : 50;
+                    },
+                },
+            ],
+        },
 
         getMaker: {},
 
@@ -4437,15 +4448,15 @@ SharkGame.HomeActions = {
             cost: [
                 { resource: "swordfish", costFunction: "constant", priceIncrease: 1 },
                 { resource: "seagrass", costFunction: "linear", priceIncrease: 1000 },
-                { resource: "crystal", costFunction: "linear", priceIncrease: 15 },
+                { resource: "crystal", costFunction: "linear", priceIncrease: 25 },
             ],
             max: "swordfishExplorer",
             prereq: {
-                upgrade: ["magicBottles"],
+                upgrade: ["powerfulPropulsion"],
             },
             outcomes: [],
             multiOutcomes: [],
-            helpText: "",
+            helpText: "Rig a complex propulsion system to a swordfish and train them to chart surrounding waters.",
         },
 
         getSwordfishMechanic: {
@@ -4513,6 +4524,7 @@ SharkGame.HomeActionCategories = {
             "getOctopus",
             "getSquid",
             "getUrchin",
+            "getSwordfish",
         ],
     },
 
@@ -4546,6 +4558,7 @@ SharkGame.HomeActionCategories = {
             "getAcolyte",
             "getSwordfishExplorer",
             "getSwordfishMechanic",
+            "getStormgoer",
         ],
     },
 
@@ -4585,6 +4598,7 @@ SharkGame.HomeActionCategories = {
             "fuseCalcinium",
             "toggleAutoSmelt",
             "smeltPorite",
+            "seagrassToScience",
         ],
     },
 

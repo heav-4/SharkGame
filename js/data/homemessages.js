@@ -208,6 +208,11 @@ SharkGame.HomeMessages = {
                 message: "You take shelter inside the cave. You can still feel the wind, but it's gentle now.",
             },
             {
+                name: "tempestuous-cave",
+                unlock: { upgrade: ["crystalBite"] },
+                message: "You hear a rustling from the dark backside of the cave.",
+            },
+            {
                 name: "tempestuous-swordfish",
                 unlock: { upgrade: ["cavernousContact"] },
                 message: "The so-called 'swordfish' apologize for their behavior. They say no shark has entered this cave in a long, long time.",
@@ -221,7 +226,8 @@ SharkGame.HomeMessages = {
             {
                 name: "tempestuous-stories",
                 unlock: { upgrade: ["swordfishBiology"] },
-                message: "The swordfish tell stories of life before the storm, and stories of an ancient visitor who wrought the storm upon them.",
+                message:
+                    "The swordfish tell stories of life before the storm and an ancient visitor who brought them prosperity. They ask if you too, have seen this visitor.",
             },
             /*
                 name: "tempestuous-special",
@@ -231,11 +237,11 @@ SharkGame.HomeMessages = {
             {
                 name: "tempestuous-bottles",
                 unlock: { upgrade: ["magicBottles"] },
-                message: "A silent wind swirls gently in each bottle.",
+                message: "A silent wind swirls gently in each bottle. You see spirals of magical energy twisting the water inside.",
             },
             {
                 name: "tempestuous-expeditions",
-                unlock: { resource: { chart: 100 } },
+                unlock: { upgrade: ["routing"] },
                 message: "The swordfish line up in droves to volunteer for expeditions. They don't need convincing, just equipment.",
             },
             {

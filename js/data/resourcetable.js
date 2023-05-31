@@ -677,7 +677,7 @@ SharkGame.ResourceTable = {
         desc: "The great pioneers.",
         color: "#CCCCCC", // set this
         income: {
-            chart: 0.1,
+            chart: 0.01,
         },
         value: 1000,
     },
@@ -686,7 +686,7 @@ SharkGame.ResourceTable = {
         name: "charts",
         singleName: "chart",
         desc: "It's what we've found.",
-        color: "#D9D1B6", // set this
+        color: "#D9D1B6",
         value: 100,
     },
 
@@ -709,7 +709,7 @@ SharkGame.ResourceTable = {
     swordfishPair: {
         name: "swordfish pairs",
         singleName: "swordfish pair",
-        desc: "Together.",
+        desc: "It takes two.",
         color: "#485054", // set this
         income: {
             swordfish: 0.02,
