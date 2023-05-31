@@ -470,7 +470,7 @@ SharkGame.HomeMessages = {
                 name: "frigid-village",
                 unlock: { upgrade: ["civilContact"] },
                 message:
-                    "A small village of squid greet you respectfully. The water in this place is a little warmer, and you hear a quiet, ambient hum.",
+                    "A small village of squid greets you respectfully. The water in this place is a little warmer, and you hear a quiet, ambient hum.",
             },
             {
                 name: "frigid-urchins",
