@@ -1926,22 +1926,6 @@ SharkGame.HomeActions = {
             helpText: "Fuse valuable resources into delphinium, which is kinda like sharkonium. Except worse.",
         },
 
-        craftPapyrus: {
-            name: "Craft kelp papyrus",
-            effect: {
-                resource: {
-                    papyrus: 1,
-                },
-            },
-            cost: [{ resource: "kelp", costFunction: "constant", priceIncrease: 15 }],
-            max: "papyrus",
-            prereq: {
-                upgrade: ["kelpPapyrus"],
-            },
-            outcomes: ["foobar."],
-            helpText: "Using the power of the sun somehow, make crunchy, solid kelp sheets for writing stuff down.",
-        },
-
         // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
 
         getShark: {},
