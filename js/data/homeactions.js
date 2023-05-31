@@ -4091,7 +4091,6 @@ SharkGame.HomeActions = {
                 "[This message has been censored for reasons of being mostly really gross.]",
                 "Eggs, eggs everywhere, but never stop and think.",
                 "Writhing crab pile. Didn't expect those words next to each other today, did you.",
-                "The crab brood is a rarely witnessed phenomenon, due to being some strange behaviour of crabs that have been driven to seek crystals for reasons only they understand.",
             ],
             multiOutcomes: [
                 "The broods grow. The swarm rises.",
