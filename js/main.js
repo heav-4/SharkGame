@@ -1010,7 +1010,7 @@ SharkGame.FunFacts = {
             "Sea urchins primarily eat kelp. A lot of kelp.",
             "Sea urchins have been observed to wear various items on top of themselves, such as rocks. If you give them little hats, they will wear those too. It is not agreed upon why they do this.",
             "Most sea urchins are not venomous.",
-            "The spines on most sea urchins are not very sharp. You can hold many species urchins in your palm if you're careful.",
+            "The spines on most sea urchins are not very sharp. Many species of urchin can be held in the palm.",
         ],
         squid: [
             "Squid eat crabs. They're not eating yours out of politeness.",
@@ -1035,7 +1035,7 @@ SharkGame.FunFacts = {
             "Chimaera are closely related to sharks and rays.",
             "Chimaera are deep-sea animals, usually found more than 500 meters (~1500 feet) below the surface of the ocean.",
             "Chimaera have a venomous spine in front of their dorsal fin.",
-            "Chimaera are not purple, they are completely pale, because deep-sea animals like chimaera have no reason to invest in colors, it's just too dark to care.",
+            "Chimaera are not purple, they are completely pale. They don't bother with colors because deep-sea animals like chimaera cannot be seen anyways.",
             "Chimaera do not have bones. Neither do sharks or rays.",
         ],
         swordfish: [
@@ -1056,7 +1056,7 @@ SharkGame.FunFacts = {
         porite: [
             "The idea for porite comes from the structure of bones, which have spongey insides that reduce their weight while retaining their strength.",
         ],
-        calcinium: ["Calcinium was inspired by the appearance and texture of limestone."],
+        calcinium: ["Calcinium was inspired by the appearance and texture of limestone and seashells."],
         laser: [
             "Sharks with lasers were overdone, okay? 'Laser ray' is a pun, so it's obviously superior.",
             "Sand probably does not actually fuse into magic crystals. Unless you count glass.",
@@ -1070,7 +1070,7 @@ SharkGame.FunFacts = {
             "Many kinds of coral have a mutualistic relationship with certain species of alage, who produce nutrients in exchange for carbon dioxide and shelter.",
         ],
         sponge: [
-            "Sponges are incredibly distinct from all other animals. They are asymmetric, have no organs, and their cells can change specialization at will, which is true for no other animal.",
+            "Sponges are incredibly distinct from all other animals. They are asymmetric, have no organs, and their cells can change specialization at will.",
             "Sponges are incredibly, incredibly old, evolutionarily speaking. They probably date back at least 600 million years.",
             "Sponge is not a plant, it is an animal. A weird, amorphous animal.",
             "The pores in sponges are designed to help them filter water for food at maximum efficiency.",
@@ -1082,6 +1082,7 @@ SharkGame.FunFacts = {
             "Kelp is a kind of algae. In fact, all seaweed is algae. The sea has very few true plants.",
         ],
         kelp: ["Kelp is not a plant, it's a kind of algae. Algae is also not a plant."],
+        seagrass: ["Unlike kelp, seagrass is a true plant. It is one of very few under the sea."],
         arcana: ["Arcane, super-charged energy crystals are definitely not real."],
         ice: ["In the original shark game, ice used to eat away your resources instead of slowing their production."],
         tar: ["In the original shark game, tar was gained passively. Machines produced basically none of it."],
