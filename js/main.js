@@ -204,6 +204,9 @@ SharkGame.Main = {
 
     // start the game
     init() {
+        // check to see if i forgot to categorize something
+        main.checkForCategorizationOversights();
+
         // wipe it
         main.wipeGame();
         // load a save if needed
@@ -845,6 +848,29 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             SharkGame.persistentFlags.tooltipUnlocked = true;
         }
         return SharkGame.persistentFlags.tooltipUnlocked;
+    },
+
+    checkForCategorizationOversights() {
+        $.each(SharkGame.ResourceTable, (resourceName, resourceObj) => {
+            if (!res.getCategoryOfResource(resourceName)) {
+                log.addError(new Error(`${resourceName} does not have a category.`));
+            }
+
+            if (!resourceObj.desc) {
+                log.addError(new Error(`${resourceName} does not have a description.`));
+            }
+
+            if (!resourceObj.name || !resourceObj.singleName) {
+                log.addError(new Error(`${resourceName} does not have a name.`));
+            }
+        });
+        _.each(SharkGame.Gateway.allowedWorlds, (worldName) => {
+            $.each(SharkGame.HomeActions[worldName], (actionName) => {
+                if (!home.getActionCategory(actionName)) {
+                    log.addError(new Error(`${actionName} does not have a category.`));
+                }
+            });
+        });
     },
 };
 
