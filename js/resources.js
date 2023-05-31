@@ -624,7 +624,7 @@ SharkGame.Resources = {
             // event.originalEvent.dataTransfer.setData("tokenType", event.originalEvent.target.type);
             event.originalEvent.dataTransfer.setData("tokenLocation", SharkGame.flags.tokens[this.id]);
             const image = document.createElement("img");
-            image.src = "img/raw/general/theToken.png";
+            image.src = "img/small/general/theToken.png";
             event.originalEvent.dataTransfer.setDragImage(image, 0, 0);
             res.tokens.updateColorfulDropZones();
             res.tableTextLeave();
@@ -635,7 +635,7 @@ SharkGame.Resources = {
             res.tokens.chromeForcesWorkarounds = $("#" + this.id).attr("tokenId");
             event.originalEvent.dataTransfer.setData("tokenLocation", event.originalEvent.target.id);
             const image = document.createElement("img");
-            image.src = "img/raw/general/theToken.png";
+            image.src = "img/small/general/theToken.png";
             event.originalEvent.dataTransfer.setDragImage(image, 0, 0);
             res.tokens.updateColorfulDropZones();
             res.tableTextLeave();
@@ -693,7 +693,7 @@ SharkGame.Resources = {
         reapplyToken(token) {
             if (SharkGame.flags.tokens) {
                 $("#" + SharkGame.flags.tokens[token.attr("id")])
-                    .css("background-image", "url(img/raw/general/theToken.png)")
+                    .css("background-image", "url(img/small/general/theToken.png)")
                     .attr("draggable", true)
                     .attr("tokenId", token.attr("id"));
             }
@@ -722,7 +722,7 @@ SharkGame.Resources = {
                 SharkGame.flags.tokens[newId] = "NA";
             } else {
                 $("#" + newId)
-                    .css("background-image", "url(img/raw/general/theToken.png)")
+                    .css("background-image", "url(img/small/general/theToken.png)")
                     .attr("draggable", true)
                     .attr("tokenId", originalId);
                 SharkGame.flags.tokens[originalId] = newId;
