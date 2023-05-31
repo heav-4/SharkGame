@@ -2743,7 +2743,7 @@ SharkGame.Upgrades = {
                 science: 1e9,
             },
             required: {
-                upgrades: ["iterativeDesign"],
+                upgrades: ["iterativeDesign", "pearlConversion"],
             },
             customEffect(background) {
                 return `${sharktext.getResourceName(`clam`, false, 2, background)} to ${sharktext.getResourceName(
