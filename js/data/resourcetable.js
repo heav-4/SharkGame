@@ -5,7 +5,7 @@ SharkGame.ResourceTable = {
     numen: {
         name: "numina",
         singleName: "numen",
-        // desc: "You think as a deity. You act as a deity. You are a deity.",
+        desc: "You think as a deity. You act as a deity. You are a deity.",
         color: "#FFFFFF",
         value: -1,
     },
@@ -482,7 +482,7 @@ SharkGame.ResourceTable = {
     harvester: {
         name: "harvester lobsters",
         singleName: "harvester lobster",
-        desc: "",
+        desc: "null",
         color: "#718493",
         value: 3000,
     },
@@ -539,6 +539,7 @@ SharkGame.ResourceTable = {
     coralglass: {
         name: "coralglass",
         singleName: "coralglass",
+        desc: "null",
         color: "#FDD5B4",
         value: 70,
     },

@@ -4495,7 +4495,7 @@ SharkGame.HomeActionCategories = {
 
     basic: {
         name: "Basic",
-        actions: ["catchFish", "debugbutton", "prySponge", "getClam", "getJellyfish"],
+        actions: ["catchFish", "debugbutton", "prySponge", "prySponge2", "getClam", "getJellyfish"],
     },
 
     frenzy: {
@@ -4583,6 +4583,8 @@ SharkGame.HomeActionCategories = {
             "fuseAncientPart",
             "makeSacrifice",
             "fuseCalcinium",
+            "toggleAutoSmelt",
+            "smeltPorite",
         ],
     },
 
