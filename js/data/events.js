@@ -484,4 +484,26 @@ SharkGame.Events = {
             res.setResource("seagrass", 20);
         },
     },
+    tempestuousMapSequence: {
+        handlingTime: "afterTick",
+        priority: 0,
+        getAction() {
+            return "remove";
+        },
+        trigger() {
+            res.changeResource("map", 1);
+            res.changeResource("swordfish", res.getResource("swordfishExplorer"));
+
+            world.worldResources.get("chart").exists = false;
+            res.setResource("chart", 0);
+            res.setTotalResource("chart", 0);
+            world.worldResources.get("swordfishExplorer").exists = false;
+            res.setResource("swordfishExplorer", 0);
+            res.setTotalResource("swordfishExplorer", 0);
+            delete SharkGame.HomeActions.generated.tempestuous.getSwordfishExplorer;
+            res.reconstructResourcesTable();
+            world.worldResources.get("chart").exists = true;
+            SharkGame.TabHandler.setUpTab();
+        },
+    },
 };

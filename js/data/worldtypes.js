@@ -145,6 +145,7 @@ SharkGame.WorldTypes = {
             "basicmaterials",
             "seagrass",
             "chart",
+            "map",
         ],
         absentResources: ["planter"],
         modifiers: [],

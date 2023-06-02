@@ -4252,8 +4252,9 @@ SharkGame.Upgrades = {
         cartographicCompleteness: {
             name: "Cartographic Completeness",
             desc: "Once we've charted enough of the world, we can assemble the pieces into a map.",
-            researchedMessage: "",
-            effectDesc: "",
+            researchedMessage: "We've done it! The grand map is assembled, and...what's that? You found something?",
+            effectDesc:
+                "All explorers have been dismissed and all charts have been assembled into a single super-map. Nothing else to find, I guess.",
             cost: {
                 chart: 1000000,
             },
@@ -4264,15 +4265,15 @@ SharkGame.Upgrades = {
             customEffect(background) {
                 return `1 ${sharktext.getResourceName(`map`, false, 1, background)}`;
             },
+            events: ["tempestuousMapSequence"],
         },
         theExpedition: {
-            // gate discovery here
             name: "The Expedition",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
+            desc: "Let's go see what's out there.",
+            researchedMessage: "We've discovered the giant weather machine making the superstorm. We'll have to find a way to shut it down.",
+            effectDesc: "Moved our base of operations to the inside of the weather machine.",
             cost: {
-                science: 7500,
+                fish: 10000000,
             },
             required: {
                 upgrades: ["cartographicCompleteness"],
