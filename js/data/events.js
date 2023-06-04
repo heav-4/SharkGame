@@ -491,7 +491,7 @@ SharkGame.Events = {
             return "remove";
         },
         trigger() {
-            res.changeResource("map", 1);
+            res.setResource("map", 1);
             res.changeResource("swordfish", res.getResource("swordfishExplorer"));
 
             world.worldResources.get("chart").exists = false;
@@ -500,10 +500,22 @@ SharkGame.Events = {
             world.worldResources.get("swordfishExplorer").exists = false;
             res.setResource("swordfishExplorer", 0);
             res.setTotalResource("swordfishExplorer", 0);
-            delete SharkGame.HomeActions.generated.tempestuous.getSwordfishExplorer;
             res.reconstructResourcesTable();
             world.worldResources.get("chart").exists = true;
             SharkGame.TabHandler.setUpTab();
+        },
+    },
+    tempestuousInternalExploration: {
+        handlingTime: "beforeTick",
+        priority: 0,
+        getAction() {
+            return "remove";
+        },
+        trigger() {
+            SharkGame.GeneratorIncomeAffectors.swordfishMechanic.multiply.sandDigger *= 5;
+            SharkGame.GeneratorIncomeAffectors.swordfishMechanic.multiply.fishMachine *= 5;
+            res.clearNetworks();
+            res.buildIncomeNetwork();
         },
     },
 };

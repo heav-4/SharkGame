@@ -129,7 +129,7 @@ SharkGame.WorldTypes = {
             vagueLongDesc: "It's hard to feel out this place. Everything's constantly moving.",
             longDesc:
                 "A terrible storm has taken up residence here. It's hard to think, much less get anything done, with all the strong currents whipping stuff around.",
-            missing: ["kelp", "seaApple"],
+            missing: ["kelp", "seaApple", "crystalMiner"],
             present: ["swordfish", "seagrass"],
         },
         entry: "You recall nothing and know only the storms. The unrelenting, restless storms scattering your possessions and allies.",
@@ -145,10 +145,9 @@ SharkGame.WorldTypes = {
             "basicmaterials",
             "seagrass",
             "chart",
-            "map",
         ],
-        absentResources: ["planter"],
-        modifiers: [],
+        absentResources: ["planter", "crystalMiner"],
+        modifiers: [{ type: "multiplier", modifier: "planetaryIncomeMultiplier", resource: "sandDigger", amount: 24 }],
         gateRequirements: {
             slots: {
                 junk: 1e9,

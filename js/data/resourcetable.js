@@ -691,7 +691,7 @@ SharkGame.ResourceTable = {
     },
 
     map: {
-        name: "maps",
+        name: "map", // you won't ever have more than one so i'm setting this as just "map" for the resource table tooltip
         singleName: "map",
         desc: "It's what we've been looking for.",
         color: "#7A7254", // set this
@@ -1299,7 +1299,6 @@ SharkGame.GeneratorIncomeAffectorsOriginal = {
     },
     swordfishMechanic: {
         multiply: {
-            crystalMiner: 0.01,
             sandDigger: 0.01,
             fishMachine: 0.01,
         },

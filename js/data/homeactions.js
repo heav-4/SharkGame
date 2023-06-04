@@ -4294,7 +4294,9 @@ SharkGame.HomeActions = {
             name: "Study seagrass flowers",
             effect: {
                 resource: {
-                    science: 1,
+                    get science() {
+                        return SharkGame.Upgrades.purchased.includes(`supernaturalSeagrass`) ? 10 : 1;
+                    },
                 },
             },
             cost: [{ resource: "seagrass", costFunction: "constant", priceIncrease: 2 }],
@@ -4342,9 +4344,9 @@ SharkGame.HomeActions = {
                 },
                 upgrade: ["cavernousContact"],
             },
-            outcomes: [],
+            outcomes: [""],
             multiOutcomes: [
-                "The swordfish, they come! En garde, storm!",
+                "The swordfish cometh! En garde, storm!",
                 "You swear you heard the clink of swords from within the school you just summoned.",
                 "Brave the storm, friends. Brave the storm.",
                 "",
@@ -4457,6 +4459,9 @@ SharkGame.HomeActions = {
             outcomes: [],
             multiOutcomes: [],
             helpText: "Rig a complex propulsion system to a swordfish and train them to chart surrounding waters.",
+            removedBy: {
+                upgrades: ["cartographicCompleteness"],
+            },
         },
 
         getSwordfishMechanic: {
@@ -4468,15 +4473,11 @@ SharkGame.HomeActions = {
             },
             cost: [
                 { resource: "swordfish", costFunction: "constant", priceIncrease: 1 },
-                { resource: "seagrass", costFunction: "linear", priceIncrease: 15 },
-                { resource: "crystal", costFunction: "linear", priceIncrease: 3 },
+                { resource: "crystal", costFunction: "linear", priceIncrease: 500 },
             ],
             max: "swordfishMechanic",
             prereq: {
-                resource: {
-                    fish: 10,
-                },
-                upgrade: ["theExpedition"],
+                upgrade: ["engineering"],
             },
             outcomes: [],
             multiOutcomes: [],
@@ -4485,15 +4486,33 @@ SharkGame.HomeActions = {
 
         // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
 
-        getCrystalMiner: {},
+        getSandDigger: {
+            cost: [
+                {
+                    resource: "sand",
+                    costFunction: "linear",
+                    get priceIncrease() {
+                        return 500 - 250 * SharkGame.Aspects.amorphousAssembly.level;
+                    },
+                },
+                { resource: "sharkonium", costFunction: "linear", priceIncrease: 50 },
+            ],
+        },
 
-        getSandDigger: {},
-
-        getFishMachine: {},
+        getFishMachine: {
+            cost: [{ resource: "sharkonium", costFunction: "linear", priceIncrease: 25 }],
+        },
 
         getAutoTransmuter: {},
 
-        getSkimmer: {},
+        getSkimmer: {
+            prereq: {
+                resource: {
+                    junk: 1,
+                },
+                upgrade: ["recyclerDiscovery"],
+            },
+        },
     },
 };
 

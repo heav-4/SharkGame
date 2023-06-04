@@ -251,18 +251,19 @@ SharkGame.HomeMessages = {
             },
             {
                 name: "tempestuous-machine",
-                unlock: { upgrade: [""] },
+                unlock: { upgrade: ["theExpedition"] },
                 message: "The hallways of the facility echo with sounds of turning cogs. Swordfish swim rapidly up and down the halls.",
             },
             {
                 name: "tempestuous-generator",
-                unlock: { upgrade: [""] },
+                unlock: { upgrade: ["internalExploration"] },
                 message: "The generator is completely disabled, yet the facility is still running. The wind howls outside.",
             },
             {
                 name: "tempestuous-legends",
                 unlock: { upgrade: ["cumulusControl"] },
-                message: "",
+                message:
+                    "As the storm draws its final breath, you overhear two swordfish talking. One asks the other why the visitor never returned.",
             },
         ],
 

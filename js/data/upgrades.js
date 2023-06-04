@@ -4269,7 +4269,7 @@ SharkGame.Upgrades = {
         },
         theExpedition: {
             name: "The Expedition",
-            desc: "Let's go see what's out there.",
+            desc: "Let's go find this thing.",
             researchedMessage: "We've discovered the giant weather machine making the superstorm. We'll have to find a way to shut it down.",
             effectDesc: "Moved our base of operations to the inside of the weather machine.",
             cost: {
@@ -4279,112 +4279,90 @@ SharkGame.Upgrades = {
                 upgrades: ["cartographicCompleteness"],
             },
         },
-        transmutation: {
-            name: "Transmutation",
-            desc: "By heating things up and doing science things to them, maybe new things can be made!",
-            researchedMessage: "A new form of material has been discovered! It has been named after its discoverer, Dr. Sharkonium.",
-            effectDesc: "Enables transmutation of some random junk we have lying around into sharkonium, material of the future.",
+        supernaturalSeagrass: {
+            name: "Supernatural Seagrass",
+            desc: "The stormgoer crabs just convened a meeting to discuss the new seagrass in this area. There's something off about it.",
+            researchedMessage: "Indeed, something's strange; this seagrass is immune to undersea currents! MUCH more study is required.",
+            effectDesc: "Studying seagrass now gives 10 times the science that it used to. SUPER RESEARCH?!",
             cost: {
-                science: 3500,
-                crystal: 1500,
-                sand: 15000,
+                seagrass: 80000000,
             },
             required: {
                 upgrades: ["theExpedition"],
             },
         },
+        secretStudies: {
+            name: "Secret Studies",
+            desc: "This place is BRIMMING with the weirdest stuff. The scientists seem interested in some weird boxes filled with...maps, I think?",
+            researchedMessage:
+                "Our scientists, with the help of the swordfish, have learned to interpret these strange things. Perhaps we can learn something?",
+            effectDesc: "Okay, so, not maps, apparently. 'Documents.' Whatever.",
+            cost: {
+                science: 750000000,
+            },
+            required: {
+                upgrades: ["theExpedition"],
+            },
+        },
+        transmutation: {
+            name: "Transmutation",
+            desc: "The documents in this place contain the recipe for a strange, new material. If we want to understand the machine, we should probably start here.",
+            researchedMessage: "Huzzah! We've replicated this strange material, and named after its first synthesizer, Dr. Sharkonium!",
+            effectDesc: "Enables transmutation of some random junk we have lying around into sharkonium, material of the future.",
+            cost: {
+                science: 750000000,
+                crystal: 5000000,
+                sand: 50000000,
+            },
+            required: {
+                upgrades: ["secretStudies"],
+            },
+        },
         automation: {
             name: "Automation",
-            desc: "Using sharkonium, we can make things to do things so we don't have to do the things!",
-            researchedMessage: "Now we don't have to do all the work, machines can do it for us! Future!!",
+            desc: "Our documents say we can use sharkonium to do things so we dont have to do the things!",
+            researchedMessage:
+                "Now we don't have to do all the work - well, mostly. One of these schematics doesn't work because of the winds... Otherwise, FUTURE!!",
             effectDesc: "Machines can be built to supplement population duties. This is efficient.",
             cost: {
-                science: 3500,
-                sharkonium: 250,
+                sharkonium: 1000000,
             },
             required: {
                 upgrades: ["transmutation"],
             },
         },
+        heatCoils: {
+            name: "Heat Coils",
+            desc: "The bowels of the machine contain numerous parts that act like hydrothermal vents.",
+            researchedMessage:
+                "Specialized Coupling instruments have given us a method for extracting heat - and maybe this does something to the machine, who knows!",
+            effectDesc:
+                "Laser rays transmute four times as fast, and let me tell you, having the heat right next to us is sooooooo much better than across the ocean.",
+            cost: {
+                science: 7.5e8,
+                sand: 2e8,
+            },
+            required: {
+                upgrades: ["secretStudies"],
+            },
+            effect: {
+                incomeMultiplier: {
+                    laser: 4,
+                },
+            },
+        },
         engineering: {
             name: "Engineering",
-            desc: "The machines sort of suck. Let's make them better by learning how!",
-            researchedMessage: "The machines are twice as good now! We've figured out new designs in the process, too!",
-            effectDesc: "Machines are twice as effective. Skimmers and auto-transmuters are now possible to create.",
+            desc: "The machines suck, but we're not sure how to make them much better.",
+            researchedMessage: "After some intense studying, the swordfish have volunteered to help us run the machines!",
+            effectDesc: "Swordfish mechanics can now tinker with machines to keep them running optimally! Auto-transmuters are also possible now.",
             cost: {
-                science: 5000,
-                sharkonium: 1750,
+                science: 1000000000,
+                sharkonium: 4000000,
             },
             required: {
                 upgrades: ["automation"],
-                seen: ["fishMachine", "crystalMiner", "sandDigger"],
-            },
-            effect: {
-                incomeMultiplier: {
-                    crystalMiner: 2,
-                    fishMachine: 2,
-                    sandDigger: 2,
-                },
-            },
-        },
-        stormAnchors: {
-            name: "Storm Anchors",
-            desc: "for crystal miners, allows them to even be built",
-            researchedMessage: "",
-            effectDesc: "",
-            cost: {
-                science: 7500,
-            },
-            required: {
-                upgrades: ["automation"],
-            },
-        },
-        iterativeDesign: {
-            name: "Iterative Design",
-            desc: "The machines are useful, but they could be better. Let's build new ones, from scratch!",
-            researchedMessage: "As it turns out, science is about learning from mistakes, or so the scientists say. About their own mistakes.",
-            effectDesc: "All shark machines run twice as fast. Again! Scientists are 4 times faster as well.",
-            cost: {
-                science: 15000,
-                sharkonium: 17500,
-            },
-            required: {
-                upgrades: ["engineering"],
-            },
-            effect: {
-                incomeMultiplier: {
-                    crystalMiner: 2,
-                    fishMachine: 2,
-                    sandDigger: 2,
-                    autoTransmuter: 2,
-                    skimmer: 2,
-                    heater: 2,
-                    scientist: 4,
-                },
-            },
-        },
-        precisionPlacement: {
-            name: "Precision Placement",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
-            cost: {
-                science: 7500,
-            },
-            required: {
-                upgrades: ["cartographicCompleteness"],
-            },
-        },
-        despositDiscoveries: {
-            name: "Desposit Discoveries",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
-            cost: {
-                science: 7500,
-            },
-            required: {
-                upgrades: ["precisionPlacement"],
+                seen: ["fishMachine", "sandDigger"],
             },
         },
         recyclerDiscovery: {
@@ -4394,8 +4372,8 @@ SharkGame.Upgrades = {
                 "Well this thing is frankly terrifying. I wouldn't swim anywhere near the input holes if I were you. Maybe it'll help though!",
             effectDesc: "Allows recycling of materials by virtue of a horrifying mechanical maw that consumes all that ventures near it. Future?",
             cost: {
-                science: 75000,
-                sharkonium: 25000,
+                science: 2.5e9,
+                sharkonium: 1e7,
             },
             required: {
                 upgrades: ["engineering"],
@@ -4406,37 +4384,94 @@ SharkGame.Upgrades = {
             desc: "The recycler wasn't really meant for millions of fish at once. Seeing as that transaction is fairly common, we should probably do something about it.",
             researchedMessage: "Eureka! If we make the big things bigger, and the grinders grindier, we can process way more material at once!",
             effectDesc:
-                "The recycler's efficiency only starts dropping at 10 million material inserted at once, instead of 100 thousand. The base efficiency is now 100%.",
+                "The recycler's efficiency only starts dropping at 100 million material inserted at once, instead of 100 thousand. The base efficiency is now 100%.",
             cost: {
-                science: 1e6,
-                sharkonium: 5e5,
-                junk: 1e6,
+                science: 5e9,
+                junk: 1e9,
             },
             required: {
-                upgrades: ["iterativeDesign", "recyclerDiscovery"],
+                upgrades: ["recyclerDiscovery"],
+            },
+        },
+        internalExploration: {
+            name: "Internal Exploration",
+            desc: "Our documents tell us we can find an important piece of the puzzle deep inside the facility.",
+            researchedMessage:
+                "Our maps led us to a massive generator that's been completely destroyed, and a strange, malfunctioning gate. We don't yet know what this means for us.",
+            effectDesc: "Mechanics are five times as effective at tinkering. The facility clearly has no power...so why is it still going?",
+            cost: {
+                science: 7.5e9,
+            },
+            required: {
+                upgrades: ["engineering"],
+            },
+            events: ["tempestuousInternalExploration"],
+            customEffect(background) {
+                return `${sharktext.getResourceName(`swordfishMechanic`, false, 1, background)} impact ×5`;
+            },
+        },
+        iterativeDesign: {
+            name: "Iterative Design",
+            desc: "Our swordfish friends are naturals at this. They suggest an improved set of designs.",
+            researchedMessage: "Eureka! These new designs are brilliant, I think! I can't understand what's going on!",
+            effectDesc: "All shark machines run twice as fast, but skimmers and transmuters are 32 times as efficient. Yay!",
+            cost: {
+                science: 50e9,
+                sharkonium: 2.5e7,
+            },
+            required: {
+                upgrades: ["engineering"],
+            },
+            effect: {
+                incomeMultiplier: {
+                    fishMachine: 2,
+                    sandDigger: 2,
+                },
+                incomeBoost: {
+                    autoTransmuter: 32,
+                    skimmer: 32,
+                },
+            },
+        },
+        supernaturalHarvest: {
+            name: "Supernatural Harvest",
+            desc: "There's magic inside this grass, surely.",
+            researchedMessage: "Indeed, there is! But we have no idea how to use it. So we'll just wrap stuff in it and hope for the best.",
+            effectDesc: "New, magic sandbags make stormgoers 99 times better at harvesting stuff. We genuinely have no idea. It just works.",
+            cost: {
+                seagrass: 1e11,
+            },
+            required: {
+                upgrades: ["supernaturalSeagrass", "engineering"],
+            },
+            effect: {
+                incomeMultiplier: {
+                    stormgoer: 99,
+                },
             },
         },
         schematicSalvaging: {
             name: "Schematic Salvaging",
-            desc: "",
-            researchedMessage: "",
-            effectDesc: "",
+            desc: "Among the documents we found in the generator room are disorganized papers pertaining to its operation. It's in our best interest to put it back together.",
+            researchedMessage: "We were wrong. It's the other way around - the facility is out of control BECAUSE it needs power.",
+            effectDesc: "Everything's caught in a magic-power feedback loop. Fix this place, fix the world.",
             cost: {
-                science: 7500,
+                science: 1e12,
             },
             required: {
-                upgrades: ["theExpedition"],
+                upgrades: ["internalExploration"],
             },
         },
         cumulusControl: {
             name: "Cumulus Control",
-            desc: "",
+            desc: "Let's put an end to this madness. If we power up the facility, it should finally stop the storms.",
             researchedMessage:
-                "Mechanics drop their tools. Scientists drop their beakers. They head outside, and see it. All that's left of the storm is a gentle current.",
+                "As the lights flicker on, an intense feeling washes over you. You can sense it. The storm has stopped. You hear the gate power on.",
             effectDesc:
-                "As the storm drew its final breath, you overheard two swordfish talking. One asked the other why the visitor never returned.",
+                "The swordfish are swimming wildly outside. Their frenzied cheering makes anything you try to say inaudible. From one storm, and into the next...",
             cost: {
-                science: 7500,
+                science: 1e13,
+                sharkonium: 1e11,
             },
             required: {
                 upgrades: ["schematicSalvaging", "iterativeDesign"],
