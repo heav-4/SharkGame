@@ -202,7 +202,7 @@ SharkGame.Home = {
         // if there's an unseen message, change to it
         const anyUnseen = home.areThereAnyUnseenHomeMessages();
         if (anyUnseen || ((lastValidMessage.transient || currentMessageData.transient) && currentMessageData.name !== lastValidMessage.name)) {
-            home.updateMessage(home.lastValidMessage);
+            home.updateMessage(home.lastValidMessage, isDuringTabSwitch);
             _.each(mem.worldMemories, (memory) => {
                 if (!SharkGame.flags.seenHomeMessages.includes(memory)) SharkGame.flags.seenHomeMessages.push(memory);
             });
