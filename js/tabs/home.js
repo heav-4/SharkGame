@@ -353,11 +353,10 @@ SharkGame.Home = {
             }
         }
 
-        home.updateMessageSelectors();
-
         SharkGame.flags.selectedHomeMessage = requestedMessage;
         if (!SharkGame.flags.seenHomeMessages.includes(requestedMessage)) SharkGame.flags.seenHomeMessages.push(requestedMessage);
         home.updateMessageTracker();
+        home.updateMessageSelectors();
     },
 
     updateMessageSelectors() {
