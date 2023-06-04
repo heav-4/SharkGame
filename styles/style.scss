@@ -1244,7 +1244,7 @@ button {
 
 #tabSceneImage {
     display: block;
-    margin: 0.1em 0.5em 0.4em 0.5em;
+    margin: 0.1em auto 0.4em auto;
     @include border-radius(5px);
     @include box-shadow(0, 0, 5px, 5px, var(--color-dark));
 }

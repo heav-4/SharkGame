@@ -998,7 +998,7 @@ button.disabled div {
 
 #tabSceneImage, #tabSceneImageEssence, #tabSceneImageRed {
   display: block;
-  margin: 0.1em 0.5em 0.4em 0.5em;
+  margin: 0.1em auto 0.4em auto;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -1019,7 +1019,8 @@ button.disabled div {
   box-shadow: 0 0 5px 5px #3eb890;
 }
 
-#sceneLeft, #sceneRight {
+#sceneLeft,
+#sceneRight {
   min-width: 0;
 }
 
