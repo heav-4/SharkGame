@@ -192,12 +192,16 @@ SharkGame.Home = {
     },
 
     tickHomeMessages(isDuringTabSwitch) {
-        home.lastValidMessage = home.getLastValidMessage();
+        const lastValidMessage = home.getLastValidMessage();
+        home.lastValidMessage = lastValidMessage.name;
         home.updateMemories();
 
-        // if we are on the default message and there's an unseen message, change to it
+        const currentMessageData =
+            SharkGame.HomeMessages.messages[world.worldType][SharkGame.Memories.messageLookup.get(SharkGame.flags.selectedHomeMessage)];
+
+        // if there's an unseen message, change to it
         const anyUnseen = home.areThereAnyUnseenHomeMessages();
-        if (anyUnseen) {
+        if (anyUnseen || ((lastValidMessage.transient || currentMessageData.transient) && currentMessageData.name !== lastValidMessage.name)) {
             home.updateMessage(home.lastValidMessage);
             _.each(mem.worldMemories, (memory) => {
                 if (!SharkGame.flags.seenHomeMessages.includes(memory)) SharkGame.flags.seenHomeMessages.push(memory);
@@ -241,7 +245,7 @@ SharkGame.Home = {
             return true;
         });
 
-        return lastValidMessageData.name;
+        return lastValidMessageData;
     },
 
     updateMemories() {
@@ -258,7 +262,7 @@ SharkGame.Home = {
             return mem.worldMemories[world.worldType].includes(messageData.name);
         });
 
-        return nextMessage ? nextMessage.name : false;
+        return nextMessage && !nextMessage.transient ? nextMessage.name : false;
     },
 
     findPreviousHomeMessage() {
@@ -281,10 +285,12 @@ SharkGame.Home = {
     },
 
     decrementHomeMessage() {
-        const previous = home.findPreviousHomeMessage();
-        if (previous) {
-            home.updateMessage(previous);
-            return true;
+        if (!home.getLastValidMessage().transient) {
+            const previous = home.findPreviousHomeMessage();
+            if (previous) {
+                home.updateMessage(previous);
+                return true;
+            }
         }
         return false;
     },
@@ -361,7 +367,7 @@ SharkGame.Home = {
             $("#sceneRight").removeClass("disabled");
         }
 
-        if (!home.findPreviousHomeMessage()) {
+        if (!home.findPreviousHomeMessage() || home.getLastValidMessage().transient) {
             $("#sceneLeft").addClass("disabled");
         } else {
             $("#sceneLeft").removeClass("disabled");
@@ -372,16 +378,18 @@ SharkGame.Home = {
         const tracker = $("#tabSceneTracker");
         tracker.empty();
 
-        _.each(SharkGame.HomeMessages.messages[world.worldType], (messageData) => {
-            console.log(messageData.name);
-            if (SharkGame.flags.seenHomeMessages.includes(messageData.name)) {
-                tracker.append(
-                    $("<div>")
-                        .html("•")
-                        .addClass(messageData.name === SharkGame.flags.selectedHomeMessage ? "" : "inactive")
-                );
-            }
-        });
+        if (!home.getLastValidMessage().transient) {
+            _.each(SharkGame.HomeMessages.messages[world.worldType], (messageData) => {
+                // console.log(messageData.name);
+                if (SharkGame.flags.seenHomeMessages.includes(messageData.name) && !messageData.transient) {
+                    tracker.append(
+                        $("<div>")
+                            .html("•")
+                            .addClass(messageData.name === SharkGame.flags.selectedHomeMessage ? "" : "inactive")
+                    );
+                }
+            });
+        }
     },
 
     update() {
