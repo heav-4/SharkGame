@@ -136,8 +136,8 @@ $.extend(SharkGame, {
     flags: {},
     persistentFlags: {},
 
-    spriteIconPath: "img/sharksprites.png",
-    spriteHomeEventPath: "img/sharkeventsprites.png",
+    spriteIconPath: "img/sprites.png",
+    spriteHomeEventPath: "img/homemessagesprites.png",
 
     /**
      *
@@ -158,14 +158,22 @@ $.extend(SharkGame, {
         return imageHtml;
     },
     changeSprite(spritePath, imageName, imageDiv, backupImageName) {
-        let spriteData = SharkGame.Sprites[imageName];
+        let spritesData;
+
+        if (spritePath === SharkGame.spriteIconPath) {
+            spritesData = SharkGame.Sprites;
+        } else if (spritePath === SharkGame.spriteHomeEventPath) {
+            spritesData = SharkGame.HomeMessageSprites;
+        }
+
+        let spriteData = spritesData[imageName];
         if (!imageDiv) {
             imageDiv = $("<div>");
         }
 
         // if the original sprite data is undefined, try loading the backup
         if (!spriteData) {
-            spriteData = SharkGame.Sprites[backupImageName];
+            spriteData = spritesData[backupImageName];
         }
 
         if (spriteData) {

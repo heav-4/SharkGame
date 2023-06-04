@@ -334,14 +334,14 @@ SharkGame.Home = {
             });
             sceneImageDiv.animate({ opacity: 0 }, 300, () => {
                 if (SharkGame.Settings.current.showTabImages) {
-                    SharkGame.changeSprite(SharkGame.spriteHomeEventPath, messageData.name, sceneImageDiv, "missing");
+                    SharkGame.changeSprite(SharkGame.spriteHomeEventPath, "home/" + messageData.name, sceneImageDiv, "home/missing");
                 }
                 $(sceneImageDiv).animate({ opacity: 1 }, 300);
             });
         } else {
             extraMessageSel.html(messageData.message);
             if (SharkGame.Settings.current.showTabImages) {
-                SharkGame.changeSprite(SharkGame.spriteHomeEventPath, messageData.name, sceneImageDiv, "missing");
+                SharkGame.changeSprite(SharkGame.spriteHomeEventPath, "home/" + messageData.name, sceneImageDiv, "home/missing");
             } else {
                 sceneImageDiv.empty();
             }

@@ -208,7 +208,7 @@ SharkGame.HomeMessages = {
                 message: "You take shelter inside the cave. You can still feel the wind, but it's gentle now.",
             },
             {
-                name: "tempestuous-cave",
+                name: "tempestuous-cave-rustling",
                 unlock: { upgrade: ["crystalBite"] },
                 message: "You hear a rustling from the dark backside of the cave.",
             },
