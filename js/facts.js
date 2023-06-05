@@ -121,22 +121,22 @@ SharkGame.FunFacts = {
         octopus: [
             "It's octopuses, not octopi.",
             "Octopuses are capable of extremely advanced camoflague. They can change color, pattern, and texture to match their surroundings, enough to easily fool anything, even humans.",
-            "In novel circumstances, octopuses are capable of simple problem-solving. Some will step back and thoroughly analyze things when confused.",
+            "In novel circumstances, octopuses are capable of simple problem-solving. They show visible confusion when confronted with difficult problems, and take time to contemplate possible solutions.",
             "Octopuses can get bored in captivity. They may fiddle with toys or interact with humans for entertainment.",
-            "Octopuses have great dexterity. They can use their tentacles in a variety of ways to manipulate objects.",
+            "Octopuses have great dexterity. They can use their tentacles in a surprising variety of ways to manipulate objects.",
             "Octopuses have no bones whatsoever.",
-            "Each limb of an octopus is considered to individually have a brain to itself. They can be thought of as soldiers (little brains) being commanded by a general in the center (big brain).",
+            "Each limb of an octopus is considered to individually have a brain to itself. They can be thought of as soldiers (the little brains) being commanded by a general in the center (a big brain).",
         ],
         dolphin: [
             "Dolphins are considered some of the most intelligent animal problem-solvers, next to monkeys, elephants and parrots as examples.",
             "Dolphins are not smug in real life. Probably. Maybe.",
-            "Dolphins are creative and capable of handling abstract concepts. In captivity, they can be asked to try inventing new tricks, and will often succeed.",
-            "Dolphins have been seen directly communicating with each other. In fact, it is believed that they hold full conversations with one another.",
+            "Dolphins are creative and capable of abstract thought. In captivity, they can be asked to invent new tricks, and will often succeed.",
+            "Dolphins have been seen directly communicating with each other. In fact, it is believed that they can hold full, coherent conversations.",
         ],
         whale: [
             "The top 10 largest animal species are all whales.",
             "While some whales are active hunters, others are merely supersized filter feeders. This game's whales are of unspecified type.",
-            "Whales are very social creatures. Most whales travel in small groups called pods, which might make up clans, and then communities. Some whales, however, are solitary.",
+            "Most whales are very social creatures. Most whales travel in small groups called pods, which might make up clans, and then communities. (some, however, are solitary)",
             "It is not completely understood why whales sing, but scientists agree it serves some kind of social purpose." /* Whales are observed to react to each other's songs and come to */,
         ],
         urchin: [
@@ -153,8 +153,8 @@ SharkGame.FunFacts = {
         ],
         lobster: [
             "Lobsters really do eat clams. They instinctively know how to crack them open.",
-            "Lobsters can live for an extremely long time. Rarely, some will live longer than humans.",
-            "Lobsters have teeth in their stomach, not in their mouth, and they chew with those teeth, too.",
+            "Due to a biological quirk, lobsters are highly resistant to aging and can live for an extremely long time. Some will live longer than humans.",
+            "Lobsters have teeth in their stomach, not in their mouth, and they chew with those teeth.",
             "Lobsters have asymmetric claws. One of them, called the crusher, is used for...crushing. The other, called the pincer, is used for...pincing. Marine biologists were feeling creative, clearly.",
         ],
         shrimp: [
@@ -163,6 +163,7 @@ SharkGame.FunFacts = {
         ],
         eel: [
             // "Eels come in a wide range of sizes, from just a few inches to multiple meters.",
+            // migratory eels, look into it
         ],
         chimaera: [
             "Chimaera are closely related to sharks and rays.",
@@ -171,10 +172,13 @@ SharkGame.FunFacts = {
             "Chimaera are not purple, they are completely pale. They don't bother with colors because deep-sea animals like chimaera cannot be seen anyways.",
             "Chimaera do not have bones. Neither do sharks or rays.",
         ],
-        swordfish: [
-            "Swordfish are indeed a kind of fish, unlike sharks and rays.",
-            "The top speed of marlins and swordfish is commonly reported to be 60 mph, but this is not accurate. It's actually closer to 30 mph.",
-            "The bill of a swordfish is used to slash like a sword, not stab like a spear.",
+        billfish: [
+            "Billfish are indeed a kind of fish, unlike sharks and rays.",
+            "Swordfish and marlins are large, predatory fish. At adulthood, their only natural predators are sharks and whales.",
+            "The top speed of marlins is commonly reported to be 60 mph, but this is not accurate. It's actually closer to 30 mph.",
+            "The bill of a billfish is used to slash like a sword, not stab like a spear.",
+            "Swordfish are not a group of fish, they are a single species: Xiphias gladius.",
+            "Swordfish, spearfish, and marlins are part of a larger group of fish called billfish (the group featured in this game), of which there are only 12 species.",
         ],
         seaApple: [
             "Sea apples are a type of sea cucumber. They feed on debris and detritus.",
@@ -183,6 +187,7 @@ SharkGame.FunFacts = {
         jellyfish: [
             // "Sharks would definitely not have a way of acquiring most kinds of jellyfish in real life.",
             "Jellyfish can be extremely dangerous. Some kinds of box jellyfish have fatal stings.",
+            "Turritopsis dohrnii is a species of jellyfish that can restart its lifecycle at will. In theory, this grants it an infinite lifespan.",
             // do more research into jellies
         ],
         sharkonium: ["There is nothing suspicious about the machines."],
@@ -195,22 +200,23 @@ SharkGame.FunFacts = {
             "Sand probably does not actually fuse into magic crystals. Unless you count glass.",
             "We do not know how the rays strap lasers to themselves. It is known only to the sharks.",
             "Laser rays take power directly from the heat of hydrothermal vents, so they are each tethered to a small operating area.",
+            "By default, the laser ray's laser is quite low-temperature. It takes quite a bit of effort (and sand) to properly fuse anything.",
         ],
         coral: [
             "Some coral can actually catch small fish.",
             "Coral is not a plant, it is an animal. A weird, stationary animal.",
             "Coral are primarily carnivores. They eat plankton (teeny tiny things that can't swim), grabbing them with little tentacles and pulling them into their mouths.",
-            "Many kinds of coral have a mutualistic relationship with certain species of alage, who produce nutrients in exchange for carbon dioxide and shelter.",
+            "Many kinds of coral have a mutualistic relationship with species of alage, who produce nutrients in exchange for carbon dioxide and shelter.",
         ],
         sponge: [
             "Sponges are incredibly distinct from all other animals. They are asymmetric, have no organs, and their cells can change specialization at will.",
             "Sponges are incredibly, incredibly old, evolutionarily speaking. They probably date back at least 600 million years.",
             "Sponge is not a plant, it is an animal. A weird, amorphous animal.",
             "The pores in sponges are designed to help them filter water for food at maximum efficiency.",
-            "Many species of sponge have a mualistic realitionship with certain species of algae. The algaes use photosynthesis to produce food for the sponges.",
+            "Many species of sponge have a mualistic realitionship with species of algae. The algaes use photosynthesis to produce food for the sponges.",
         ],
         algae: [
-            "Algae comes in many different shapes, sizes, and forms, like 'valonia ventricosa,' a species where every individual cell can grow larger than a grape. Look it up, it's insane.",
+            "Algae comes in many different shapes, sizes, and forms, like 'valonia ventricosa,' a species where every individual cell can grow larger than a grape.",
             "Algae is neither plant nor animal. It is something else entirely (a protist?).",
             "Kelp is a kind of algae. In fact, all seaweed is algae. The sea has very few true plants.",
         ],
