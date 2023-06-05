@@ -422,7 +422,7 @@ SharkGame.Lab = {
         // TODO: Use .every instead of .each
         $.each(upgradeTable, (upgradeId) => {
             if (lab.isUpgradePossible(upgradeId)) {
-                allDone = allDone && SharkGame.Upgrades.purchased.includes(upgradeId) && lab.isUpgradeVisible(upgradeId);
+                allDone = allDone && SharkGame.Upgrades.purchased.includes(upgradeId);
             }
         });
         return allDone;
@@ -469,10 +469,6 @@ SharkGame.Lab = {
             // (recursive) check requisite techs
             isPossible = isPossible && _.every(upgradeData.required.upgrades, (upgrade) => lab.isUpgradePossible(upgrade));
 
-            isPossible =
-                isPossible &&
-                _.every(upgradeData.required.totals, (requiredTotal, resourceName) => res.getTotalResource(resourceName) >= requiredTotal);
-
             // check resource cost
             isPossible = isPossible && _.every(upgradeData.cost, (_amount, resource) => world.doesResourceExist(resource));
         }
@@ -482,12 +478,17 @@ SharkGame.Lab = {
 
     isUpgradeVisible(upgradeId) {
         const upgrade = SharkGame.Upgrades.getUpgradeData(SharkGame.Upgrades.getUpgradeTable(), upgradeId);
+        let isVisible = true;
         if (_.has(upgrade, "required.seen")) {
             // Checks if any of the required resources has been seen
             // change to _.every to make it require all to have been seen
-            return _.some(upgrade.required.seen, (requiredSeen) => res.getTotalResource(requiredSeen) > 0);
+            isVisible = isVisible && _.some(upgrade.required.seen, (requiredSeen) => res.getTotalResource(requiredSeen) > 0);
         }
-        return true;
+        if (_.has(upgrade, "required.totals")) {
+            isVisible =
+                isVisible && _.every(upgrade.required.totals, (requiredTotal, resourceName) => res.getTotalResource(resourceName) >= requiredTotal);
+        }
+        return isVisible;
     },
 
     getResearchEffects(upgrade) {
