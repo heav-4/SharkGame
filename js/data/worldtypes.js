@@ -130,7 +130,7 @@ SharkGame.WorldTypes = {
             longDesc:
                 "A terrible storm has taken up residence here. It's hard to think, much less get anything done, with all the strong currents whipping stuff around.",
             missing: ["kelp", "seaApple", "crystalMiner"],
-            present: ["swordfish", "seagrass"],
+            present: ["billfish", "seagrass"],
         },
         entry: "You recall nothing and know only the storms. The unrelenting, restless storms scattering your possessions and allies.",
         style: "tempestuous",
@@ -140,7 +140,7 @@ SharkGame.WorldTypes = {
             "rays",
             "crabs",
             "stormgoer",
-            "swordfishes", // gramatically awful but thats just how it is
+            "billfishes", // gramatically awful but thats just how it is
             "sharkmachines",
             "basicmaterials",
             "seagrass",
@@ -148,16 +148,8 @@ SharkGame.WorldTypes = {
         ],
         absentResources: ["planter", "crystalMiner"],
         modifiers: [{ type: "multiplier", modifier: "planetaryIncomeMultiplier", resource: "sandDigger", amount: 24 }],
-        gateRequirements: {
-            slots: {
-                junk: 1e9,
-                coral: 5e7,
-                spronge: 1e6,
-                delphinium: 1e6,
-                sharkonium: 1e6,
-                crystal: 5e7,
-            },
-        },
+        gateRequirements: { upgrades: ["cumulusControl"] },
+        par: 55,
     },
     volcanic: {
         name: "Volcanic",

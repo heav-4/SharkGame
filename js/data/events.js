@@ -448,12 +448,21 @@ SharkGame.Events = {
             return "remove";
         },
         trigger() {
-            SharkGame.flags.storm.fish = 0;
-            SharkGame.flags.storm.sand = 0;
-            SharkGame.flags.storm.crystal = 0;
-            SharkGame.flags.storm.shark = 0;
-            SharkGame.flags.storm.ray = 0;
-            SharkGame.flags.storm.crab = 0;
+            if (!SharkGame.flags.storm) {
+                SharkGame.flags.storm = {
+                    fish: -0.02,
+                    sand: -0.02,
+                    crystal: -0.02,
+                    shark: -0.02,
+                    ray: -0.02,
+                    crab: -0.02,
+                };
+            }
+            _.each(["fish", "sand", "crystal", "shark", "ray", "crab"], (resourceName) => {
+                SharkGame.flags.storm[resourceName] = 0;
+                const resourceAmount = res.getResource(resourceName);
+                res.setResource(resourceName, Math.floor(resourceAmount));
+            });
         },
     },
     tempestuousGiveSeagrass: {
@@ -492,14 +501,25 @@ SharkGame.Events = {
         },
         trigger() {
             res.setResource("map", 1);
-            res.changeResource("swordfish", res.getResource("swordfishExplorer"));
+            res.changeResource("billfish", res.getResource("billfishExplorer"));
 
-            world.worldResources.get("chart").exists = false;
+            if (!SharkGame.flags.tempestuousReturnedTokens) {
+                _.each(res.tokens.list, (token) => {
+                    if (
+                        SharkGame.flags.tokens[token.attr("id")].includes("chart") ||
+                        SharkGame.flags.tokens[token.attr("id")].includes("billfishExplorer")
+                    )
+                        res.tokens.tryReturnToken(null, false, token);
+                });
+                SharkGame.flags.tempestuousReturnedTokens = true;
+            }
+
             res.setResource("chart", 0);
             res.setTotalResource("chart", 0);
-            world.worldResources.get("swordfishExplorer").exists = false;
-            res.setResource("swordfishExplorer", 0);
-            res.setTotalResource("swordfishExplorer", 0);
+            world.worldResources.get("chart").exists = false;
+            res.setResource("billfishExplorer", 0);
+            res.setTotalResource("billfishExplorer", 0);
+            world.worldResources.get("billfishExplorer").exists = false;
             res.reconstructResourcesTable();
             world.worldResources.get("chart").exists = true;
             SharkGame.TabHandler.setUpTab();
@@ -512,8 +532,8 @@ SharkGame.Events = {
             return "remove";
         },
         trigger() {
-            SharkGame.GeneratorIncomeAffectors.swordfishMechanic.multiply.sandDigger *= 5;
-            SharkGame.GeneratorIncomeAffectors.swordfishMechanic.multiply.fishMachine *= 5;
+            SharkGame.GeneratorIncomeAffectors.billfishMechanic.multiply.sandDigger *= 5;
+            SharkGame.GeneratorIncomeAffectors.billfishMechanic.multiply.fishMachine *= 5;
             res.clearNetworks();
             res.buildIncomeNetwork();
         },

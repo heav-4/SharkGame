@@ -213,9 +213,9 @@ SharkGame.HomeMessages = {
                 message: "You hear a rustling from the dark backside of the cave.",
             },
             {
-                name: "tempestuous-swordfish",
+                name: "tempestuous-billfish",
                 unlock: { upgrade: ["cavernousContact"] },
-                message: "The so-called 'swordfish' apologize for their behavior. They say no shark has entered this cave in a long, long time.",
+                message: "The so-called 'billfish' apologize for their behavior. They say no shark has entered this cave in a long, long time.",
             },
             {
                 name: "tempestuous-sandbags",
@@ -225,24 +225,25 @@ SharkGame.HomeMessages = {
             },
             {
                 name: "tempestuous-stories",
-                unlock: { upgrade: ["swordfishBiology"] },
+                unlock: { upgrade: ["billfishBiology"] },
                 message:
-                    "The swordfish tell stories of life before the storm and an ancient visitor who brought them prosperity. They ask if you too, have seen this visitor.",
+                    "The billfish tell stories of life before the storm and an ancient visitor who brought them prosperity. They ask if you can bring them prosperity, too.",
             },
             /*
                 name: "tempestuous-special",
                 unlock: { upgrade: ["cavernousContact"] },
-                message: "The swordfish watch you with awe. Hope glimmers in their eyes.",
+                message: "The billfish watch you with awe. Hope glimmers in their eyes.",
             }, */
             {
                 name: "tempestuous-bottles",
                 unlock: { upgrade: ["magicBottles"] },
-                message: "A silent wind swirls gently in each bottle. You see spirals of magical energy twisting the water inside.",
+                message: "A silent wind swirls gently in each bottle. The billfish craft them so effortlessly.",
             },
             {
                 name: "tempestuous-expeditions",
                 unlock: { upgrade: ["routing"] },
-                message: "The swordfish line up in droves to volunteer for expeditions. They don't need convincing, just equipment.",
+                message:
+                    "The billfish line up in droves to volunteer for expeditions, danger or otherwise. They don't need convincing, just equipment.",
             },
             {
                 name: "tempestuous-map",
@@ -252,18 +253,18 @@ SharkGame.HomeMessages = {
             {
                 name: "tempestuous-machine",
                 unlock: { upgrade: ["theExpedition"] },
-                message: "The hallways of the facility echo with sounds of turning cogs. Swordfish swim rapidly up and down the halls.",
+                message: "The hallways of the facility echo with sounds of turning cogs. Billfish swim rapidly up and down the halls.",
             },
             {
                 name: "tempestuous-generator",
                 unlock: { upgrade: ["internalExploration"] },
-                message: "The generator is completely disabled, yet the facility is still running. The wind howls outside.",
+                message:
+                    "The generator is completely disabled, yet the facility is still running. The wind howls outside as mechanics tinker excitedly with our machines.",
             },
             {
                 name: "tempestuous-legends",
                 unlock: { upgrade: ["cumulusControl"] },
-                message:
-                    "As the storm draws its final breath, you overhear two swordfish talking. One asks the other why the visitor never returned.",
+                message: "As the storm draws its final breath, you overhear two billfish talking. One asks the other why the visitor never returned.",
             },
         ],
 
@@ -519,12 +520,6 @@ SharkGame.HomeMessages = {
                 unlock: { upgrade: ["rapidRecharging"] },
                 message: "A wave of heat washes over you, and the dingy complex comes back to life. The gate turns on.",
             },
-            /* {
-                name: "frigid-end",
-                unlock: { upgrade: ["rapidRepairs"] },
-                message: "The gate opens. The squid bid you farewell.",
-            }, */
-            // another one: "the maw of the gate opens"
         ],
         /*
         {

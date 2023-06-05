@@ -648,15 +648,15 @@ SharkGame.ResourceTable = {
     // through to getting your chart, tempestuous has no machines and no sharkonium.
     // once you get to the facility, you unlock it.
 
-    swordfish: {
-        name: "swordfish",
-        singleName: "swordfish",
+    billfish: {
+        name: "billfish",
+        singleName: "billfish",
         desc: "Battered, but never broken.",
         color: "#BEC7CC", // set this
         income: {
             fish: 2,
         },
-        jobs: ["swordfishExplorer", "swordfishMechanic"], // set this
+        jobs: ["billfishExplorer", "billfishMechanic"], // set this
         value: 1000,
     },
 
@@ -671,9 +671,9 @@ SharkGame.ResourceTable = {
         value: 1000,
     },
 
-    swordfishExplorer: {
-        name: "swordfish explorers",
-        singleName: "swordfish explorer",
+    billfishExplorer: {
+        name: "billfish explorers",
+        singleName: "billfish explorer",
         desc: "The great pioneers.",
         color: "#CCCCCC", // set this
         income: {
@@ -698,21 +698,21 @@ SharkGame.ResourceTable = {
         value: 100,
     },
 
-    swordfishMechanic: {
-        name: "swordfish mechanics",
-        singleName: "swordfish mechanic",
+    billfishMechanic: {
+        name: "billfish mechanics",
+        singleName: "billfish mechanic",
         desc: "The great inventors.",
         color: "#CCCCCC", // set this
         value: 1000,
     },
 
-    swordfishPair: {
-        name: "swordfish pairs",
-        singleName: "swordfish pair",
+    billfishPair: {
+        name: "billfish pairs",
+        singleName: "billfish pair",
         desc: "It takes two.",
         color: "#485054", // set this
         income: {
-            swordfish: 0.02,
+            billfish: 0.02,
         },
         value: 1000,
     },
@@ -1297,7 +1297,7 @@ SharkGame.GeneratorIncomeAffectorsOriginal = {
             coralFarm: 0.01,
         },
     },
-    swordfishMechanic: {
+    billfishMechanic: {
         multiply: {
             sandDigger: 0.01,
             fishMachine: 0.01,
@@ -1441,7 +1441,7 @@ SharkGame.ResourceCategories = {
             "Was it something they said?",
             "Are you happy with what you've done?",
         ],
-        resources: ["shark", "ray", "crab", "shrimp", "lobster", "dolphin", "whale", "chimaera", "octopus", "eel", "squid", "urchin", "swordfish"],
+        resources: ["shark", "ray", "crab", "shrimp", "lobster", "dolphin", "whale", "chimaera", "octopus", "eel", "squid", "urchin", "billfish"],
     },
     animals: {
         name: "Animals",
@@ -1499,7 +1499,7 @@ SharkGame.ResourceCategories = {
             "You sure you want to disrupt this accelerated growth curve?",
             "Back to a simpler life, maybe.",
         ],
-        resources: ["nurse", "maker", "brood", "queen", "berrier", "biologist", "pit", "collective", "spawner", "swordfishPair"],
+        resources: ["nurse", "maker", "brood", "queen", "berrier", "biologist", "pit", "collective", "spawner", "billfishPair"],
     },
     specialists: {
         name: "Specialists",
@@ -1532,8 +1532,8 @@ SharkGame.ResourceCategories = {
             "shoveler",
             "researcher",
             "acolyte",
-            "swordfishExplorer",
-            "swordfishMechanic",
+            "billfishExplorer",
+            "billfishMechanic",
             "stormgoer",
             // "prospector",
             // "shoveler",
@@ -1643,9 +1643,9 @@ SharkGame.InternalCategories = {
         name: "Chimaeras",
         resources: ["chimaera", "explorer"],
     },
-    swordfishes: {
-        name: "Swordfish",
-        resources: ["swordfish", "swordfishExplorer", "swordfishMechanic", "swordfishPair"],
+    billfishes: {
+        name: "Billfish",
+        resources: ["billfish", "billfishExplorer", "billfishMechanic", "billfishPair"],
     },
     sharkmachines: {
         name: "Shark Machines",

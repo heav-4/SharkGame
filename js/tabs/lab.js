@@ -8,7 +8,12 @@ SharkGame.Lab = {
 
     get sceneImage() {
         switch (world.worldType) {
-            case `volcanic`:
+            case "tempestuous":
+                if (res.getTotalResource("scientist") < 1) {
+                    return "";
+                }
+                return "img/events/misc/scene-lab.png";
+            case "volcanic":
                 return "";
             default:
                 return "img/events/misc/scene-lab.png";
@@ -17,7 +22,7 @@ SharkGame.Lab = {
 
     get sceneDoneImage() {
         switch (world.worldType) {
-            case `volcanic`:
+            case "volcanic":
                 return "";
             default:
                 return "img/events/misc/scene-lab-done.png";
@@ -37,7 +42,12 @@ SharkGame.Lab = {
 
     get message() {
         switch (world.worldType) {
-            case `volcanic`:
+            case "tempestuous":
+                if (res.getTotalResource("scientist") < 1) {
+                    return "Sort of just off to the side, there's a cave.";
+                }
+                return "Sort of just off to the side, the science sharks congregate and discuss things with words you've never heard before.";
+            case "volcanic":
                 return "Sort of just off to the side, a group of curious crabs congregate and discuss stuff that we don't understand.";
             default:
                 return "Sort of just off to the side, the science sharks congregate and discuss things with words you've never heard before.";
@@ -138,6 +148,13 @@ SharkGame.Lab = {
         } else if (lab.listEmpty) {
             let message;
             switch (world.worldType) {
+                case "tempestuous":
+                    if (res.getTotalResource("scientist") < 1) {
+                        message = "We're in the cave. Now what?";
+                    } else {
+                        message = "The scientists are out of ideas, but there are always more discoveries to be made.";
+                    }
+                    break;
                 case `volcanic`:
                     message = "The crabs are out of ideas, but there are always more discoveries to be made.";
                     break;

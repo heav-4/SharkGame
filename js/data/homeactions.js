@@ -127,7 +127,6 @@ SharkGame.HomeActions = {
                 "Ate a marlin.",
                 "Ate an orange roughy.",
                 "Ate a shark.",
-                "Ate a swordfish.",
                 "Ate a tilefish.",
                 "Ate a tuna.",
                 "Ate a swedish fish.",
@@ -4313,6 +4312,9 @@ SharkGame.HomeActions = {
                 "This is perhaps maybe insightful!",
                 "Why are we even doing this? Who knows! Science!",
                 "Results still inconclusive! Unsurpsingly...",
+                "Quick question. What's a flower?",
+                "At least it's not gross.",
+                "We would learn a lot more from these if they weren't so absolutely tiny.",
             ],
             helpText: "Dissect seagrass flowers to further the cause of science. This is research, probably!",
         },
@@ -4329,29 +4331,44 @@ SharkGame.HomeActions = {
 
         getCrab: {},
 
-        getSwordfish: {
-            name: "Fetch swordfish",
+        getBillfish: {
+            name: "Fetch billfish",
             effect: {
                 resource: {
-                    swordfish: 1,
+                    billfish: 1,
                 },
             },
             cost: [{ resource: "fish", costFunction: "linear", priceIncrease: 10 }],
-            max: "swordfish",
+            max: "billfish",
             prereq: {
                 resource: {
                     fish: 10,
                 },
                 upgrade: ["cavernousContact"],
             },
-            outcomes: [""],
+            outcomes: [
+                "A swordfish joins you.",
+                "A sailfish joins you.",
+                "A black marlin joins you.",
+                "A blue marlin joins you.",
+                "A white marlin joins you.",
+                "A shortbill spearfish joins you.",
+                "A striped marlin joins you.",
+                "A roundscale spearfish joins you.",
+                "A longbill spearfish joins you.",
+            ],
             multiOutcomes: [
-                "The swordfish cometh! En garde, storm!",
+                "The billfish cometh! En garde, storm!",
                 "You swear you heard the clink of swords from within the school you just summoned.",
                 "Brave the storm, friends. Brave the storm.",
-                "",
+                "This swarm shall save the sea.",
+                "More! More! The fish will flow.",
+                "Better you all than me.",
+                "What are these guys so enthusiastic for?",
+                "A flotilla of swordfish! No, seriously.",
+                "A school of billfish emerges from the back of the cave.",
             ],
-            helpText: "Fetch a swordfish from the back of the cave and ask them to help us catch fish.",
+            helpText: "Fetch a billfish from the back of the cave and ask them to help us catch fish.",
         },
 
         // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
@@ -4409,79 +4426,135 @@ SharkGame.HomeActions = {
                 upgrade: ["sandbagging"],
             },
             outcomes: [
-                "Here comes one crab ready to not collect crystals just because.",
+                "Here comes one crab ready to NOT collect crystals just because.",
                 "Heavy-duty crab coming right up.",
+                "This crustacean is ready to pick grass for a living.",
+                "Grass me up, stormgoer.",
+                "This one goes into the storm.",
+                "We salute you, little one.",
+                "Bon voyage, little one.",
             ],
-            multiOutcomes: ["These crabs are NOT fat! Stop calling them that!"],
+            multiOutcomes: [
+                "The crabs are reassured that yes, indeed, the sandbags are securely attached.",
+                "You have to wonder how they manage to carry all that around.",
+                "Surely, that's enough sandbags.",
+                "These ones go into the storm.",
+                "The crabs double check their sandbags, then set off into the great unknown.",
+                "How much sand did this cost us again?",
+                "Snip snip snip.",
+                "Snip snap snip.",
+            ],
             helpText: "Weigh down a crab with sand to keep it from being carried away in the storm.",
         },
 
         getBrood: {},
 
-        // SWORDFISH JOBS ////////////////////////////////////////////////////////////////////////////////
+        // BILLFISH JOBS ////////////////////////////////////////////////////////////////////////////////
 
-        getSwordfishPair: {
-            name: "Match swordfish pair",
+        getBillfishPair: {
+            name: "Match billfish pair",
             effect: {
                 resource: {
-                    swordfishPair: 1,
+                    billfishPair: 1,
                 },
             },
             cost: [
-                { resource: "swordfish", costFunction: "constant", priceIncrease: 2 },
+                { resource: "billfish", costFunction: "constant", priceIncrease: 2 },
                 { resource: "fish", costFunction: "linear", priceIncrease: 250 },
             ],
-            max: "swordfishPair",
+            max: "billfishPair",
             prereq: {
-                upgrade: ["swordfishBiology"],
+                upgrade: ["billfishBiology"],
             },
-            outcomes: [],
-            multiOutcomes: [],
-            helpText: "",
+            outcomes: [
+                "Billfish paired.",
+                "Two of one makes one of...two...or something.",
+                "I pronouce you bill and fish.",
+                "Found a match!",
+            ],
+            multiOutcomes: [
+                "Paired some billfish.",
+                "Two by two.",
+                "Finding a compatible pair is seriously harder than it looks.",
+            ],
+            helpText: "Do a bit of matchmaking and pair up two billfish to continue the circle of life.",
         },
 
-        getSwordfishExplorer: {
-            name: "Equip swordfish explorer",
+        getBillfishExplorer: {
+            name: "Equip billfish explorer",
             effect: {
                 resource: {
-                    swordfishExplorer: 1,
+                    billfishExplorer: 1,
                 },
             },
             cost: [
-                { resource: "swordfish", costFunction: "constant", priceIncrease: 1 },
+                { resource: "billfish", costFunction: "constant", priceIncrease: 1 },
                 { resource: "seagrass", costFunction: "linear", priceIncrease: 1000 },
                 { resource: "crystal", costFunction: "linear", priceIncrease: 25 },
             ],
-            max: "swordfishExplorer",
+            max: "billfishExplorer",
             prereq: {
                 upgrade: ["powerfulPropulsion"],
             },
-            outcomes: [],
-            multiOutcomes: [],
-            helpText: "Rig a complex propulsion system to a swordfish and train them to chart surrounding waters.",
+            outcomes: [
+                "Stay safe out there.",
+                "The explorer gives you a determined look, then darts away.",
+                "This one charges right into the storm.",
+                "The explorer tucks some blank maps away and dashes out of the cave.",
+                "The billfish reviews the plan one more time, then charges head first into the current.",
+            ],
+            multiOutcomes: [
+                "Fortune favors the bold.",
+                "The school dashes out into the open water.",
+                "They seem so calm about it.",
+                "The team grabs a big stack of blank maps and quickly swims away.",
+                "Seeing this many in a group...perhaps our propulsion system is a little overcomplicated.",
+                "The fitting process for these things are a nightmare.",
+                "The group valiantly swims out of the cave into the storm.",
+            ],
+            helpText: "Rig a complex propulsion system to a billfish and train them to chart surrounding waters.",
             removedBy: {
                 upgrades: ["cartographicCompleteness"],
             },
         },
 
-        getSwordfishMechanic: {
-            name: "Instruct swordfish mechanic",
+        getBillfishMechanic: {
+            name: "Instruct billfish mechanic",
             effect: {
                 resource: {
-                    swordfishMechanic: 1,
+                    billfishMechanic: 1,
                 },
             },
             cost: [
-                { resource: "swordfish", costFunction: "constant", priceIncrease: 1 },
+                { resource: "billfish", costFunction: "constant", priceIncrease: 1 },
                 { resource: "crystal", costFunction: "linear", priceIncrease: 500 },
             ],
-            max: "swordfishMechanic",
+            max: "billfishMechanic",
             prereq: {
                 upgrade: ["engineering"],
             },
-            outcomes: [],
-            multiOutcomes: [],
-            helpText: "",
+            outcomes: [
+                "This one has read the instruction manual, and is ready to break I MEAN improve stuff.",
+                "Tighten this here, and that there, and then this, aaaand...you broke it.",
+                "Loosen this screw here, and that bolt there, aaaand...I can't tell the difference.",
+                "This one starts a routine maintenance check on a fish machine.",
+                "This one starts a routine maintenance check on a sand digger.",
+                "The mechanic is ready to mechan...ize. Or whatever.",
+                "The mechanic goes to a machine, realizes they forgot their toolbox, and rapidly swims back in the other direction.",
+                "New mechanic, fresh from the doc room.",
+            ],
+            multiOutcomes: [
+                "Mechanics acquired.",
+                "Mechanics make our operation run like a well-oiled machine. That's great and all, but what's oil?",
+                "They all know so many big words. Is this really necessary?",
+                "The mechanics swarm on a sand digger, and immeidately break it, only to then fix it better than it started.",
+                "The crystal toolsets for these guys are so expensive! But sharkonium would be worse, so, no complaints.",
+                "They prepare to tinker.",
+                "The mechanics begin observing machines from all angles.",
+                "I wonder what they're actually doing. I can't really understand any of it, personally.",
+                "They look like they have no idea what they're doing, but they always get results.",
+            ],
+            helpText: "Train a billfish to operate our machines, and give it the resources needed to tinker with them.",
         },
 
         // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
@@ -4543,7 +4616,7 @@ SharkGame.HomeActionCategories = {
             "getOctopus",
             "getSquid",
             "getUrchin",
-            "getSwordfish",
+            "getBillfish",
         ],
     },
 
@@ -4575,8 +4648,8 @@ SharkGame.HomeActionCategories = {
             "getCuriousCrab",
             "getResearcher",
             "getAcolyte",
-            "getSwordfishExplorer",
-            "getSwordfishMechanic",
+            "getBillfishExplorer",
+            "getBillfishMechanic",
             "getStormgoer",
         ],
     },
@@ -4594,7 +4667,7 @@ SharkGame.HomeActionCategories = {
             "getPit",
             "getCollective",
             "getSpawner",
-            "getSwordfishPair",
+            "getBillfishPair",
         ],
     },
 

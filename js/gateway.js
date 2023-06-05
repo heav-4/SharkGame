@@ -1207,7 +1207,7 @@ SharkGame.Gateway.PresenceFeelings = {
     tar: "something dirty?",
     algae: "something slimy?",
     seagrass: "some plants?",
-    swordfish: "resolute survivalists?",
+    billfish: "resolute survivalists?",
 };
 
 SharkGame.Gateway.Messages = {
@@ -1280,7 +1280,6 @@ SharkGame.Gateway.Messages = {
         marine: [
             "Did your last ocean feel all too familiar?",
             "Do you bring life, or do you bring death, worldbuilder?",
-            "Do you wonder where the remnants of the lobsters' past are?",
             "A tragedy; or, perhaps, merely the cost of progress.",
             "We confront our mistakes as choices. We repeat them, or we do not.",
         ],
@@ -1295,9 +1294,8 @@ SharkGame.Gateway.Messages = {
         tempestuous: [
             "You braved the maelstrom and came from it unscathed.",
             "Charge through the whirlpool. Give no quarter to the storm.",
-            "The revolt was unavoidable. It was merely a matter of time.",
-            "Do you wonder why the swordfish obeyed?",
-            "Do you wonder what the swordfish were so startled by?",
+            "Do you wonder who built the great machine?",
+            "The billfish are fast, but not brave. It was you who gave them their courage.",
         ],
         volcanic: [
             "The boiling ocean only stirred you on.",
