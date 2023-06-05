@@ -900,6 +900,16 @@ SharkGame.Button = {
 };
 
 SharkGame.Changelog = {
+    "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 202306??a": [
+        "Added Tempestuous worldtype.",
+        "Added home message history. You may now freely scroll back and forth between previously seen home messages while in a world.",
+        "For the millionth time, attempted to fix negative world time bugs.",
+        "Many new sprites.",
+        "New fun facts.",
+        "Finally fixed issues with uncategorized home actions.",
+        "Edited a bunch of text.",
+        "TODO: run around fixing more bugs",
+    ],
     "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20220712a": [
         "Time in the minute hand can now persist between worlds, with a few caveats.",
         "Added 3 new aspects that complement the changes to minute hand time.",
