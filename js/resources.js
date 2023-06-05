@@ -571,7 +571,7 @@ SharkGame.Resources = {
 
         makeToken(type = "nobody cares", initialLocation = "NA") {
             const identifier = "token-" + (this.list.length + 1);
-            const token = SharkGame.changeSprite(SharkGame.spriteIconPath, "general/theToken", null, "general/missing-action")
+            const token = SharkGame.changeSprite(SharkGame.spriteIconPath, "general/slottedmarker", null, "general/missing-action")
                 .attr("id", identifier)
                 .attr("type", type)
                 .attr("draggable", true)
@@ -609,7 +609,7 @@ SharkGame.Resources = {
                 if (!duringLoad && SharkGame.flags.tokens[token.attr("id")] !== "RETURNME") {
                     res.tokens.unmarkLocation(SharkGame.flags.tokens[token.attr("id")], token.attr("id"));
                 }
-                SharkGame.changeSprite(SharkGame.spriteIconPath, "general/theToken", token, "general/missing-action");
+                SharkGame.changeSprite(SharkGame.spriteIconPath, "general/slottedmarker", token, "general/missing-action");
                 token.attr("draggable", true);
                 SharkGame.flags.tokens[token.attr("id")] = "NA";
                 res.tokens.updateTokenDescriptions();
@@ -717,7 +717,7 @@ SharkGame.Resources = {
         markLocation(originalId, newId) {
             res.tokens.applyTokenEffect(newId, originalId, "apply");
             if (newId.includes("token")) {
-                SharkGame.changeSprite(SharkGame.spriteIconPath, "general/theToken", $("#" + newId), "general/missing-action");
+                SharkGame.changeSprite(SharkGame.spriteIconPath, "general/slottedmarker", $("#" + newId), "general/missing-action");
                 $("#" + newId).attr("draggable", true);
                 SharkGame.flags.tokens[newId] = "NA";
             } else {
@@ -732,7 +732,7 @@ SharkGame.Resources = {
 
         unmarkLocation(locationPrevious, id) {
             if (locationPrevious === "NA") {
-                SharkGame.changeSprite(SharkGame.spriteIconPath, "general/holeoverlay", $("#" + id), "general/missing-action");
+                SharkGame.changeSprite(SharkGame.spriteIconPath, "general/hole", $("#" + id), "general/missing-action");
                 $("#" + id).attr("draggable", false);
             } else {
                 $("#" + locationPrevious)
