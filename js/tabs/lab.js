@@ -174,8 +174,12 @@ SharkGame.Lab = {
 
             if (hintedUpgrade === undefined) return;
             let hintResource;
-            if (_.has(hintedUpgrade, "required.seen"))
+            if (_.has(hintedUpgrade, "required.seen")) {
                 hintResource = _.find(hintedUpgrade.required.seen, (resource) => world.doesResourceExist(resource));
+            } else if (_.has(hintedUpgrade, "required.totals")) {
+                hintResource = _.find(Object.keys(hintedUpgrade.required.totals), (resource) => world.doesResourceExist(resource));
+            }
+
             if (hintResource) {
                 $("#buttonList").append(
                     $("<p>").html(
