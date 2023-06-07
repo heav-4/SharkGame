@@ -4436,8 +4436,8 @@ SharkGame.Upgrades = {
                 "Eureka! These new designs are brilliant, I think! I can't understand what's going on anymore! Half of what they said has gone over our heads.",
             effectDesc: "All shark machines run four times as fast, but now laser rays now run 4 times faster too. Yay!",
             cost: {
-                science: 7.5e9,
-                sharkonium: 5e8,
+                science: 8e9,
+                sharkonium: 4e8,
             },
             required: {
                 upgrades: ["engineering"],
@@ -4458,7 +4458,7 @@ SharkGame.Upgrades = {
             effectDesc:
                 "The recycler's efficiency only starts dropping at 100 million material inserted at once, instead of 100 thousand. The base efficiency is now 100%.",
             cost: {
-                science: 10e9,
+                science: 12e9,
                 junk: 1e9,
             },
             required: {
@@ -4473,7 +4473,7 @@ SharkGame.Upgrades = {
             effectDesc:
                 "With the power off, everything's caught in a magical feedback loop. We fix this place, we fix the world. Who would build such a dangerous machine?",
             cost: {
-                science: 15e9,
+                science: 17.5e9,
             },
             required: {
                 upgrades: ["internalExploration"],
@@ -4485,7 +4485,7 @@ SharkGame.Upgrades = {
             researchedMessage: "Indeed, there is! But we have no idea how to use it. So we'll just wrap stuff in it and hope for the best.",
             effectDesc: "New, magic sandbags make stormgoers 99 times better at harvesting stuff. We genuinely have no idea! It just works.",
             cost: {
-                seagrass: 2.5e9,
+                seagrass: 4e9,
             },
             required: {
                 upgrades: ["supernaturalSeagrass", "internalExploration"],
@@ -4504,7 +4504,7 @@ SharkGame.Upgrades = {
             effectDesc:
                 "The billfish are swimming wildly outside. Their frenzied cheering makes anything you try to say inaudible. From one storm, and into the next...",
             cost: {
-                science: 1e12,
+                science: 4e12,
             },
             required: {
                 upgrades: ["schematicSalvaging", "iterativeDesign"],
