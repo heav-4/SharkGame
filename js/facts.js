@@ -115,7 +115,7 @@ SharkGame.FunFacts = {
             "Rays do not have bones. Neither do sharks.",
         ],
         crab: [
-            "Throughout history, many species crustaceans have independently evovled into crabs for no discernable reason. The phenomenon is called carcinisation.",
+            "Throughout history, many species of crustaceans have independently evovled into crabs for no discernable reason. The phenomenon is called carcinisation.",
             "Some species of crab exhibit a kind of claw asymmetry. Called the crusher and cutter, they have different shapes that give their claws more specialized purposes.",
         ],
         octopus: [
@@ -173,7 +173,7 @@ SharkGame.FunFacts = {
             "Chimaera do not have bones. Neither do sharks or rays.",
         ],
         billfish: [
-            "Billfish are indeed a kind of fish, unlike sharks and rays.",
+            "Billfish do indeed have bones, unlike sharks and rays.",
             "Swordfish and marlins are large, predatory fish. At adulthood, their only natural predators are sharks and whales.",
             "The top speed of marlins is commonly reported to be 60 mph, but this is not accurate. It's actually closer to 30 mph.",
             "The bill of a billfish is used to slash like a sword, not stab like a spear.",
@@ -190,7 +190,10 @@ SharkGame.FunFacts = {
             "Turritopsis dohrnii is a species of jellyfish that can restart its lifecycle at will. In theory, this grants it an infinite lifespan.",
             // do more research into jellies
         ],
-        sharkonium: ["There is nothing suspicious about the machines."],
+        sharkonium: [
+            "There is nothing suspicious about the machines.",
+            "Small and medium-scale sharkonium machines do not require a power source. This is because sharkonium is made with crystals, which contain latent magic.",
+        ],
         porite: [
             "The idea for porite comes from the structure of bones, which have spongey insides that reduce their weight while retaining their strength.",
         ],
