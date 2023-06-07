@@ -185,7 +185,7 @@ SharkGame.Lab = {
                     )
                 );
             } else {
-                log.addError(`There is a possible, undiscovered upgrade (${hintedUpgrade}), but no valid hint resource.`);
+                log.addError(`There is a possible, undiscovered upgrade (${JSON.stringify(hintedUpgrade)}), but no valid hint resource.`);
             }
         }
     },
