@@ -145,6 +145,7 @@ SharkGame.WorldTypes = {
             "basicmaterials",
             "seagrass",
             "chart",
+            "map",
         ],
         absentResources: ["planter", "crystalMiner"],
         modifiers: [{ type: "multiplier", modifier: "planetaryIncomeMultiplier", resource: "sandDigger", amount: 24 }],

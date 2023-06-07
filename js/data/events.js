@@ -494,34 +494,36 @@ SharkGame.Events = {
         },
     },
     tempestuousMapSequence: {
-        handlingTime: "afterTick",
+        handlingTime: "beforeTick",
         priority: 0,
         getAction() {
-            return "remove";
+            if (SharkGame.World.worldType !== "tempestuous") {
+                return "remove";
+            } else if (SharkGame.Upgrades.purchased.includes("cartographicCompleteness")) {
+                return "trigger";
+            }
+            return "pass";
         },
         trigger() {
             res.setResource("map", 1);
+            res.setTotalResource("map", 1);
             res.changeResource("billfish", res.getResource("billfishExplorer"));
 
-            if (!SharkGame.flags.tempestuousReturnedTokens) {
-                _.each(res.tokens.list, (token) => {
-                    if (
-                        SharkGame.flags.tokens[token.attr("id")].includes("chart") ||
-                        SharkGame.flags.tokens[token.attr("id")].includes("billfishExplorer")
-                    )
-                        res.tokens.tryReturnToken(null, false, token);
-                });
-                SharkGame.flags.tempestuousReturnedTokens = true;
-            }
+            _.each(res.tokens.list, (token) => {
+                if (
+                    SharkGame.flags.tokens[token.attr("id")].includes("chart") ||
+                    SharkGame.flags.tokens[token.attr("id")].includes("billfishExplorer")
+                )
+                    res.tokens.tryReturnToken(null, false, token);
+            });
+            SharkGame.flags.mapSequenceCompleted = true;
 
             res.setResource("chart", 0);
             res.setTotalResource("chart", 0);
-            world.worldResources.get("chart").exists = false;
             res.setResource("billfishExplorer", 0);
             res.setTotalResource("billfishExplorer", 0);
-            world.worldResources.get("billfishExplorer").exists = false;
+            SharkGame.PlayerResources.get("chart").discovered = false;
             res.reconstructResourcesTable();
-            world.worldResources.get("chart").exists = true;
             SharkGame.TabHandler.setUpTab();
         },
     },
