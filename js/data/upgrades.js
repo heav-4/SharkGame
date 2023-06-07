@@ -4052,8 +4052,8 @@ SharkGame.Upgrades = {
         },
         magicBottles: {
             name: "Magic Bottles",
-            desc: "The billfish are going to show us a way of making bottles that amplify the natural magic of our crystals.",
-            researchedMessage: "Something's wrong. These bottles...they have wind coming out of them! What the scallop?!",
+            desc: "The billfish have found something very, very strange outside: bottles full of wind!",
+            researchedMessage: "With enough study, we were finally able to reproduce them. Now the question is, what to do with them?",
             effectDesc: "We can now make magic bottles that spew endless wind. Further study is DEFINITELY required.",
             cost: {
                 science: 250000,
@@ -4268,7 +4268,6 @@ SharkGame.Upgrades = {
             customEffect(background) {
                 return `1 ${sharktext.getResourceName(`map`, false, 1, background)}`;
             },
-            events: ["tempestuousMapSequence"],
         },
         theExpedition: {
             name: "The Expedition",
@@ -4279,7 +4278,7 @@ SharkGame.Upgrades = {
                 "Moved our base of operations to the inside of the weather machine. We'll have to find a way to shut it down from the inside.",
             cost: {
                 science: 2e8,
-                fish: 10000000,
+                fish: 5000000,
             },
             required: {
                 upgrades: ["cartographicCompleteness"],
@@ -4291,7 +4290,7 @@ SharkGame.Upgrades = {
             researchedMessage: "Indeed, something's strange; this seagrass is immune to undersea currents! MUCH more study is required.",
             effectDesc: "Studying seagrass now gives 10 times the science that it used to. MAGIC SUPER SCIENCE, GO!",
             cost: {
-                seagrass: 100000000,
+                seagrass: 50000000,
             },
             required: {
                 upgrades: ["theExpedition"],
@@ -4312,7 +4311,7 @@ SharkGame.Upgrades = {
                 "Our scientists, with the help of the billfish, have learned to interpret these strange things. Perhaps we can learn something?",
             effectDesc: "Learned to read these so-called 'documents.' What are the scientists so riled up about? Are they magic or something?",
             cost: {
-                science: 5e8,
+                science: 3.5e8,
             },
             required: {
                 upgrades: ["theExpedition"],
@@ -4324,9 +4323,9 @@ SharkGame.Upgrades = {
             researchedMessage: "Huzzah! We've replicated this strange material, and named after the first synthesizer, Dr. Sharkonium!",
             effectDesc: "Enables transmutation of some random junk we have lying around into sharkonium, material of the future.",
             cost: {
-                science: 5e8,
+                science: 4e8,
                 crystal: 5000000,
-                sand: 25000000,
+                sand: 10000000,
             },
             required: {
                 upgrades: ["secretStudies"],
@@ -4339,7 +4338,7 @@ SharkGame.Upgrades = {
                 "Now we don't have to do all the work - well, mostly. One of these schematics doesn't work because of the winds... Otherwise, FUTURE!!",
             effectDesc: "Machines can be built to supplement population duties. This is efficient.",
             cost: {
-                sharkonium: 1000000,
+                sharkonium: 750000,
             },
             required: {
                 upgrades: ["transmutation"],
@@ -4353,7 +4352,7 @@ SharkGame.Upgrades = {
             effectDesc: "Laser rays are twice as efficient. It's that whole 'hotter equals better' thing again.",
             cost: {
                 science: 7.5e8,
-                sharkonium: 2.5e6,
+                sharkonium: 1e6,
             },
             required: {
                 upgrades: ["transmutation"],
@@ -4370,13 +4369,14 @@ SharkGame.Upgrades = {
             researchedMessage: "After some intense studying, the billfish have volunteered to help us run the machines!",
             effectDesc: "Billfish mechanics can now tinker with machines to keep them running optimally! Auto-transmuters are also possible now.",
             cost: {
-                science: 1.25e9,
-                sharkonium: 7.5e6,
+                science: 1e9,
+                sharkonium: 5e6,
             },
             required: {
                 upgrades: ["automation"],
                 seen: ["fishMachine", "sandDigger"],
             },
+            effect: {},
         },
         heatCoils: {
             name: "Heat Coils",
@@ -4387,43 +4387,15 @@ SharkGame.Upgrades = {
                 "Laser rays transmute four times as fast, and let me tell you, having the heat right next to us is sooooooo much better than across the ocean.",
             cost: {
                 science: 1.25e9,
-                sand: 2.5e8,
+                sand: 1.5e8,
             },
             required: {
                 upgrades: ["sharkoniumReceptors"],
             },
             effect: {
                 incomeMultiplier: {
-                    laser: 4,
+                    laser: 16,
                 },
-            },
-        },
-        recyclerDiscovery: {
-            name: "Recycler",
-            desc: "Devise a system of pulverising unwanted resources into a component paste, and reusing them as something else.",
-            researchedMessage:
-                "Well this thing is frankly terrifying. I wouldn't swim anywhere near the input holes if I were you. Maybe it'll help though!",
-            effectDesc: "Allows recycling of materials by virtue of a horrifying mechanical maw that consumes all that ventures near it. Future?",
-            cost: {
-                science: 3e9,
-                sharkonium: 2e7,
-            },
-            required: {
-                upgrades: ["engineering"],
-            },
-        },
-        superprocessing: {
-            name: "Superprocessing",
-            desc: "The recycler wasn't really meant for millions of fish at once. Seeing as that transaction is fairly common, we should probably do something about it.",
-            researchedMessage: "Eureka! If we make the big things bigger, and the grinders grindier, we can process way more material at once!",
-            effectDesc:
-                "The recycler's efficiency only starts dropping at 100 million material inserted at once, instead of 100 thousand. The base efficiency is now 100%.",
-            cost: {
-                science: 5e9,
-                junk: 1e9,
-            },
-            required: {
-                upgrades: ["recyclerDiscovery"],
             },
         },
         internalExploration: {
@@ -4433,7 +4405,7 @@ SharkGame.Upgrades = {
                 "The maps led us to a massive generator that's been completely destroyed, and a strange, malfunctioning gate. We don't yet know what this means for us.",
             effectDesc: "Mechanics are five times as effective at tinkering. We now also know that the facility has no power.",
             cost: {
-                science: 10e9,
+                science: 2e9,
             },
             required: {
                 upgrades: ["engineering"],
@@ -4443,14 +4415,28 @@ SharkGame.Upgrades = {
                 return `${sharktext.getResourceName(`billfishMechanic`, false, 1, background)} impact ×5`;
             },
         },
+        recyclerDiscovery: {
+            name: "Recycler",
+            desc: "Devise a system of pulverising unwanted resources into a component paste, and reusing them as something else.",
+            researchedMessage:
+                "Well this thing is frankly terrifying. I wouldn't swim anywhere near the input holes if I were you. Maybe it'll help though!",
+            effectDesc: "Allows recycling of materials by virtue of a horrifying mechanical maw that consumes all that ventures near it. Future?",
+            cost: {
+                science: 4e9,
+                sharkonium: 2.5e7,
+            },
+            required: {
+                upgrades: ["engineering"],
+            },
+        },
         iterativeDesign: {
             name: "Iterative Design",
             desc: "Our billfish friends are naturals at this. They have organized a committee to suggest an improved set of designs.",
             researchedMessage:
                 "Eureka! These new designs are brilliant, I think! I can't understand what's going on anymore! Half of what they said has gone over our heads.",
-            effectDesc: "All shark machines run twice as fast, but skimmers and transmuters are 32 times as efficient. Yay!",
+            effectDesc: "All shark machines run four times as fast, but now laser rays now run 4 times faster too. Yay!",
             cost: {
-                science: 75e9,
+                science: 7.5e9,
                 sharkonium: 5e8,
             },
             required: {
@@ -4458,13 +4444,25 @@ SharkGame.Upgrades = {
             },
             effect: {
                 incomeMultiplier: {
-                    fishMachine: 2,
-                    sandDigger: 2,
+                    fishMachine: 4,
+                    sandDigger: 4,
+                    autoTransmuter: 4,
+                    laser: 4,
                 },
-                incomeBoost: {
-                    autoTransmuter: 32,
-                    skimmer: 32,
-                },
+            },
+        },
+        superprocessing: {
+            name: "Superprocessing",
+            desc: "The recycler wasn't really meant for millions of fish at once. Seeing as that transaction is fairly common, we should probably do something about it.",
+            researchedMessage: "Eureka! If we make the big things bigger, and the grinders grindier, we can process way more material at once!",
+            effectDesc:
+                "The recycler's efficiency only starts dropping at 100 million material inserted at once, instead of 100 thousand. The base efficiency is now 100%.",
+            cost: {
+                science: 10e9,
+                junk: 1e9,
+            },
+            required: {
+                upgrades: ["recyclerDiscovery"],
             },
         },
         schematicSalvaging: {
@@ -4475,7 +4473,7 @@ SharkGame.Upgrades = {
             effectDesc:
                 "With the power off, everything's caught in a magical feedback loop. We fix this place, we fix the world. Who would build such a dangerous machine?",
             cost: {
-                science: 2.5e12,
+                science: 15e9,
             },
             required: {
                 upgrades: ["internalExploration"],
@@ -4485,16 +4483,16 @@ SharkGame.Upgrades = {
             name: "Supernatural Harvest",
             desc: "There's magic inside this grass, surely.",
             researchedMessage: "Indeed, there is! But we have no idea how to use it. So we'll just wrap stuff in it and hope for the best.",
-            effectDesc: "New, magic sandbags make stormgoers 999 times better at harvesting stuff. We genuinely have no idea! It just works.",
+            effectDesc: "New, magic sandbags make stormgoers 99 times better at harvesting stuff. We genuinely have no idea! It just works.",
             cost: {
-                seagrass: 5e11,
+                seagrass: 2.5e9,
             },
             required: {
                 upgrades: ["supernaturalSeagrass", "internalExploration"],
             },
             effect: {
                 incomeMultiplier: {
-                    stormgoer: 999,
+                    stormgoer: 99,
                 },
             },
         },
@@ -4506,7 +4504,7 @@ SharkGame.Upgrades = {
             effectDesc:
                 "The billfish are swimming wildly outside. Their frenzied cheering makes anything you try to say inaudible. From one storm, and into the next...",
             cost: {
-                science: 2.5e13,
+                science: 1e12,
             },
             required: {
                 upgrades: ["schematicSalvaging", "iterativeDesign"],
