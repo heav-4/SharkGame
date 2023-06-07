@@ -403,7 +403,7 @@ SharkGame.Gateway = {
                     $("<p>").html(
                         "You completed this world " +
                             sharktext.beautify(gateway.getMinutesBelowPar()) +
-                            " minutes faster than par, granting you <span class='essenceCount'>" +
+                            ` minute${gateway.getMinutesBelowPar() === 1 ? "" : "s"} faster than par, granting you <span class='essenceCount'>` +
                             sharktext.beautify(speedReward) +
                             "</span> additional essence."
                     )
