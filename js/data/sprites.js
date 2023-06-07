@@ -903,7 +903,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/sprongeBiomimicry": {
+    "technologies/spongeCollection": {
         frame: {
             x: 400,
             y: 550,
@@ -911,7 +911,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/squidBiology": {
+    "technologies/sprongeBiomimicry": {
         frame: {
             x: 450,
             y: 550,
@@ -919,7 +919,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/statsDiscovery": {
+    "technologies/squidBiology": {
         frame: {
             x: 500,
             y: 550,
@@ -927,7 +927,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/sunObservation": {
+    "technologies/statsDiscovery": {
         frame: {
             x: 550,
             y: 550,
@@ -935,7 +935,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/superiorSearchAlgorithms": {
+    "technologies/sunObservation": {
         frame: {
             x: 600,
             y: 0,
@@ -943,7 +943,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/superprocessing": {
+    "technologies/superiorSearchAlgorithms": {
         frame: {
             x: 600,
             y: 50,
@@ -951,7 +951,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/thermalConditioning": {
+    "technologies/superprocessing": {
         frame: {
             x: 600,
             y: 100,
@@ -959,7 +959,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/thermalVents": {
+    "technologies/thermalConditioning": {
         frame: {
             x: 600,
             y: 150,
@@ -967,7 +967,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/transmutation": {
+    "technologies/thermalVents": {
         frame: {
             x: 600,
             y: 200,
@@ -975,7 +975,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/underwaterChemistry": {
+    "technologies/transmutation": {
         frame: {
             x: 600,
             y: 250,
@@ -983,7 +983,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/urchinAttraction": {
+    "technologies/underwaterChemistry": {
         frame: {
             x: 600,
             y: 300,
@@ -991,7 +991,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/urchinBiology": {
+    "technologies/urchinAttraction": {
         frame: {
             x: 600,
             y: 350,
@@ -999,7 +999,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/whaleCommunication": {
+    "technologies/urchinBiology": {
         frame: {
             x: 600,
             y: 400,
@@ -1007,7 +1007,7 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/xenobiology": {
+    "technologies/whaleCommunication": {
         frame: {
             x: 600,
             y: 450,
@@ -1015,10 +1015,18 @@ SharkGame.Sprites = {
             h: 50,
         },
     },
-    "technologies/jellyfishHunting": {
+    "technologies/xenobiology": {
         frame: {
             x: 600,
             y: 500,
+            w: 50,
+            h: 50,
+        },
+    },
+    "technologies/jellyfishHunting": {
+        frame: {
+            x: 600,
+            y: 550,
             w: 49,
             h: 49,
         },
@@ -1026,20 +1034,12 @@ SharkGame.Sprites = {
     "aspects/amorphousAssembly": {
         frame: {
             x: 600,
-            y: 549,
+            y: 599,
             w: 32,
             h: 32,
         },
     },
     "aspects/apotheosis": {
-        frame: {
-            x: 600,
-            y: 581,
-            w: 32,
-            h: 32,
-        },
-    },
-    "aspects/clawSharpening": {
         frame: {
             x: 0,
             y: 600,
@@ -1047,7 +1047,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/constructedConception": {
+    "aspects/clawSharpening": {
         frame: {
             x: 32,
             y: 600,
@@ -1055,7 +1055,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/crustaceanAptitude": {
+    "aspects/constructedConception": {
         frame: {
             x: 64,
             y: 600,
@@ -1063,7 +1063,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/crystallineSkin": {
+    "aspects/crustaceanAptitude": {
         frame: {
             x: 96,
             y: 600,
@@ -1071,7 +1071,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/doubleTime": {
+    "aspects/crystallineSkin": {
         frame: {
             x: 128,
             y: 600,
@@ -1079,7 +1079,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/extensiveOrganization": {
+    "aspects/doubleTime": {
         frame: {
             x: 160,
             y: 600,
@@ -1087,7 +1087,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/internalCalculator": {
+    "aspects/extensiveOrganization": {
         frame: {
             x: 192,
             y: 600,
@@ -1095,7 +1095,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/pathOfEnlightenment": {
+    "aspects/internalCalculator": {
         frame: {
             x: 224,
             y: 600,
@@ -1103,7 +1103,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/pathOfIndustry": {
+    "aspects/pathOfEnlightenment": {
         frame: {
             x: 256,
             y: 600,
@@ -1111,7 +1111,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/pathOfTime": {
+    "aspects/pathOfIndustry": {
         frame: {
             x: 288,
             y: 600,
@@ -1119,7 +1119,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/patience": {
+    "aspects/pathOfTime": {
         frame: {
             x: 320,
             y: 600,
@@ -1127,7 +1127,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/syntheticTransmutation": {
+    "aspects/patience": {
         frame: {
             x: 352,
             y: 600,
@@ -1135,7 +1135,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/theHourHand": {
+    "aspects/syntheticTransmutation": {
         frame: {
             x: 384,
             y: 600,
@@ -1143,7 +1143,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/theMinuteHand": {
+    "aspects/theHourHand": {
         frame: {
             x: 416,
             y: 600,
@@ -1151,7 +1151,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/theMinuteHandCentered": {
+    "aspects/theMinuteHand": {
         frame: {
             x: 448,
             y: 600,
@@ -1159,7 +1159,7 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/theSecondHand": {
+    "aspects/theMinuteHandCentered": {
         frame: {
             x: 480,
             y: 600,
@@ -1167,9 +1167,17 @@ SharkGame.Sprites = {
             h: 32,
         },
     },
-    "aspects/static/respec": {
+    "aspects/theSecondHand": {
         frame: {
             x: 512,
+            y: 600,
+            w: 32,
+            h: 32,
+        },
+    },
+    "aspects/static/respec": {
+        frame: {
+            x: 544,
             y: 600,
             w: 30,
             h: 30,
@@ -1177,48 +1185,48 @@ SharkGame.Sprites = {
     },
     "aspects/static/respecAll": {
         frame: {
-            x: 542,
-            y: 600,
+            x: 544,
+            y: 630,
             w: 30,
             h: 30,
         },
     },
     "aspects/static/zoom": {
         frame: {
-            x: 572,
-            y: 613,
+            x: 574,
+            y: 631,
             w: 30,
             h: 30,
         },
     },
     "general/hole": {
         frame: {
-            x: 512,
-            y: 630,
+            x: 604,
+            y: 631,
             w: 28,
             h: 28,
         },
     },
     "general/slottedmarker": {
         frame: {
-            x: 540,
-            y: 630,
+            x: 0,
+            y: 632,
             w: 28,
             h: 28,
         },
     },
     "general/theToken": {
         frame: {
-            x: 602,
-            y: 613,
+            x: 28,
+            y: 632,
             w: 28,
             h: 21,
         },
     },
     "general/holeoverlay": {
         frame: {
-            x: 602,
-            y: 634,
+            x: 574,
+            y: 600,
             w: 24,
             h: 24,
         },
