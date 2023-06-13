@@ -427,7 +427,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             }
         }
 
-        if (SharkGame.flags.needOfflineProgress) {
+        if (SharkGame.flags.needOfflineProgress && SharkGame.Settings.current.offlineModeActive) {
             const secondsElapsed = SharkGame.flags.needOfflineProgress;
 
             if (SharkGame.Settings.current.idleEnabled && !SharkGame.gameOver) {
