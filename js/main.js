@@ -583,6 +583,14 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                         $(button).addClass("disabled");
                     });
                     break;
+                case "recycler":
+                    $.each($("#inputButtons").children(), (_index, button) => {
+                        $(button).addClass("disabled");
+                    });
+                    $.each($("#outputButtons").children(), (_index, button) => {
+                        $(button).addClass("disabled");
+                    });
+                    break;
                 default:
                     SharkGame.Tabs[SharkGame.Tabs.current].code.update();
             }
