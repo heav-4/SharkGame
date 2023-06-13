@@ -98,8 +98,6 @@ $.extend(SharkGame, {
         "Javascript Edition",
         "You are a Shark",
         "Mystery of Shark City",
-        "Modded",
-        "8 hours later...",
         "Seas of Loathing",
         "Raiders of the Lost Shark",
     ],
