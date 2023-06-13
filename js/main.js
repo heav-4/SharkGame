@@ -913,8 +913,10 @@ SharkGame.Changelog = {
         "Many new sprites.",
         "New fun facts.",
         "Finally fixed issues with uncategorized home actions.",
+        "Fixed issue with verbose token displaying internal names.",
+        "Fixed a bug where disabling offline progress did absolutely nothing.",
+        "Fixed bugs related to pausing and the recycler UI.",
         "Edited a bunch of text.",
-        "TODO: run around fixing more bugs",
     ],
     "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20220712a": [
         "Time in the minute hand can now persist between worlds, with a few caveats.",
