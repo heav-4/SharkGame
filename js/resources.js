@@ -679,9 +679,9 @@ SharkGame.Resources = {
                     if (tokenLocation === "NA") {
                         textToDisplay += "in its slot.";
                     } else if (tokenLocation.includes("income")) {
-                        textToDisplay += "boosting all " + tokenLocation.split("-")[1] + " gains.";
+                        textToDisplay += "boosting all " + sharktext.getResourceName(tokenLocation.split("-")[1], false, 1) + " gains.";
                     } else if (tokenLocation.includes("resource")) {
-                        textToDisplay += "boosting " + tokenLocation.split("-")[1] + " efficiency.";
+                        textToDisplay += "boosting " + sharktext.getResourceName(tokenLocation.split("-")[1], false, 1) + " efficiency.";
                     }
                 });
                 $("#token-description").html(textToDisplay);
