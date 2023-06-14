@@ -4346,7 +4346,7 @@ SharkGame.Upgrades = {
         },
         sharkoniumReceptors: {
             name: "Sharkonium Receptors",
-            desc: "Using our new mircale material, we believe we can enhance the lasers that our rays work with.",
+            desc: "Using our new miracle material, we believe we can enhance the lasers that our rays work with.",
             researchedMessage:
                 "Upgraded laser containers can withstand a higher temperature with a more intense beam. Powering up, please stand by...",
             effectDesc: "Laser rays are twice as efficient. It's that whole 'hotter equals better' thing again.",
