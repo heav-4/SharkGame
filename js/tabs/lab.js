@@ -509,7 +509,7 @@ SharkGame.Lab = {
             isVisible =
                 isVisible && _.every(upgrade.required.totals, (requiredTotal, resourceName) => res.getTotalResource(resourceName) >= requiredTotal);
         }
-        return isVisible;
+        return isVisible || SharkGame.Upgrades.purchased.includes(upgradeId);
     },
 
     getResearchEffects(upgrade) {

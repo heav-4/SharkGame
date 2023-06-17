@@ -508,6 +508,9 @@ SharkGame.Events = {
             res.setResource("map", 1);
             res.setTotalResource("map", 1);
             res.changeResource("billfish", res.getResource("billfishExplorer"));
+            SharkGame.Lab.addUpgrade("senseOfDirection");
+            SharkGame.Lab.addUpgrade("routing");
+            SharkGame.Lab.addUpgrade("universalNavigation");
 
             _.each(res.tokens.list, (token) => {
                 if (
