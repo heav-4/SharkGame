@@ -16,6 +16,7 @@ declare global {
     const home: typeof SharkGame.Home;
     const tree: typeof SharkGame.AspectTree;
     const log: typeof SharkGame.Log;
+    const mem: typeof SharkGame.Memories;
 
     const sharktext: typeof SharkGame.TextUtil;
     const sharkcolor: typeof SharkGame.ColorUtil;
@@ -75,6 +76,8 @@ declare global {
         getAction(): EventAction;
         trigger(): boolean;
     };
+
+    type FunFact = string;
 
     type GateRequirements = Partial<{
         upgrades: Record<UpgradeName, string>;
@@ -289,6 +292,16 @@ declare global {
         handleEventTick(handlingTime: EventName | "load"): void;
     };
 
+    type FactsModule = {
+        dilutedResources: ResourceName[];
+        showFact(): void;
+        getFact(): FunFact;
+        getPool(): FunFact[];
+        worldBased: Record<WorldName, FunFact[]>;
+        resourceBased: Record<ResourceName, FunFact[]>;
+        default: FunFact[];
+    };
+
     type GatewayModule = {
         PresenceFeelings: Record<ResourceName, string>;
         Messages: {
@@ -453,6 +466,15 @@ declare global {
         getBuyAmount(nomaxBuy: boolean): Decimal | number;
         /** This is weird */
         getPurchaseAmount(resource: ResourceName, owned?: number): Decimal | number;
+    };
+
+    type MemoryModule = {
+        worldMemories: Record<WorldName, string[]>;
+        persistentMemories: Record<WorldName, string[]>;
+        init(): void;
+        setup(): void;
+        addMemory(worldType: WorldName, messageName: string): void;
+        elevateMemories(): void;
     };
 
     type PaneHandlerModule = {
@@ -811,6 +833,7 @@ declare global {
         Log: LogModule;
         Main: MainModule;
         MathUtil: MathUtilModule;
+        Memories: MemoryModule;
         PaneHandler: PaneHandlerModule;
         ResourceIncomeAffected;
         ResourceIncomeAffectors;
@@ -842,7 +865,6 @@ declare global {
         VERSION_NAME: string;
         VERSION: string;
         Changelog: Record<string, string[]>;
-        FunFacts: string[];
     };
     type SharkGameUtils = {
         changeSprite(spritePath: string, imageName: string, imageDiv: JQuery<HTMLDivElement>, backupImageName: string): JQuery<HTMLDivElement>;
