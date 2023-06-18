@@ -525,7 +525,7 @@ SharkGame.Resources = {
         list: [],
         chromeForcesWorkarounds: "",
 
-        init() {
+        setup() {
             if (!SharkGame.flags.tokens) {
                 SharkGame.flags.tokens = {};
             }

@@ -370,10 +370,10 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         SharkGame.Reflection.setup();
         SharkGame.CheatsAndDebug.setup();
 
-        SharkGame.EventHandler.setup();
+        SharkGame.Resources.minuteHand.setup();
+        SharkGame.Resources.tokens.setup();
 
-        res.minuteHand.setup();
-        res.tokens.init();
+        SharkGame.EventHandler.setup();
 
         // end game if necessary
         SharkGame.Gateway.setup();
