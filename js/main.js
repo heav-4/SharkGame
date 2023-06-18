@@ -906,13 +906,13 @@ SharkGame.Button = {
 };
 
 SharkGame.Changelog = {
-    "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 202306??a": [
+    "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20230618a": [
         "Added Tempestuous worldtype.",
         "Added home message history. You may now freely scroll back and forth between previously seen home messages while in a world.",
-        "For the millionth time, attempted to fix negative world time bugs.",
+        "For the millionth time, attempted to fix negative world time bugs (and failed).",
         "Many new sprites.",
         "New fun facts.",
-        "Finally fixed issues with uncategorized home actions.",
+        "Fixed issues with uncategorized home actions.",
         "Fixed issue with verbose token displaying internal names.",
         "Fixed a bug where disabling offline progress did absolutely nothing.",
         "Fixed bugs related to pausing and the recycler UI.",
