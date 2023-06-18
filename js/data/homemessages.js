@@ -237,7 +237,7 @@ SharkGame.HomeMessages = {
             {
                 name: "tempestuous-bottles",
                 unlock: { upgrade: ["magicBottles"] },
-                message: "A silent wind swirls gently in each bottle. The billfish craft them so effortlessly.",
+                message: "A silent wind swirls gently in each bottle. You feel the tumbling of a storm inside.",
             },
             {
                 name: "tempestuous-expeditions",

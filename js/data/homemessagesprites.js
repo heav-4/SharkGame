@@ -423,7 +423,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/tempestuous-default": {
+    "home/tempestuous-bottles": {
         frame: {
             x: 800,
             y: 2600,
@@ -431,7 +431,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/violent-noticed": {
+    "home/tempestuous-cave-rustling": {
         frame: {
             x: 800,
             y: 2800,
@@ -439,7 +439,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/volcanic-acolytes": {
+    "home/tempestuous-cave": {
         frame: {
             x: 800,
             y: 3000,
@@ -447,7 +447,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/volcanic-beauty": {
+    "home/tempestuous-default": {
         frame: {
             x: 800,
             y: 3200,
@@ -455,7 +455,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/volcanic-default": {
+    "home/violent-noticed": {
         frame: {
             x: 800,
             y: 3400,
@@ -463,7 +463,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/volcanic-hope": {
+    "home/volcanic-acolytes": {
         frame: {
             x: 800,
             y: 3600,
@@ -471,7 +471,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/volcanic-monarchy": {
+    "home/volcanic-beauty": {
         frame: {
             x: 800,
             y: 3800,
@@ -479,7 +479,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/volcanic-shrimp-communication": {
+    "home/volcanic-default": {
         frame: {
             x: 1200,
             y: 0,
@@ -487,7 +487,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/volcanic-shrimp-contact": {
+    "home/volcanic-hope": {
         frame: {
             x: 1200,
             y: 200,
@@ -495,7 +495,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/volcanic-shrimp-threat": {
+    "home/volcanic-monarchy": {
         frame: {
             x: 1200,
             y: 400,
@@ -503,7 +503,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "home/volcanic-smithing": {
+    "home/volcanic-shrimp-communication": {
         frame: {
             x: 1200,
             y: 600,
@@ -511,7 +511,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "misc/scene-gate-closed-but-filled": {
+    "home/volcanic-shrimp-contact": {
         frame: {
             x: 1200,
             y: 800,
@@ -519,7 +519,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "misc/scene-gate-closed": {
+    "home/volcanic-shrimp-threat": {
         frame: {
             x: 1200,
             y: 1000,
@@ -527,7 +527,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "misc/scene-gate-one-slot": {
+    "home/volcanic-smithing": {
         frame: {
             x: 1200,
             y: 1200,
@@ -535,7 +535,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "misc/scene-gate-open": {
+    "misc/scene-gate-closed-but-filled": {
         frame: {
             x: 1200,
             y: 1400,
@@ -543,7 +543,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "misc/scene-grotto": {
+    "misc/scene-gate-closed": {
         frame: {
             x: 1200,
             y: 1600,
@@ -551,7 +551,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "misc/scene-lab-done": {
+    "misc/scene-gate-one-slot": {
         frame: {
             x: 1200,
             y: 1800,
@@ -559,7 +559,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "misc/scene-lab": {
+    "misc/scene-gate-open": {
         frame: {
             x: 1200,
             y: 2000,
@@ -567,7 +567,7 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "misc/scene-recycler": {
+    "misc/scene-grotto": {
         frame: {
             x: 1200,
             y: 2200,
@@ -575,10 +575,34 @@ SharkGame.HomeMessageSprites = {
             h: 200,
         },
     },
-    "misc/scene-reflection": {
+    "misc/scene-lab-done": {
         frame: {
             x: 1200,
             y: 2400,
+            w: 400,
+            h: 200,
+        },
+    },
+    "misc/scene-lab": {
+        frame: {
+            x: 1200,
+            y: 2600,
+            w: 400,
+            h: 200,
+        },
+    },
+    "misc/scene-recycler": {
+        frame: {
+            x: 1200,
+            y: 2800,
+            w: 400,
+            h: 200,
+        },
+    },
+    "misc/scene-reflection": {
+        frame: {
+            x: 1200,
+            y: 3000,
             w: 400,
             h: 200,
         },
