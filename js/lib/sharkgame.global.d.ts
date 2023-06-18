@@ -596,7 +596,6 @@ declare global {
          */
         doesResourceExist(resourceName: ResourceName): boolean;
         forceExistence(resourceName: ResourceName): void;
-        getGateCostMultiplier(): number;
     };
     //// END REGION: Modules
 
@@ -688,7 +687,7 @@ declare global {
             resources: Record<ResourceName, boolean>;
         };
 
-        createSlots(gateRequirements: GateRequirements, gateCostMultiplier: number): void;
+        createSlots(gateRequirements: GateRequirements): void;
         getMessage(): string;
         getSlotsLeft(): number | false;
         getUpgradesLeft(): number | false;

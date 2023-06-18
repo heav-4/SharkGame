@@ -53,7 +53,7 @@ SharkGame.Gate = {
         SharkGame.Gate.completedRequirements = {};
     },
 
-    createSlots(gateRequirements, gateCostMultiplier) {
+    createSlots(gateRequirements) {
         const gate = SharkGame.Gate;
         const req = gate.requirements;
         const creq = gate.completedRequirements;
@@ -62,7 +62,7 @@ SharkGame.Gate = {
             req.slots = {};
             sharkmisc.tryAddProperty(creq, `slots`, {});
             $.each(gateRequirements.slots, (resourceId, requiredAmount) => {
-                req.slots[resourceId] = Math.floor(requiredAmount * gateCostMultiplier);
+                req.slots[resourceId] = Math.floor(requiredAmount);
                 sharkmisc.tryAddProperty(creq.slots, resourceId, false);
             });
         }
