@@ -449,7 +449,7 @@ SharkGame.HomeMessages = {
                 name: "shrouded-truth",
                 unlock: { totalResource: { sacrifice: 9000000000000000 } },
                 message:
-                    "A team of eels get your attention. They have something from the caverns: it's the schematic for the arcana battery. So it really WAS real...",
+                    "A team of eels get your attention. They have something from the caverns: it's a disaster report, alongside mentions of a set of giant arcane batteries.",
             },
         ],
 
