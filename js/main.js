@@ -425,10 +425,10 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             }
         }
 
-        if (SharkGame.flags.needOfflineProgress && SharkGame.Settings.current.offlineModeActive) {
+        if (SharkGame.flags.needOfflineProgress && SharkGame.Settings.current.offlineModeActive && !SharkGame.gameOver) {
             const secondsElapsed = SharkGame.flags.needOfflineProgress;
 
-            if (SharkGame.Settings.current.idleEnabled && !SharkGame.gameOver) {
+            if (SharkGame.Settings.current.idleEnabled) {
                 res.minuteHand.allowMinuteHand();
                 res.minuteHand.updateMinuteHand(secondsElapsed * 1000);
                 if (SharkGame.Aspects.overtime.level) {
