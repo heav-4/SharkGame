@@ -257,7 +257,7 @@ pre {
   margin: 5px;
 }
 
-.click-passthrough, .largeDesc, .medDesc, .smallDesc, .smallDescAllowClicks, .button-icon, .top-bar #title #titlebar, .top-bar #title {
+.click-passthrough, .largeDesc, .medDesc, .smallDesc, .smallDescAllowClicks, #tabSceneTracker, .button-icon, .top-bar #title #titlebar, .top-bar #title {
   pointer-events: none;
 }
 
@@ -643,6 +643,7 @@ pre {
 }
 
 #tabMessage {
+  position: relative;
   padding: 1.4em;
   background: repeat-x center;
   -webkit-border-radius: 0.5em;
@@ -979,6 +980,22 @@ button.disabled div {
   box-shadow: 0 0 3px 1px #f00 inset;
 }
 
+#tabSceneTracker {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+}
+#tabSceneTracker .inactive {
+  color: var(--color-dark);
+}
+
+#tabSceneDiv {
+  display: flex;
+}
+
 #tabSceneImage, #tabSceneImageEssence, #tabSceneImageRed {
   display: block;
   margin: 0.1em auto 0.4em auto;
@@ -1000,6 +1017,11 @@ button.disabled div {
   -webkit-box-shadow: 0 0 5px 5px #3eb890;
   -moz-box-shadow: 0 0 5px 5px #3eb890;
   box-shadow: 0 0 5px 5px #3eb890;
+}
+
+#sceneLeft,
+#sceneRight {
+  min-width: 0;
 }
 
 #overlay {
@@ -1294,6 +1316,18 @@ button.respecMode.gateway, button.respecMode.newlyDiscovered {
 }
 .gatewayPropertyList li {
   padding-left: 0;
+}
+
+.gateway input {
+  background-color: #246c54;
+  border-color: #ace3d1;
+  color: white;
+  text-align: right;
+  width: 4em;
+}
+
+.gateway ::-webkit-inner-spin-button {
+  margin-left: 2px;
 }
 
 #planetContainer {

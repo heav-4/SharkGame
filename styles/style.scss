@@ -845,6 +845,7 @@ pre {
 }
 
 #tabMessage {
+    position: relative;
     @extend .inner-section;
     padding: 1.4em;
     background: repeat-x center;
@@ -1223,6 +1224,24 @@ button {
     box-shadow: 0 0 3px 1px #f00 inset;
 }
 
+#tabSceneTracker {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    @extend .click-passthrough;
+
+    .inactive {
+        color: var(--color-dark);
+    }
+}
+
+#tabSceneDiv {
+    display: flex;
+}
+
 #tabSceneImage {
     display: block;
     margin: 0.1em auto 0.4em auto;
@@ -1238,6 +1257,11 @@ button {
 #tabSceneImageEssence {
     @extend #tabSceneImage;
     @include box-shadow(0, 0, 5px, 5px, darken($color-essence, 30%));
+}
+
+#sceneLeft,
+#sceneRight {
+    min-width: 0;
 }
 
 #overlay {

@@ -16,6 +16,7 @@ declare global {
     const home: typeof SharkGame.Home;
     const tree: typeof SharkGame.AspectTree;
     const log: typeof SharkGame.Log;
+    const mem: typeof SharkGame.Memories;
 
     const sharktext: typeof SharkGame.TextUtil;
     const sharkcolor: typeof SharkGame.ColorUtil;
@@ -75,6 +76,8 @@ declare global {
         getAction(): EventAction;
         trigger(): boolean;
     };
+
+    type FunFact = string;
 
     type GateRequirements = Partial<{
         upgrades: Record<UpgradeName, string>;
@@ -289,6 +292,16 @@ declare global {
         handleEventTick(handlingTime: EventName | "load"): void;
     };
 
+    type FactsModule = {
+        dilutedResources: ResourceName[];
+        showFact(): void;
+        getFact(): FunFact;
+        getPool(): FunFact[];
+        worldBased: Record<WorldName, FunFact[]>;
+        resourceBased: Record<ResourceName, FunFact[]>;
+        default: FunFact[];
+    };
+
     type GatewayModule = {
         PresenceFeelings: Record<ResourceName, string>;
         Messages: {
@@ -346,6 +359,24 @@ declare global {
          */
         getActionData(table: HomeActionTable, actionName: HomeActionName): HomeAction;
         generateActionTable(worldType?: WorldName): Record<HomeActionName, HomeAction>;
+    };
+
+    type HomeEventsModule = {
+        messages: Record<
+            WorldName,
+            {
+                name: string;
+                message: string;
+                scales?: boolean;
+                unlock?: Partial<{
+                    resource: Record<ResourceName, number>;
+                    totalResource: Record<ResourceName, number>;
+                    homeAction: HomeActionName[];
+                    upgrade: UpgradeName[];
+                    custom(): boolean;
+                }>;
+            }[]
+        >;
     };
 
     type UpgradesModule = {
@@ -435,6 +466,15 @@ declare global {
         getBuyAmount(nomaxBuy: boolean): Decimal | number;
         /** This is weird */
         getPurchaseAmount(resource: ResourceName, owned?: number): Decimal | number;
+    };
+
+    type MemoryModule = {
+        worldMemories: Record<WorldName, string[]>;
+        persistentMemories: Record<WorldName, string[]>;
+        init(): void;
+        setup(): void;
+        addMemory(worldType: WorldName, messageName: string): void;
+        elevateMemories(): void;
     };
 
     type PaneHandlerModule = {
@@ -578,7 +618,6 @@ declare global {
          */
         doesResourceExist(resourceName: ResourceName): boolean;
         forceExistence(resourceName: ResourceName): void;
-        getGateCostMultiplier(): number;
     };
     //// END REGION: Modules
 
@@ -670,7 +709,7 @@ declare global {
             resources: Record<ResourceName, boolean>;
         };
 
-        createSlots(gateRequirements: GateRequirements, gateCostMultiplier: number): void;
+        createSlots(gateRequirements: GateRequirements): void;
         getMessage(): string;
         getSlotsLeft(): number | false;
         getUpgradesLeft(): number | false;
@@ -688,21 +727,6 @@ declare global {
     type HomeTab = SharkGameTabBase & {
         currentButtonTab: null | HomeActionCategory;
         currentExtraMessageIndex: number;
-        extraMessages: Record<
-            WorldName,
-            {
-                name: string;
-                message: string;
-                scales?: boolean;
-                unlock?: Partial<{
-                    resource: Record<ResourceName, number>;
-                    totalResource: Record<ResourceName, number>;
-                    homeAction: HomeActionName[];
-                    upgrade: UpgradeName[];
-                    custom(): boolean;
-                }>;
-            }[]
-        >;
         discoverActions(): void;
         createButtonTabs(): void;
         updateTab(tabToUpdate: string): void;
@@ -805,9 +829,11 @@ declare global {
         EventHandler: EventHandlerModule;
         Gateway: GatewayModule;
         HomeActions: HomeActionsModule;
+        HomeEvents: HomeEventsModule;
         Log: LogModule;
         Main: MainModule;
         MathUtil: MathUtilModule;
+        Memories: MemoryModule;
         PaneHandler: PaneHandlerModule;
         ResourceIncomeAffected;
         ResourceIncomeAffectors;
@@ -839,7 +865,6 @@ declare global {
         VERSION_NAME: string;
         VERSION: string;
         Changelog: Record<string, string[]>;
-        FunFacts: string[];
     };
     type SharkGameUtils = {
         changeSprite(spritePath: string, imageName: string, imageDiv: JQuery<HTMLDivElement>, backupImageName: string): JQuery<HTMLDivElement>;

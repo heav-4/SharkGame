@@ -139,8 +139,8 @@ SharkGame.TextUtil = {
                 "ice",
                 "science",
                 "arcana",
-                "kelp",
                 "calcinium",
+                "seagrass",
             ].includes(name)
         ) {
             return "";
@@ -171,6 +171,7 @@ SharkGame.TextUtil = {
                 "arcana",
                 "kelp",
                 "calcinium",
+                "seagrass",
             ].includes(name) ||
             amount === 1
         ) {
@@ -495,9 +496,9 @@ SharkGame.TimeUtil = {
     getRunTime(ignoreMinuteHandAndPause) {
         const realRunTime = _.now() - SharkGame.timestampRunStart;
         const pausedTime = SharkGame.persistentFlags.totalPausedTime + SharkGame.persistentFlags.currentPausedTime;
-        let storedTime = 0;
+        let storedTime = SharkGame.flags.minuteHandTimer;
         if (typeof SharkGame.flags.hourHandLeft === `number`) {
-            storedTime = SharkGame.flags.minuteHandTimer - SharkGame.flags.hourHandLeft;
+            storedTime -= SharkGame.flags.hourHandLeft;
         }
         if (typeof SharkGame.flags.bonusTime === `number`) {
             storedTime -= SharkGame.flags.bonusTime;

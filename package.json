@@ -23,16 +23,16 @@
         "@types/jquery": "^3.5.14",
         "@types/lodash": "^4.14.182",
         "@types/pako": "1",
-        "eslint": "^8.17.0",
-        "eslint-config-prettier": "^8.5.0",
-        "eslint-config-standard": "^17.0.0",
-        "eslint-plugin-import": "^2.26.0",
-        "eslint-plugin-n": "^15.2.2",
-        "eslint-plugin-prettier": "^4.0.0",
-        "eslint-plugin-promise": "^6.0.0",
-        "prettier": "^2.6.2",
-        "sass": "^1.52.3",
-        "simple-git-hooks": "^2.8.0"
+        "eslint": "^8.42.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-config-standard": "^17.1.0",
+        "eslint-plugin-import": "^2.27.5",
+        "eslint-plugin-n": "^16.0.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-promise": "^6.1.1",
+        "prettier": "^2.8.8",
+        "sass": "^1.62.1",
+        "simple-git-hooks": "^2.8.1"
     },
     "simple-git-hooks": {
         "pre-commit": "yarn test"

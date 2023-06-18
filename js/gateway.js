@@ -6,7 +6,7 @@ SharkGame.Gateway = {
     transitioning: false,
     selectedWorld: "",
 
-    allowedWorlds: ["abandoned", "haven", "frigid", "shrouded", "marine", "volcanic"],
+    allowedWorlds: ["abandoned", "haven", "frigid", "shrouded", "marine", "volcanic", "tempestuous"],
 
     completedWorlds: [],
 
@@ -80,6 +80,9 @@ SharkGame.Gateway = {
 
         gateway.ui.prepareBasePane(baseReward, patienceReward, speedReward, gumptionBonus, storedTime);
         gateway.grantEssenceReward(baseReward, patienceReward, speedReward);
+
+        // store memories
+        SharkGame.Memories.elevateMemories();
 
         // RESET COMPLETED GATE REQUIREMENTS
         SharkGame.Gate.completedRequirements = {};
@@ -345,6 +348,10 @@ SharkGame.Gateway = {
         res.changeResource("essence", Math.ceil((1 + gumptionBonus) * (essenceReward + speedReward) + patienceReward));
     },
 
+    isWorldBeaten(worldType = "") {
+        return gateway.completedWorlds.indexOf(worldType) > -1;
+    },
+
     shouldCheatsBeUnlocked() {
         return res.getTotalResource("essence") >= 1000 && !SharkGame.persistentFlags.unlockedDebug;
     },
@@ -396,7 +403,7 @@ SharkGame.Gateway = {
                     $("<p>").html(
                         "You completed this world " +
                             sharktext.beautify(gateway.getMinutesBelowPar()) +
-                            " minutes faster than par, granting you <span class='essenceCount'>" +
+                            ` minute${gateway.getMinutesBelowPar() === 1 ? "" : "s"} faster than par, granting you <span class='essenceCount'>` +
                             sharktext.beautify(speedReward) +
                             "</span> additional essence."
                     )
@@ -1199,7 +1206,8 @@ SharkGame.Gateway.PresenceFeelings = {
     eel: "slithering hunters?",
     tar: "something dirty?",
     algae: "something slimy?",
-    // swordfish: "wary hunters",
+    seagrass: "some plants?",
+    billfish: "resolute survivalists?",
 };
 
 SharkGame.Gateway.Messages = {
@@ -1272,7 +1280,6 @@ SharkGame.Gateway.Messages = {
         marine: [
             "Did your last ocean feel all too familiar?",
             "Do you bring life, or do you bring death, worldbuilder?",
-            "Do you wonder where the remnants of the lobsters' past are?",
             "A tragedy; or, perhaps, merely the cost of progress.",
             "We confront our mistakes as choices. We repeat them, or we do not.",
         ],
@@ -1287,9 +1294,8 @@ SharkGame.Gateway.Messages = {
         tempestuous: [
             "You braved the maelstrom and came from it unscathed.",
             "Charge through the whirlpool. Give no quarter to the storm.",
-            "The revolt was unavoidable. It was merely a matter of time.",
-            "Do you wonder why the swordfish obeyed?",
-            "Do you wonder what the swordfish were so startled by?",
+            "Do you wonder who built the great machine?",
+            "The billfish are fast, but not brave. It was you who gave them their courage.",
         ],
         volcanic: [
             "The boiling ocean only stirred you on.",
