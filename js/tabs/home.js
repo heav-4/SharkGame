@@ -14,12 +14,14 @@ SharkGame.Home = {
         SharkGame.TabHandler.registerTab(this);
         SharkGame.HomeActions.generated = {};
 
-        /*         // populate action discoveries (and reset removals)
-        _.each(SharkGame.HomeActions.getActionTable(), (actionData) => {
-            actionData.discovered = false;
-            actionData.newlyDiscovered = false;
-            actionData.isRemoved = false;
-        }); */
+        // reset action discoveries and removals to temporarily fix a bug
+        _.each(gateway.allowedWorlds, (worldName) => {
+            _.each(SharkGame.HomeActions[worldName], (actionData) => {
+                actionData.discovered = false;
+                actionData.newlyDiscovered = false;
+                actionData.isRemoved = false;
+            });
+        });
 
         home.currentButtonTab = "all";
         home.lastValidMessage = "";
