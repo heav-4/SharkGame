@@ -216,7 +216,7 @@ SharkGame.Home = {
     },
 
     getLastValidMessage() {
-        const lastValidMessageData = SharkGame.HomeMessages.messages[world.worldType].findLast((extraMessage) => {
+        const lastValidMessageData = _.findLast(SharkGame.HomeMessages.messages[world.worldType], (extraMessage) => {
             // check if all requirements met
             if (_.has(extraMessage, "unlock")) {
                 let requirementsMet = true;
