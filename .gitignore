@@ -1,4 +1,12 @@
-# yarn/npm
-node_modules/
 .vscode/
 img/zips
+
+# yarn
+node_modules/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
