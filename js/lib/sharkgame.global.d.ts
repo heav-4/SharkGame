@@ -21,6 +21,7 @@ declare global {
     const sharktext: typeof SharkGame.TextUtil;
     const sharkcolor: typeof SharkGame.ColorUtil;
     const sharkmath: typeof SharkGame.MathUtil;
+    const sharkmisc: typeof SharkGame.MiscUtil;
 
     const cad: typeof SharkGame.CheatsAndDebug;
 }
@@ -468,6 +469,15 @@ declare global {
         getPurchaseAmount(resource: ResourceName, owned?: number): Decimal | number;
     };
 
+    type MiscUtilModule = {
+        tryAddProperty(object: any, property: keyof any, value: any): any;
+        /**
+         * There may or may not be some problem with the "this" value.
+         * I don't understand it intuitively enough to really check for it.
+         */
+        cloneDeep<T>(obj: T): T;
+    };
+
     type MemoryModule = {
         worldMemories: Record<WorldName, string[]>;
         persistentMemories: Record<WorldName, string[]>;
@@ -833,6 +843,7 @@ declare global {
         Log: LogModule;
         Main: MainModule;
         MathUtil: MathUtilModule;
+        MiscUtil: MiscUtilModule;
         Memories: MemoryModule;
         PaneHandler: PaneHandlerModule;
         ResourceIncomeAffected;

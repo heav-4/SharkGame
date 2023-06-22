@@ -520,13 +520,6 @@ SharkGame.MiscUtil = {
         return object;
     },
 
-    /**
-     * There may or may not be some problem with the "this" value.
-     * I don't understand it intuitively enough to really check for it.
-     * @template T
-     * @param {T} object
-     * @returns {T}
-     */
     cloneDeep(obj) {
         switch (typeof obj) {
             // Immutable types
