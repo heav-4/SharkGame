@@ -36,7 +36,7 @@ SharkGame.HomeActions = {
     },
 
     generateActionTable(worldType = world.worldType) {
-        const defaultActions = SharkGame.HomeActions.default;
+        const defaultActions = SharkGame.MiscUtil.cloneDeep(SharkGame.HomeActions.default);
 
         if (!_.has(SharkGame.HomeActions, worldType)) {
             return defaultActions;
@@ -44,10 +44,10 @@ SharkGame.HomeActions = {
 
         /** @type {Record<HomeActionName, HomeAction>} */
         const finalTable = {};
-        const worldActions = SharkGame.HomeActions[worldType];
+        const worldActions = SharkGame.MiscUtil.cloneDeep(SharkGame.HomeActions[worldType]);
 
         // _.has
-        _.each(Object.getOwnPropertyNames(worldActions), (actionName) => {
+        _.each(Reflect.ownKeys(worldActions), (actionName) => {
             if (!_.has(defaultActions, actionName)) {
                 finalTable[actionName] = worldActions[actionName];
             } else {
