@@ -519,4 +519,71 @@ SharkGame.MiscUtil = {
         }
         return object;
     },
+
+    cloneDeep(obj) {
+        switch (typeof obj) {
+            // Immutable types
+            case "bigint":
+            case "number":
+            case "string":
+            case "boolean":
+            case "undefined":
+            case "symbol":
+                return obj;
+            // Unsure how to handle functions. Just return unaltered for now
+            case "function":
+                return obj;
+            // Objects
+            case "object": {
+                if (obj === null) {
+                    return null;
+                } else if (Array.isArray(obj)) {
+                    const clone = [];
+
+                    for (const item of obj) {
+                        clone.push(this.cloneDeep(item));
+                    }
+                    return clone;
+                } else {
+                    const clone = Object.create(Object.getPrototypeOf(obj));
+
+                    // with Object.getOwnPropertyDescriptor, it misses Symbols
+                    const keys = Reflect.ownKeys(obj);
+                    for (const key of keys) {
+                        const descriptor = Reflect.getOwnPropertyDescriptor(obj, key);
+                        if (descriptor.get !== undefined || descriptor.set !== undefined) {
+                            Object.defineProperty(clone, key, descriptor);
+                        } else {
+                            switch (typeof descriptor.value) {
+                                case "boolean":
+                                case "string":
+                                case "number":
+                                case "bigint":
+                                case "symbol":
+                                case "object":
+                                    clone[key] = this.cloneDeep(descriptor.value);
+                                    break;
+
+                                case "undefined":
+                                    console.warn("Property with value undefined? Huh?", descriptor, obj);
+                                    clone[key] = this.cloneDeep(descriptor.value);
+                                    break;
+
+                                case "function":
+                                    clone[key] = descriptor.value.bind(clone);
+                                    break;
+
+                                default:
+                                    throw new Error(
+                                        `Cannot clone object of type ${typeof descriptor.value} (This should never happen, why must you do this to me, JavaScript?)`
+                                    );
+                            }
+                        }
+                    }
+
+                    return clone;
+                }
+            }
+        }
+    },
 };

@@ -57,18 +57,18 @@ SharkGame.Upgrades = {
     generateUpgradeTable(worldType = world.worldType) {
         /** @type {UpgradeTable} */
         let finalTable = {};
-        const defaultUpgrades = SharkGame.Upgrades.default;
+        const defaultUpgrades = SharkGame.MiscUtil.cloneDeep(SharkGame.Upgrades.default);
         if (_.has(SharkGame.Upgrades, worldType)) {
-            const worldUpgrades = SharkGame.Upgrades[worldType];
-            _.each(Object.getOwnPropertyNames(worldUpgrades), (upgradeName) => {
+            const worldUpgrades = SharkGame.MiscUtil.cloneDeep(SharkGame.Upgrades[worldType]);
+            _.each(Reflect.ownKeys(worldUpgrades), (upgradeName) => {
                 if (defaultUpgrades[upgradeName]) {
                     finalTable[upgradeName] = {};
-                    const names = Object.getOwnPropertyNames(worldUpgrades[upgradeName]);
+                    const names = Reflect.ownKeys(worldUpgrades[upgradeName]);
                     _.each(names, (theName) => {
                         const descriptor = Object.getOwnPropertyDescriptor(worldUpgrades[upgradeName], theName);
                         Object.defineProperty(finalTable[upgradeName], theName, descriptor);
                     });
-                    const defaultNames = Object.getOwnPropertyNames(defaultUpgrades[upgradeName]);
+                    const defaultNames = Reflect.ownKeys(defaultUpgrades[upgradeName]);
                     _.each(defaultNames, (theName) => {
                         if (!finalTable[upgradeName][theName]) {
                             const descriptor = Object.getOwnPropertyDescriptor(defaultUpgrades[upgradeName], theName);
