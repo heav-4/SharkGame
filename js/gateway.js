@@ -512,7 +512,21 @@ SharkGame.Gateway = {
         },
 
         showRunEndInfo(containerDiv) {
-            containerDiv.append($("<p>").html("<em>Time spent within last ocean:</em><br/>").append(gateway.getTimeInLastWorld()));
+            if (gateway.getTimeInLastWorld(true) < 0) {
+                containerDiv.append(
+                    $("<p>").html(
+                        `You appear to have experienced a major bug that causes negative world-times.<br> The source of this bug is unknown.<br>` +
+                            `Please take a screenshot and join the discord. Send it in the #bugs-and-issues channel.<br> Enjoy the free essence, I guess?<br>` +
+                            `actual start time: ${SharkGame.timestampRunStart}   true pause time: ${SharkGame.persistentFlags.totalPausedTime}   current paused time: ${SharkGame.persistentFlags.currentPausedTime}<br>` +
+                            `minute hand: ${SharkGame.flags.minuteHandTimer}    hour hand: ${SharkGame.flags.hourHandLeft}    bonus: ${SharkGame.flags.bonusTime}<br>` +
+                            `calculated run time: ${gateway.getTimeInLastWorld(true)}   actual likely time: ${
+                                _.now() - SharkGame.timestampRunStart
+                            }<br>`
+                    )
+                );
+            } else {
+                containerDiv.append($("<p>").html(`<em>Time spent within last ocean:</em><br/>${gateway.getTimeInLastWorld()}`));
+            }
         },
 
         prepareBasePane(baseReward, patienceReward, speedReward, gumptionBonus, storedTime) {

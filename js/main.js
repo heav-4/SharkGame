@@ -560,7 +560,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
         if (cad.pause) {
             if (SharkGame.Settings.current.truePause) {
-                SharkGame.persistentFlags.currentPausedTime += _.now() - SharkGame.before;
+                SharkGame.persistentFlags.currentPausedTime += elapsedTime;
             } else {
                 if (!SharkGame.persistentFlags.everIdled) {
                     res.minuteHand.allowMinuteHand();
