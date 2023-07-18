@@ -274,7 +274,8 @@ SharkGame.HomeMessages = {
             {
                 name: "volcanic-shrimp-contact",
                 unlock: { totalResource: { sponge: 1 } },
-                message: `You are approached by a single shrimp. They relay a message to you: stop harvesting sponges, or face the wrath of the king of shrimps.`,
+                message:
+                    "You are approached by a single shrimp. They relay a message to you: stop harvesting sponges, or face the wrath of the king of shrimps.",
             },
             {
                 name: "volcanic-shrimp-threat",
@@ -287,7 +288,8 @@ SharkGame.HomeMessages = {
                         );
                     },
                 },
-                message: `You are approached by an army of shrimp. They relay a very clear message to you: cooperate, or be destroyed. You decide to stop harvesting sponges.`,
+                message:
+                    "You are approached by an army of shrimp. They relay a very clear message to you: cooperate, or be destroyed. You decide to stop harvesting sponges.",
             },
             {
                 name: "volcanic-shrimp-communication",
@@ -329,7 +331,7 @@ SharkGame.HomeMessages = {
             {
                 name: "volcanic-hope",
                 unlock: { upgrade: ["apologeticAmnesty"] },
-                message: `"Perhaps not all sharks are so vile," says the king of shrimps. "Perhaps, you will be different."`,
+                message: '"Perhaps not all sharks are so vile," says the king of shrimps. "Perhaps, you will be different."',
             },
         ],
 

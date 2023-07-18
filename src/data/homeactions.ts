@@ -3150,7 +3150,7 @@ SharkGame.HomeActions = {
             effect: {
                 resource: {
                     get crystal() {
-                        if (SharkGame.Upgrades.purchased.includes(`highEnergyFusion`)) return 5;
+                        if (SharkGame.Upgrades.purchased.includes("highEnergyFusion")) return 5;
                         return 1;
                     },
                 },
@@ -3160,7 +3160,7 @@ SharkGame.HomeActions = {
                     resource: "clam",
                     costFunction: "constant",
                     get priceIncrease() {
-                        if (SharkGame.Upgrades.purchased.includes(`highEnergyFusion`)) return 1;
+                        if (SharkGame.Upgrades.purchased.includes("highEnergyFusion")) return 1;
                         return 5;
                     },
                 },
@@ -3254,15 +3254,15 @@ SharkGame.HomeActions = {
                 upgrade: ["calciniumStudies"],
             },
             outcomes: [
-                `Fusion complete.`,
-                `Clams sacrificed.`,
-                `The fresh calcinium boils the water around it as it cools.`,
-                `The clams and crystals meld together into a single unit.`,
-                `The structures of the clams and crystals interlock, then solidify.`,
-                `Bits of debris shoot out, glowing with heat as two become one.`,
-                `Onlookers watch in awe as the lightshow goes on.`,
-                `The pearl works its magic.`,
-                `Completed fusion.`,
+                "Fusion complete.",
+                "Clams sacrificed.",
+                "The fresh calcinium boils the water around it as it cools.",
+                "The clams and crystals meld together into a single unit.",
+                "The structures of the clams and crystals interlock, then solidify.",
+                "Bits of debris shoot out, glowing with heat as two become one.",
+                "Onlookers watch in awe as the lightshow goes on.",
+                "The pearl works its magic.",
+                "Completed fusion.",
             ],
             helpText: "Smelt resources into calcinium for use in crustacean machines.",
         },
@@ -3346,21 +3346,21 @@ SharkGame.HomeActions = {
                 upgrade: ["calciniumRobotics"],
             },
             outcomes: [
-                `Scavenger ready to scavenge.`,
-                `Claw arm operational.`,
-                `Arm training complete.`,
-                `One ray, able to use goofy oversized arm, coming right up.`,
-                `A ray, ready to have a big arm do its job for it.`,
-                `Ray equipped.`,
-                `Ray ready to indiscriminately tear up the seabed.`,
+                "Scavenger ready to scavenge.",
+                "Claw arm operational.",
+                "Arm training complete.",
+                "One ray, able to use goofy oversized arm, coming right up.",
+                "A ray, ready to have a big arm do its job for it.",
+                "Ray equipped.",
+                "Ray ready to indiscriminately tear up the seabed.",
             ],
             multiOutcomes: [
-                `These arms are big.`,
-                `Scoop scoop scoop.`,
-                `Expensive equipment equipped.`,
-                `Directive: dig clams.`,
-                `The faint sound of grinding stone fills the water.`,
-                `Why a crab claw? why not a lobster? Actually, wait...is there a difference?`,
+                "These arms are big.",
+                "Scoop scoop scoop.",
+                "Expensive equipment equipped.",
+                "Directive: dig clams.",
+                "The faint sound of grinding stone fills the water.",
+                "Why a crab claw? why not a lobster? Actually, wait...is there a difference?",
             ],
             helpText: "Strap a big goofy claw arm to a ray and train it to scoop huge amounts of clams.",
         },
@@ -3390,23 +3390,23 @@ SharkGame.HomeActions = {
                 upgrade: ["calciniumRobotics"],
             },
             outcomes: [
-                `Planter has been upgraded.`,
-                `Seabed stripper, ready to destroy the forests.`,
-                `One seabed stripper, ready to pretend to be a sea spider.`,
-                `One snippy crab coming right up.`,
-                `Snip.`,
-                `The crab gestures with all its claws.`,
-                `Promoted a planter.`,
-                `Improved a planter.`,
+                "Planter has been upgraded.",
+                "Seabed stripper, ready to destroy the forests.",
+                "One seabed stripper, ready to pretend to be a sea spider.",
+                "One snippy crab coming right up.",
+                "Snip.",
+                "The crab gestures with all its claws.",
+                "Promoted a planter.",
+                "Improved a planter.",
             ],
             multiOutcomes: [
-                `Snip snip snip.`,
-                `The claws rip into kelp like a synchronized dance.`,
-                `The sound of plants ripping fills the water.`,
-                `Directive: extract kelp from forests.`,
-                `Many small snippers come to life and begin snipping through kelp at incredible speed.`,
-                `The crabs join another group headed out in search of new forests.`,
-                `Too many arms, honestly.`,
+                "Snip snip snip.",
+                "The claws rip into kelp like a synchronized dance.",
+                "The sound of plants ripping fills the water.",
+                "Directive: extract kelp from forests.",
+                "Many small snippers come to life and begin snipping through kelp at incredible speed.",
+                "The crabs join another group headed out in search of new forests.",
+                "Too many arms, honestly.",
             ],
             helpText: "Equip a planter with many additional arms for maximum efficiency.",
         },
@@ -3478,23 +3478,23 @@ SharkGame.HomeActions = {
                 upgrade: ["calciniumCybernetics"],
             },
             outcomes: [
-                `One lobster-turned-cyborg coming right up.`,
-                `Incoming cyborg.`,
-                `Lobster has been augmented.`,
-                `The lobster gets to work immediately.`,
-                `The lobster ignores your presence as it searches for materials.`,
-                `The converter begins to convert.`,
-                `The converter asks for materials.`,
+                "One lobster-turned-cyborg coming right up.",
+                "Incoming cyborg.",
+                "Lobster has been augmented.",
+                "The lobster gets to work immediately.",
+                "The lobster ignores your presence as it searches for materials.",
+                "The converter begins to convert.",
+                "The converter asks for materials.",
             ],
             multiOutcomes: [
-                `Lasers charged.`,
-                `Fusion beams ready.`,
-                `Future!?`,
-                `Directive: automate.`,
-                `Setting phasers to fuse...`,
-                `The power of the sun in an attached limb!`,
-                `Focus. Focus. Come on...fuse!`,
-                `Two becomes one.`,
+                "Lasers charged.",
+                "Fusion beams ready.",
+                "Future!?",
+                "Directive: automate.",
+                "Setting phasers to fuse...",
+                "The power of the sun in an attached limb!",
+                "Focus. Focus. Come on...fuse!",
+                "Two becomes one.",
             ],
             helpText: "Modify a lobster to fuse calcinium with cool cyborg laser beams.", // This crustacean machine distributes lobster eggs for optimal hatching conditions.
         },
@@ -3580,20 +3580,20 @@ SharkGame.HomeActions = {
             getSpecialTooltip() {
                 let text = `AUTOSMELT ${SharkGame.flags.autoSmelt ? "ON" : "OFF"}<br>`;
                 if (SharkGame.flags.autoSmelt) {
-                    const sponge = res.getResource(`sponge`);
-                    const sand = res.getResource(`sand`);
+                    const sponge = res.getResource("sponge");
+                    const sand = res.getResource("sand");
                     const spongeCost = SharkGame.HomeActions.getActionTable("volcanic").smeltPorite.cost[0].priceIncrease;
                     const sandCost = SharkGame.HomeActions.getActionTable("volcanic").smeltPorite.cost[1].priceIncrease;
                     const maxSpongeCycles = sponge / spongeCost;
                     const maxSandCycles = sand / sandCost;
 
-                    text += `<span class="littleGeneralText">`;
+                    text += '<span class="littleGeneralText">';
                     if (maxSpongeCycles < maxSandCycles)
-                        text += `${sharktext.getResourceName(`sponge`, false, false, sharkcolor.getElementColor("tooltipbox", "background-color"))}`;
+                        text += `${sharktext.getResourceName("sponge", false, false, sharkcolor.getElementColor("tooltipbox", "background-color"))}`;
                     if (maxSandCycles <= maxSpongeCycles)
-                        text += `${sharktext.getResourceName(`sand`, false, false, sharkcolor.getElementColor("tooltipbox", "background-color"))}`;
+                        text += `${sharktext.getResourceName("sand", false, false, sharkcolor.getElementColor("tooltipbox", "background-color"))}`;
                     text += ` is limiting ${sharktext.getResourceName(
-                        `porite`,
+                        "porite",
                         false,
                         false,
                         sharkcolor.getElementColor("tooltipbox", "background-color")
@@ -3766,7 +3766,7 @@ SharkGame.HomeActions = {
                     resource: "porite",
                     costFunction: "linear",
                     get priceIncrease() {
-                        return SharkGame.Upgrades.purchased.includes(`massProduction`) ? 10 : 50;
+                        return SharkGame.Upgrades.purchased.includes("massProduction") ? 10 : 50;
                     },
                 },
             ],
@@ -3883,7 +3883,7 @@ SharkGame.HomeActions = {
                     resource: "porite",
                     costFunction: "linear",
                     get priceIncrease() {
-                        return SharkGame.Upgrades.purchased.includes(`massProduction`) ? 5 : 25;
+                        return SharkGame.Upgrades.purchased.includes("massProduction") ? 5 : 25;
                     },
                 },
             ],
@@ -3918,7 +3918,7 @@ SharkGame.HomeActions = {
                     resource: "crab",
                     costFunction: "constant",
                     get priceIncrease() {
-                        return SharkGame.Upgrades.purchased.includes(`broodingBiology`) ? 5 : 20;
+                        return SharkGame.Upgrades.purchased.includes("broodingBiology") ? 5 : 20;
                     },
                 },
                 { resource: "fish", costFunction: "linear", priceIncrease: 200 },
@@ -4002,7 +4002,7 @@ SharkGame.HomeActions = {
                     resource: "porite",
                     costFunction: "linear",
                     get priceIncrease() {
-                        return SharkGame.Upgrades.purchased.includes(`massProduction`) ? 2 : 10;
+                        return SharkGame.Upgrades.purchased.includes("massProduction") ? 2 : 10;
                     },
                 },
             ],
@@ -4080,7 +4080,7 @@ SharkGame.HomeActions = {
                     resource: "sand",
                     costFunction: "linear",
                     get priceIncrease() {
-                        return SharkGame.Upgrades.purchased.includes(`landReform`) ? 50 : 250;
+                        return SharkGame.Upgrades.purchased.includes("landReform") ? 50 : 250;
                     },
                 },
             ],
@@ -4119,7 +4119,7 @@ SharkGame.HomeActions = {
                     resource: "sand",
                     costFunction: "linear",
                     get priceIncrease() {
-                        return SharkGame.Upgrades.purchased.includes(`landReform`) ? 50 : 250;
+                        return SharkGame.Upgrades.purchased.includes("landReform") ? 50 : 250;
                     },
                 },
             ],
@@ -4156,7 +4156,7 @@ SharkGame.HomeActions = {
             effect: {
                 resource: {
                     get science() {
-                        return SharkGame.Upgrades.purchased.includes(`supernaturalSeagrass`) ? 10 : 1;
+                        return SharkGame.Upgrades.purchased.includes("supernaturalSeagrass") ? 10 : 1;
                     },
                 },
             },
@@ -4252,7 +4252,7 @@ SharkGame.HomeActions = {
                     resource: "crystal",
                     costFunction: "linear",
                     get priceIncrease() {
-                        return SharkGame.Upgrades.purchased.includes(`laserLenses`) ? 10 : 50;
+                        return SharkGame.Upgrades.purchased.includes("laserLenses") ? 10 : 50;
                     },
                 },
             ],
@@ -4276,7 +4276,7 @@ SharkGame.HomeActions = {
                     resource: "sand",
                     costFunction: "linear",
                     get priceIncrease() {
-                        return SharkGame.Upgrades.purchased.includes(`heavySifting`) ? 25 : 100;
+                        return SharkGame.Upgrades.purchased.includes("heavySifting") ? 25 : 100;
                     },
                 },
             ],

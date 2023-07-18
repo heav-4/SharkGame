@@ -317,18 +317,18 @@ SharkGame.Save = {
         return saveData;
     },
 
-    savedGameExists(tag = ``) {
+    savedGameExists(tag = "") {
         return localStorage.getItem(SharkGame.Save.saveFileName + tag) !== null;
     },
 
-    deleteSave(tag = ``) {
+    deleteSave(tag = "") {
         localStorage.removeItem(SharkGame.Save.saveFileName + tag);
     },
 
     getTaggedSaveCharacteristics(tag) {
         if (_.isUndefined(tag)) {
-            SharkGame.Log.addError(`Tried to get characteristics of a tagged save, but no tag was given.`);
-            throw new Error(`Tried to get characteristics of a tagged save, but no tag was given.`);
+            SharkGame.Log.addError("Tried to get characteristics of a tagged save, but no tag was given.");
+            throw new Error("Tried to get characteristics of a tagged save, but no tag was given.");
         }
         const save = this.decodeSave(localStorage.getItem(SharkGame.Save.saveFileName + tag));
         let text;
@@ -346,16 +346,16 @@ SharkGame.Save = {
 
     createTaggedSave(tag) {
         if (_.isUndefined(tag)) {
-            SharkGame.Log.addError(`Tried to create a tagged save, but no tag was given.`);
-            throw new Error(`Tried to create a tagged save, but no tag was given.`);
+            SharkGame.Log.addError("Tried to create a tagged save, but no tag was given.");
+            throw new Error("Tried to create a tagged save, but no tag was given.");
         }
         localStorage.setItem(SharkGame.Save.saveFileName + tag, localStorage.getItem(SharkGame.Save.saveFileName));
     },
 
     loadTaggedSave(tag) {
         if (_.isUndefined(tag)) {
-            SharkGame.Log.addError(`Tried to load a tagged save, but no tag was given.`);
-            throw new Error(`Tried to load a tagged save, but no tag was given.`);
+            SharkGame.Log.addError("Tried to load a tagged save, but no tag was given.");
+            throw new Error("Tried to load a tagged save, but no tag was given.");
         }
 
         if (this.savedGameExists(tag)) {
@@ -366,7 +366,7 @@ SharkGame.Save = {
     },
 
     wipeSave() {
-        this.createTaggedSave(`Backup`);
+        this.createTaggedSave("Backup");
         this.deleteSave();
     },
 

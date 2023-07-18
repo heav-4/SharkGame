@@ -359,7 +359,7 @@ SharkGame.Gateway = {
     unlockCheats() {
         if (!SharkGame.persistentFlags.debug && !SharkGame.persistentFlags.unlockedDebug) {
             SharkGame.PaneHandler.showUnlockedCheatsMessage();
-            SharkGame.Save.createTaggedSave(`BackupCheats`);
+            SharkGame.Save.createTaggedSave("BackupCheats");
             cad.debug();
         }
         SharkGame.persistentFlags.unlockedDebug = true;
@@ -515,8 +515,8 @@ SharkGame.Gateway = {
             if (gateway.getTimeInLastWorld(true) < 0) {
                 containerDiv.append(
                     $("<p>").html(
-                        `You appear to have experienced a major bug that causes negative world-times.<br> The source of this bug is unknown.<br>` +
-                            `Please take a screenshot and join the discord. Send it in the #bugs-and-issues channel.<br> Enjoy the free essence, I guess?<br>` +
+                        "You appear to have experienced a major bug that causes negative world-times.<br> The source of this bug is unknown.<br>" +
+                            "Please take a screenshot and join the discord. Send it in the #bugs-and-issues channel.<br> Enjoy the free essence, I guess?<br>" +
                             `actual start time: ${SharkGame.timestampRunStart}   true pause time: ${SharkGame.persistentFlags.totalPausedTime}   current paused time: ${SharkGame.persistentFlags.currentPausedTime}<br>` +
                             `minute hand: ${SharkGame.flags.minuteHandTimer}    hour hand: ${SharkGame.flags.hourHandLeft}    bonus: ${SharkGame.flags.bonusTime}<br>` +
                             `calculated run time: ${gateway.getTimeInLastWorld(true)}   actual likely time: ${
@@ -684,7 +684,7 @@ SharkGame.Gateway = {
                 $("<p>")
                     .attr("id", "predicted-gain")
                     .html(
-                        `${seenWorldYet ? `A par time` : `This`} would grant you <strong>` +
+                        `${seenWorldYet ? "A par time" : "This"} would grant you <strong>` +
                             sharktext.beautify(
                                 Math.ceil(
                                     (1 + gateway.getGumptionBonus()) *
@@ -1191,7 +1191,7 @@ SharkGame.Gateway = {
             const selectedWorldData = SharkGame.WorldTypes[gateway.selectedWorld];
             const seenWorldYet = gateway.completedWorlds.includes(gateway.selectedWorld);
             $("#predicted-gain").html(
-                `${seenWorldYet ? `A par time` : `This`} would grant you <strong>` +
+                `${seenWorldYet ? "A par time" : "This"} would grant you <strong>` +
                     sharktext.beautify(
                         Math.ceil(
                             (1 + gateway.getGumptionBonus()) * ((seenWorldYet ? 2 : 4) + (selectedWorldData.bonus ? selectedWorldData.bonus : 0)) +

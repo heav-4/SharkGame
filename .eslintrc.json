@@ -55,6 +55,8 @@
         "no-var": "error",
         "no-shadow": ["error", { "builtinGlobals": true, "hoist": "all", "allow": ["name", "event"] }],
         "eqeqeq": ["error", "smart"],
-        "id-length": ["error", { "min": 3, "exceptionPatterns": ["i", "id", "to", "dt", "P", "A", "L", "R", "x", "y", "w", "h"] }]
+        "id-length": ["error", { "min": 3, "exceptionPatterns": ["i", "id", "to", "dt", "x", "y", "w", "h"] }],
+        "quotes": ["error", "double", { "avoidEscape": true, "allowTemplateLiterals": false }],
+        "quote-props": ["error", "consistent"]
     }
 }

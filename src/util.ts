@@ -182,7 +182,7 @@ SharkGame.TextUtil = {
     },
 
     shouldHideNumberOfThis(name) {
-        return [`world`, `aspectAffect`, `specialResourceOne`, `specialResourceTwo`].includes(name);
+        return ["world", "aspectAffect", "specialResourceOne", "specialResourceTwo"].includes(name);
     },
 
     /** @param {string} string */
@@ -331,9 +331,9 @@ SharkGame.TextUtil = {
 
         if (SharkGame.flags.egg) {
             if (amount > 1) {
-                name = `eggs`;
+                name = "eggs";
             } else {
-                name = `egg`;
+                name = "egg";
             }
         }
 
@@ -498,10 +498,10 @@ SharkGame.TimeUtil = {
         const realRunTime = _.now() - SharkGame.timestampRunStart;
         const pausedTime = SharkGame.persistentFlags.totalPausedTime + SharkGame.persistentFlags.currentPausedTime;
         let storedTime = SharkGame.flags.minuteHandTimer;
-        if (typeof SharkGame.flags.hourHandLeft === `number`) {
+        if (typeof SharkGame.flags.hourHandLeft === "number") {
             storedTime -= SharkGame.flags.hourHandLeft;
         }
-        if (typeof SharkGame.flags.bonusTime === `number`) {
+        if (typeof SharkGame.flags.bonusTime === "number") {
             storedTime -= SharkGame.flags.bonusTime;
         }
 

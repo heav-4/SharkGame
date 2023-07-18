@@ -26,15 +26,15 @@ SharkGame.Resources = {
         $.each(SharkGame.ResourceTable, (resourceId, resource) => {
             const resourceObject = _.cloneDeep(resource);
             if (resourceObject.name)
-                Object.defineProperty(resourceObject, `name`, Object.getOwnPropertyDescriptor(SharkGame.ResourceTable[resourceId], `name`));
+                Object.defineProperty(resourceObject, "name", Object.getOwnPropertyDescriptor(SharkGame.ResourceTable[resourceId], "name"));
             if (resourceObject.singleName)
                 Object.defineProperty(
                     resourceObject,
-                    `singleName`,
-                    Object.getOwnPropertyDescriptor(SharkGame.ResourceTable[resourceId], `singleName`)
+                    "singleName",
+                    Object.getOwnPropertyDescriptor(SharkGame.ResourceTable[resourceId], "singleName")
                 );
             if (resourceObject.desc)
-                Object.defineProperty(resourceObject, `desc`, Object.getOwnPropertyDescriptor(SharkGame.ResourceTable[resourceId], `desc`));
+                Object.defineProperty(resourceObject, "desc", Object.getOwnPropertyDescriptor(SharkGame.ResourceTable[resourceId], "desc"));
             SharkGame.ResourceMap.set(resourceId, resourceObject);
         });
 
@@ -1400,7 +1400,7 @@ SharkGame.Resources = {
                     break;
                 case "multincrease":
                     $.each(effects, (affectedGenerator, degree) => {
-                        if (typeof furtherCondensedEffects.generators.increase[affectedGenerator] !== `number`) {
+                        if (typeof furtherCondensedEffects.generators.increase[affectedGenerator] !== "number") {
                             furtherCondensedEffects.generators.increase[affectedGenerator] = degree;
                         } else {
                             furtherCondensedEffects.generators.increase[affectedGenerator] += 1;
@@ -1411,7 +1411,7 @@ SharkGame.Resources = {
                     break;
                 case "multdecrease":
                     $.each(effects, (affectedGenerator, degree) => {
-                        if (typeof furtherCondensedEffects.generators.decrease[affectedGenerator] !== `number`) {
+                        if (typeof furtherCondensedEffects.generators.decrease[affectedGenerator] !== "number") {
                             furtherCondensedEffects.generators.decrease[affectedGenerator] = -degree;
                         } else {
                             furtherCondensedEffects.generators.decrease[affectedGenerator] += 1;
@@ -1436,7 +1436,7 @@ SharkGame.Resources = {
                     break;
                 case "multincrease":
                     $.each(effects, (affectedResource, degree) => {
-                        if (typeof furtherCondensedEffects.resources.increase[affectedResource] !== `number`) {
+                        if (typeof furtherCondensedEffects.resources.increase[affectedResource] !== "number") {
                             furtherCondensedEffects.resources.increase[affectedResource] = degree;
                         } else {
                             furtherCondensedEffects.resources.increase[affectedResource] += 1;
@@ -1447,7 +1447,7 @@ SharkGame.Resources = {
                     break;
                 case "multdecrease":
                     $.each(effects, (affectedResource, degree) => {
-                        if (typeof furtherCondensedEffects.resources.decrease[affectedResource] !== `number`) {
+                        if (typeof furtherCondensedEffects.resources.decrease[affectedResource] !== "number") {
                             furtherCondensedEffects.resources.decrease[affectedResource] = -degree;
                         } else {
                             furtherCondensedEffects.resources.decrease[affectedResource] += 1;
@@ -1466,7 +1466,7 @@ SharkGame.Resources = {
                 increaseText += "<br>";
                 increaseText +=
                     sharktext.getResourceName(affectedGenerator, false, 1, sharkcolor.getElementColor("tooltipbox", "background-color")) +
-                    ` speed by ` +
+                    " speed by " +
                     sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree))}%`);
             }
         });
@@ -1476,7 +1476,7 @@ SharkGame.Resources = {
                 increaseText += "<br>";
                 increaseText +=
                     sharktext.getResourceName(affectedResource, false, 1, sharkcolor.getElementColor("tooltipbox", "background-color")) +
-                    ` gains by ` +
+                    " gains by " +
                     sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree))}%`);
             }
         });
@@ -1489,7 +1489,7 @@ SharkGame.Resources = {
                 decreaseText += "<br>";
                 decreaseText +=
                     sharktext.getResourceName(affectedGenerator, false, 1, sharkcolor.getElementColor("tooltipbox", "background-color")) +
-                    ` speed by ` +
+                    " speed by " +
                     sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree))}%`);
             }
         });
@@ -1500,7 +1500,7 @@ SharkGame.Resources = {
                 decreaseText += "<br>";
                 decreaseText +=
                     sharktext.getResourceName(affectedResource, false, 1, sharkcolor.getElementColor("tooltipbox", "background-color")) +
-                    ` gains by ` +
+                    " gains by " +
                     sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree))}%`);
             }
         });
