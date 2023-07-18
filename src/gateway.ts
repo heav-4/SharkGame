@@ -963,26 +963,33 @@ SharkGame.Gateway = {
                 let minutes = 0;
                 let seconds = 0;
 
-                if (!$.isEmptyObject($("#storage-years")) && $("#storage-years")[0] && $("#storage-years")[0].value) {
-                    years = Number($("#storage-years")[0].value);
+                const storageYears = document.getElementById("storage-years");
+                if (storageYears && storageYears instanceof HTMLInputElement && storageYears.value) {
+                    years = Number(storageYears.value);
                 }
-                if (!$.isEmptyObject($("#storage-months")) && $("#storage-months")[0] && $("#storage-months")[0].value) {
-                    months = Number($("#storage-months")[0].value);
+                const storageMonths = document.getElementById("storage-months");
+                if (storageMonths && storageMonths instanceof HTMLInputElement && storageMonths.value) {
+                    months = Number(storageMonths.value);
                 }
-                if (!$.isEmptyObject($("#storage-weeks")) && $("#storage-weeks")[0] && $("#storage-weeks")[0].value) {
-                    weeks = Number($("#storage-weeks")[0].value);
+                const storageWeeks = document.getElementById("storage-weeks");
+                if (storageWeeks && storageWeeks instanceof HTMLInputElement && storageWeeks.value) {
+                    weeks = Number(storageWeeks.value);
                 }
-                if (!$.isEmptyObject($("#storage-days")) && $("#storage-days")[0] && $("#storage-days")[0].value) {
-                    days = Number($("#storage-days")[0].value);
+                const storageDays = document.getElementById("storage-days");
+                if (storageDays && storageDays instanceof HTMLInputElement && storageDays.value) {
+                    days = Number(storageDays.value);
                 }
-                if (!$.isEmptyObject($("#storage-hours")) && $("#storage-hours")[0] && $("#storage-hours")[0].value) {
-                    hours = Number($("#storage-hours")[0].value);
+                const storageHours = document.getElementById("storage-hours");
+                if (storageHours && storageHours instanceof HTMLInputElement && storageHours.value) {
+                    hours = Number(storageHours.value);
                 }
-                if (!$.isEmptyObject($("#storage-minutes")) && $("#storage-minutes")[0] && $("#storage-minutes")[0].value) {
-                    minutes = Number($("#storage-minutes")[0].value);
+                const storageMinutes = document.getElementById("storage-minutes");
+                if (storageMinutes && storageMinutes instanceof HTMLInputElement && storageMinutes.value) {
+                    minutes = Number(storageMinutes.value);
                 }
-                if (!$.isEmptyObject($("#storage-seconds")) && $("#storage-seconds")[0] && $("#storage-seconds")[0].value) {
-                    seconds = Number($("#storage-seconds")[0].value);
+                const storageSeconds = document.getElementById("storage-seconds");
+                if (storageSeconds && storageSeconds instanceof HTMLInputElement && storageSeconds.value) {
+                    seconds = Number(storageSeconds.value);
                 }
 
                 const result = (years * 29030400 + months * 2419200 + weeks * 604800 + days * 86400 + hours * 3600 + minutes * 60 + seconds) * 1000;
@@ -1272,6 +1279,7 @@ SharkGame.Gateway.Messages = {
         },
         {
             min: 201,
+            max: Infinity,
             messages: [
                 "Your devotion to the journey is alarming.",
                 "You exceed anything I've ever known.",

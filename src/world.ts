@@ -5,9 +5,8 @@ SharkGame.World = {
         return this._worldType;
     },
     set worldType(worldType) {
-        const body = document.querySelector("body");
-        body.classList.remove(this._worldType);
-        body.classList.add(worldType);
+        document.body.classList.remove(this._worldType);
+        document.body.classList.add(worldType);
         this._worldType = worldType;
     },
     worldResources: new Map(),
@@ -87,11 +86,12 @@ SharkGame.World = {
     },
 
     doesResourceExist(resourceName) {
-        return world.worldResources.get(resourceName).exists;
+        return world.worldResources.get(resourceName)?.exists ?? false;
     },
 
     forceExistence(resourceName) {
-        world.worldResources.get(resourceName).exists = true;
+        const resource = world.worldResources.get(resourceName);
+        if (resource) resource.exists = true;
     },
 
     isScoutingMission() {
@@ -104,7 +104,9 @@ SharkGame.World = {
         if (!gateway.completedWorlds.includes(world.worldType)) {
             // this should be a scouting mission
             SharkGame.flags.scouting = true;
+            return true;
+        } else {
+            return false;
         }
-        return SharkGame.flags.scouting;
     },
 };

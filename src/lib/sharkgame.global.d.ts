@@ -22,6 +22,7 @@ declare global {
     const sharkcolor: typeof SharkGame.ColorUtil;
     const sharkmath: typeof SharkGame.MathUtil;
     const sharkmisc: typeof SharkGame.MiscUtil;
+    const sharktime: typeof SharkGame.TimeUtil;
 
     const cad: typeof SharkGame.CheatsAndDebug;
 }
@@ -29,7 +30,7 @@ declare global {
 declare global {
     const SharkGame: SharkGame;
 
-    //// REGION: Data structure types
+    //#REGION: Data structure types
     type AspectName = string;
     type HomeActionCategory = "all" | "basic" | "frenzy" | "professions" | "breeders" | "processing" | "machines" | "otherMachines" | "unique";
     type HomeActionName = string;
@@ -186,19 +187,25 @@ declare global {
             tip?: string;
         };
     };
-    //// END REGION: Data structure types
+    //#END REGION: Data structure types
 
-    //// REGION: Data structure types
+    //#REGION: Data structure types
     type Aspect = {
-        requiredBy: AspectName[] | undefined;
+        name: string;
+        description: string;
+        core?: boolean;
+        requiredBy?: AspectName[];
         /** Whether to use the event spritesheet */
-        eventSprite: boolean;
-        icon: string;
+        eventSprite?: boolean;
+        icon?: string;
         posX: number;
         posY: number;
         width: number;
         height: number;
         level: number;
+        /** Highest level */
+        max: number;
+        noRefunds?: boolean;
         prerequisites: AspectName[];
         getCost(level: number): number;
         getEffect(level: number): string;
@@ -207,9 +214,9 @@ declare global {
          * If they have, returns nothing.
          * If they have not, returns a message stating why not.
          */
-        getUnlocked(): string;
+        getUnlocked(): string | void;
         clicked(event: JQuery.MouseDownEvent): void;
-        apply(time: string): void;
+        apply?(time: string): void;
     };
 
     type StaticButton = {
@@ -220,17 +227,21 @@ declare global {
         name: string;
         description: string;
         getEffect(): string;
+        getUnlocked(): string;
+        getOn(): boolean;
         clicked(event: MouseEvent): void;
     };
-    //// END REGION: Data structure types
+    //#END REGION: Data structure types
 
-    //// REGION: Modules
+    //#REGION: Modules
     type AspectTreeModule = {
         dragStart: { posX: number; posY: number };
         cameraZoom: number;
         cameraOffset: { posX: number; posY: number };
         context?: CanvasRenderingContext2D;
         staticButtons: Record<string, StaticButton>;
+        refundMode: boolean;
+        debugMode: boolean;
         setUp(): void;
         init(): void;
         drawTree(disableCanvas: boolean): HTMLTableElement | HTMLDivElement;
@@ -244,6 +255,8 @@ declare global {
         pan(event: MouseEvent): void;
         endPan(): void;
         render(): void;
+        toggleRefundMode(): void;
+        updateTooltip(button?: Aspect | StaticButton): void;
         /**
          * Helper function that draws a rounded rectangle with an icon using the current state of the canvas
          * @param context
@@ -259,6 +272,8 @@ declare global {
         increaseLevel(aspect: AspectName): void;
         updateEssenceCounter(): void;
         applyAspects(): void;
+        respecTree(totalWipe?: boolean): void;
+        handleClickedAspect(aspect: Aspect): void;
     };
 
     type ButtonModule = {
@@ -293,7 +308,7 @@ declare global {
         handleEventTick(handlingTime: EventName | "load"): void;
     };
 
-    type FactsModule = {
+    type FunFactsModule = {
         dilutedResources: ResourceName[];
         showFact(): void;
         getFact(): FunFact;
@@ -342,6 +357,11 @@ declare global {
         enterGate(loadingFromSave?: boolean): void;
         cleanUp(): void;
         rerollWorlds(): void;
+        /**
+         * @param worldName world to check. Defaults to current world
+         * @returns par time of world in minutes
+         */
+        getPar(worldName?: WorldName): number;
         preparePlanetSelection(numPlanets: number): void;
         getVoiceMessage(): string;
         playerHasSeenResource(resource: ResourceName): boolean;
@@ -402,7 +422,7 @@ declare global {
         init(): void;
         moveLog(): void;
         addMessage(message: string | JQuery.Node): JQuery<HTMLLIElement>;
-        addError(message: string | JQuery.Node): ReturnType<LogModule["addMessage"]>;
+        addError(message: string | Error | JQuery.Node): ReturnType<LogModule["addMessage"]>;
         addDiscovery(message: string | JQuery.Node): ReturnType<LogModule["addMessage"]>;
         correctLogLength(): void;
         clearMessages(logThing?: boolean): void;
@@ -429,6 +449,10 @@ declare global {
         loopGame(): void;
         isFirstTime(): boolean;
         resetTimers(): void;
+        resetGame(): void;
+        wipeGame(): void;
+        setUpGame(): void;
+        checkForCategorizationOversights(): void;
     };
 
     type MathUtilModule = {
@@ -438,32 +462,38 @@ declare global {
          * @param cost constant price
          * @returns cost to get to b from a
          */
-        constantCost(current: Decimal | number, difference: Decimal | number, cost: Decimal | number): Decimal | number;
+        constantCost(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
+        constantCost(current: number, difference: number, cost: number): number;
         /**
          * @param current current amount
          * @param available available price amount
          * @param cost constant price
          * @returns absolute max items that can be held with invested and current resources
          */
-        constantMax(current: Decimal | number, available: Decimal | number, cost: Decimal | number): Decimal | number;
+        constantMax(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
+        constantMax(current: number, difference: number, cost: number): number;
         /**
          * @param current current amount
          * @param desired desired amount
          * @param cost cost increase per item
          * @returns: cost to get to b from a
          */
-        linearCost(current: Decimal | number, difference: Decimal | number, constant: Decimal | number): Decimal | number;
+        linearCost(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
+        linearCost(current: number, difference: number, cost: number): number;
         /**
          * @param current current amount
          * @param available available price amount
          * @param cost cost increase per item
          * @returns absolute max items that can be held with invested and current resources
          */
-        linearMax(current: Decimal | number, available: Decimal | number, cost: Decimal | number): Decimal | number;
+        linearMax(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
+        linearMax(current: number, difference: number, cost: number): number;
         /** artificial limit - whatever has these functions for cost/max can only have one of */
-        uniqueCost(current: Decimal | number, difference: Decimal | number, cost: Decimal | number): Decimal | number;
+        uniqueCost(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
+        uniqueCost(current: number, difference: number, cost: number): number;
         /** this takes an argument to know whether or not to return a Decimal or a Number */
-        uniqueMax(current: Decimal | number): Decimal | number;
+        uniqueMax(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
+        uniqueMax(current: number, difference: number, cost: number): number;
         getBuyAmount(nomaxBuy: boolean): Decimal | number;
         /** This is weird */
         getPurchaseAmount(resource: ResourceName, owned?: number): Decimal | number;
@@ -491,10 +521,10 @@ declare global {
         paneStack: Pane[];
         currentPane?: Pane;
         buildPane(): JQuery<HTMLDivElement>;
-        addPaneToStack(title: string, contents: JQuery<HTMLElement>, notCloseable: boolean, fadeInTime: number, customOpacity: number): void;
-        swapCurrentPane(title: string, contents: JQuery<HTMLElement>, notCloseable: boolean, fadeInTime: number, customOpacity: number): void;
+        addPaneToStack(title: string, contents: JQuery<HTMLElement>, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
+        swapCurrentPane(title: string, contents: JQuery<HTMLElement>, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
         wipeStack(): void;
-        showPane(title: string, contents: JQuery<HTMLElement>, notCloseable: boolean, fadeInTime: number, customOpacity: number): void;
+        showPane(title: string, contents: JQuery<HTMLElement>, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
         hidePane(): void;
         showOptions(): void;
         setUpOptions(): JQuery<HTMLTableElement>;
@@ -599,6 +629,10 @@ declare global {
         resourceListToString(resourceList: Record<ResourceName, number>, darken: boolean, backgroundColor?: string): string;
     };
 
+    type TimeUtilModule = {
+        getRunTime(ignoreMinuteHandAndPause: boolean): number;
+    };
+
     type TitleBarModule = Record<
         `${string}Link`,
         {
@@ -614,9 +648,13 @@ declare global {
     };
 
     type WorldModule = {
-        worldType: string;
+        _worldType: WorldName;
+        get worldType(): WorldName;
+        set worldType(value: WorldName);
         worldResources: Map<ResourceName, { exists: boolean }>;
+        worldRestrictedCombinations: Map<unknown, unknown>;
         init(): void;
+        setup(): void;
         apply(): void;
         resetWorldProperties(): void;
         applyWorldProperties(): void;
@@ -628,10 +666,11 @@ declare global {
          */
         doesResourceExist(resourceName: ResourceName): boolean;
         forceExistence(resourceName: ResourceName): void;
+        isScoutingMission(): boolean;
     };
-    //// END REGION: Modules
+    //#END REGION: Modules
 
-    //// REGION: Tabs
+    //#REGION: Tabs
     type SharkGameTabBase = {
         init(): void;
         switchTo(): void;
@@ -819,8 +858,9 @@ declare global {
         updateTableKey(): void;
         networkTextEnter(_mouseEnterEvent: JQuery.MouseEnterEvent, networkResource: "nothing" | `#network-${ResourceName}-${string}`): void; // TODO: Fix this shitty function god
         networkTextLeave(): void;
+        updateTimers(): void;
     };
-    //// END REGION: Tabs
+    //#END REGION: Tabs
 
     type SharkGameTabs = {
         CheatsAndDebug: CheatsAndDebugTab;
@@ -837,6 +877,7 @@ declare global {
         Button: ButtonModule;
         ColorUtil: ColorUtilModule;
         EventHandler: EventHandlerModule;
+        FunFacts: FunFactsModule;
         Gateway: GatewayModule;
         HomeActions: HomeActionsModule;
         HomeEvents: HomeEventsModule;
@@ -858,6 +899,7 @@ declare global {
         TabHandler: TabHandlerModule;
         Tabs: TabsModule;
         TextUtil: TextUtilModule;
+        TimeUtil: TimeUtilModule;
         TitleBar: TitleBarModule;
         TitleBarHandler: TitleBarHandlerModule;
         Upgrades: UpgradesModule;

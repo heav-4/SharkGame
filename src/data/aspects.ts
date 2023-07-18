@@ -98,6 +98,8 @@ SharkGame.Aspects = {
                     return 24;
                 case 2:
                     return 100;
+                default:
+                    return Infinity;
             }
         },
         getEffect(level) {
@@ -108,6 +110,8 @@ SharkGame.Aspects = {
                     return "Unlock a second token (tokens cannot stack on the same resource).";
                 case 3:
                     return "Unlock a third token (tokens cannot stack on the same resource).";
+                default:
+                    return "You shouldn't see this. Aspect level out of range.";
             }
         },
         getUnlocked() {},

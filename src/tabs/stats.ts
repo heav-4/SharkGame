@@ -45,6 +45,7 @@ SharkGame.Stats = {
             message = "<img width=400 height=200 src='" + stats.sceneImage + "' id='tabSceneImage'>" + message;
             tabMessageSel.css("background-image", "url('" + stats.tabBg + "')");
         }
+        if (message === undefined) message = "";
         tabMessageSel.html(message);
 
         const disposeSel = $("#disposeResource");
@@ -61,12 +62,11 @@ SharkGame.Stats = {
                 .addClass("medDesc")
         );
 
-        const switchButtonDiv = $("<div>");
-        switchButtonDiv.css({
-            margin: "auto",
-            "margin-bottom": "15px",
-            clear: "both",
-        });
+        const switchButtonDiv = document.createElement("div");
+
+        switchButtonDiv.style.margin = "auto";
+        switchButtonDiv.style.marginBottom = "15px";
+        switchButtonDiv.style.clear = "both";
 
         SharkGame.Button.makeButton("switchButton", "Swap Producers and Produced", switchButtonDiv, stats.toggleSwitch).addClass("min-block");
         if (SharkGame.Settings.current.grottoMode === "simple") {
@@ -243,7 +243,7 @@ SharkGame.Stats = {
                         }
 
                         if (SharkGame.Settings.current.switchStats) {
-                            cell = $("#table-amount-" + resourceId + "-" + incomeKey);
+                            cell = $("#table-amount-" + resourceId + "-" + incomeKey.toString());
                         } else {
                             cell = $("#table-amount-" + resourceId);
                         }
@@ -315,7 +315,6 @@ SharkGame.Stats = {
     },
 
     createIncomeTable() {
-        /** @type {JQuery<HTMLTableElement} */
         let incomesTable = $("#incomeTable");
         if (incomesTable.length === 0) {
             incomesTable = $("<table>").attr("id", "incomeTable");

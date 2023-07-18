@@ -53,10 +53,7 @@ SharkGame.HomeActions = {
             } else {
                 finalTable[actionName] = {};
 
-                Object.defineProperties(
-                    finalTable[actionName],
-                    Object.getOwnPropertyDescriptors(worldActions[actionName])
-                );
+                Object.defineProperties(finalTable[actionName], Object.getOwnPropertyDescriptors(worldActions[actionName]));
 
                 const defaultPropertiesToDefine = _.pickBy(
                     Object.getOwnPropertyDescriptors(defaultActions[actionName]),
@@ -736,12 +733,7 @@ SharkGame.HomeActions = {
                 },
                 upgrade: ["biology"],
             },
-            outcomes: [
-                "A nurse shark is ready!",
-                "Shark manufacturer primed.",
-                "Nurse shark trained.",
-                "Medical exam passed! Nurse shark is go!",
-            ],
+            outcomes: ["A nurse shark is ready!", "Shark manufacturer primed.", "Nurse shark trained.", "Medical exam passed! Nurse shark is go!"],
             multiOutcomes: [
                 "More sharks are on the way soon.",
                 "Shark swarm begins!",
@@ -1132,12 +1124,7 @@ SharkGame.HomeActions = {
                 "Construction complete.",
                 "Carve rock. Remove sand. Retrieve target.",
             ],
-            multiOutcomes: [
-                "The machines rise.",
-                "The miners dig.",
-                "The crystal shall be harvested.",
-                "Crystal miners are complete.",
-            ],
+            multiOutcomes: ["The machines rise.", "The miners dig.", "The crystal shall be harvested.", "Crystal miners are complete."],
             helpText: "Construct a machine to automatically harvest crystals efficiently.",
         },
 
@@ -1294,8 +1281,7 @@ SharkGame.HomeActions = {
                 "Consumption and production are two halves of the greater whole.",
                 "The creations of sharks emerge from a pattern as old as their species.",
             ],
-            helpText:
-                "Construct a machine to automatically recycle fish and sand into residue with perfect efficiency.",
+            helpText: "Construct a machine to automatically recycle fish and sand into residue with perfect efficiency.",
         },
 
         // MODDED MACHINES
@@ -2078,8 +2064,7 @@ SharkGame.HomeActions = {
                 "You might be playing a dangerous game trusting these guys.",
                 "The treasury grows!",
             ],
-            helpText:
-                "Promote a dolphin to a harder job involving interest on precious coral and crystal or something like that.",
+            helpText: "Promote a dolphin to a harder job involving interest on precious coral and crystal or something like that.",
         },
 
         getHistorian: {
@@ -2116,8 +2101,7 @@ SharkGame.HomeActions = {
                 "Ah, yes. Qualify an ego-stroker.",
                 "For the last time, I don't need to hear the story of Dolphantine again!!",
             ],
-            helpText:
-                "Determine which of these dolphins is actually smart, and not just repeating meaningless stories.",
+            helpText: "Determine which of these dolphins is actually smart, and not just repeating meaningless stories.",
         },
 
         getBiologist: {
@@ -2151,8 +2135,7 @@ SharkGame.HomeActions = {
                 "Smug hedonists, the lot of them!",
                 "The dolphin population regretfully grows.",
             ],
-            helpText:
-                "Train a dolphin to specialise in biology. Dolphin biology, specifically, and production, apparently.",
+            helpText: "Train a dolphin to specialise in biology. Dolphin biology, specifically, and production, apparently.",
         },
 
         // WHALE JOBS ////////////////////////////////////////////////////////////////////////////////
@@ -2660,8 +2643,7 @@ SharkGame.HomeActions = {
                 "That familiar feeling.",
                 "Feel the power. Feel the flow of energy.",
             ],
-            helpText:
-                "Smash large quantities of arcana to release the energy contained within, so that it might be used for the greater good.",
+            helpText: "Smash large quantities of arcana to release the energy contained within, so that it might be used for the greater good.",
         },
 
         // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
@@ -3001,12 +2983,7 @@ SharkGame.HomeActions = {
                 },
                 upgrade: ["biology"],
             },
-            outcomes: [
-                "A nurse shark is ready!",
-                "Shark manufacturer primed.",
-                "Nurse shark trained.",
-                "Medical exam passed! Nurse shark is go!",
-            ],
+            outcomes: ["A nurse shark is ready!", "Shark manufacturer primed.", "Nurse shark trained.", "Medical exam passed! Nurse shark is go!"],
             multiOutcomes: [
                 "More sharks are on the way soon.",
                 "Shark swarm begins!",
@@ -3187,8 +3164,7 @@ SharkGame.HomeActions = {
                 "Ancient riddles for ancient creatures.",
                 "Find the truth beneath the waves!",
             ],
-            helpText:
-                "Help prepare a chimaera for exploration to parts unknown in search of the mysterious and elusive arcana.",
+            helpText: "Help prepare a chimaera for exploration to parts unknown in search of the mysterious and elusive arcana.",
         },
 
         // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
@@ -3716,19 +3692,9 @@ SharkGame.HomeActions = {
 
                     text += `<span class="littleGeneralText">`;
                     if (maxSpongeCycles < maxSandCycles)
-                        text += `${sharktext.getResourceName(
-                            `sponge`,
-                            false,
-                            false,
-                            sharkcolor.getElementColor("tooltipbox", "background-color")
-                        )}`;
+                        text += `${sharktext.getResourceName(`sponge`, false, false, sharkcolor.getElementColor("tooltipbox", "background-color"))}`;
                     if (maxSandCycles <= maxSpongeCycles)
-                        text += `${sharktext.getResourceName(
-                            `sand`,
-                            false,
-                            false,
-                            sharkcolor.getElementColor("tooltipbox", "background-color")
-                        )}`;
+                        text += `${sharktext.getResourceName(`sand`, false, false, sharkcolor.getElementColor("tooltipbox", "background-color"))}`;
                     text += ` is limiting ${sharktext.getResourceName(
                         `porite`,
                         false,
@@ -3851,8 +3817,7 @@ SharkGame.HomeActions = {
                 "How can something so small take up so much space?",
                 "Sponge forever!",
             ],
-            helpText:
-                "Convince shrimp to assist you in the gathering of algae, which increases how much sponge you can keep at once.",
+            helpText: "Convince shrimp to assist you in the gathering of algae, which increases how much sponge you can keep at once.",
         },
 
         // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
@@ -4466,17 +4431,8 @@ SharkGame.HomeActions = {
             prereq: {
                 upgrade: ["billfishBiology"],
             },
-            outcomes: [
-                "Billfish paired.",
-                "Two of one makes one of...two...or something.",
-                "I pronouce you bill and fish.",
-                "Found a match!",
-            ],
-            multiOutcomes: [
-                "Paired some billfish.",
-                "Two by two.",
-                "Finding a compatible pair is seriously harder than it looks.",
-            ],
+            outcomes: ["Billfish paired.", "Two of one makes one of...two...or something.", "I pronouce you bill and fish.", "Found a match!"],
+            multiOutcomes: ["Paired some billfish.", "Two by two.", "Finding a compatible pair is seriously harder than it looks."],
             helpText: "Do a bit of matchmaking and pair up two billfish to continue the circle of life.",
         },
 

@@ -26,13 +26,14 @@ const BOTTOM_EDGE = -150;
 const SPRITE_SHEET = new Image();
 const EVENT_SPRITE_SHEET = new Image();
 
-SPRITE_SHEET.src = "img/sprites.png";
-EVENT_SPRITE_SHEET.src = "img/homemessagesprites.png";
+SPRITE_SHEET.src = "https://github.com/Toby222/SharkGame/blob/alpha/img/sprites.png?raw=true";
+EVENT_SPRITE_SHEET.src = "https://github.com/Toby222/SharkGame/blob/alpha/img/homemessagesprites.png?raw=true";
 
 SharkGame.AspectTree = {
-    /** @type {CanvasRenderingContext2D} */
     context: undefined,
     pointerType: "mouse",
+    debugMode: false,
+    refundMode: false,
     previousButton: undefined,
     staticButtons: {
         respec: {
@@ -738,7 +739,7 @@ SharkGame.AspectTree = {
         } else {
             let name;
             _.forEach(tree.staticButtons, (buttonData, buttonName) => {
-                if (buttonData.name === button.name) {
+                if (buttonData.name === (button as StaticButton).name) {
                     name = buttonName;
                     return false;
                 }
@@ -754,7 +755,10 @@ SharkGame.AspectTree = {
             } else {
                 // we have a static button
                 if (!button.getUnlocked || button.getUnlocked()) {
-                    tooltipBox.html(button.getEffect()).removeClass("forAspectTree forAspectTreeAffordable").addClass("forAspectTreeUnpurchased");
+                    tooltipBox
+                        .html((button as StaticButton).getEffect())
+                        .removeClass("forAspectTree forAspectTreeAffordable")
+                        .addClass("forAspectTreeUnpurchased");
                     context.canvas.style.cursor = "pointer";
                 }
                 return;

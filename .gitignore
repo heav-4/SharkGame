@@ -1,5 +1,7 @@
 .vscode/
 img/zips
+js
+!js/lib
 
 # yarn
 node_modules/

@@ -104,6 +104,7 @@ SharkGame.PaneHandler = {
     },
 
     addPaneToStack(title, contents, notCloseable, fadeInTime = 600, customOpacity) {
+        /** @type Pane */
         const stackObject = [title, contents, notCloseable, fadeInTime, customOpacity];
         if (this.currentPane) {
             this.paneStack.push(_.cloneDeep(this.currentPane));
@@ -141,7 +142,7 @@ SharkGame.PaneHandler = {
     },
 
     isStackClosable() {
-        let canCloseAll;
+        let canCloseAll = false;
         if (this.currentPane) {
             canCloseAll = !this.currentPane[2];
         } else {
@@ -183,7 +184,7 @@ SharkGame.PaneHandler = {
     },
 
     isPaneAlreadyUp(title) {
-        let alreadyUp;
+        let alreadyUp = false;
         if (this.currentPane) {
             alreadyUp = this.currentPane[0] === title;
         } else {
