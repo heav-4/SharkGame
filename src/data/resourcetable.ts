@@ -1384,13 +1384,11 @@ SharkGame.ResourceIncomeAffected = {
     // see SharkGame.Resources.buildIncomeNetwork
 };
 
+// FIXME: Remove or document this
+// It's either an artifact of an old system, or future-proofing.
 SharkGame.ResourceSpecialProperties = {
-    timeImmune: [
-        //
-    ],
-    incomeCap: {
-        // ice: 2,
-    },
+    timeImmune: [],
+    incomeCap: {},
 };
 
 SharkGame.ResourceCategories = {
@@ -1535,10 +1533,6 @@ SharkGame.ResourceCategories = {
             "billfishExplorer",
             "billfishMechanic",
             "stormgoer",
-            // "prospector",
-            // "shoveler",
-            // "miller",
-            // "rockLobster",
         ],
     },
     machines: {
@@ -1567,9 +1561,6 @@ SharkGame.ResourceCategories = {
             "clamScavenger",
             "seabedStripper",
             "calciniumConverter",
-            // "coalescer",
-            // "crusher",
-            // "pulverizer",
         ],
     },
     places: {

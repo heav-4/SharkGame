@@ -935,7 +935,7 @@ declare global {
         ResourceIncomeAffectorsOriginal;
         ResourceMap;
         Resources;
-        ResourceSpecialProperties;
+        ResourceSpecialProperties: { timeImmune: ResourceName[]; incomeCap: Record<ResourceName, number> };
         ResourceTable;
         Save: SaveModule;
         Settings: SettingsModule;
@@ -1014,7 +1014,7 @@ declare global {
         FlippedBreakdownIncomeTable: Map<ResourceName, Record<ResourceName, number>>;
         GeneratorIncomeAffected: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
         GeneratorIncomeAffectors: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
-        GeneratorIncomeAffectorsOriginal: Record<ResourceName, Record<"multiply" | "exponentiate", Record<ResourceName, number>>>; // TOOD: Might be a better type available later;
+        GeneratorIncomeAffectorsOriginal: Record<ResourceName, Partial<Record<"multiply" | "exponentiate", Record<ResourceName, number>>>>; // TOOD: Might be a better type available later;
         ModifierMap: Map<
             ResourceName,
             Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>
