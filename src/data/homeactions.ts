@@ -3,15 +3,12 @@ SharkGame.HomeActions = {
     generated: {},
 
     getActionTable(worldType = world.worldType) {
-        if (typeof SharkGame.HomeActions[worldType] !== "object" || worldType === "generated") {
-            worldType = "default";
-        }
+        const realWorldType = typeof SharkGame.HomeActions[worldType] !== "object" || worldType === "generated" ? "default" : worldType;
 
-        if (!_.has(SharkGame.HomeActions.generated, worldType)) {
-            return (SharkGame.HomeActions.generated[worldType] = SharkGame.HomeActions.generateActionTable(worldType));
-        } else {
-            return SharkGame.HomeActions.generated[worldType];
+        if (!_.has(SharkGame.HomeActions.generated, realWorldType)) {
+            SharkGame.HomeActions.generated[realWorldType] = SharkGame.HomeActions.generateActionTable(realWorldType);
         }
+        return SharkGame.HomeActions.generated[realWorldType]!;
     },
 
     getActionData(table, actionName) {
@@ -42,12 +39,11 @@ SharkGame.HomeActions = {
             return defaultActions;
         }
 
-        /** @type {Record<HomeActionName, HomeAction>} */
-        const finalTable = {};
-        const worldActions = SharkGame.MiscUtil.cloneDeep(SharkGame.HomeActions[worldType]);
+        const worldActions = SharkGame.MiscUtil.cloneDeep(SharkGame.HomeActions[worldType] as HomeActionTableOverrides);
+        const finalTable: typeof worldActions = {};
 
         // _.has
-        _.each(Reflect.ownKeys(worldActions), (actionName) => {
+        _.each(Object.keys(worldActions), (actionName) => {
             if (!_.has(defaultActions, actionName)) {
                 finalTable[actionName] = worldActions[actionName];
             } else {
@@ -62,11 +58,11 @@ SharkGame.HomeActions = {
                     }
                 );
 
-                Object.defineProperties(finalTable[actionName], defaultPropertiesToDefine);
+                Object.defineProperties(finalTable[actionName], defaultPropertiesToDefine as Record<string, PropertyDescriptor>);
             }
         });
 
-        return finalTable;
+        return finalTable as HomeActionTable;
     },
 
     // something new to keep in mind:
@@ -86,7 +82,7 @@ SharkGame.HomeActions = {
                     },
                 },
             },
-            cost: {},
+            cost: [],
             prereq: {},
             outcomes: [
                 "Dropped the bass.",
@@ -145,7 +141,7 @@ SharkGame.HomeActions = {
                     shark: 10000,
                 },
             },
-            cost: {},
+            cost: [],
             prereq: {
                 // no prereqs
             },
@@ -173,10 +169,9 @@ SharkGame.HomeActions = {
                     },
                 },
             },
-            cost: {},
+            cost: [],
             prereq: {
                 upgrade: ["spongeCollection"],
-                notWorlds: ["stone"],
             },
             outcomes: [
                 "Pried an orange elephant ear sponge from the rocks.",
@@ -214,7 +209,7 @@ SharkGame.HomeActions = {
                     },
                 },
             },
-            cost: {},
+            cost: [],
             prereq: {
                 upgrade: ["clamScooping"],
             },
@@ -252,7 +247,7 @@ SharkGame.HomeActions = {
                     },
                 },
             },
-            cost: {},
+            cost: [],
             prereq: {
                 upgrade: ["jellyfishHunting"],
             },
@@ -1283,104 +1278,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Construct a machine to automatically recycle fish and sand into residue with perfect efficiency.",
         },
-
-        // MODDED MACHINES
-
-        /*
-        getCoalescer: {
-            name: "Construct coalescer",
-            effect: {
-                resource: {
-                    coalescer: 1,
-                },
-            },
-            cost: [
-                { resource: "knowledge", costFunction: "linear", priceIncrease: 1 },
-                { resource: "science", costFunction: "linear", priceIncrease: 20000000 },
-                { resource: "delphinium", costFunction: "linear", priceIncrease: 2500 },
-            ],
-            max: "coalescer",
-            prereq: {
-                upgrade: ["knowledgeCoalescers"],
-            },
-            outcomes: [
-                "Accuring thought energy.",
-                "Put together a coalescer.",
-                "Constructed a thought coalescer.",
-                "The structure begins sapping thoughts from the surroundings.",
-                "It's not really a machine...it's more like a ritual station.",
-                "For something made by dolphins, it might seem smart, but that's just because it's sapping your brainpower.",
-            ],
-            multiOutcomes: [
-                "Now we're thinking with portals...maybe. I think it involves a portal.",
-                "Praise be to the brain gods!",
-                "Big brain time.",
-                "How do the dolphins know to do this?",
-                "Free our minds, oh great creations!",
-                "The dolphins seem very, very pleased. I'm not sure that I like this anymore.",
-            ],
-            helpText: "Create a strange structure to consistently siphon knowledge from its surroundings.",
-        },
-
-        getCrusher: {
-            name: "Build crusher",
-            effect: {
-                resource: {
-                    crusher: 1,
-                },
-            },
-            cost: [{ resource: "sharkonium", costFunction: "linear", priceIncrease: 250 }],
-            max: "crusher",
-            prereq: {
-                resource: {
-                    stone: 1,
-                },
-                upgrade: ["rockProcessing"],
-            },
-            outcomes: ["Crusher activated.", "Crusher constructed.", "Crushing begins.", "Construction complete."],
-            multiOutcomes: [
-                "Stone wasn't very useful anyways.",
-                "Shoo, rocks!",
-                "We can never run out of rocks. The cycle is forever.",
-                "CRUSH. KILL. DESTORY. SMALL ROCKS IN PARTICULAR.",
-            ],
-            helpText: "Construct a machine to break stone down into gravel.",
-        },
-
-        getPulverizer: {
-            name: "Build pulverizer",
-            effect: {
-                resource: {
-                    pulverizer: 1,
-                },
-            },
-            cost: [
-                { resource: "sharkonium", costFunction: "linear", priceIncrease: 250 },
-                { resource: "gravel", costFunction: "linear", priceIncrease: 250 },
-            ],
-            max: "pulverizer",
-            prereq: {
-                resource: {
-                    gravel: 1,
-                },
-                upgrade: ["gravelPulverizing"],
-            },
-            outcomes: [
-                "Pulverizing begins in T-minus 3...",
-                "Flipping the swtich on, the tumblers churn out sand.",
-                "Pulverizer, activated.",
-                "Construction complete.",
-            ],
-            multiOutcomes: [
-                "The sand. It flows.",
-                "The machines take over for the crabs.",
-                "Right now, sand is like gold...we can't find it anywhere.",
-                "Machines are better than crabs. They won't gravel- er, grovel.",
-                "Man, sand is expensive.",
-            ],
-            helpText: "Construct a machine to break down gravel into sand.",
-        },
-        */
     },
     abandoned: {
         catchFish: {},
@@ -3191,7 +3088,7 @@ SharkGame.HomeActions = {
                     },
                 },
             },
-            cost: {},
+            cost: [],
             prereq: {
                 upgrade: ["clamScooping"],
             },
@@ -3620,7 +3517,7 @@ SharkGame.HomeActions = {
             },
             removedBy: {
                 custom() {
-                    return SharkGame.flags.prySpongeGained > 200;
+                    return SharkGame.flags.prySpongeGained !== undefined && SharkGame.flags.prySpongeGained > 200;
                 },
                 otherActions: ["prySponge2"],
                 upgrades: ["agriculture"],
@@ -3636,7 +3533,7 @@ SharkGame.HomeActions = {
                     },
                 },
             },
-            cost: {},
+            cost: [],
             prereq: {
                 upgrade: ["consistentCommunication"],
             },
@@ -3674,7 +3571,7 @@ SharkGame.HomeActions = {
             effect: {
                 events: ["volcanicToggleSmelt"],
             },
-            cost: {},
+            cost: [],
             prereq: {
                 upgrade: ["superSmelting"],
             },
@@ -3685,8 +3582,8 @@ SharkGame.HomeActions = {
                 if (SharkGame.flags.autoSmelt) {
                     const sponge = res.getResource(`sponge`);
                     const sand = res.getResource(`sand`);
-                    const spongeCost = SharkGame.HomeActions.volcanic.smeltPorite.cost[0].priceIncrease;
-                    const sandCost = SharkGame.HomeActions.volcanic.smeltPorite.cost[1].priceIncrease;
+                    const spongeCost = SharkGame.HomeActions.getActionTable("volcanic").smeltPorite.cost[0].priceIncrease;
+                    const sandCost = SharkGame.HomeActions.getActionTable("volcanic").smeltPorite.cost[1].priceIncrease;
                     const maxSpongeCycles = sponge / spongeCost;
                     const maxSandCycles = sand / sandCost;
 

@@ -32,7 +32,18 @@ declare global {
 
     //#REGION: Data structure types
     type AspectName = string;
-    type HomeActionCategory = "all" | "basic" | "frenzy" | "professions" | "breeders" | "processing" | "machines" | "otherMachines" | "unique";
+    type HomeActionCategory =
+        | "all"
+        | "basic"
+        | "frenzy"
+        | "professions"
+        | "breeders"
+        | "processing"
+        | "machines"
+        | "otherMachines"
+        | "unique"
+        | "places";
+    // TODO: Replace with actual home action names
     type HomeActionName = string;
     type ModifierName = string;
     type OptionCategory = "PERFORMANCE" | "LAYOUT" | "APPEARANCE" | "ACCESSIBILITY" | "OTHER" | "SAVES";
@@ -55,18 +66,10 @@ declare global {
     type SpriteName = string;
     type TabName = string;
     type UpgradeName = string;
-    type WorldName =
-        | "start"
-        | "marine"
-        | "haven"
-        | "tempestuous"
-        | "volcanic"
-        | "abandoned"
-        | "shrouded"
-        | "frigid";
+    type WorldName = "start" | "marine" | "haven" | "tempestuous" | "volcanic" | "abandoned" | "shrouded" | "frigid";
 
     type ProgressionType = "2-scale";
-    type CostFunction = "linear" | "constant";
+    type CostFunction = "linear" | "constant" | "unique";
 
     type CheatButtonType = undefined | "numeric" | "up-down";
     type CheatButton = {
@@ -78,7 +81,7 @@ declare global {
         clickDown(): void;
     };
 
-    type EventName = "beforeTick" | "afterTick";
+    type EventName = "beforeTick" | "afterTick" | "volcanicTallyPrySponge" | "volcanicToggleSmelt" | "volcanicBoughtFarm";
     type EventAction = "trigger" | "remove" | "pass";
     type SharkEventHandler = {
         handlingTime: EventName;
@@ -113,7 +116,7 @@ declare global {
             notWorlds: WorldName[];
         }>;
         outcomes: string[];
-        multiOutcomes: string[];
+        multiOutcomes?: string[];
         helpText: string;
         unauthorized?: boolean;
         removedBy?: Partial<{
@@ -125,27 +128,28 @@ declare global {
         getSpecialTooltip?(): string;
     };
     type HomeActionTable = Record<HomeActionName, HomeAction>;
-    type HomeMessageSprite = { 
+    type HomeActionTableOverrides = Partial<Record<HomeActionName, Partial<HomeAction>>>;
+    type HomeMessageSprite = {
         frame: {
             x: number;
             y: number;
             w: number;
             h: number;
-        }
-    }
+        };
+    };
     type HomeMessage = {
         name: string;
         message: string;
         unlock?:
-        |Partial<{
-            totalResource: Record<ResourceName, number>;
-            resource: Record<ResourceName, number>;
-            upgrade: UpgradeName[];
-            homeAction: HomeActionName[];
-        }>
-        | { custom(): boolean; };
+            | Partial<{
+                  totalResource: Record<ResourceName, number>;
+                  resource: Record<ResourceName, number>;
+                  upgrade: UpgradeName[];
+                  homeAction: HomeActionName[];
+              }>
+            | { custom(): boolean };
         transient?: boolean;
-    }
+    };
     type Upgrade = {
         name: string;
         desc: string;
@@ -398,16 +402,16 @@ declare global {
 
     type HomeActionsModule = {
         /** Generated cache on-demand */
-        generated: Record<WorldName, HomeActionTable>;
+        generated: Partial<Record<WorldName | "default", HomeActionTable>>;
         default: HomeActionTable;
-        getActionTable(worldType?: WorldName): Record<HomeActionName, HomeAction>;
+        getActionTable(worldType?: WorldName | "generated"): Record<HomeActionName, HomeAction>;
         /**
          * Retrieves, modifies, and returns the data for an action. Implemented to intercept retreival of action data to handle special logic where alternatives are inconvenient or impossible.
          * @param table The table to retrieve the action data from
          * @param actionName The name of the action
          */
         getActionData(table: HomeActionTable, actionName: HomeActionName): HomeAction;
-        generateActionTable(worldType?: WorldName): Record<HomeActionName, HomeAction>;
+        generateActionTable(worldType?: WorldName | "default"): Record<HomeActionName, HomeAction>;
     };
 
     type UpgradesModule = {
@@ -633,7 +637,7 @@ declare global {
         beautify(number: number, suppressDecimals?: boolean, toPlaces?: number): string;
         beautifyIncome(number: number, also?: string): string;
         formatTime(milliseconds: number): string;
-        getResourceName(resourceName: ResourceName, darken?: boolean, arbitraryAmount?: number, background?: string): string;
+        getResourceName(resourceName: ResourceName, darken?: boolean, arbitraryAmount?: boolean | number, background?: string): string;
         applyResourceColoration(resourceName: ResourceName, textToColor: string): string;
         /** make a resource list object into a string describing its contents */
         resourceListToString(resourceList: Record<ResourceName, number>, darken: boolean, backgroundColor?: string): string;
@@ -935,7 +939,11 @@ declare global {
 
         before: number;
         dt: number;
-        flags: Record<string, unknown>; // TODO: Find out unknown type
+        flags: {
+            prySpongeGained?: number;
+            gotFarmsBeforeShrimpThreat?: boolean;
+            autoSmelt?: boolean;
+        };
         gameOver: boolean;
         paneGenerated: boolean;
         persistentFlags: Record<string, any>;
@@ -952,8 +960,8 @@ declare global {
     type SharkGameData = {
         Aspects: Record<AspectName, Aspect>;
         Events: Record<string, SharkEventHandler>;
-        HomeActionCategories: Record<HomeActionCategory, { name: string; actions: HomeActionName }>;
-        HomeActions: Record<WorldName, HomeActionTable>;
+        HomeActionCategories: Record<HomeActionCategory, { name: string; actions: HomeActionName[] }>;
+        HomeActions: Partial<Record<WorldName, HomeActionTableOverrides>>;
         HomeMessageSprites: Record<string, HomeMessageSprite>;
         HomeMessages: { messages: Record<WorldName, HomeMessage[]> };
         InternalCategories: Record<ResourceName, { name: string; resources: ResourceName[] }>;
