@@ -1,4 +1,7 @@
 "use strict";
+// FIXME: The entire Modifier typing system is cursed
+// I mean... wtf? Why is one of the parameters type `number | string[]`
+
 /**
  * Can be indexed with the name of a modifier to return the associated data in SharkGame.ModifierTypes.
  */
