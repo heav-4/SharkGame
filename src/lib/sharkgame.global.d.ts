@@ -55,7 +55,15 @@ declare global {
     type SpriteName = string;
     type TabName = string;
     type UpgradeName = string;
-    type WorldName = string;
+    type WorldName =
+        | "start"
+        | "marine"
+        | "haven"
+        | "tempestuous"
+        | "volcanic"
+        | "abandoned"
+        | "shrouded"
+        | "frigid";
 
     type ProgressionType = "2-scale";
     type CostFunction = "linear" | "constant";
@@ -117,7 +125,27 @@ declare global {
         getSpecialTooltip?(): string;
     };
     type HomeActionTable = Record<HomeActionName, HomeAction>;
-
+    type HomeMessageSprite = { 
+        frame: {
+            x: number;
+            y: number;
+            w: number;
+            h: number;
+        }
+    }
+    type HomeMessage = {
+        name: string;
+        message: string;
+        unlock?:
+        |Partial<{
+            totalResource: Record<ResourceName, number>;
+            resource: Record<ResourceName, number>;
+            upgrade: UpgradeName[];
+            homeAction: HomeActionName[];
+        }>
+        | { custom(): boolean; };
+        transient?: boolean;
+    }
     type Upgrade = {
         name: string;
         desc: string;
@@ -380,24 +408,6 @@ declare global {
          */
         getActionData(table: HomeActionTable, actionName: HomeActionName): HomeAction;
         generateActionTable(worldType?: WorldName): Record<HomeActionName, HomeAction>;
-    };
-
-    type HomeEventsModule = {
-        messages: Record<
-            WorldName,
-            {
-                name: string;
-                message: string;
-                scales?: boolean;
-                unlock?: Partial<{
-                    resource: Record<ResourceName, number>;
-                    totalResource: Record<ResourceName, number>;
-                    homeAction: HomeActionName[];
-                    upgrade: UpgradeName[];
-                    custom(): boolean;
-                }>;
-            }[]
-        >;
     };
 
     type UpgradesModule = {
@@ -880,7 +890,6 @@ declare global {
         FunFacts: FunFactsModule;
         Gateway: GatewayModule;
         HomeActions: HomeActionsModule;
-        HomeEvents: HomeEventsModule;
         Log: LogModule;
         Main: MainModule;
         MathUtil: MathUtilModule;
@@ -945,6 +954,8 @@ declare global {
         Events: Record<string, SharkEventHandler>;
         HomeActionCategories: Record<HomeActionCategory, { name: string; actions: HomeActionName }>;
         HomeActions: Record<WorldName, HomeActionTable>;
+        HomeMessageSprites: Record<string, HomeMessageSprite>;
+        HomeMessages: { messages: Record<WorldName, HomeMessage[]> };
         InternalCategories: Record<ResourceName, { name: string; resources: ResourceName[] }>;
         ModifierTypes: Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, Modifier>>>;
         Panes: Record<string, string[]>;
