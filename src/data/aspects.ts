@@ -2,6 +2,29 @@
 
 // idea: aspect which helps to reveal more of the tree
 SharkGame.Aspects = {
+    deprecated: {
+        theMinuteHand: {
+            getCost(level: number) {
+                switch (level) {
+                    case 0:
+                        return 4;
+                    default:
+                        return 3 + level;
+                }
+            },
+        },
+        theSecondHand: {
+            getCost(level: number) {
+                return 6 * (level + 1);
+            },
+        },
+        anythingAndEverything: {
+            getCost(_level: number) {
+                return 5;
+            },
+        },
+    },
+
     apotheosis: {
         posX: 350,
         posY: 350,
@@ -50,7 +73,7 @@ SharkGame.Aspects = {
                 sharktext.getResourceName("shark", false, 69, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                 ", their jobs, and their fundamental machines by <strong>" +
                 (level + 1) +
-                "×</strong>."
+                "&times;</strong>."
             );
         },
         getUnlocked() {
@@ -841,53 +864,6 @@ SharkGame.Aspects = {
         },
         getUnlocked() {},
         prerequisites: ["distantForesight"],
-        clicked(_event) {
-            tree.handleClickedAspect(this);
-        },
-    },
-
-    // deprecated
-
-    theMinuteHand: {
-        deprecated: true,
-        level: 0,
-        getCost(level) {
-            switch (level) {
-                case 0:
-                    return 4;
-                default:
-                    return 3 + level;
-            }
-        },
-        prerequisites: ["theSecondHand"],
-    },
-    theSecondHand: {
-        deprecated: true,
-        level: 0,
-        getCost(level) {
-            return 6 * (level + 1);
-        },
-        prerequisites: ["theMinuteHand"],
-    },
-    anythingAndEverything: {
-        posX: 675,
-        posY: 100,
-        width: 40,
-        height: 40,
-
-        max: 1,
-        level: 0,
-        deprecated: true,
-        name: "Anything and Everything",
-        description: "Could I interest you in a little bit of everything?",
-        getCost(_level) {
-            return 5;
-        },
-        getEffect(_level) {
-            return "Unlock a button which presses all the buy buttons (pressed in order from left-to-right, top-to-bottom).";
-        },
-        getUnlocked() {},
-        prerequisites: ["extensiveOrganization"],
         clicked(_event) {
             tree.handleClickedAspect(this);
         },

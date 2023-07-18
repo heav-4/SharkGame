@@ -28,6 +28,7 @@ SharkGame.Save = {
         saveData.upgrades = _.cloneDeep(SharkGame.Upgrades.purchased);
         // Save non-zero artifact levels
         _.each(SharkGame.Aspects, ({ level }, aspectId) => {
+            if (aspectId === "deprecated") return;
             if (level) saveData.aspects[aspectId] = level;
         });
 

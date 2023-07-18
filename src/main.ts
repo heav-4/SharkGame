@@ -516,6 +516,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             });
 
             _.each(SharkGame.Aspects, ({ level }, aspectId) => {
+                if (aspectId === "deprecated") return;
                 if (level) saveData.aspects[aspectId] = level;
             });
 

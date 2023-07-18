@@ -150,17 +150,17 @@ SharkGame.AspectTree = {
     setup() {
         if (SharkGame.missingAspects) {
             res.setResource("essence", res.getTotalResource("essence"));
-            _.each(SharkGame.Aspects, (aspectData) => {
+            _.each(SharkGame.Aspects, (aspectData, aspectId) => {
+                if (aspectId === "deprecated") return;
                 // wipe all levels
                 aspectData.level = 0;
             });
             SharkGame.PaneHandler.showAspectWarning();
         } else {
+            // FIXME: ***WHY*** is this at runtime?? Move it to a migrator.
             // try to refund deprecated aspects
-            _.each(SharkGame.Aspects, (aspectData) => {
-                if (aspectData.deprecated) {
-                    tree.refundLevels(aspectData);
-                }
+            _.each(SharkGame.Aspects.deprecated, (aspectData) => {
+                tree.refundLevels(aspectData);
             });
         }
 
@@ -216,7 +216,6 @@ SharkGame.AspectTree = {
         const tableBody = $("<tbody>");
 
         $.each(SharkGame.Aspects, (aspectId, aspectData) => {
-            if (aspectData.deprecated) return;
             const reqref = tree.requirementReference[aspectId];
             if (!reqref.revealed) return;
 
@@ -453,14 +452,13 @@ SharkGame.AspectTree = {
         // Lines between aspects
         context.save();
         context.lineWidth = 5;
-        _.each(SharkGame.Aspects, ({ level, posX, posY, width, height, requiredBy, deprecated }) => {
-            if (deprecated) return;
-
+        _.each(SharkGame.Aspects, ({ level, posX, posY, width, height, requiredBy }, aspectId) => {
+            if (aspectId === "deprecated") return;
             if (level) {
                 // requiredBy: array of aspectId that depend on this aspect
                 _.each(requiredBy, (requiringId) => {
                     const requiring = SharkGame.Aspects[requiringId];
-                    if (requiring.deprecated) return;
+                    if (requiring === undefined) return;
 
                     context.save();
 
@@ -499,9 +497,8 @@ SharkGame.AspectTree = {
         context.lineWidth = 1;
         context.fillStyle = buttonColor;
         context.strokeStyle = borderColor;
-        _.each(SharkGame.Aspects, ({ posX, posY, width, height, icon, eventSprite, level, deprecated }, name) => {
-            if (deprecated) return;
-
+        _.each(SharkGame.Aspects, ({ posX, posY, width, height, icon, eventSprite, level }, name) => {
+            if (name === "deprecated") return;
             context.save();
             const reqref = tree.requirementReference[name];
             if (!reqref.revealed) {
@@ -663,7 +660,8 @@ SharkGame.AspectTree = {
     },
 
     applyAspects() {
-        _.each(SharkGame.Aspects, (aspectData) => {
+        _.each(SharkGame.Aspects, (aspectData, aspectId) => {
+            if (aspectId === "deprecated") return;
             if (aspectData.level && typeof aspectData.apply === "function") {
                 aspectData.apply("init");
             }
@@ -672,13 +670,15 @@ SharkGame.AspectTree = {
 
     respecTree(totalWipe) {
         if (!totalWipe) {
-            _.each(SharkGame.Aspects, (aspect) => {
+            _.each(SharkGame.Aspects, (aspect, aspectId) => {
+                if (aspectId === "deprecated") return;
                 if (!aspect.noRefunds) {
                     this.refundLevels(aspect);
                 }
             });
         } else {
-            _.each(SharkGame.Aspects, (aspect) => {
+            _.each(SharkGame.Aspects, (aspect, aspectId) => {
+                if (aspectId === "deprecated") return;
                 this.refundLevels(aspect);
             });
         }
@@ -747,6 +747,7 @@ SharkGame.AspectTree = {
 
             if (!name) {
                 _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
+                    if (aspectName === "deprecated") return;
                     if (aspectData.name === button.name) {
                         name = aspectName;
                         return false;
@@ -891,8 +892,8 @@ SharkGame.AspectTree = {
 
     generateRequirementReference() {
         tree.requirementReference = {};
-        _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
-            if (aspectData.deprecated) return;
+        _.forEach(SharkGame.Aspects, (_aspectData, aspectName) => {
+            if (aspectName === "deprecated") return;
             tree.requirementReference[aspectName] = {};
         });
         tree.updateRequirementReference();
@@ -902,7 +903,7 @@ SharkGame.AspectTree = {
         const reqref = tree.requirementReference;
 
         _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
-            if (aspectData.deprecated) return;
+            if (aspectName === "deprecated") return;
             reqref[aspectName].affordable = aspectData.getCost(aspectData.level) <= res.getResource("essence");
             reqref[aspectName].locked = aspectData.getUnlocked() || false;
             reqref[aspectName].prereqsMet = !_.some(aspectData.prerequisites, (prereq) => SharkGame.Aspects[prereq].level === 0);

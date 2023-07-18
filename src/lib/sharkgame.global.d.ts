@@ -31,7 +31,33 @@ declare global {
     const SharkGame: SharkGame;
 
     //#REGION: Data structure types
-    type AspectName = string;
+    type AspectName =
+        | "apotheosis"
+        | "pathOfIndustry"
+        | "tokenOfIndustry"
+        | "pathOfEnlightenment"
+        | "distantForesight"
+        | "patience"
+        | "theDial"
+        | "pathOfTime"
+        | "coordinatedCooperation"
+        | "syntheticTransmutation"
+        | "amorphousAssembly"
+        | "mechanicalManifestation"
+        | "thePlan"
+        | "collectiveCooperation"
+        | "constructedConception"
+        | "destinyGamble"
+        | "cleanSlate"
+        | "crystallineSkin"
+        | "internalCalculator"
+        | "extensiveOrganization"
+        | "theHourHand"
+        | "doubleTime"
+        | "overtime"
+        | "gumption"
+        | "meditation"
+        | "infinityVision";
     type HomeActionCategory =
         | "all"
         | "basic"
@@ -249,6 +275,10 @@ declare global {
         getUnlocked(): string | void;
         clicked(event: JQuery.MouseDownEvent): void;
         apply?(time: string): void;
+    };
+
+    type DeprecatedAspect = {
+        getCost(level: number): number;
     };
 
     type StaticButton = {
@@ -943,6 +973,7 @@ declare global {
             prySpongeGained?: number;
             gotFarmsBeforeShrimpThreat?: boolean;
             autoSmelt?: boolean;
+            pathOfTimeApplied?: true;
         };
         gameOver: boolean;
         paneGenerated: boolean;
@@ -958,7 +989,7 @@ declare global {
         wonGame: boolean;
     };
     type SharkGameData = {
-        Aspects: Record<AspectName, Aspect>;
+        Aspects: { deprecated: Record<string, DeprecatedAspect> } & Record<AspectName, Aspect>;
         Events: Record<string, SharkEventHandler>;
         HomeActionCategories: Record<HomeActionCategory, { name: string; actions: HomeActionName[] }>;
         HomeActions: Partial<Record<WorldName, HomeActionTableOverrides>>;
