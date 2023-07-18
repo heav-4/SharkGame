@@ -84,16 +84,17 @@ SharkGame.MathUtil = {
 
     getBuyAmount(noMaxBuy) {
         if (SharkGame.Settings.current.buyAmount === "custom") {
-            return $("#custom-input")[0] && Math.floor($("#custom-input")[0].valueAsNumber) >= 1 && $("#custom-input")[0].valueAsNumber < 1e18
-                ? Math.floor($("#custom-input")[0].valueAsNumber)
+            const customInput = document.getElementById("custom-input");
+            return customInput instanceof HTMLInputElement && Math.floor(customInput.valueAsNumber) >= 1 && customInput.valueAsNumber < 1e18
+                ? Math.floor(customInput.valueAsNumber)
                 : 1;
-        } else {
-            if (SharkGame.Settings.current.buyAmount < 0 && noMaxBuy) {
-                return 1;
-            } else {
-                return SharkGame.Settings.current.buyAmount;
-            }
         }
+
+        if (SharkGame.Settings.current.buyAmount < 0 && noMaxBuy) {
+            return 1;
+        }
+
+        return SharkGame.Settings.current.buyAmount;
     },
 
     // This is weird

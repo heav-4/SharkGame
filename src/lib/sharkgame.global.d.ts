@@ -113,7 +113,7 @@ declare global {
         handlingTime: EventName;
         priority: number;
         getAction(): EventAction;
-        trigger(): boolean;
+        trigger(): boolean | void;
     };
 
     type FunFact = string;
@@ -538,7 +538,7 @@ declare global {
         /** this takes an argument to know whether or not to return a Decimal or a Number */
         uniqueMax(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
         uniqueMax(current: number, difference: number, cost: number): number;
-        getBuyAmount(nomaxBuy: boolean): Decimal | number;
+        getBuyAmount(nomaxBuy?: boolean): Decimal | number;
         /** This is weird */
         getPurchaseAmount(resource: ResourceName, owned?: number): Decimal | number;
     };
@@ -970,10 +970,16 @@ declare global {
         before: number;
         dt: number;
         flags: {
-            prySpongeGained?: number;
-            gotFarmsBeforeShrimpThreat?: boolean;
+            abandonedRefundedInvestigators?: true;
             autoSmelt?: boolean;
+            frigidAddedUrchin?: true;
+            gaveSeagrass?: true;
+            gotFarmsBeforeShrimpThreat?: boolean;
             pathOfTimeApplied?: true;
+            pressedAllButtonsThisTick?: boolean;
+            prySpongeGained?: number;
+            storm?: Record<ResourceName, number>;
+            tokens?: Record<`token-${number}`, "RETURNME" | "NA" | `resource-${ResourceName}` | `income-${ResourceName}`>;
         };
         gameOver: boolean;
         paneGenerated: boolean;

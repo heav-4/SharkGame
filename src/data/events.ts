@@ -187,8 +187,8 @@ SharkGame.Events = {
             vents.baseIncome.porite = 0;
 
             if (SharkGame.flags.autoSmelt) {
-                const spongeCost = SharkGame.HomeActions.volcanic.smeltPorite.cost[0].priceIncrease;
-                const sandCost = SharkGame.HomeActions.volcanic.smeltPorite.cost[1].priceIncrease;
+                const spongeCost = SharkGame.HomeActions.getActionTable("volcanic").smeltPorite.cost[0].priceIncrease;
+                const sandCost = SharkGame.HomeActions.getActionTable("volcanic").smeltPorite.cost[1].priceIncrease;
                 const maxSpongeCycles = sponge / spongeCost;
                 const maxSandCycles = sand / sandCost;
                 if (maxSpongeCycles >= 1 && maxSandCycles >= 1) {
@@ -279,7 +279,7 @@ SharkGame.Events = {
             SharkGame.flags.prySpongeGained += SharkGame.HomeActions.getActionData(
                 SharkGame.HomeActions.getActionTable(),
                 "prySponge"
-            ).effect.resource.sponge;
+            ).effect.resource!.sponge;
         },
     },
     volcanicBoughtFarm: {
@@ -289,7 +289,7 @@ SharkGame.Events = {
             return "remove";
         },
         trigger() {
-            if (SharkGame.flags.prySpongeGained < 200) {
+            if (SharkGame.flags.prySpongeGained !== undefined && SharkGame.flags.prySpongeGained < 200) {
                 SharkGame.flags.gotFarmsBeforeShrimpThreat = true;
             }
         },
@@ -435,7 +435,7 @@ SharkGame.Events = {
             });
             $.each(SharkGame.flags.storm, (name, ratio) => {
                 if (ratio === 0) {
-                    delete SharkGame.flags.storm[name];
+                    delete SharkGame.flags.storm![name];
                 }
             });
             return true;
@@ -459,7 +459,7 @@ SharkGame.Events = {
                 };
             }
             _.each(["fish", "sand", "crystal", "shark", "ray", "crab"], (resourceName) => {
-                SharkGame.flags.storm[resourceName] = 0;
+                SharkGame.flags.storm![resourceName] = 0;
                 const resourceAmount = res.getResource(resourceName);
                 res.setResource(resourceName, Math.floor(resourceAmount));
             });
@@ -514,12 +514,12 @@ SharkGame.Events = {
 
             _.each(res.tokens.list, (token) => {
                 if (
-                    SharkGame.flags.tokens[token.attr("id")].includes("chart") ||
-                    SharkGame.flags.tokens[token.attr("id")].includes("billfishExplorer")
+                    SharkGame.flags.tokens &&
+                    (SharkGame.flags.tokens[token.attr("id")].includes("chart") ||
+                        SharkGame.flags.tokens[token.attr("id")].includes("billfishExplorer"))
                 )
                     res.tokens.tryReturnToken(null, false, token);
             });
-            SharkGame.flags.mapSequenceCompleted = true;
 
             res.setResource("chart", 0);
             res.setTotalResource("chart", 0);

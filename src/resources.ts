@@ -522,7 +522,7 @@ SharkGame.Resources = {
     },
 
     tokens: {
-        list: [],
+        list: [] as JQuery<HTMLDivElement>[],
         chromeForcesWorkarounds: "",
 
         setup() {
@@ -540,14 +540,14 @@ SharkGame.Resources = {
             }
 
             _.each(this.list, (token) => {
-                if (!SharkGame.flags.tokens[token.attr("id")]) {
-                    SharkGame.flags.tokens[token.attr("id")] = "RETURNME";
+                if (!SharkGame.flags.tokens![token.attr("id")!]) {
+                    SharkGame.flags.tokens![token.attr("id")!] = "RETURNME";
                 }
                 $("#token-div").append(
                     token
                         .on("dragstart", res.tokens.handleTokenDragStart)
                         .on("dragover", (event) => {
-                            event.originalEvent.preventDefault();
+                            event.originalEvent?.preventDefault();
                         })
                         .on("dragend", res.tokens.handleDragEnd)
                         .on("drop", res.tokens.dropToken)
@@ -569,16 +569,15 @@ SharkGame.Resources = {
             res.tokens.updateTokenDescriptions();
         },
 
-        makeToken(type = "nobody cares", initialLocation = "NA") {
+        makeToken() {
             const identifier = "token-" + (this.list.length + 1);
             const token = SharkGame.changeSprite(SharkGame.spriteIconPath, "general/slottedmarker", null, "general/missing-action")
                 .attr("id", identifier)
-                .attr("type", type)
-                .attr("draggable", true)
+                .attr("draggable", "true")
                 .addClass("token");
             this.list.push(token);
-            if (!SharkGame.flags.tokens[identifier]) {
-                SharkGame.flags.tokens[identifier] = initialLocation;
+            if (!SharkGame.flags.tokens![identifier]) {
+                SharkGame.flags.tokens![identifier] = "NA";
             }
             return token;
         },
