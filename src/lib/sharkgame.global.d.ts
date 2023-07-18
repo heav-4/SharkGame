@@ -71,6 +71,29 @@ declare global {
         | "places";
     // TODO: Replace with actual home action names
     type HomeActionName = string;
+
+    type InternalCategoryName =
+        | "sharks"
+        | "rays"
+        | "crabs"
+        | "lobsters"
+        | "shrimps"
+        | "dolphins"
+        | "whales"
+        | "octopuses"
+        | "eels"
+        | "squids"
+        | "urchins"
+        | "chimaeras"
+        | "billfishes"
+        | "sharkmachines"
+        | "dolphinmachines"
+        | "octopusmachines"
+        | "lobstermachines"
+        | "basicmaterials"
+        | "kelpstuff"
+        | "basics"
+        | "basicmaterials";
     type ModifierName = string;
     type OptionCategory = "PERFORMANCE" | "LAYOUT" | "APPEARANCE" | "ACCESSIBILITY" | "OTHER" | "SAVES";
     type OptionName = string;
@@ -82,6 +105,7 @@ declare global {
         | "hidden"
         | "machines"
         | "magical"
+        | "places"
         | "processed"
         | "scientific"
         | "special"
@@ -598,30 +622,6 @@ declare global {
         showPercentages: InternalOption<"absolute" | "percentage">;
     };
 
-    type SpritesModule = Record<
-        SpriteName,
-        {
-            frame: {
-                x: number;
-                y: number;
-                w: number;
-                h: number;
-            };
-            rotated: boolean;
-            trimmed: boolean;
-            spriteSourceSize: {
-                x: number;
-                y: number;
-                w: number;
-                h: number;
-            };
-            sourceSize: {
-                w: number;
-                h: number;
-            };
-        }
-    >;
-
     type Save = Record<string, unknown>;
     type MigrationFunction = (save: Save) => Save;
     type SaveModule = {
@@ -1001,11 +1001,21 @@ declare global {
         HomeActions: Partial<Record<WorldName, HomeActionTableOverrides>>;
         HomeMessageSprites: Record<string, HomeMessageSprite>;
         HomeMessages: { messages: Record<WorldName, HomeMessage[]> };
-        InternalCategories: Record<ResourceName, { name: string; resources: ResourceName[] }>;
+        InternalCategories: Record<InternalCategoryName, { name?: string; resources: ResourceName[] }>;
         ModifierTypes: Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, Modifier>>>;
         Panes: Record<string, string[]>;
         ResourceCategories: Record<ResourceCategory, { name: string; disposeMessage: string[]; resources: ResourceName[] }>;
-        Sprites: SpritesModule;
+        Sprites: Record<
+            SpriteName,
+            {
+                frame: {
+                    x: number;
+                    y: number;
+                    w: number;
+                    h: number;
+                };
+            }
+        >;
         Upgrades: Record<WorldName, UpgradeTable>;
         WorldTypes: Record<WorldName, World>;
     };
