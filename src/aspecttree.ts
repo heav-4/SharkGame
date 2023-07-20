@@ -121,11 +121,11 @@ SharkGame.AspectTree = {
     init() {
         $.each(SharkGame.Aspects, (aspectId, aspectData) => {
             _.each(aspectData.prerequisites, (prerequisite) => {
-                if (!_.has(aspectData, "requiredBy")) {
+                if (!sharkmisc.has(aspectData, "requiredBy")) {
                     aspectData.requiredBy = [];
                 }
-                if (!_.has(SharkGame.Aspects, prerequisite)) return;
-                if (!_.has(SharkGame.Aspects[prerequisite], "requiredBy")) {
+                if (!sharkmisc.has(SharkGame.Aspects, prerequisite)) return;
+                if (!sharkmisc.has(SharkGame.Aspects[prerequisite], "requiredBy")) {
                     SharkGame.Aspects[prerequisite].requiredBy = [];
                 }
                 SharkGame.Aspects[prerequisite].requiredBy.push(aspectId);

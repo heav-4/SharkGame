@@ -2,6 +2,7 @@
 img/zips
 js
 !js/lib
+css
 
 # yarn
 node_modules/

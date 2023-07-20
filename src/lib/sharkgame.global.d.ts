@@ -631,6 +631,7 @@ declare global {
          * I don't understand it intuitively enough to really check for it.
          */
         cloneDeep<T>(obj: T): T;
+        has: typeof Object.prototype.hasOwnProperty.call;
     };
 
     type MemoryModule = {

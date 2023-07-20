@@ -2,7 +2,7 @@
 window.SharkGame = window.SharkGame || {};
 
 window.onmousemove = (event) => {
-    SharkGame.lastActivity = _.now();
+    SharkGame.lastActivity = Date.now();
 
     const tooltip = document.getElementById("tooltipbox");
     const posX = event.clientX;
@@ -18,7 +18,7 @@ window.onmousemove = (event) => {
 };
 
 $(document).on("keyup", (event) => {
-    SharkGame.lastActivity = _.now();
+    SharkGame.lastActivity = Date.now();
 
     const mkey = SharkGame.Keybinds.modifierKeys;
     if ((mkey.ShiftLeft || mkey.ShiftRight) && !event.shiftKey) {
@@ -38,7 +38,7 @@ $(document).on("keyup", (event) => {
 });
 
 $(document).on("keydown", (event) => {
-    SharkGame.lastActivity = _.now();
+    SharkGame.lastActivity = Date.now();
     if (SharkGame.Keybinds.handleKeyDown(event.code)) {
         event.preventDefault();
     }
@@ -115,9 +115,9 @@ $.extend(SharkGame, {
 
     INTERVAL: 1000 / 10, // 20 FPS // I'm pretty sure 1000 / 10 comes out to 10 FPS
     dt: 1 / 10,
-    before: _.now(),
-    lastMouseActivity: _.now(),
-    savedMouseActivity: _.now(),
+    before: Date.now(),
+    lastMouseActivity: Date.now(),
+    savedMouseActivity: Date.now(),
 
     timestampLastSave: false,
     timestampGameStart: false,
@@ -232,7 +232,7 @@ SharkGame.Main = {
     // reset all game variables to their defaults
     // leaves a blank slate
     wipeGame() {
-        const now = _.now();
+        const now = Date.now();
         SharkGame.before = now;
         SharkGame.timestampSimulated = now;
         SharkGame.lastActivity = now;
@@ -343,7 +343,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
     // interpret and use the data from the previous steps
     setUpGame() {
-        const now = _.now();
+        const now = Date.now();
         SharkGame.timestampLastSave = SharkGame.timestampLastSave || now;
         SharkGame.timestampGameStart = SharkGame.timestampGameStart || now;
         SharkGame.timestampRunStart = SharkGame.timestampRunStart || now;
@@ -520,19 +520,19 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 if (level) saveData.aspects[aspectId] = level;
             });
 
-            saveData.settings = _.cloneDeep(SharkGame.Settings.current);
+            saveData.settings = sharkmisc.cloneDeep(SharkGame.Settings.current);
 
-            saveData.completedWorlds = _.cloneDeep(SharkGame.Gateway.completedWorlds);
-            saveData.persistentFlags = _.cloneDeep(SharkGame.persistentFlags);
-            saveData.planetPool = _.cloneDeep(gateway.planetPool);
+            saveData.completedWorlds = sharkmisc.cloneDeep(SharkGame.Gateway.completedWorlds);
+            saveData.persistentFlags = sharkmisc.cloneDeep(SharkGame.persistentFlags);
+            saveData.planetPool = sharkmisc.cloneDeep(gateway.planetPool);
 
             // add timestamp
-            saveData.timestampLastSave = _.now();
+            saveData.timestampLastSave = Date.now();
             saveData.timestampGameStart = SharkGame.timestampGameStart;
-            saveData.timestampRunStart = _.now();
+            saveData.timestampRunStart = Date.now();
             saveData.timestampRunEnd = SharkGame.timestampRunEnd;
 
-            saveData.keybinds = _.cloneDeep(SharkGame.Keybinds.keybinds);
+            saveData.keybinds = sharkmisc.cloneDeep(SharkGame.Keybinds.keybinds);
 
             saveData.saveVersion = SharkGame.Save.saveUpdaters.length - 1;
             saveString = ascii85.encode(pako.deflate(JSON.stringify(saveData), { to: "string" }));
@@ -556,7 +556,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             return;
         }
 
-        const now = _.now();
+        const now = Date.now();
         const elapsedTime = now - SharkGame.before;
 
         if (cad.pause) {
@@ -644,7 +644,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
             SharkGame.EventHandler.handleEventTick("afterTick");
         } else {
-            SharkGame.lastActivity = _.now();
+            SharkGame.lastActivity = Date.now();
         }
 
         // see if resource table tooltip needs updating
@@ -687,7 +687,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             });
         }
         idleOverlay.removeClass("pointy").addClass("click-passthrough");
-        SharkGame.lastActivity = _.now();
+        SharkGame.lastActivity = Date.now();
         res.idleMultiplier = 1;
     },
 
@@ -841,7 +841,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
         // grab end game timestamp
         if (!loadingFromSave) {
-            SharkGame.timestampRunEnd = _.now();
+            SharkGame.timestampRunEnd = Date.now();
         }
 
         // kick over to passage
@@ -853,9 +853,9 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
     },
 
     resetTimers() {
-        SharkGame.timestampLastSave = _.now();
-        SharkGame.timestampGameStart = _.now();
-        SharkGame.timestampRunStart = _.now();
+        SharkGame.timestampLastSave = Date.now();
+        SharkGame.timestampGameStart = Date.now();
+        SharkGame.timestampRunStart = Date.now();
     },
 
     shouldShowTooltips() {

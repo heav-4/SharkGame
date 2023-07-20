@@ -75,7 +75,7 @@ SharkGame.Keybinds = {
     },
 
     resetKeybindsToDefault() {
-        this.keybinds = SharkGame.MiscUtil.cloneDeep(this.defaultBinds);
+        this.keybinds = sharkmisc.cloneDeep(this.defaultBinds);
     },
 
     compressKeyID(keyID) {

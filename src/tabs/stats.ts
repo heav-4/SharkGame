@@ -206,7 +206,7 @@ SharkGame.Stats = {
 
     updateTimers() {
         // update run times
-        const gameTime = sharktext.formatTime(_.now() - SharkGame.timestampGameStart);
+        const gameTime = sharktext.formatTime(Date.now() - SharkGame.timestampGameStart);
         if ($("#gameTime").html() !== gameTime) {
             $("#gameTime").html(gameTime);
         }

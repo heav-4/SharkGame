@@ -5,7 +5,7 @@ SharkGame.HomeActions = {
     getActionTable(worldType = world.worldType) {
         const realWorldType = typeof SharkGame.HomeActions[worldType] !== "object" || worldType === "generated" ? "default" : worldType;
 
-        if (!_.has(SharkGame.HomeActions.generated, realWorldType)) {
+        if (!sharkmisc.has(SharkGame.HomeActions.generated, realWorldType)) {
             SharkGame.HomeActions.generated[realWorldType] = SharkGame.HomeActions.generateActionTable(realWorldType);
         }
         return SharkGame.HomeActions.generated[realWorldType]!;
@@ -13,7 +13,7 @@ SharkGame.HomeActions = {
 
     getActionData(table, actionName) {
         // probably find a way to forego the clonedeep here, but the performance impact seems negligible.
-        const data = _.cloneDeep(table[actionName]);
+        const data = sharkmisc.cloneDeep(table[actionName]);
 
         if (data) {
             if (cad.actionPriceModifier !== 1) {
@@ -33,18 +33,18 @@ SharkGame.HomeActions = {
     },
 
     generateActionTable(worldType = world.worldType) {
-        const defaultActions = SharkGame.MiscUtil.cloneDeep(SharkGame.HomeActions.default);
+        const defaultActions = sharkmisc.cloneDeep(SharkGame.HomeActions.default);
 
-        if (!_.has(SharkGame.HomeActions, worldType)) {
+        if (!sharkmisc.has(SharkGame.HomeActions, worldType)) {
             return defaultActions;
         }
 
-        const worldActions = SharkGame.MiscUtil.cloneDeep(SharkGame.HomeActions[worldType] as HomeActionTableOverrides);
+        const worldActions = sharkmisc.cloneDeep(SharkGame.HomeActions[worldType] as HomeActionTableOverrides);
         const finalTable: typeof worldActions = {};
 
-        // _.has
+        // sharkmisc.has
         _.each(Object.keys(worldActions), (actionName) => {
-            if (!_.has(defaultActions, actionName)) {
+            if (!sharkmisc.has(defaultActions, actionName)) {
                 finalTable[actionName] = worldActions[actionName];
             } else {
                 finalTable[actionName] = {};
@@ -54,7 +54,7 @@ SharkGame.HomeActions = {
                 const defaultPropertiesToDefine = _.pickBy(
                     Object.getOwnPropertyDescriptors(defaultActions[actionName]),
                     (_propertyDescriptor, propertyName) => {
-                        return !_.has(finalTable, [actionName, propertyName]);
+                        return !sharkmisc.has(finalTable, [actionName, propertyName]);
                     }
                 );
 

@@ -53,7 +53,7 @@ SharkGame.World = {
                 worldResources.get(resourceName).exists = false;
             });
             _.each(worldInfo.includedResources, (group) => {
-                if (_.has(SharkGame.InternalCategories, group)) {
+                if (sharkmisc.has(SharkGame.InternalCategories, group)) {
                     _.each(SharkGame.InternalCategories[group].resources, (resource) => {
                         worldResources.get(resource).exists = true;
                     });

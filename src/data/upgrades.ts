@@ -9,7 +9,7 @@ SharkGame.Upgrades = {
             // We don't want to generate the same upgrade table multiple times for no reason.
             worldType = "default";
         }
-        if (!_.has(SharkGame.Upgrades.generated, worldType)) {
+        if (!sharkmisc.has(SharkGame.Upgrades.generated, worldType)) {
             return (SharkGame.Upgrades.generated[worldType] = SharkGame.Upgrades.generateUpgradeTable(worldType));
         }
         return SharkGame.Upgrades.generated[worldType];
@@ -21,7 +21,7 @@ SharkGame.Upgrades = {
         }
 
         // probably find a way to forego the clonedeep here, but the performance impact seems negligible.
-        const data = _.cloneDeep(table[upgradeName]);
+        const data = sharkmisc.cloneDeep(table[upgradeName]);
 
         // apply effect of internal calculator aspect if indeed applicable
         // would use getters but there would be too many getters to be reasonable
@@ -57,9 +57,9 @@ SharkGame.Upgrades = {
     generateUpgradeTable(worldType = world.worldType) {
         /** @type {UpgradeTable} */
         let finalTable = {};
-        const defaultUpgrades = SharkGame.MiscUtil.cloneDeep(SharkGame.Upgrades.default);
-        if (_.has(SharkGame.Upgrades, worldType)) {
-            const worldUpgrades = SharkGame.MiscUtil.cloneDeep(SharkGame.Upgrades[worldType]);
+        const defaultUpgrades = sharkmisc.cloneDeep(SharkGame.Upgrades.default);
+        if (sharkmisc.has(SharkGame.Upgrades, worldType)) {
+            const worldUpgrades = sharkmisc.cloneDeep(SharkGame.Upgrades[worldType]);
             _.each(Reflect.ownKeys(worldUpgrades), (upgradeName) => {
                 if (defaultUpgrades[upgradeName]) {
                     finalTable[upgradeName] = {};
