@@ -654,6 +654,10 @@ pre {
                 }
             }
         }
+
+        #tab-lab.newResearch::before {
+            content: "(!) ";
+        }
     }
 }
 

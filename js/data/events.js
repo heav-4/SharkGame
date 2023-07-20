@@ -340,11 +340,7 @@ SharkGame.Events = {
             return "pass";
         },
         trigger() {
-            if (SharkGame.Lab.findAllAffordableUpgrades().length) {
-                $("#tab-lab").html("(<strong>!</strong>) Laboratory");
-            } else {
-                $("#tab-lab").html("Laboratory");
-            }
+            $("#tab-lab").toggleClass("newResearch", SharkGame.Lab.findAllAffordableUpgrades().length !== 0);
             return true;
         },
     },

@@ -472,6 +472,9 @@ pre {
   color: #d2f0e6;
   text-shadow: 0 0 0.8em #86d6bc;
 }
+#contentMenu #tabList #tab-lab.newResearch::before {
+  content: "(!) ";
+}
 
 #buyButtons {
   padding-left: 0px;
