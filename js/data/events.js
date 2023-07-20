@@ -116,7 +116,7 @@ SharkGame.Events = {
             return "pass";
         },
         trigger() {
-            res.changeResource(`sponge`, 1); // sponge should never ever go below one once you have access to farms
+            res.changeResource("sponge", 1); // sponge should never ever go below one once you have access to farms
             return true;
         },
     },
@@ -133,21 +133,21 @@ SharkGame.Events = {
             return "pass";
         },
         trigger() {
-            const underfeeding = SharkGame.ResourceMap.get(`specialResourceOne`);
+            const underfeeding = SharkGame.ResourceMap.get("specialResourceOne");
             if (!underfeeding.baseIncome) {
                 underfeeding.baseIncome = { sponge: 0 };
                 underfeeding.income = { sponge: 0 };
             }
-
-            const sponge = res.getResource(`sponge`);
-            const algae = res.getResource(`algae`);
-            const limitRatio = SharkGame.Upgrades.purchased.includes(`feedingTechniques`) ? 4 : 1;
+            const sponge = res.getResource("sponge");
+            const algae = res.getResource("algae");
+            const limitRatio = SharkGame.Upgrades.purchased.includes("feedingTechniques") ? 4 : 1;
             if (sponge / algae > limitRatio) {
                 underfeeding.baseIncome.sponge = -(sponge - algae * limitRatio);
-            } else {
+            }
+            else {
                 underfeeding.baseIncome.sponge = 0;
             }
-            res.reapplyModifiers(`specialResourceOne`, `sponge`);
+            res.reapplyModifiers("specialResourceOne", "sponge");
             return true;
         },
     },
@@ -160,7 +160,8 @@ SharkGame.Events = {
         trigger() {
             if (SharkGame.flags.autoSmelt) {
                 SharkGame.flags.autoSmelt = false;
-            } else {
+            }
+            else {
                 SharkGame.flags.autoSmelt = true;
             }
         },
@@ -178,17 +179,15 @@ SharkGame.Events = {
             return "pass";
         },
         trigger() {
-            const sponge = res.getResource(`sponge`);
-            const sand = res.getResource(`sand`);
-            const vents = SharkGame.ResourceMap.get(`world`);
-
+            const sponge = res.getResource("sponge");
+            const sand = res.getResource("sand");
+            const vents = SharkGame.ResourceMap.get("world");
             vents.baseIncome.sponge = 0;
             vents.baseIncome.sand = 0;
             vents.baseIncome.porite = 0;
-
             if (SharkGame.flags.autoSmelt) {
-                const spongeCost = SharkGame.HomeActions.volcanic.smeltPorite.cost[0].priceIncrease;
-                const sandCost = SharkGame.HomeActions.volcanic.smeltPorite.cost[1].priceIncrease;
+                const spongeCost = SharkGame.HomeActions.getActionTable("volcanic").smeltPorite.cost[0].priceIncrease;
+                const sandCost = SharkGame.HomeActions.getActionTable("volcanic").smeltPorite.cost[1].priceIncrease;
                 const maxSpongeCycles = sponge / spongeCost;
                 const maxSandCycles = sand / sandCost;
                 if (maxSpongeCycles >= 1 && maxSandCycles >= 1) {
@@ -198,9 +197,9 @@ SharkGame.Events = {
                     vents.baseIncome.porite = max / 2;
                 }
             }
-            res.reapplyModifiers(`world`, `sponge`);
-            res.reapplyModifiers(`world`, `sand`);
-            res.reapplyModifiers(`world`, `porite`);
+            res.reapplyModifiers("world", "sponge");
+            res.reapplyModifiers("world", "sand");
+            res.reapplyModifiers("world", "porite");
             return true;
         },
     },
@@ -275,11 +274,9 @@ SharkGame.Events = {
             return "remove";
         },
         trigger() {
-            if (!SharkGame.flags.prySpongeGained) SharkGame.flags.prySpongeGained = 0;
-            SharkGame.flags.prySpongeGained += SharkGame.HomeActions.getActionData(
-                SharkGame.HomeActions.getActionTable(),
-                "prySponge"
-            ).effect.resource.sponge;
+            if (!SharkGame.flags.prySpongeGained)
+                SharkGame.flags.prySpongeGained = 0;
+            SharkGame.flags.prySpongeGained += SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), "prySponge").effect.resource.sponge;
         },
     },
     volcanicBoughtFarm: {
@@ -289,7 +286,7 @@ SharkGame.Events = {
             return "remove";
         },
         trigger() {
-            if (SharkGame.flags.prySpongeGained < 200) {
+            if (SharkGame.flags.prySpongeGained !== undefined && SharkGame.flags.prySpongeGained < 200) {
                 SharkGame.flags.gotFarmsBeforeShrimpThreat = true;
             }
         },
@@ -315,7 +312,7 @@ SharkGame.Events = {
         handlingTime: "beforeTick",
         priority: 0,
         getAction() {
-            if (world.worldType === `start` && !SharkGame.persistentFlags.revealedButtonTabs) {
+            if (world.worldType === "start" && !SharkGame.persistentFlags.revealedButtonTabs) {
                 if (res.getTotalResource("scientist") > 0) {
                     return "trigger";
                 }
@@ -359,7 +356,8 @@ SharkGame.Events = {
         trigger() {
             if (sharkmath.getBuyAmount() === 1 && SharkGame.Tabs.current === "home") {
                 $("#buy--1").addClass("reminderShadow");
-            } else {
+            }
+            else {
                 $("#buy--1").removeClass("reminderShadow");
                 SharkGame.persistentFlags.individuallyBoughtSharkonium = 49;
             }
@@ -375,7 +373,8 @@ SharkGame.Events = {
         trigger() {
             if (world.worldType === "volcanic") {
                 res.reapplyModifiers("aspectAffect", "coral");
-            } else {
+            }
+            else {
                 res.reapplyModifiers("aspectAffect", "crystal");
             }
             return true;
@@ -415,7 +414,6 @@ SharkGame.Events = {
                     crab: -0.02,
                 };
             }
-
             const storm = SharkGame.ResourceMap.get("world");
             const predictedTimeUntilNextTick = res.getGameSpeedModifier();
             if (!storm.baseIncome) {
@@ -480,7 +478,8 @@ SharkGame.Events = {
         getAction() {
             if (SharkGame.World.worldType !== "tempestuous") {
                 return "remove";
-            } else if (SharkGame.flags.gaveSeagrass && res.getResource("seagrass") < 10 && res.getResource("stormgoer") < 1) {
+            }
+            else if (SharkGame.flags.gaveSeagrass && res.getResource("seagrass") < 10 && res.getResource("stormgoer") < 1) {
                 return "trigger";
             }
             return "pass";
@@ -495,7 +494,8 @@ SharkGame.Events = {
         getAction() {
             if (SharkGame.World.worldType !== "tempestuous") {
                 return "remove";
-            } else if (SharkGame.Upgrades.purchased.includes("cartographicCompleteness")) {
+            }
+            else if (SharkGame.Upgrades.purchased.includes("cartographicCompleteness")) {
                 return "trigger";
             }
             return "pass";
@@ -507,16 +507,12 @@ SharkGame.Events = {
             SharkGame.Lab.addUpgrade("senseOfDirection");
             SharkGame.Lab.addUpgrade("routing");
             SharkGame.Lab.addUpgrade("universalNavigation");
-
             _.each(res.tokens.list, (token) => {
-                if (
-                    SharkGame.flags.tokens[token.attr("id")].includes("chart") ||
-                    SharkGame.flags.tokens[token.attr("id")].includes("billfishExplorer")
-                )
+                if (SharkGame.flags.tokens &&
+                    (SharkGame.flags.tokens[token.attr("id")].includes("chart") ||
+                        SharkGame.flags.tokens[token.attr("id")].includes("billfishExplorer")))
                     res.tokens.tryReturnToken(null, false, token);
             });
-            SharkGame.flags.mapSequenceCompleted = true;
-
             res.setResource("chart", 0);
             res.setTotalResource("chart", 0);
             res.setResource("billfishExplorer", 0);
@@ -540,3 +536,4 @@ SharkGame.Events = {
         },
     },
 };
+//# sourceMappingURL=events.js.map

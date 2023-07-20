@@ -1,0 +1,34 @@
+name: Build Project and push JavaScript to dedicated branch
+on:
+    push:
+        branches:
+            # Replace this with `dev` if and when it gets merged
+            - typescript
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Install dependencies
+              # Ignore postinstall because we don't need to run test in this build
+              run: yarn --ignore-scripts
+            - name: Build project
+              # `exit 0` temporarily so it ignores all the many many many build errors
+              run: yarn build || exit 0
+            - name: Make sure we don't push source files
+              run: |
+                  sed -i 's/^js//' .gitignore
+                  rm -rf src
+                  rm -rf styles
+            - name: Switch to JavaScript branch
+              run: |
+                  git fetch
+                  git reset --soft origin/javascript
+                  git switch javascript
+            - name: Commit all changes
+              run: |
+                  git config --local user.email "action@github.com"
+                  git config --local user.name "GitHub Actions"
+                  git add .
+                  git commit -m "Automatic build of commit \`$GITHUB_SHA\`" -a
+                  git push

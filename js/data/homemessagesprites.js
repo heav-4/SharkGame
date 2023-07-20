@@ -1,3 +1,4 @@
+"use strict";
 SharkGame.HomeMessageSprites = {
     "home/abandoned-default": {
         frame: {
@@ -616,3 +617,4 @@ SharkGame.HomeMessageSprites = {
         },
     },
 };
+//# sourceMappingURL=homemessagesprites.js.map

@@ -1,25 +1,20 @@
 "use strict";
 SharkGame.Settings = {
     current: {},
-
     // Internal / No category
     buyAmount: {
         defaultSetting: 1,
         options: [1, 10, 100, -3, -2, -1, "custom"],
     },
-
     grottoMode: {
         defaultSetting: "simple",
         options: ["simple", "advanced"],
     },
-
     showPercentages: {
         defaultSetting: "absolute",
         options: ["absolute", "percentage"],
     },
-
     // PERFORMANCE
-
     framerate: {
         defaultSetting: 20,
         name: "Framerate/TPS",
@@ -30,7 +25,6 @@ SharkGame.Settings = {
             main.applyFramerate();
         },
     },
-
     showAnimations: {
         defaultSetting: true,
         name: "Show Animations",
@@ -38,9 +32,7 @@ SharkGame.Settings = {
         category: "PERFORMANCE",
         options: [true, false], // might remove this option? could be a pain to continue supporting it
     },
-
     // LAYOUT
-
     minimizedTopbar: {
         defaultSetting: true,
         name: "Minimized Title Bar",
@@ -51,7 +43,6 @@ SharkGame.Settings = {
             SharkGame.TitleBarHandler.updateTopBar();
         },
     },
-
     logLocation: {
         defaultSetting: "right",
         name: "Log Location",
@@ -62,7 +53,6 @@ SharkGame.Settings = {
             log.moveLog();
         },
     },
-
     groupResources: {
         defaultSetting: true,
         name: "Group Resources",
@@ -73,7 +63,6 @@ SharkGame.Settings = {
             res.rebuildTable = true;
         },
     },
-
     smallTable: {
         defaultSetting: false,
         name: "Smaller Table",
@@ -84,7 +73,6 @@ SharkGame.Settings = {
             res.rebuildTable = true;
         },
     },
-
     logMessageMax: {
         defaultSetting: 30,
         name: "Max Log Messages",
@@ -95,7 +83,6 @@ SharkGame.Settings = {
             log.correctLogLength();
         },
     },
-
     sidebarWidth: {
         defaultSetting: "30%",
         name: "Sidebar Width",
@@ -106,14 +93,13 @@ SharkGame.Settings = {
             const sidebar = $("#sidebar");
             if (SharkGame.Settings.current.showAnimations) {
                 sidebar.animate({ width: SharkGame.Settings.current.sidebarWidth }, 100);
-            } else {
+            }
+            else {
                 sidebar.width(SharkGame.Settings.current.sidebarWidth);
             }
         },
     },
-
     // APPEARANCE
-
     notation: {
         defaultSetting: "default",
         name: "Number Notation",
@@ -125,7 +111,6 @@ SharkGame.Settings = {
             stats.recreateIncomeTable = true;
         },
     },
-
     colorCosts: {
         defaultSetting: "color",
         name: "Color Resource Names",
@@ -137,7 +122,6 @@ SharkGame.Settings = {
             stats.recreateIncomeTable = true;
         },
     },
-
     boldCosts: {
         defaultSetting: true,
         name: "Bold Resource Names",
@@ -149,7 +133,6 @@ SharkGame.Settings = {
             stats.recreateIncomeTable = true;
         },
     },
-
     alwaysSingularTooltip: {
         defaultSetting: false,
         name: "Tooltip Always Singular",
@@ -157,7 +140,6 @@ SharkGame.Settings = {
         category: "APPEARANCE",
         options: [true, false],
     },
-
     tooltipQuantityReminders: {
         defaultSetting: true,
         name: "Tooltip Amount Reminder",
@@ -165,7 +147,6 @@ SharkGame.Settings = {
         category: "APPEARANCE",
         options: [true, false],
     },
-
     enableThemes: {
         defaultSetting: true,
         name: "Enable Planet-dependent Styles",
@@ -175,12 +156,12 @@ SharkGame.Settings = {
         onChange() {
             if (SharkGame.Settings.current.enableThemes) {
                 document.querySelector("body").classList.remove("no-theme");
-            } else {
+            }
+            else {
                 document.querySelector("body").classList.add("no-theme");
             }
         },
     },
-
     showIcons: {
         defaultSetting: true,
         name: "Show Action Button icons",
@@ -188,7 +169,6 @@ SharkGame.Settings = {
         category: "APPEARANCE",
         options: [true, false],
     },
-
     showTabImages: {
         defaultSetting: true,
         name: "Show Tab Header Images",
@@ -199,9 +179,7 @@ SharkGame.Settings = {
             SharkGame.TabHandler.changeTab(SharkGame.Tabs.current);
         },
     },
-
     // ACCESSIBILITY
-
     doAspectTable: {
         defaultSetting: "tree",
         name: "Aspect Table or Tree",
@@ -209,7 +187,6 @@ SharkGame.Settings = {
         category: "ACCESSIBILITY",
         options: ["tree", "table"],
     },
-
     verboseTokenDescriptions: {
         defaultSetting: false,
         name: "Verbose Token",
@@ -220,7 +197,6 @@ SharkGame.Settings = {
             res.tokens.updateTokenDescriptions();
         },
     },
-
     minuteHandEffects: {
         defaultSetting: true,
         name: "Minute Hand Special Effects",
@@ -231,9 +207,7 @@ SharkGame.Settings = {
             res.minuteHand.updatePowers();
         },
     },
-
     // OTHER
-
     idleEnabled: {
         defaultSetting: true,
         name: "Stored Offline Progress",
@@ -244,7 +218,6 @@ SharkGame.Settings = {
             res.minuteHand.setup();
         },
     },
-
     showTooltips: {
         defaultSetting: true,
         name: "Tooltips",
@@ -252,7 +225,6 @@ SharkGame.Settings = {
         category: "OTHER",
         options: [true, false],
     },
-
     updateCheck: {
         defaultSetting: true,
         name: "Check for updates",
@@ -266,7 +238,6 @@ SharkGame.Settings = {
             }
         },
     },
-
     truePause: {
         defaultSetting: false,
         name: "True Pause",
@@ -274,7 +245,6 @@ SharkGame.Settings = {
         category: "OTHER",
         options: [true, false],
     },
-
     offlineModeActive: {
         defaultSetting: true,
         name: "Offline Progress",
@@ -282,9 +252,7 @@ SharkGame.Settings = {
         category: "OTHER",
         options: [true, false],
     },
-
     // SAVES (Needs to come last due to hard-coded import/export/wipe buttons at the bottom)
-
     autosaveFrequency: {
         // times given in minutes
         defaultSetting: 5,
@@ -295,13 +263,12 @@ SharkGame.Settings = {
         onChange() {
             clearInterval(main.autosaveHandler);
             main.autosaveHandler = setInterval(main.autosave, SharkGame.Settings.current.autosaveFrequency * 60000);
-            log.addMessage(
-                "Now autosaving every " +
-                    SharkGame.Settings.current.autosaveFrequency +
-                    " minute" +
-                    sharktext.plural(SharkGame.Settings.current.autosaveFrequency) +
-                    "."
-            );
+            log.addMessage("Now autosaving every " +
+                SharkGame.Settings.current.autosaveFrequency +
+                " minute" +
+                sharktext.plural(SharkGame.Settings.current.autosaveFrequency) +
+                ".");
         },
     },
 };
+//# sourceMappingURL=settings.js.map

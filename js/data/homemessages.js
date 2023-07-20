@@ -1,3 +1,4 @@
+"use strict";
 SharkGame.HomeMessages = {
     // Priority: later messages display if available, otherwise earlier ones.
     messages: {
@@ -78,7 +79,6 @@ SharkGame.HomeMessages = {
                 message: "The gate beckons. The secret must be unlocked.",
             },
         ],
-
         // LATER RUNS
         marine: [
             {
@@ -103,8 +103,7 @@ SharkGame.HomeMessages = {
             {
                 name: "marine-lobsters-talk",
                 unlock: { totalResource: { lobster: 125 } },
-                message:
-                    "The lobsters tell tales of grandiose adventures and vast riches from a time long past. They ask themselves why they ever abandoned that life.",
+                message: "The lobsters tell tales of grandiose adventures and vast riches from a time long past. They ask themselves why they ever abandoned that life.",
             },
             {
                 name: "marine-calcinium",
@@ -120,8 +119,7 @@ SharkGame.HomeMessages = {
                 // do color transition 1 here
                 name: "marine-bioengineering",
                 unlock: { upgrade: ["bioengineering"] },
-                message:
-                    "Stone-to-brain interface. Shelbernetic enhancements. Population automation. The lobsters say that calcinium is an extension of life itself.",
+                message: "Stone-to-brain interface. Shelbernetic enhancements. Population automation. The lobsters say that calcinium is an extension of life itself.",
             },
             {
                 // second color transition
@@ -138,7 +136,6 @@ SharkGame.HomeMessages = {
                 message: "Murk spills out of the frenzy. A rancid fog begins to descend. This dying world drags everyone down with it.",
             },
         ],
-
         haven: [
             {
                 name: "haven-default",
@@ -148,20 +145,16 @@ SharkGame.HomeMessages = {
                 name: "haven-dolphin-observes",
                 unlock: { totalResource: { coral: 75 } },
                 message: "A... thing observes us from afar. What the heck is that??",
-                scales: true,
             },
             {
                 name: "haven-dolphins",
                 unlock: { totalResource: { dolphin: 1 }, homeAction: ["getDolphin"] },
-                message:
-                    "A dolphin joins the frenzy. We told it to go get fish, but it came back with coral. It insists that the coral is more valuable.",
+                message: "A dolphin joins the frenzy. We told it to go get fish, but it came back with coral. It insists that the coral is more valuable.",
             },
             {
                 name: "haven-dolphin-empire",
                 unlock: { totalResource: { dolphin: 20 } },
-                message:
-                    "The dolphin pods that work with us speak of a star-spanning empire of their kind. They ask where our empire is. And they smile.",
-                scales: true,
+                message: "The dolphin pods that work with us speak of a star-spanning empire of their kind. They ask where our empire is. And they smile.",
             },
             {
                 name: "haven-papyrus",
@@ -171,8 +164,7 @@ SharkGame.HomeMessages = {
             {
                 name: "haven-stories",
                 unlock: { upgrade: ["delphineHistory"] },
-                message:
-                    "The dolphin's self-indulgent tales make frequent references to a mystical gate. And, they don't know where it is. Of course they don't.",
+                message: "The dolphin's self-indulgent tales make frequent references to a mystical gate. And, they don't know where it is. Of course they don't.",
             },
             {
                 name: "haven-whales",
@@ -182,8 +174,7 @@ SharkGame.HomeMessages = {
             {
                 name: "haven-history",
                 unlock: { upgrade: ["retroactiveRecordkeeping"] },
-                message:
-                    "The grand sum of all dolphin knowledge is laid out before us,<br/>and it is pitifully small. The original collections have been lost to time.",
+                message: "The grand sum of all dolphin knowledge is laid out before us,<br/>and it is pitifully small. The original collections have been lost to time.",
             },
             {
                 name: "haven-song",
@@ -196,7 +187,6 @@ SharkGame.HomeMessages = {
                 message: "The great song booms across the open water, carrying itself to all corners of the ocean.<br/>The gate reacts.",
             },
         ],
-
         tempestuous: [
             {
                 name: "tempestuous-default",
@@ -220,14 +210,12 @@ SharkGame.HomeMessages = {
             {
                 name: "tempestuous-sandbags",
                 unlock: { resource: { stormgoer: 10 } },
-                message:
-                    "Stormgoers tredge slowly across the seabed. They dig through the sand extracting buried seagrass, but are too heavy to bring back crystals.",
+                message: "Stormgoers tredge slowly across the seabed. They dig through the sand extracting buried seagrass, but are too heavy to bring back crystals.",
             },
             {
                 name: "tempestuous-stories",
                 unlock: { upgrade: ["billfishBiology"] },
-                message:
-                    "The billfish tell stories of life before the storm and an ancient visitor who brought them prosperity. They ask if you can bring them prosperity, too.",
+                message: "The billfish tell stories of life before the storm and an ancient visitor who brought them prosperity. They ask if you can bring them prosperity, too.",
             },
             /*
                 name: "tempestuous-special",
@@ -242,8 +230,7 @@ SharkGame.HomeMessages = {
             {
                 name: "tempestuous-expeditions",
                 unlock: { upgrade: ["routing"] },
-                message:
-                    "The billfish line up in droves to volunteer for expeditions, danger or otherwise. They don't need convincing, just equipment.",
+                message: "The billfish line up in droves to volunteer for expeditions, danger or otherwise. They don't need convincing, just equipment.",
             },
             {
                 name: "tempestuous-map",
@@ -258,8 +245,7 @@ SharkGame.HomeMessages = {
             {
                 name: "tempestuous-generator",
                 unlock: { upgrade: ["internalExploration"] },
-                message:
-                    "The generator is completely disabled, yet the facility is still running. The wind howls outside as mechanics tinker excitedly with our machines.",
+                message: "The generator is completely disabled, yet the facility is still running. The wind howls outside as mechanics tinker excitedly with our machines.",
             },
             {
                 name: "tempestuous-legends",
@@ -267,7 +253,6 @@ SharkGame.HomeMessages = {
                 message: "As the storm draws its final breath, you overhear two billfish talking. One asks the other why the visitor never returned.",
             },
         ],
-
         volcanic: [
             {
                 name: "volcanic-default",
@@ -276,16 +261,18 @@ SharkGame.HomeMessages = {
             {
                 name: "volcanic-shrimp-contact",
                 unlock: { totalResource: { sponge: 1 } },
-                message: `You are approached by a single shrimp. They relay a message to you: stop harvesting sponges, or face the wrath of the king of shrimps.`,
+                message: "You are approached by a single shrimp. They relay a message to you: stop harvesting sponges, or face the wrath of the king of shrimps.",
             },
             {
                 name: "volcanic-shrimp-threat",
                 unlock: {
                     custom() {
-                        return SharkGame.flags.prySpongeGained > 200 && !SharkGame.flags.gotFarmsBeforeShrimpThreat;
+                        return (SharkGame.flags.prySpongeGained !== undefined &&
+                            SharkGame.flags.prySpongeGained > 200 &&
+                            !SharkGame.flags.gotFarmsBeforeShrimpThreat);
                     },
                 },
-                message: `You are approached by an army of shrimp. They relay a very clear message to you: cooperate, or be destroyed. You decide to stop harvesting sponges.`,
+                message: "You are approached by an army of shrimp. They relay a very clear message to you: cooperate, or be destroyed. You decide to stop harvesting sponges.",
             },
             {
                 name: "volcanic-shrimp-communication",
@@ -300,8 +287,7 @@ SharkGame.HomeMessages = {
             {
                 name: "volcanic-shrimps",
                 unlock: { upgrade: ["sustainableSolutions"] },
-                message:
-                    "The shrimp speak of an ancient visitor who violated their world, and how they wish to restore it. They work hard for their future.",
+                message: "The shrimp speak of an ancient visitor who violated their world, and how they wish to restore it. They work hard for their future.",
             },
             {
                 name: "volcanic-smithing",
@@ -327,10 +313,9 @@ SharkGame.HomeMessages = {
             {
                 name: "volcanic-hope",
                 unlock: { upgrade: ["apologeticAmnesty"] },
-                message: `"Perhaps not all sharks are so vile," says the king of shrimps. "Perhaps, you will be different."`,
+                message: '"Perhaps not all sharks are so vile," says the king of shrimps. "Perhaps, you will be different."',
             },
         ],
-
         abandoned: [
             {
                 name: "abandoned-default",
@@ -354,8 +339,7 @@ SharkGame.HomeMessages = {
             {
                 name: "abandoned-production",
                 unlock: { upgrade: ["octopusMethodology"] },
-                message:
-                    "The octopuses speak of production and correct action. They speak of unity through efficiency. They regard us with cold, neutral eyes.",
+                message: "The octopuses speak of production and correct action. They speak of unity through efficiency. They regard us with cold, neutral eyes.",
             },
             {
                 name: "abandoned-spronge",
@@ -370,14 +354,12 @@ SharkGame.HomeMessages = {
             {
                 name: "abandoned-gate",
                 unlock: { upgrade: ["farAbandonedExploration"] },
-                message:
-                    "This gate stands inert and lifeless like the city around it. The slots are already filled, but it looks like it's turned off.",
+                message: "This gate stands inert and lifeless like the city around it. The slots are already filled, but it looks like it's turned off.",
             },
             {
                 name: "abandoned-reverse-engineering",
                 unlock: { upgrade: ["reverseEngineering"] },
-                message:
-                    "The components spin and whirr and click together, but their purpose eludes us. What secrets are you hiding in your mechanisms?",
+                message: "The components spin and whirr and click together, but their purpose eludes us. What secrets are you hiding in your mechanisms?",
             },
             {
                 name: "abandoned-high-energy-fusion",
@@ -402,7 +384,6 @@ SharkGame.HomeMessages = {
                 transient: true,
             },
         ],
-
         shrouded: [
             {
                 name: "shrouded-default",
@@ -426,8 +407,7 @@ SharkGame.HomeMessages = {
             {
                 name: "shrouded-chimaeras",
                 unlock: { totalResource: { chimaera: 1 } },
-                message:
-                    "The chimaeras imply they are ancient kin of the shark kind, reunited through wild coincidence. We don't understand, but they seem to think we do.",
+                message: "The chimaeras imply they are ancient kin of the shark kind, reunited through wild coincidence. We don't understand, but they seem to think we do.",
             },
             {
                 name: "shrouded-arcana",
@@ -437,8 +417,7 @@ SharkGame.HomeMessages = {
             {
                 name: "shrouded-power",
                 unlock: { totalResource: { sacrifice: 100 } },
-                message:
-                    "Every broken shard disintegrates in a blinding flash of light. That familiar feeling washes over you with every sacrifice. The sharp snap of broken arcana echoes in your mind.",
+                message: "Every broken shard disintegrates in a blinding flash of light. That familiar feeling washes over you with every sacrifice. The sharp snap of broken arcana echoes in your mind.",
             },
             {
                 name: "shrouded-city",
@@ -448,11 +427,9 @@ SharkGame.HomeMessages = {
             {
                 name: "shrouded-truth",
                 unlock: { totalResource: { sacrifice: 9000000000000000 } },
-                message:
-                    "A team of eels get your attention. They have something from the caverns: it's a disaster report, alongside mentions of a set of giant arcane batteries.",
+                message: "A team of eels get your attention. They have something from the caverns: it's a disaster report, alongside mentions of a set of giant arcane batteries.",
             },
         ],
-
         frigid: [
             {
                 name: "frigid-default",
@@ -472,19 +449,16 @@ SharkGame.HomeMessages = {
                 name: "frigid-distant-village",
                 unlock: { totalResource: { science: 8 } },
                 message: "While scanning the horizon, you notice a gap in the ice. You peer through it, and spot something else.",
-                scales: true,
             },
             {
                 name: "frigid-village",
                 unlock: { upgrade: ["civilContact"] },
-                message:
-                    "A small village of squid greets you respectfully. The water in this place is a little warmer, and you hear a quiet, ambient hum.",
+                message: "A small village of squid greets you respectfully. The water in this place is a little warmer, and you hear a quiet, ambient hum.",
             },
             {
                 name: "frigid-urchins",
                 unlock: { totalResource: { urchin: 2 } },
-                message:
-                    "The urchins scuttle along the ground and hop about, gathering kelp and placing it into a large, central pile. They know nothing but the kelp.",
+                message: "The urchins scuttle along the ground and hop about, gathering kelp and placing it into a large, central pile. They know nothing but the kelp.",
             },
             {
                 name: "frigid-teamwork",
@@ -494,15 +468,12 @@ SharkGame.HomeMessages = {
             {
                 name: "frigid-machine",
                 unlock: { totalResource: { squid: 125 } },
-                message:
-                    "In the center of the settlement lies a vibrating...thing, and a strange gate. The thing buzzes loudly, casting enormous energy across the water.",
-                scales: true,
+                message: "In the center of the settlement lies a vibrating...thing, and a strange gate. The thing buzzes loudly, casting enormous energy across the water.",
             },
             {
                 name: "frigid-squid",
                 unlock: { totalResource: { squid: 250 } },
                 message: "The squid speak of an ancient visitor who saved their world. They ask if you too, have seen this visitor.",
-                scales: true,
             },
             {
                 name: "frigid-suspicion",
@@ -512,8 +483,7 @@ SharkGame.HomeMessages = {
             {
                 name: "frigid-battery",
                 unlock: { upgrade: ["internalInquiry"] },
-                message:
-                    "Buried deep within the complex lies a massive, dimly glowing battery. The squid say replacing it will get the machine running at full power.",
+                message: "Buried deep within the complex lies a massive, dimly glowing battery. The squid say replacing it will get the machine running at full power.",
             },
             {
                 name: "frigid-heat-returns",
@@ -521,11 +491,6 @@ SharkGame.HomeMessages = {
                 message: "A wave of heat washes over you, and the dingy complex comes back to life. The gate turns on.",
             },
         ],
-        /*
-        {
-            message:
-                "The jagged seafloor looks ancient, yet pristine.<br>Sponges thrive in great numbers on the rocks.",
-        },
-        */
     },
 };
+//# sourceMappingURL=homemessages.js.map

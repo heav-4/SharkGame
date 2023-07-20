@@ -5,15 +5,12 @@ SharkGame.CheatsAndDebug = {
     tabSeen: false,
     tabName: "Cheaty Powers",
     tabBg: "img/bg/bg-gate.png",
-
     sceneImage: "img/events/misc/scene-reflection.png",
-
     discoverReq: {
         flag: {
             debug: true,
         },
     },
-
     pause: false,
     stop: false,
     speed: 1,
@@ -22,7 +19,6 @@ SharkGame.CheatsAndDebug = {
     noNumberBeautifying: false,
     cycling: false,
     frozen: false,
-
     defaultParameters: {
         pause: false,
         stop: false,
@@ -33,7 +29,6 @@ SharkGame.CheatsAndDebug = {
         cycling: false,
         frozen: false,
     },
-
     cheatButtons: {
         giveEverything: {
             get name() {
@@ -59,12 +54,10 @@ SharkGame.CheatsAndDebug = {
         giveSomething: {
             get name() {
                 const resource = $("#somethingSelector")[0].value;
-                return (
-                    "Give " +
+                return ("Give " +
                     sharktext.beautify(sharkmath.getBuyAmount(true)) +
                     " " +
-                    sharktext.getResourceName(resource, false, sharkmath.getBuyAmount(true), sharkcolor.getVariableColor("--color-light"))
-                );
+                    sharktext.getResourceName(resource, false, sharkmath.getBuyAmount(true), sharkcolor.getVariableColor("--color-light")));
             },
             type: "choice",
             choiceId: "somethingSelector",
@@ -86,12 +79,10 @@ SharkGame.CheatsAndDebug = {
         removeSomething: {
             get name() {
                 const resource = $("#somethingSelector")[0].value;
-                return (
-                    "Remove " +
+                return ("Remove " +
                     sharktext.beautify(sharkmath.getBuyAmount(true)) +
                     " " +
-                    sharktext.getResourceName(resource, false, sharkmath.getBuyAmount(true), sharkcolor.getVariableColor("--color-light"))
-                );
+                    sharktext.getResourceName(resource, false, sharkmath.getBuyAmount(true), sharkcolor.getVariableColor("--color-light")));
             },
             updates: true,
             category: "stuff",
@@ -125,11 +116,13 @@ SharkGame.CheatsAndDebug = {
             category: "modifiers",
             clickUp() {
                 const msg = cad.goFasterPlease();
-                if (msg) log.addMessage(msg);
+                if (msg)
+                    log.addMessage(msg);
             },
             clickDown() {
                 const msg = cad.goSlowerPlease();
-                if (msg) log.addMessage(msg);
+                if (msg)
+                    log.addMessage(msg);
             },
         },
         changeUpgradePrices: {
@@ -138,11 +131,13 @@ SharkGame.CheatsAndDebug = {
             category: "modifiers",
             clickUp() {
                 const msg = cad.expensiveUpgradesPlease();
-                if (msg) log.addMessage(msg);
+                if (msg)
+                    log.addMessage(msg);
             },
             clickDown() {
                 const msg = cad.cheaperUpgradesPlease();
-                if (msg) log.addMessage(msg);
+                if (msg)
+                    log.addMessage(msg);
             },
         },
         changeStuffPrices: {
@@ -151,11 +146,13 @@ SharkGame.CheatsAndDebug = {
             category: "modifiers",
             clickUp() {
                 const msg = cad.expensiveStuffPlease();
-                if (msg) log.addMessage(msg);
+                if (msg)
+                    log.addMessage(msg);
             },
             clickDown() {
                 const msg = cad.cheaperStuffPlease();
-                if (msg) log.addMessage(msg);
+                if (msg)
+                    log.addMessage(msg);
             },
         },
         toggleFreeStuff: {
@@ -166,7 +163,8 @@ SharkGame.CheatsAndDebug = {
             updates: true,
             click() {
                 const msg = cad.toggleFreeStuff();
-                if (msg) log.addMessage(msg);
+                if (msg)
+                    log.addMessage(msg);
             },
         },
         toggleFreeUpgrades: {
@@ -177,14 +175,16 @@ SharkGame.CheatsAndDebug = {
             updates: true,
             click() {
                 const msg = cad.toggleFreeUpgrades();
-                if (msg) log.addMessage(msg);
+                if (msg)
+                    log.addMessage(msg);
             },
         },
         toggleDebugButton: {
             get name() {
                 if (SharkGame.HomeActions.getActionTable().debugbutton.unauthorized) {
                     return "Enable debug button";
-                } else {
+                }
+                else {
                     return "Disable debug button";
                 }
             },
@@ -198,7 +198,8 @@ SharkGame.CheatsAndDebug = {
             get name() {
                 if (cad.noNumberBeautifying) {
                     return "Enable number formatting";
-                } else {
+                }
+                else {
                     return "Disable number formatting";
                 }
             },
@@ -270,18 +271,15 @@ SharkGame.CheatsAndDebug = {
             },
         },
     },
-
     init() {
         SharkGame.TabHandler.registerTab(this);
     },
-
     setup() {
         if (SharkGame.persistentFlags.debug) {
             // unlock cheats for anyone who already has debug mode access
             gateway.unlockCheats();
         }
     },
-
     switchTo() {
         const content = $("#content");
         content.append($("<div>").attr("id", "tabMessage"));
@@ -290,20 +288,18 @@ SharkGame.CheatsAndDebug = {
         if (SharkGame.Settings.current.showTabImages) {
             message =
                 "<img width=400 height=200 src='" +
-                cad.sceneImage +
-                "' id='tabSceneImageEssence'>" +
-                "Doubles as a debug menu and a location for various cheats.";
+                    cad.sceneImage +
+                    "' id='tabSceneImageEssence'>" +
+                    "Doubles as a debug menu and a location for various cheats.";
             $("#tabMessage").css("background-image", "url('" + cad.tabBg + "')");
         }
         $("#tabMessage").html(message);
-
         content.append($("<table>").attr("id", "leftButtons"));
         content.append($("<table>").attr("id", "rightButtons"));
         content.append($("<table>").attr("id", "cheatsDisplay").html("<br>"));
         $.each(cad.defaultParameters, (parameter) => {
             $("#cheatsDisplay").append($("<tr>").attr("id", parameter + "Row"));
         });
-
         const categories = [];
         let placeLeft = true;
         _.each(cad.cheatButtons, (buttonData) => {
@@ -311,23 +307,19 @@ SharkGame.CheatsAndDebug = {
             if (!categories.includes(category)) {
                 categories.push(category);
                 if (placeLeft) {
-                    $("#leftButtons").append(
-                        $("<tr>")
-                            .attr("id", category)
-                            .html("<h3>" + category + "</h3>")
-                    );
+                    $("#leftButtons").append($("<tr>")
+                        .attr("id", category)
+                        .html("<h3>" + category + "</h3>"));
                     placeLeft = false;
-                } else {
-                    $("#rightButtons").append(
-                        $("<tr>")
-                            .attr("id", category)
-                            .html("<h3>" + category + "</h3>")
-                    );
+                }
+                else {
+                    $("#rightButtons").append($("<tr>")
+                        .attr("id", category)
+                        .html("<h3>" + category + "</h3>"));
                     placeLeft = true;
                 }
             }
         });
-
         let selector;
         let container;
         let buttonContainer; // prettier gets angry at me if i try to declare these case-specific variables inside the case
@@ -343,12 +335,8 @@ SharkGame.CheatsAndDebug = {
                     container = $("<div>").attr("id", buttonName).addClass("up-down");
                     container.append("<span class='up-downText'>" + buttonData.name + "</span>");
                     buttonContainer = $("<div>").addClass("up-downButtonContainer");
-                    buttonContainer.append(
-                        $("<button id='" + buttonName + "Up' class='min close-button'>⯅</button>").on("click", buttonData.clickUp)
-                    );
-                    buttonContainer.append(
-                        $("<button id='" + buttonName + "Down' class='min close-button'>⯆</button>").on("click", buttonData.clickDown)
-                    );
+                    buttonContainer.append($("<button id='" + buttonName + "Up' class='min close-button'>⯅</button>").on("click", buttonData.clickUp));
+                    buttonContainer.append($("<button id='" + buttonName + "Down' class='min close-button'>⯆</button>").on("click", buttonData.clickDown));
                     container.append(buttonContainer);
                     toAppendTo.append(container);
                     break;
@@ -368,23 +356,21 @@ SharkGame.CheatsAndDebug = {
                     SharkGame.Button.makeButton(buttonName, buttonData.name, toAppendTo, buttonData.click);
             }
         });
-
         if (cad.pause) {
             $("#stop").addClass("disabled");
-        } else {
+        }
+        else {
             $("#stop").removeClass("disabled");
         }
-
         if (cad.stop) {
             $("#pause").addClass("disabled");
-        } else {
+        }
+        else {
             $("#pause").removeClass("disabled");
         }
-
         this.update();
         SharkGame.persistentFlags.seenCheatsTab = true;
     },
-
     update() {
         $.each(cad.defaultParameters, (which, defaultValue) => {
             let msg = "<br>";
@@ -417,7 +403,6 @@ SharkGame.CheatsAndDebug = {
                 $("#" + which + "Row").html(msg);
             }
         });
-
         $.each(cad.cheatButtons, (buttonName, buttonData) => {
             if (buttonData.updates) {
                 switch (buttonData.type) {
@@ -432,16 +417,17 @@ SharkGame.CheatsAndDebug = {
             }
         });
     },
-
     cycleStyles(time = 2000) {
-        if (cad.cycling) return;
+        if (cad.cycling)
+            return;
         cad.cycling = true;
         let i = 0;
         let intervalId = NaN;
         function nextStyle() {
             if (i >= gateway.allowedWorlds.length && !isNaN(intervalId)) {
                 clearInterval(intervalId);
-            } else {
+            }
+            else {
                 world.worldType = gateway.allowedWorlds[i++];
                 console.debug(`worldType now ${world.worldType}`);
             }
@@ -450,7 +436,6 @@ SharkGame.CheatsAndDebug = {
         intervalId = setInterval(nextStyle, time);
         cad.cycling = false;
     },
-
     discoverAll() {
         $.each(SharkGame.Tabs, (tabName) => {
             if (tabName !== "current") {
@@ -458,36 +443,28 @@ SharkGame.CheatsAndDebug = {
             }
         });
     },
-
     giveEverything(amount = 1) {
         SharkGame.ResourceMap.forEach((_resource, resourceId) => {
             res.changeResource(resourceId, amount);
         });
         return (amount > 0 ? "Gave " + sharktext.beautify(amount) : "Removed " + sharktext.beautify(-amount)) + " stuff.";
     },
-
     giveSomething(resourceId = "fish", amount = 1) {
         res.changeResource(resourceId, amount);
         let returnText;
-        const resourceName = sharktext.getResourceName(
-            resourceId,
-            false,
-            sharkmath.getBuyAmount(true),
-            log.isNextMessageEven() ? sharkcolor.getVariableColor("--color-dark") : sharkcolor.getVariableColor("--color-med")
-        );
+        const resourceName = sharktext.getResourceName(resourceId, false, sharkmath.getBuyAmount(true), log.isNextMessageEven() ? sharkcolor.getVariableColor("--color-dark") : sharkcolor.getVariableColor("--color-med"));
         if (amount > 0) {
             returnText = `Gave ${sharktext.beautify(amount)} ${resourceName}.`;
-        } else {
+        }
+        else {
             returnText = `Removed ${sharktext.beautify(-amount)} ${resourceName}.`;
         }
         return returnText;
     },
-
     debug() {
         SharkGame.persistentFlags.debug = true;
         SharkGame.persistentFlags.unlockedDebug = true;
     },
-
     hideDebug() {
         SharkGame.persistentFlags.debug = false;
         SharkGame.Tabs.cheats.discovered = false;
@@ -499,16 +476,15 @@ SharkGame.CheatsAndDebug = {
             SharkGame.TabHandler.setUpTab();
         }
     },
-
     toggleDebugButton() {
         if (SharkGame.HomeActions.getActionTable().debugbutton.unauthorized) {
             SharkGame.HomeActions.getActionTable().debugbutton.unauthorized = false;
-        } else {
+        }
+        else {
             SharkGame.HomeActions.getActionTable().debugbutton.unauthorized = true;
             SharkGame.HomeActions.getActionTable().debugbutton.discovered = false;
         }
     },
-
     togglePausePlease() {
         if (cad.stop) {
             log.addError("The game is stopped. You can't also pause it.");
@@ -517,7 +493,8 @@ SharkGame.CheatsAndDebug = {
         if (!cad.pause) {
             cad.pause = true;
             $("#stop").addClass("disabled");
-        } else {
+        }
+        else {
             cad.pause = false;
             $("#stop").removeClass("disabled");
         }
@@ -531,7 +508,8 @@ SharkGame.CheatsAndDebug = {
         if (!cad.stop) {
             cad.stop = true;
             $("#pause").addClass("disabled");
-        } else {
+        }
+        else {
             cad.stop = false;
             $("#pause").removeClass("disabled");
         }
@@ -679,7 +657,8 @@ SharkGame.CheatsAndDebug = {
                     SharkGame.ResourceMap.get("shark").baseIncome.fish = -1;
                     res.reapplyModifiers("shark", "fish");
                     return "Rolled a four. The sharks are eating all the fish!";
-                } else {
+                }
+                else {
                     SharkGame.ResourceMap.get("shark").baseIncome.shark = -1;
                     res.reapplyModifiers("shark", "shark");
                     return "Rolled a four. The sharks would be eating fish, but they don't catch fish anymore. NOW THEY'RE EATING EACHOTHER! AAAAAAAAAAAAAAAA";
@@ -775,7 +754,8 @@ SharkGame.CheatsAndDebug = {
                         delete SharkGame.HomeActions.generated.default.getPlanter;
                         delete SharkGame.HomeActions.generated.default.getCollector;
                         delete SharkGame.HomeActions.generated.default.getExtractionTeam;
-                    } else {
+                    }
+                    else {
                         delete SharkGame.HomeActions.generated[world.worldType].getCrab;
                         delete SharkGame.HomeActions.generated[world.worldType].getBrood;
                         delete SharkGame.HomeActions.generated[world.worldType].getPlanter;
@@ -956,7 +936,8 @@ SharkGame.CheatsAndDebug = {
         if (cad.actionPriceModifier === 0) {
             cad.actionPriceModifier = 1;
             return "Made stuff not free.";
-        } else {
+        }
+        else {
             cad.actionPriceModifier = 0;
             return "Made stuff free.";
         }
@@ -965,7 +946,8 @@ SharkGame.CheatsAndDebug = {
         if (cad.upgradePriceModifier === 0) {
             cad.upgradePriceModifier = 1;
             return "Made upgrades not free.";
-        } else {
+        }
+        else {
             cad.upgradePriceModifier = 0;
             return "Made upgrades free.";
         }
@@ -984,7 +966,8 @@ SharkGame.CheatsAndDebug = {
     },
     forceAllExist() {
         SharkGame.ResourceMap.forEach((resource, resourceId) => {
-            if (resource.desc && resource.desc !== "") world.forceExistence(resourceId);
+            if (resource.desc && resource.desc !== "")
+                world.forceExistence(resourceId);
         });
         $("#content").empty();
         cad.switchTo();
@@ -993,10 +976,12 @@ SharkGame.CheatsAndDebug = {
     doEgg() {
         if (SharkGame.flags.egg) {
             SharkGame.flags.egg = false;
-        } else {
+        }
+        else {
             SharkGame.flags.egg = true;
         }
         res.reconstructResourcesTable();
         return "egg";
     },
 };
+//# sourceMappingURL=cheatdevice.js.map

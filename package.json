@@ -7,6 +7,7 @@
     "types": "index.d.ts",
     "scripts": {
         "postinstall": "yarn simple-git-hooks",
+        "build": "yarn css && yarn tsc",
         "fix": "eslint . --fix && prettier . --write",
         "lint": "yarn lint:eslint && yarn lint:prettier",
         "test": "yarn lint:eslint:strict && yarn lint:prettier",
@@ -20,10 +21,13 @@
         "lint:eslint:strict": "yarn lint:eslint --max-warnings=0"
     },
     "devDependencies": {
-        "@types/jquery": "^3.5.14",
+        "@types/jquery": "^3.5.16",
         "@types/lodash": "^4.14.182",
+        "@types/node": "^20.4.2",
         "@types/pako": "1",
-        "eslint": "^8.43.0",
+        "@typescript-eslint/eslint-plugin": "^6.1.0",
+        "@typescript-eslint/parser": "^6.1.0",
+        "eslint": "^8.45.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-config-standard": "^17.1.0",
         "eslint-plugin-import": "^2.27.5",
@@ -32,7 +36,8 @@
         "eslint-plugin-promise": "^6.1.1",
         "prettier": "^2.8.8",
         "sass": "^1.63.6",
-        "simple-git-hooks": "^2.8.1"
+        "simple-git-hooks": "^2.8.1",
+        "typescript": "^5.1.6"
     },
     "simple-git-hooks": {
         "pre-commit": "yarn test"

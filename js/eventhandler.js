@@ -1,5 +1,4 @@
 "use strict";
-
 SharkGame.EventHandler = {
     eventQueue: [],
     init() {
@@ -8,7 +7,8 @@ SharkGame.EventHandler = {
         _.each(SharkGame.Events, (eventHandler) => {
             if (!queue[eventHandler.priority]) {
                 queue[eventHandler.priority] = [eventHandler];
-            } else {
+            }
+            else {
                 queue[eventHandler.priority].push(eventHandler);
             }
         });
@@ -21,9 +21,7 @@ SharkGame.EventHandler = {
             log.addError("tried to call handleEventTick without passing handlingTime");
             return;
         }
-
         const queue = SharkGame.EventHandler.eventQueue;
-
         queue.forEach((handlers, priority) => {
             /** @type {SharkEventHandler[]} */
             const cleanedEventHandlers = [];
@@ -52,3 +50,4 @@ SharkGame.EventHandler = {
         });
     },
 };
+//# sourceMappingURL=eventhandler.js.map

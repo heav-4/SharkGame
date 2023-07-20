@@ -1,13 +1,33 @@
 "use strict";
-
 // idea: aspect which helps to reveal more of the tree
 SharkGame.Aspects = {
+    deprecated: {
+        theMinuteHand: {
+            getCost(level) {
+                switch (level) {
+                    case 0:
+                        return 4;
+                    default:
+                        return 3 + level;
+                }
+            },
+        },
+        theSecondHand: {
+            getCost(level) {
+                return 6 * (level + 1);
+            },
+        },
+        anythingAndEverything: {
+            getCost(_level) {
+                return 5;
+            },
+        },
+    },
     apotheosis: {
         posX: 350,
         posY: 350,
         width: 40,
         height: 40,
-
         max: 8,
         level: 0,
         name: "Apotheosis",
@@ -25,7 +45,7 @@ SharkGame.Aspects = {
         getEffect(level) {
             return "Manual resource collection <strong>×" + (level > 0 ? level * 4 : 1) + "</strong>.";
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: [],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -36,7 +56,6 @@ SharkGame.Aspects = {
         posY: 450,
         width: 40,
         height: 40,
-
         max: 20,
         level: 0,
         name: "Path of Industry",
@@ -45,13 +64,11 @@ SharkGame.Aspects = {
             return 2 * level + 2;
         },
         getEffect(level) {
-            return (
-                "Multiply the efficiency of " +
+            return ("Multiply the efficiency of " +
                 sharktext.getResourceName("shark", false, 69, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                 ", their jobs, and their fundamental machines by <strong>" +
                 (level + 1) +
-                "×</strong>."
-            );
+                "&times;</strong>.");
         },
         getUnlocked() {
             if (!SharkGame.Aspects.pathOfEnlightenment.level) {
@@ -84,7 +101,6 @@ SharkGame.Aspects = {
         posY: 250,
         width: 40,
         height: 40,
-
         max: 3,
         level: 0,
         name: "Token of Industry",
@@ -98,6 +114,8 @@ SharkGame.Aspects = {
                     return 24;
                 case 2:
                     return 100;
+                default:
+                    return Infinity;
             }
         },
         getEffect(level) {
@@ -108,9 +126,11 @@ SharkGame.Aspects = {
                     return "Unlock a second token (tokens cannot stack on the same resource).";
                 case 3:
                     return "Unlock a third token (tokens cannot stack on the same resource).";
+                default:
+                    return "You shouldn't see this. Aspect level out of range.";
             }
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["apotheosis"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -121,7 +141,6 @@ SharkGame.Aspects = {
         posY: 350,
         width: 40,
         height: 40,
-
         max: 1,
         level: 0,
         name: "Path of Enlightenment",
@@ -134,7 +153,7 @@ SharkGame.Aspects = {
         getEffect(_level) {
             return "Gain the power to travel between worlds.";
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["apotheosis"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -145,7 +164,6 @@ SharkGame.Aspects = {
         posY: 475,
         width: 40,
         height: 40,
-
         max: 1,
         level: 0,
         name: "Distant Foresight",
@@ -173,7 +191,6 @@ SharkGame.Aspects = {
         posY: 250,
         width: 40,
         height: 40,
-
         max: 6,
         level: 0,
         name: "Patience",
@@ -183,15 +200,13 @@ SharkGame.Aspects = {
             return level > 0 ? (level + 1) ** 2 : 4;
         },
         getEffect(level) {
-            return (
-                "Gain nothing now. Every time a world is completed, gain <strong>" +
+            return ("Gain nothing now. Every time a world is completed, gain <strong>" +
                 level +
                 "</strong> additional " +
                 sharktext.getResourceName("essence", false, 69, sharkcolor.getElementColor("tooltipbox", "background-color")) +
-                " (this bonus is <strong>not</strong> increased by gumption)."
-            );
+                " (this bonus is <strong>not</strong> increased by gumption).");
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["meditation"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -202,7 +217,6 @@ SharkGame.Aspects = {
         posY: 300,
         width: 40,
         height: 40,
-
         max: 1,
         level: 0,
         name: "The Dial",
@@ -213,13 +227,11 @@ SharkGame.Aspects = {
             return 8;
         },
         getEffect(_level) {
-            return (
-                "Unlock the choice to slow down time in exchange for a large " +
+            return ("Unlock the choice to slow down time in exchange for a large " +
                 sharktext.boldString("multiplier") +
                 " on " +
                 sharktext.boldString("Patience") +
-                " rewards."
-            );
+                " rewards.");
         },
         getUnlocked() {
             if (res.getTotalResource("essence") < 32) {
@@ -236,7 +248,6 @@ SharkGame.Aspects = {
         posY: 250,
         width: 40,
         height: 40,
-
         max: 10,
         level: 0,
         name: "Path of Time",
@@ -245,13 +256,11 @@ SharkGame.Aspects = {
             return 3 * level + 2;
         },
         getEffect(level) {
-            return (
-                "Start with <strong>" +
+            return ("Start with <strong>" +
                 25 * 2 ** level +
                 "</strong> " +
                 sharktext.getResourceName("crab", false, 69, sharkcolor.getElementColor("tooltipbox", "background-color")) +
-                ". If they do not exist, start with an equivalent."
-            );
+                ". If they do not exist, start with an equivalent.");
         },
         getUnlocked() {
             if (!SharkGame.Aspects.pathOfEnlightenment.level) {
@@ -284,7 +293,6 @@ SharkGame.Aspects = {
         posY: 200,
         width: 40,
         height: 40,
-
         max: 3,
         level: 0,
         name: "Coordinated Cooperation",
@@ -309,7 +317,6 @@ SharkGame.Aspects = {
         posY: 550,
         width: 40,
         height: 40,
-
         max: 4,
         level: 0,
         name: "Synthetic Transmutation",
@@ -320,7 +327,7 @@ SharkGame.Aspects = {
         getEffect(level) {
             return "Artificial materials are <strong>" + 20 * level + "%</strong> cheaper to produce manually.";
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["pathOfIndustry"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -331,7 +338,6 @@ SharkGame.Aspects = {
         posY: 650,
         width: 40,
         height: 40,
-
         max: 2,
         level: 0,
         name: "Amorphous Assembly",
@@ -342,7 +348,7 @@ SharkGame.Aspects = {
         getEffect(level) {
             return "All machines have non-artificial-material costs reduced by <strong>" + 50 * level + "%</strong>.";
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["syntheticTransmutation"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -353,7 +359,6 @@ SharkGame.Aspects = {
         posY: 510,
         width: 40,
         height: 40,
-
         max: 2,
         level: 0,
         name: "Mechanical Manifestation",
@@ -364,7 +369,7 @@ SharkGame.Aspects = {
         getEffect(level) {
             return "Reduce how much machines making artificial materials consume by <strong>" + 50 * level + "%</strong>.";
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["syntheticTransmutation"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -375,7 +380,6 @@ SharkGame.Aspects = {
         posY: 375,
         width: 40,
         height: 40,
-
         max: 8,
         level: 0,
         name: "The Plan",
@@ -386,7 +390,7 @@ SharkGame.Aspects = {
         getEffect(level) {
             return "Core frenzy members are <strong>" + 100 * (1 - 0.5 ** level) + "%</strong> cheaper to hire.";
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["pathOfIndustry"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -397,7 +401,6 @@ SharkGame.Aspects = {
         posY: 425,
         width: 40,
         height: 40,
-
         max: 8,
         level: 0,
         name: "Collective Cooperation",
@@ -408,7 +411,7 @@ SharkGame.Aspects = {
         getEffect(level) {
             return "The effect from tokens of industry is <strong>" + (level + 1) + "×</strong> stronger.";
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["thePlan"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -419,7 +422,6 @@ SharkGame.Aspects = {
         posY: 350,
         width: 40,
         height: 40,
-
         max: 8,
         level: 0,
         name: "Constructed Conception",
@@ -430,7 +432,7 @@ SharkGame.Aspects = {
         getEffect(level) {
             return "All breeders are <strong>" + 2 ** level + "×</strong> faster.";
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["thePlan"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -448,7 +450,6 @@ SharkGame.Aspects = {
         posY: 550,
         width: 40,
         height: 40,
-
         max: 5,
         level: 0,
         name: "Destiny Gamble",
@@ -459,24 +460,23 @@ SharkGame.Aspects = {
             return 2 + level;
         },
         getEffect(level) {
-            return (
-                "Between worlds, have the opportunity to reroll your world selection up to <strong>" +
+            return ("Between worlds, have the opportunity to reroll your world selection up to <strong>" +
                 level +
                 " time" +
                 (level > 1 ? "s" : "") +
-                "</strong>."
-            );
+                "</strong>.");
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["distantForesight"],
         clicked(_event) {
             tree.handleClickedAspect(this);
         },
         apply(when) {
             if (when === "levelUp") {
-                if (_.isUndefined(SharkGame.persistentFlags.destinyRolls)) {
+                if (SharkGame.persistentFlags.destinyRolls === undefined) {
                     SharkGame.persistentFlags.destinyRolls = this.level;
-                } else {
+                }
+                else {
                     SharkGame.persistentFlags.destinyRolls += 1;
                 }
             }
@@ -487,7 +487,6 @@ SharkGame.Aspects = {
         posY: 550,
         width: 40,
         height: 40,
-
         max: 1,
         level: 0,
         name: "Clean Slate",
@@ -525,7 +524,6 @@ SharkGame.Aspects = {
         posY: 300,
         width: 40,
         height: 40,
-
         max: 16,
         level: 0,
         name: "Crystalline Skin",
@@ -534,15 +532,13 @@ SharkGame.Aspects = {
             return 3 + level ** 2;
         },
         getEffect(level) {
-            return (
-                "If you have less than <strong>" +
+            return ("If you have less than <strong>" +
                 25 * 2 ** level +
                 "</strong> " +
                 sharktext.getResourceName("crystal", false, 69, sharkcolor.getElementColor("tooltipbox", "background-color")) +
-                ", they will rapidly increase back to that amount. If they do not exist, this applies to an equivalent resource."
-            );
+                ", they will rapidly increase back to that amount. If they do not exist, this applies to an equivalent resource.");
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["pathOfTime"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -586,7 +582,6 @@ SharkGame.Aspects = {
         posY: 200,
         width: 40,
         height: 40,
-
         max: 5,
         level: 0,
         name: "Internal Calculator",
@@ -596,21 +591,18 @@ SharkGame.Aspects = {
         },
         getEffect(level) {
             if (level === 1) {
-                return (
-                    "If a research costs <strong>" +
+                return ("If a research costs <strong>" +
                     150 +
                     "</strong> " +
                     sharktext.getResourceName("science", false, false, sharkcolor.getElementColor("tooltipbox", "background-color")) +
-                    " or less, then its science cost is halved."
-                );
-            } else {
-                return (
-                    "If a research costs <strong>" +
+                    " or less, then its science cost is halved.");
+            }
+            else {
+                return ("If a research costs <strong>" +
                     150 * (level - 1) ** 2 +
                     "</strong> " +
                     sharktext.getResourceName("science", false, false, sharkcolor.getElementColor("tooltipbox", "background-color")) +
-                    " or less, then all its costs are halved."
-                );
+                    " or less, then all its costs are halved.");
             }
         },
         getUnlocked() {
@@ -626,7 +618,6 @@ SharkGame.Aspects = {
         posY: 175,
         width: 40,
         height: 40,
-
         max: 2,
         level: 0,
         name: "Extensive Organization",
@@ -637,7 +628,8 @@ SharkGame.Aspects = {
         getEffect(level) {
             if (level === 1) {
                 return "Start with the grotto already unlocked.";
-            } else {
+            }
+            else {
                 return "Start with the grotto and the laboratory already unlocked.";
             }
         },
@@ -662,7 +654,6 @@ SharkGame.Aspects = {
         posY: 175,
         width: 40,
         height: 40,
-
         max: 5,
         level: 0,
         name: "The Hour Hand",
@@ -672,13 +663,11 @@ SharkGame.Aspects = {
             return 3 + level;
         },
         getEffect(level) {
-            return (
-                "The Minute Hand starts with " +
+            return ("The Minute Hand starts with " +
                 sharktext.boldString(60 * level + "s") +
                 " when entering a world. This " +
                 sharktext.boldString("DOESN'T") +
-                " count against your world-time when used."
-            );
+                " count against your world-time when used.");
         },
         getUnlocked() {
             if (gateway.completedWorlds.length < 2) {
@@ -695,7 +684,6 @@ SharkGame.Aspects = {
         posY: 150,
         width: 40,
         height: 40,
-
         max: 5,
         level: 0,
         name: "Double Time",
@@ -705,12 +693,10 @@ SharkGame.Aspects = {
             return 3 * level + 3;
         },
         getEffect(level) {
-            return (
-                "The Minute Hand earns " +
+            return ("The Minute Hand earns " +
                 sharktext.boldString(level + 1 + "×") +
                 " time from all sources (except The Hour Hand). " +
-                "Bonus time counts against your world-time when used."
-            );
+                "Bonus time counts against your world-time when used.");
         },
         getUnlocked() {
             if (res.getTotalResource("essence") < 32) {
@@ -727,7 +713,6 @@ SharkGame.Aspects = {
         posY: 75,
         width: 40,
         height: 40,
-
         max: 5,
         level: 0,
         name: "Overtime",
@@ -737,12 +722,10 @@ SharkGame.Aspects = {
             return 3 * level + 3;
         },
         getEffect(level) {
-            return (
-                "The Minute Hand gains " +
+            return ("The Minute Hand gains " +
                 sharktext.boldString(sharktext.beautify(0.2 * level) + "s") +
                 " per second while disabled. " +
-                "Bonus time counts against your world-time when used."
-            );
+                "Bonus time counts against your world-time when used.");
         },
         getUnlocked() {
             if (res.getTotalResource("essence") < 32) {
@@ -759,7 +742,6 @@ SharkGame.Aspects = {
         posY: 350,
         width: 40,
         height: 40,
-
         max: 5,
         level: 0,
         name: "Gumption",
@@ -769,17 +751,15 @@ SharkGame.Aspects = {
             return level !== 4 ? 5 + level : 4;
         },
         getEffect(level) {
-            return (
-                "For each unspent " +
+            return ("For each unspent " +
                 sharktext.getResourceName("essence", false, 69, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                 " you have, increase non-patience " +
                 sharktext.getResourceName("essence", false, 69, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                 " gains by <strong>" +
                 level +
-                "%</strong>. Effect caps at <strong>100%</strong>."
-            );
+                "%</strong>. Effect caps at <strong>100%</strong>.");
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["meditation"],
         clicked(_event) {
             tree.handleClickedAspect(this);
@@ -790,7 +770,6 @@ SharkGame.Aspects = {
         posY: 300,
         width: 40,
         height: 40,
-
         max: 1,
         level: 0,
         name: "Meditation",
@@ -803,7 +782,8 @@ SharkGame.Aspects = {
         getEffect(_level) {
             if (SharkGame.Settings.current.idleEnabled) {
                 return "Unlock a pause button to toggle idle mode at will.";
-            } else {
+            }
+            else {
                 return "Unlock a pause button that freezes most timers and all resources.";
             }
         },
@@ -822,7 +802,6 @@ SharkGame.Aspects = {
         posY: 600,
         width: 40,
         height: 40,
-
         max: 1,
         level: 0,
         name: "Infinity Vision",
@@ -835,57 +814,11 @@ SharkGame.Aspects = {
         getEffect(_level) {
             return "Reveal all aspects which are not locked.";
         },
-        getUnlocked() {},
+        getUnlocked() { },
         prerequisites: ["distantForesight"],
         clicked(_event) {
             tree.handleClickedAspect(this);
         },
     },
-
-    // deprecated
-
-    theMinuteHand: {
-        deprecated: true,
-        level: 0,
-        getCost(level) {
-            switch (level) {
-                case 0:
-                    return 4;
-                default:
-                    return 3 + level;
-            }
-        },
-        prerequisites: ["theSecondHand"],
-    },
-    theSecondHand: {
-        deprecated: true,
-        level: 0,
-        getCost(level) {
-            return 6 * (level + 1);
-        },
-        prerequisites: ["theMinuteHand"],
-    },
-    anythingAndEverything: {
-        posX: 675,
-        posY: 100,
-        width: 40,
-        height: 40,
-
-        max: 1,
-        level: 0,
-        deprecated: true,
-        name: "Anything and Everything",
-        description: "Could I interest you in a little bit of everything?",
-        getCost(_level) {
-            return 5;
-        },
-        getEffect(_level) {
-            return "Unlock a button which presses all the buy buttons (pressed in order from left-to-right, top-to-bottom).";
-        },
-        getUnlocked() {},
-        prerequisites: ["extensiveOrganization"],
-        clicked(_event) {
-            tree.handleClickedAspect(this);
-        },
-    },
 };
+//# sourceMappingURL=aspects.js.map

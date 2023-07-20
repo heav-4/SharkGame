@@ -127,8 +127,7 @@ SharkGame.WorldTypes = {
         shortDesc: "swirling grey",
         foresight: {
             vagueLongDesc: "It's hard to feel out this place. Everything's constantly moving.",
-            longDesc:
-                "A terrible storm has taken up residence here. It's hard to think, much less get anything done, with all the strong currents whipping stuff around.",
+            longDesc: "A terrible storm has taken up residence here. It's hard to think, much less get anything done, with all the strong currents whipping stuff around.",
             missing: ["kelp", "seaApple", "crystalMiner"],
             present: ["billfish", "seagrass"],
         },
@@ -140,7 +139,7 @@ SharkGame.WorldTypes = {
             "rays",
             "crabs",
             "stormgoer",
-            "billfishes", // gramatically awful but thats just how it is
+            "billfishes",
             "sharkmachines",
             "basicmaterials",
             "seagrass",
@@ -194,23 +193,19 @@ SharkGame.WorldTypes = {
         foresight: {
             vagueLongDesc: "This world has an aura of death and apathy.",
             get longDesc() {
-                return (
-                    "The water here is dank and tinted green by " +
+                return ("The water here is dank and tinted green by " +
                     (gateway.isWorldBeaten("abandoned")
                         ? sharktext.getResourceName("tar", undefined, undefined, sharkcolor.getElementColor("pane")) + "."
                         : "an unrecognizable substance.") +
-                    " Husks of machinery litter the ocean floor."
-                );
+                    " Husks of machinery litter the ocean floor.");
             },
             missing: ["seaApple", "kelp"],
             present: ["octopus", "sponge", "clam", "tar"],
             get tip() {
-                return (
-                    "This ocean is polluted with " +
+                return ("This ocean is polluted with " +
                     (gateway.isWorldBeaten("abandoned")
                         ? sharktext.getResourceName("tar", undefined, undefined, sharkcolor.getElementColor("pane"))
-                        : "an unrecognizable substance" + ". It is only harmful when machines produce it.")
-                );
+                        : "an unrecognizable substance" + ". It is only harmful when machines produce it."));
             },
         },
         entry: "The water is tainted. The pungent smell snaps you awake to the lifeless landscape. You do not know who left this world so torn and empty.",
@@ -246,12 +241,7 @@ SharkGame.WorldTypes = {
         foresight: {
             vagueLongDesc: "You feel a strange power radiating from this world.",
             get longDesc() {
-                return `This place is completely shrouded in darkness. Glowing ${sharktext.getResourceName(
-                    `crystal`,
-                    false,
-                    69,
-                    sharkcolor.getElementColor("pane")
-                )} litter the water and strange figures lurk among the endless shadows.`;
+                return `This place is completely shrouded in darkness. Glowing ${sharktext.getResourceName("crystal", false, 69, sharkcolor.getElementColor("pane"))} litter the water and strange figures lurk among the endless shadows.`;
             },
             missing: ["kelp", "crab", "laser"],
             present: ["jellyfish", "chimaera", "eel"],
@@ -292,13 +282,11 @@ SharkGame.WorldTypes = {
             missing: ["seaApple", "ray"],
             present: ["squid", "urchin"],
             get tip() {
-                return (
-                    "This world has " +
+                return ("This world has " +
                     sharktext.getResourceName("ice", undefined, undefined, sharkcolor.getElementColor("pane")) +
                     ". " +
                     sharktext.getResourceName("ice", undefined, undefined, sharkcolor.getElementColor("pane")) +
-                    " will slow some of the frenzy, and will be present from the start."
-                );
+                    " will slow some of the frenzy, and will be present from the start.");
             },
         },
         entry: "The arctic water freezes away whatever thoughts you may have had. So cold.",
@@ -408,3 +396,4 @@ SharkGame.WorldTypes = {
         },
     },
 };
+//# sourceMappingURL=worldtypes.js.map

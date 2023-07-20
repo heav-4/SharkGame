@@ -6,13 +6,13 @@ SharkGame.TitleBar = {
         onClick() {
             try {
                 SharkGame.Save.saveGame();
-            } catch (err) {
+            }
+            catch (err) {
                 log.addError(err);
             }
             log.addMessage("Saved game.");
         },
     },
-
     optionsLink: {
         name: "options",
         main: true,
@@ -20,7 +20,6 @@ SharkGame.TitleBar = {
             SharkGame.PaneHandler.showOptions();
         },
     },
-
     /*     helpLink: {
         name: "help",
         main: true,
@@ -28,7 +27,6 @@ SharkGame.TitleBar = {
             SharkGame.PaneHandler.showHelp();
         },
     }, */
-
     skipLink: {
         name: "skip",
         main: true,
@@ -39,13 +37,13 @@ SharkGame.TitleBar = {
                     // just reset
                     main.resetGame();
                 }
-            } else if (confirm("Is this world causing you too much trouble? Want to go back to the gateway?")) {
+            }
+            else if (confirm("Is this world causing you too much trouble? Want to go back to the gateway?")) {
                 SharkGame.wonGame = false;
                 main.endGame();
             }
         },
     },
-
     funFactsLink: {
         name: "fun fact",
         main: false,
@@ -53,7 +51,6 @@ SharkGame.TitleBar = {
             SharkGame.FunFacts.showFact();
         },
     },
-
     changelogLink: {
         name: "changelog",
         main: false,
@@ -61,7 +58,6 @@ SharkGame.TitleBar = {
             SharkGame.PaneHandler.showChangelog();
         },
     },
-
     /* creditsLink: {
         name: "credits",
         main: false,
@@ -69,7 +65,6 @@ SharkGame.TitleBar = {
             SharkGame.PaneHandler.addPaneToStack("Credits", SharkGame.Panes.credits);
         },
     }, */ // credits now at bottom of page
-
     donateLink: {
         name: "donate",
         main: false,
@@ -77,27 +72,25 @@ SharkGame.TitleBar = {
             SharkGame.PaneHandler.addPaneToStack("Donate", SharkGame.Panes.donate);
         },
     },
-
     discordLink: {
         name: "discord",
         main: false,
         link: "https://discord.gg/eYqApFkFPY",
     },
-
     hubLink: {
         name: "back to hub",
         main: false,
         onClick() {
             try {
                 SharkGame.Save.saveGame();
-            } catch (err) {
+            }
+            catch (err) {
                 log.addError(err);
             }
             log.addMessage("Saved game.");
             window.location.href = "https://shark.tobot.dev/";
         },
     },
-
     /* noticeLink: {
         name: "notice",
         main: false,
@@ -106,39 +99,36 @@ SharkGame.TitleBar = {
         },
     }, */
 };
-
 SharkGame.TitleBarHandler = {
     init() {
         SharkGame.TitleBarHandler.wipeTitleBar();
     },
-
     correctTitleBar() {
         if (main.isFirstTime()) {
             SharkGame.TitleBar.skipLink.name = "reset";
-        } else {
+        }
+        else {
             // and then remember to actually set it back once it's not
             SharkGame.TitleBar.skipLink.name = "skip";
         }
         this.setUpTitleBar();
     },
-
     updateTopBar() {
         if (SharkGame.Settings.current.minimizedTopbar) {
             document.querySelector("body").classList.add("top-bar");
             $("#wrapper").removeClass("notMinimized");
             $("#tabList").removeClass("notFixed");
-        } else {
+        }
+        else {
             document.querySelector("body").classList.remove("top-bar");
             $("#wrapper").addClass("notMinimized");
             $("#tabList").addClass("notFixed");
         }
     },
-
     wipeTitleBar() {
         $("#titlemenu").empty();
         $("#subtitlemenu").empty();
     },
-
     setUpTitleBar() {
         const titleMenu = $("#titlemenu");
         const subTitleMenu = $("#subtitlemenu");
@@ -147,15 +137,18 @@ SharkGame.TitleBarHandler = {
             let option;
             if (linkData.link) {
                 option = "<li><a id='" + linkId + "' href='" + linkData.link + "' target='_blank'>" + linkData.name + "</a></li>";
-            } else {
+            }
+            else {
                 option = "<li><a id='" + linkId + "' href='javascript:;'>" + linkData.name + "</a></li>";
             }
             if (linkData.main) {
                 titleMenu.append(option);
-            } else {
+            }
+            else {
                 subTitleMenu.append(option);
             }
             $("#" + linkId).on("click", linkData.onClick);
         });
     },
 };
+//# sourceMappingURL=titlebar.js.map

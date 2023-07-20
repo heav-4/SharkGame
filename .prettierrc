@@ -9,5 +9,6 @@
                 "printWidth": 120
             }
         }
-    ]
+    ],
+    "quoteProps": "consistent"
 }

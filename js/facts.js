@@ -1,27 +1,22 @@
+"use strict";
 SharkGame.FunFacts = {
-    dilutedResources: ["shark", "ray", "crab", "fish"], // dilute these while not in starter to keep the fun facts fresher
-
+    dilutedResources: ["shark", "ray", "crab", "fish"],
     showFact() {
         log.addMessage(this.getFact());
     },
-
     getFact() {
         const pool = this.getPool();
         return SharkGame.choose(pool);
     },
-
     getPool() {
         const pool = [];
         const currentWorld = world.worldType;
-        if (
-            this.worldBased[currentWorld] &&
-            (!this.worldBased[currentWorld].areRequirementsMet || this.worldBased[currentWorld].areRequirementsMet())
-        ) {
+        if (this.worldBased[currentWorld] &&
+            (!this.worldBased[currentWorld].areRequirementsMet || this.worldBased[currentWorld].areRequirementsMet())) {
             _.each(this.worldBased[currentWorld].messages, (fact) => {
-                pool.push(sharktext.boldString(`Fun fact: `) + `<i>${fact}</i>`);
+                pool.push(sharktext.boldString("Fun fact: ") + `<i>${fact}</i>`);
             });
         }
-
         let anyAvailableResource = false;
         $.each(this.resourceBased, (resource, facts) => {
             // purposefully dilute some facts if we are not on the starter world
@@ -30,23 +25,13 @@ SharkGame.FunFacts = {
                 anyAvailableResource = true;
                 if (!this.dilutedResources.includes(resource) || currentWorld === "start" || Math.random() < 0.25) {
                     _.each(facts, (fact) => {
-                        pool.push(
-                            sharktext.boldString(
-                                `${sharktext.getResourceName(
-                                    resource,
-                                    false,
-                                    1,
-                                    SharkGame.Log.isNextMessageEven()
-                                        ? sharkcolor.getVariableColor("--color-dark")
-                                        : sharkcolor.getVariableColor("--color-med")
-                                )} fact: `
-                            ) + `<i>${fact}</i>`
-                        );
+                        pool.push(sharktext.boldString(`${sharktext.getResourceName(resource, false, 1, SharkGame.Log.isNextMessageEven()
+                            ? sharkcolor.getVariableColor("--color-dark")
+                            : sharkcolor.getVariableColor("--color-med"))} fact: `) + `<i>${fact}</i>`);
                     });
                 }
             }
         });
-
         if (anyAvailableResource) {
             // only 10% chance to include the 'default' facts
             // this is because those facts are seen all over the place
@@ -55,15 +40,15 @@ SharkGame.FunFacts = {
             // also acts as a failsafe in case there are no other facts to display
             if (Math.random() < 0.1 || pool.length === 0) {
                 _.each(this.default, (fact) => {
-                    pool.push(sharktext.boldString(`Fun fact: `) + `<i>${fact}</i>`);
+                    pool.push(sharktext.boldString("Fun fact: ") + `<i>${fact}</i>`);
                 });
             }
             return pool;
-        } else {
+        }
+        else {
             return ["Fun fact: <i>New fun facts are unlocked as you see new stuff. Keep playing to unlock some!</i>"];
         }
     },
-
     worldBased: {
         frigid: {},
         volcanic: {
@@ -92,7 +77,6 @@ SharkGame.FunFacts = {
             messages: ["'Tempestuous' does not mean stormy. It means emotionally turbulent. But it's close enough."],
         },
     },
-
     resourceBased: {
         // add fish facts at some point
         shark: [
@@ -162,8 +146,8 @@ SharkGame.FunFacts = {
             "Shrimp are close relatives of lobsters. They have a lot of similarities, and in some ways are just smaller, narrower lobsters.",
         ],
         eel: [
-            // "Eels come in a wide range of sizes, from just a few inches to multiple meters.",
-            // migratory eels, look into it
+        // "Eels come in a wide range of sizes, from just a few inches to multiple meters.",
+        // migratory eels, look into it
         ],
         chimaera: [
             "Chimaera are closely related to sharks and rays.",
@@ -229,7 +213,6 @@ SharkGame.FunFacts = {
         ice: ["In the original shark game, ice used to eat away your resources instead of slowing their production."],
         tar: ["In the original shark game, tar was gained passively. Machines produced basically none of it."],
     },
-
     default: [
         "Shark Game's initial bare minimum code came from an abandoned idle game about bees. Almost no trace of bees remains!",
         "The existence of resources that create resources that create resources in this game were inspired by Derivative Clicker!",
@@ -243,3 +226,4 @@ SharkGame.FunFacts = {
         "This game has keybinds. They are more useful than you might think. Check the options menu.",
     ],
 };
+//# sourceMappingURL=facts.js.map

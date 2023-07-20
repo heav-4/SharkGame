@@ -1,3 +1,5 @@
+"use strict";
+// FIXME: Remove redundant frame property
 SharkGame.Sprites = {
     "planets/abandoned": {
         frame: {
@@ -1288,3 +1290,4 @@ SharkGame.Sprites = {
         },
     },
 };
+//# sourceMappingURL=sprites.js.map
