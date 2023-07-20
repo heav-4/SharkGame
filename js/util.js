@@ -472,7 +472,7 @@ SharkGame.ColorUtil = {
 };
 SharkGame.TimeUtil = {
     getRunTime(ignoreMinuteHandAndPause) {
-        const realRunTime = _.now() - SharkGame.timestampRunStart;
+        const realRunTime = Date.now() - SharkGame.timestampRunStart;
         const pausedTime = SharkGame.persistentFlags.totalPausedTime + SharkGame.persistentFlags.currentPausedTime;
         let storedTime = SharkGame.flags.minuteHandTimer;
         if (typeof SharkGame.flags.hourHandLeft === "number") {
@@ -556,6 +556,9 @@ SharkGame.MiscUtil = {
                 }
             }
         }
+    },
+    has(object, key) {
+        return Object.prototype.hasOwnProperty.call(object, key);
     },
 };
 //# sourceMappingURL=util.js.map

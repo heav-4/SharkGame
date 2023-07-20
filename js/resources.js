@@ -20,20 +20,13 @@ SharkGame.Resources = {
     init() {
         // set all the amounts and total amounts of resources to 0
         $.each(SharkGame.ResourceTable, (resourceId, resource) => {
-            const resourceObject = _.cloneDeep(resource);
-            if (resourceObject.name)
-                Object.defineProperty(resourceObject, "name", Object.getOwnPropertyDescriptor(SharkGame.ResourceTable[resourceId], "name"));
-            if (resourceObject.singleName)
-                Object.defineProperty(resourceObject, "singleName", Object.getOwnPropertyDescriptor(SharkGame.ResourceTable[resourceId], "singleName"));
-            if (resourceObject.desc)
-                Object.defineProperty(resourceObject, "desc", Object.getOwnPropertyDescriptor(SharkGame.ResourceTable[resourceId], "desc"));
-            SharkGame.ResourceMap.set(resourceId, resourceObject);
+            SharkGame.ResourceMap.set(resourceId, sharkmisc.cloneDeep(resource));
         });
         SharkGame.ResourceMap.forEach((resource, resourceId) => {
             // create the baseIncome data
-            if (resource.income) {
-                resource.baseIncome = {};
-                Object.defineProperties(resource.baseIncome, Object.getOwnPropertyDescriptors(SharkGame.ResourceTable[resourceId].income));
+            if (resource.baseIncome) {
+                // Turn getters into their current values
+                resource.income = Object.assign({}, resource.baseIncome);
             }
             // create the playerresources map
             SharkGame.PlayerResources.set(resourceId, {
@@ -62,12 +55,12 @@ SharkGame.Resources = {
         });
         // build multiplier map
         SharkGame.ResourceMap.forEach((_resource, resourceId) => {
-            SharkGame.ModifierMap.set(resourceId, _.cloneDeep(multiplierObject));
+            SharkGame.ModifierMap.set(resourceId, sharkmisc.cloneDeep(multiplierObject));
         });
         res.idleMultiplier = 1;
         res.specialMultiplier = 1;
-        SharkGame.ResourceIncomeAffectors = _.cloneDeep(SharkGame.ResourceIncomeAffectorsOriginal);
-        SharkGame.GeneratorIncomeAffectors = _.cloneDeep(SharkGame.GeneratorIncomeAffectorsOriginal);
+        SharkGame.ResourceIncomeAffectors = sharkmisc.cloneDeep(SharkGame.ResourceIncomeAffectorsOriginal);
+        SharkGame.GeneratorIncomeAffectors = sharkmisc.cloneDeep(SharkGame.GeneratorIncomeAffectorsOriginal);
         res.clearNetworks();
     },
     setup() {
@@ -89,7 +82,7 @@ SharkGame.Resources = {
             SharkGame.timestampSimulated = SharkGame.timestampLastSave;
         }
         else {
-            SharkGame.timestampSimulated = _.now() - timeDelta * 1000;
+            SharkGame.timestampSimulated = Date.now() - timeDelta * 1000;
         }
         if (!debug && timeDelta > 61) {
             for (let i = 0; i < 60; i++) {
@@ -124,7 +117,7 @@ SharkGame.Resources = {
                 timeDelta = res.doRKMethod(timeDelta, 20, 50);
             }
         }
-        SharkGame.timestampSimulated = _.now() - 1000 * timeDelta;
+        SharkGame.timestampSimulated = Date.now() - 1000 * timeDelta;
         while (timeDelta > 1) {
             SharkGame.EventHandler.handleEventTick("beforeTick");
             SharkGame.PlayerIncomeTable.forEach((income, resourceId) => {
@@ -156,22 +149,22 @@ SharkGame.Resources = {
         let stepTwoIncomes;
         let stepThreeIncomes;
         while (time > threshold) {
-            originalResources = _.cloneDeep(SharkGame.PlayerResources);
-            originalIncomes = _.cloneDeep(SharkGame.PlayerIncomeTable);
+            originalResources = sharkmisc.cloneDeep(SharkGame.PlayerResources);
+            originalIncomes = sharkmisc.cloneDeep(SharkGame.PlayerIncomeTable);
             SharkGame.PlayerIncomeTable.forEach((income, resourceId) => {
                 if (!SharkGame.ResourceSpecialProperties.timeImmune.includes(resourceId)) {
                     res.changeResource(resourceId, (income * factor) / 2, true);
                 }
             });
             res.recalculateIncomeTable(true);
-            stepTwoIncomes = _.cloneDeep(SharkGame.PlayerIncomeTable);
+            stepTwoIncomes = sharkmisc.cloneDeep(SharkGame.PlayerIncomeTable);
             SharkGame.PlayerIncomeTable.forEach((amount, resourceId) => {
                 if (!SharkGame.ResourceSpecialProperties.timeImmune.includes(resourceId)) {
                     res.changeResource(resourceId, (amount * factor) / 2, true);
                 }
             });
             res.recalculateIncomeTable(true);
-            stepThreeIncomes = _.cloneDeep(SharkGame.PlayerIncomeTable);
+            stepThreeIncomes = sharkmisc.cloneDeep(SharkGame.PlayerIncomeTable);
             SharkGame.PlayerIncomeTable.forEach((amount, resourceId) => {
                 if (!SharkGame.ResourceSpecialProperties.timeImmune.includes(resourceId)) {
                     res.changeResource(resourceId, amount * factor, true);

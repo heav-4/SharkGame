@@ -87,7 +87,7 @@ SharkGame.PaneHandler = {
         /** @type Pane */
         const stackObject = [title, contents, notCloseable, fadeInTime, customOpacity];
         if (this.currentPane) {
-            this.paneStack.push(_.cloneDeep(this.currentPane));
+            this.paneStack.push(sharkmisc.cloneDeep(this.currentPane));
         }
         this.currentPane = stackObject;
         this.showPane(title, contents, notCloseable, fadeInTime, customOpacity, true);

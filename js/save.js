@@ -22,7 +22,7 @@ SharkGame.Save = {
                 };
             }
         });
-        saveData.upgrades = _.cloneDeep(SharkGame.Upgrades.purchased);
+        saveData.upgrades = sharkmisc.cloneDeep(SharkGame.Upgrades.purchased);
         // Save non-zero artifact levels
         _.each(SharkGame.Aspects, ({ level }, aspectId) => {
             if (aspectId === "deprecated")
@@ -38,17 +38,17 @@ SharkGame.Save = {
                 saveData.tabs.current = tab;
             }
         });
-        saveData.completedRequirements = _.cloneDeep(SharkGame.Gate.completedRequirements);
-        saveData.settings = _.cloneDeep(SharkGame.Settings.current);
-        saveData.completedWorlds = _.cloneDeep(SharkGame.Gateway.completedWorlds);
-        saveData.flags = _.cloneDeep(SharkGame.flags);
-        saveData.persistentFlags = _.cloneDeep(SharkGame.persistentFlags);
-        saveData.planetPool = _.cloneDeep(gateway.planetPool);
+        saveData.completedRequirements = sharkmisc.cloneDeep(SharkGame.Gate.completedRequirements);
+        saveData.settings = sharkmisc.cloneDeep(SharkGame.Settings.current);
+        saveData.completedWorlds = sharkmisc.cloneDeep(SharkGame.Gateway.completedWorlds);
+        saveData.flags = sharkmisc.cloneDeep(SharkGame.flags);
+        saveData.persistentFlags = sharkmisc.cloneDeep(SharkGame.persistentFlags);
+        saveData.planetPool = sharkmisc.cloneDeep(gateway.planetPool);
         saveData.keybinds = SharkGame.Keybinds.keybinds;
-        saveData.memories.world = _.cloneDeep(SharkGame.Memories.worldMemories);
-        saveData.memories.persistent = _.cloneDeep(SharkGame.Memories.persistentMemories);
+        saveData.memories.world = sharkmisc.cloneDeep(SharkGame.Memories.worldMemories);
+        saveData.memories.persistent = sharkmisc.cloneDeep(SharkGame.Memories.persistentMemories);
         // add timestamp
-        saveData.timestampLastSave = _.now();
+        saveData.timestampLastSave = Date.now();
         saveData.timestampGameStart = SharkGame.timestampGameStart;
         saveData.timestampRunStart = SharkGame.timestampRunStart;
         saveData.timestampRunEnd = SharkGame.timestampRunEnd;
@@ -108,7 +108,7 @@ SharkGame.Save = {
         if (saveData) {
             // check for updates
             const currentVersion = SharkGame.Save.saveUpdaters.length - 1;
-            if (!_.has(saveData, "saveVersion")) {
+            if (!sharkmisc.has(saveData, "saveVersion")) {
                 saveData = SharkGame.Save.saveUpdaters[0](saveData);
             }
             else if (typeof saveData.saveVersion !== "number" || saveData.saveVersion <= 12) {
@@ -129,7 +129,7 @@ SharkGame.Save = {
                 log.addMessage("Updated save data from v " + saveData.version + " to " + SharkGame.VERSION + ".");
             }
             // we're going to assume that everything has already been reset; we assume that we're just loading values into a blank slate
-            const currTimestamp = _.now();
+            const currTimestamp = Date.now();
             // create surrogate timestamps if necessary
             if (typeof saveData.timestampLastSave !== "number") {
                 saveData.timestampLastSave = currTimestamp;
@@ -178,7 +178,7 @@ SharkGame.Save = {
             });
             // load aspects (need to have the cost reducer loaded before world init)
             if (_.some(saveData.aspects, (_aspectLevel, aspectId) => {
-                return !_.has(SharkGame.Aspects, aspectId);
+                return !sharkmisc.has(SharkGame.Aspects, aspectId);
             })) {
                 // missing aspect detected! this is bad news.
                 // there's no good way to handle this while preserving the player's aspects,
@@ -187,7 +187,7 @@ SharkGame.Save = {
                 SharkGame.missingAspects = true;
             }
             $.each(saveData.aspects, (aspectId, level) => {
-                if (_.has(SharkGame.Aspects, aspectId)) {
+                if (sharkmisc.has(SharkGame.Aspects, aspectId)) {
                     SharkGame.Aspects[aspectId].level = level;
                 }
             });
@@ -197,7 +197,7 @@ SharkGame.Save = {
             if (saveData.tabs && saveData.tabs.home) {
                 if (typeof saveData.tabs.home === "object") {
                     $.each(saveData.tabs, (tabName, discoveryArray) => {
-                        if (_.has(SharkGame.Tabs, tabName) && tabName !== "current") {
+                        if (sharkmisc.has(SharkGame.Tabs, tabName) && tabName !== "current") {
                             SharkGame.Tabs[tabName].discovered = discoveryArray[0];
                             SharkGame.Tabs[tabName].seen = discoveryArray[1];
                         }
@@ -205,7 +205,7 @@ SharkGame.Save = {
                 }
                 else {
                     $.each(saveData.tabs, (tabName, discovered) => {
-                        if (_.has(SharkGame.Tabs, tabName) && tabName !== "current") {
+                        if (sharkmisc.has(SharkGame.Tabs, tabName) && tabName !== "current") {
                             SharkGame.Tabs[tabName].discovered = discovered;
                             SharkGame.Tabs[tabName].seen = true;
                         }
@@ -216,7 +216,7 @@ SharkGame.Save = {
                 SharkGame.Tabs.current = saveData.tabs.current;
             }
             if (saveData.completedRequirements) {
-                SharkGame.Gate.completedRequirements = _.cloneDeep(saveData.completedRequirements);
+                SharkGame.Gate.completedRequirements = sharkmisc.cloneDeep(saveData.completedRequirements);
             }
             if (saveData.planetPool) {
                 gateway.planetPool = saveData.planetPool;
@@ -238,7 +238,7 @@ SharkGame.Save = {
             }
             if (!SharkGame.gameOver) {
                 // get times elapsed since last save game
-                let secondsElapsed = (_.now() - saveData.timestampLastSave) / 1000;
+                let secondsElapsed = (Date.now() - saveData.timestampLastSave) / 1000;
                 if (secondsElapsed < 0) {
                     // something went hideously wrong or someone abused a system clock somewhere
                     secondsElapsed = 0;
@@ -299,7 +299,7 @@ SharkGame.Save = {
         const save = this.decodeSave(localStorage.getItem(SharkGame.Save.saveFileName + tag));
         let text;
         if (save) {
-            text = ` from ${SharkGame.TextUtil.formatTime(_.now() - save.timestampLastSave)} ago`;
+            text = ` from ${SharkGame.TextUtil.formatTime(Date.now() - save.timestampLastSave)} ago`;
             if (save.resources.essence) {
                 text += ` with ${save.resources.essence.totalAmount || 0} lifetime essence`;
             }
@@ -678,14 +678,14 @@ SharkGame.Save = {
                 "inspirationTotem",
                 "industryTotem",
             ], (deprecatedTotem) => {
-                if (_.has(save.artifacts, deprecatedTotem)) {
+                if (sharkmisc.has(save.artifacts, deprecatedTotem)) {
                     delete save.artifacts[deprecatedTotem];
                 }
             });
-            if (_.has(save, "gateCostsMet")) {
+            if (sharkmisc.has(save, "gateCostsMet")) {
                 delete save.gateCostsMet;
             }
-            if (_.has(save.settings, "iconPositions")) {
+            if (sharkmisc.has(save.settings, "iconPositions")) {
                 save.settings.showIcons = save.settings.iconPositions !== "off";
                 delete save.settings.iconPositions;
             }
@@ -693,10 +693,10 @@ SharkGame.Save = {
                 save.settings.showIcons = true;
             }
             save.settings.minimizedTopbar = true;
-            if (_.has(save.resources, "philosopher")) {
+            if (sharkmisc.has(save.resources, "philosopher")) {
                 delete save.resources.philosopher;
             }
-            if (_.has(save.upgrades, "coralHalls")) {
+            if (sharkmisc.has(save.upgrades, "coralHalls")) {
                 delete save.upgrades.coralHalls;
             }
             // Don't bother saving 0 or null values, they're implied already
@@ -730,16 +730,16 @@ SharkGame.Save = {
         },
         // Frigid rework
         function update15(save) {
-            if (_.has(save, "settings.showTabHelp")) {
-                if (!_.has(save, "settings.showTooltips")) {
+            if (sharkmisc.has(save, "settings.showTabHelp")) {
+                if (!sharkmisc.has(save, "settings.showTooltips")) {
                     save.settings.showTooltips = save.settings.showTabHelp;
                 }
                 delete save.settings.showTabHelp;
             }
-            if (_.has(save, "artifacts")) {
+            if (sharkmisc.has(save, "artifacts")) {
                 delete save.artifacts;
             }
-            if (!_.has(save, "aspects")) {
+            if (!sharkmisc.has(save, "aspects")) {
                 save.aspects = {};
             }
             return save;

@@ -36,7 +36,7 @@ SharkGame.Log = {
                 SharkGame.TabHandler.validateTabWidth();
                 this.changeHeight();
         }
-        const prevMessages = _.cloneDeep(log.messages);
+        const prevMessages = sharkmisc.cloneDeep(log.messages);
         log.messages = [];
         _.each(prevMessages, (message) => {
             if (message.hasClass("discovery")) {

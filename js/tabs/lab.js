@@ -84,7 +84,7 @@ SharkGame.Lab = {
             });
         });
         SharkGame.ResourceMap.forEach((_resource, resourceId) => {
-            SharkGame.ModifierMap.get(resourceId).upgrade = _.cloneDeep(upgradeObject);
+            SharkGame.ModifierMap.get(resourceId).upgrade = sharkmisc.cloneDeep(upgradeObject);
         });
     },
     switchTo() {
@@ -146,15 +146,15 @@ SharkGame.Lab = {
             $("#buttonList").html($("<p>").html(message));
             const hintedUpgrade = _.find(upgradeTable, (upgrade, upgradeId) => lab.isUpgradePossible(upgradeId) &&
                 !lab.isUpgradeVisible(upgradeId) &&
-                _.has(upgrade, "required.upgrades") &&
+                sharkmisc.has(upgrade, "required.upgrades") &&
                 _.every(upgrade.required.upgrades, (requiredUpgradeId) => SharkGame.Upgrades.purchased.includes(requiredUpgradeId)));
             if (hintedUpgrade === undefined)
                 return;
             let hintResource;
-            if (_.has(hintedUpgrade, "required.seen")) {
+            if (sharkmisc.has(hintedUpgrade, "required.seen")) {
                 hintResource = _.find(hintedUpgrade.required.seen, (resource) => world.doesResourceExist(resource));
             }
-            else if (_.has(hintedUpgrade, "required.totals")) {
+            else if (sharkmisc.has(hintedUpgrade, "required.totals")) {
                 hintResource = _.find(Object.keys(hintedUpgrade.required.totals), (resource) => world.doesResourceExist(resource));
             }
             if (hintResource) {
@@ -429,12 +429,12 @@ SharkGame.Lab = {
     isUpgradeVisible(upgradeId) {
         const upgrade = SharkGame.Upgrades.getUpgradeData(SharkGame.Upgrades.getUpgradeTable(), upgradeId);
         let isVisible = true;
-        if (_.has(upgrade, "required.seen")) {
+        if (sharkmisc.has(upgrade, "required.seen")) {
             // Checks if any of the required resources has been seen
             // change to _.every to make it require all to have been seen
             isVisible = isVisible && _.some(upgrade.required.seen, (requiredSeen) => res.getTotalResource(requiredSeen) > 0);
         }
-        if (_.has(upgrade, "required.totals")) {
+        if (sharkmisc.has(upgrade, "required.totals")) {
             isVisible =
                 isVisible && _.every(upgrade.required.totals, (requiredTotal, resourceName) => res.getTotalResource(resourceName) >= requiredTotal);
         }

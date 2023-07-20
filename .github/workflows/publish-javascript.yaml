@@ -18,6 +18,7 @@ jobs:
             - name: Make sure we don't push source files
               run: |
                   sed -i 's/^js//' .gitignore
+                  sed -i 's/^css//' .gitignore
                   rm -rf src
                   rm -rf styles
             - name: Switch to JavaScript branch

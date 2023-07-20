@@ -72,7 +72,7 @@ SharkGame.Keybinds = {
         this.settingKey = undefined;
     },
     resetKeybindsToDefault() {
-        this.keybinds = SharkGame.MiscUtil.cloneDeep(this.defaultBinds);
+        this.keybinds = sharkmisc.cloneDeep(this.defaultBinds);
     },
     compressKeyID(keyID) {
         return keyID.replace(/ /gi, "").replace("+", "-");

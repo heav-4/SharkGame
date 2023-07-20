@@ -138,7 +138,7 @@ SharkGame.Gate = {
         });
         // if there are any slots in the first place, return the number of slots unfilled
         // if there are not any slots, return false to identify this fact
-        return _.size(gate.requirements.slots) !== 0 ? incompleteSlots : false;
+        return Object.keys(gate.requirements.slots).length !== 0 ? incompleteSlots : false;
     },
     getUpgradesLeft() {
         const gate = SharkGame.Gate;

@@ -77,7 +77,7 @@ SharkGame.Home = {
                 categoryDiscovered = _.some(category.actions, (actionName) => {
                     const actionTable = SharkGame.HomeActions.getActionTable();
                     // True if it exists and is discovered
-                    return _.has(actionTable, actionName) && actionTable[actionName].discovered;
+                    return sharkmisc.has(actionTable, actionName) && actionTable[actionName].discovered;
                 });
             }
             if (categoryDiscovered) {
@@ -183,7 +183,7 @@ SharkGame.Home = {
     getLastValidMessage() {
         const lastValidMessageData = _.findLast(SharkGame.HomeMessages.messages[world.worldType], (extraMessage) => {
             // check if all requirements met
-            if (_.has(extraMessage, "unlock")) {
+            if (sharkmisc.has(extraMessage, "unlock")) {
                 let requirementsMet = true;
                 requirementsMet =
                     requirementsMet &&
@@ -740,7 +740,7 @@ SharkGame.Home = {
         }
         const usePlural = (_.some(effects.resource, (_amount, name) => sharktext.getDeterminer(name)) &&
             (buyingHowMuch > 1 || _.some(effects.resource, (amount) => amount > 1))) ||
-            _.keys(effects.resource).length > 1;
+            Object.keys(effects.resource).length > 1;
         let addedAnyLabelsYet = false; // this keeps track of whether or not little tooltip text has already been appended
         // append valid stuff for generators like production
         let text = "";

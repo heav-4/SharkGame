@@ -6,18 +6,14 @@ SharkGame.TabHandler = {
     init() {
         SharkGame.Tabs.current = "home";
         $(window).on("resize", _.debounce(this.validateTabWidth, 300));
-        function debounced() {
-            return _.debounce((_entries) => {
-                const content = _entries[0].target;
-                const $content = $(content);
-                $content.css("position", "static");
-                const boundingBox = content.getBoundingClientRect();
-                if ($content.offset().top + boundingBox.height < $(window).height()) {
-                    $content.css("top", $content.offset().top);
-                }
-            }, 400, { maxWait: 600 });
-        }
-        const resizeObserver = new ResizeObserver(debounced());
+        const resizeObserver = new ResizeObserver(_.debounce(((entries) => {
+            const content = entries[0].target;
+            content.style.position = "static";
+            const boundingBox = content.getBoundingClientRect();
+            if (content.offsetTop + boundingBox.height < window.innerHeight) {
+                content.style.top = content.offsetTop + "px";
+            }
+        }), 400, { maxWait: 600 }));
         resizeObserver.observe(document.getElementById("content"));
     },
     keybindSwitchTab(tab) {
