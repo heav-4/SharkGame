@@ -600,7 +600,7 @@ SharkGame.Stats = {
             formatCounter++;
         });
 
-        if (drawnResourceMap.size && !_.isUndefined(incomesTable[0].children[0])) {
+        if (drawnResourceMap.size && incomesTable[0].children[0] !== undefined) {
             const row = $("<tr>");
             let columns = incomesTable[0].children[0].children.length;
 

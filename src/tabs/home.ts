@@ -539,7 +539,7 @@ SharkGame.Home = {
         const action = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
         if (action.unauthorized) {
             return false;
-        } else if (!_.isUndefined(action.unauthorized)) {
+        } else if (action.unauthorized !== undefined) {
             return true;
         }
         // check to see if this action should be forcibly removed

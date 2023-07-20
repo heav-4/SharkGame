@@ -695,7 +695,7 @@ SharkGame.AspectTree = {
         let cost = 0;
         while (aspectData.level) {
             cost = aspectData.getCost(aspectData.level - 1);
-            if (_.isUndefined(cost)) cost = 0;
+            if (cost === undefined) cost = 0;
             res.changeResource("essence", cost);
             aspectData.level -= 1;
         }
@@ -721,7 +721,7 @@ SharkGame.AspectTree = {
             SharkGame.persistentFlags.aspectStorage = {};
         }
         $.each(SharkGame.Aspects, (aspectName) => {
-            if (!_.isUndefined(SharkGame.persistentFlags.aspectStorage[aspectName])) {
+            if (SharkGame.persistentFlags.aspectStorage[aspectName] !== undefined) {
                 SharkGame.Aspects[aspectName].level = SharkGame.persistentFlags.aspectStorage[aspectName];
                 SharkGame.persistentFlags.aspectStorage[aspectName] = undefined;
             }

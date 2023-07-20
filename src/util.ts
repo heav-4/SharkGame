@@ -515,7 +515,7 @@ SharkGame.TimeUtil = {
 
 SharkGame.MiscUtil = {
     tryAddProperty(object, property, value) {
-        if (_.isUndefined(object[property])) {
+        if (object[property] === undefined) {
             object[property] = value;
         }
         return object;

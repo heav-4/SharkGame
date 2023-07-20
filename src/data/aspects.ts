@@ -501,7 +501,7 @@ SharkGame.Aspects = {
         },
         apply(when) {
             if (when === "levelUp") {
-                if (_.isUndefined(SharkGame.persistentFlags.destinyRolls)) {
+                if (SharkGame.persistentFlags.destinyRolls === undefined) {
                     SharkGame.persistentFlags.destinyRolls = this.level;
                 } else {
                     SharkGame.persistentFlags.destinyRolls += 1;

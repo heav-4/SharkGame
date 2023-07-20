@@ -326,7 +326,7 @@ SharkGame.Save = {
     },
 
     getTaggedSaveCharacteristics(tag) {
-        if (_.isUndefined(tag)) {
+        if (tag === undefined) {
             SharkGame.Log.addError("Tried to get characteristics of a tagged save, but no tag was given.");
             throw new Error("Tried to get characteristics of a tagged save, but no tag was given.");
         }
@@ -345,7 +345,7 @@ SharkGame.Save = {
     },
 
     createTaggedSave(tag) {
-        if (_.isUndefined(tag)) {
+        if (tag === undefined) {
             SharkGame.Log.addError("Tried to create a tagged save, but no tag was given.");
             throw new Error("Tried to create a tagged save, but no tag was given.");
         }
@@ -353,7 +353,7 @@ SharkGame.Save = {
     },
 
     loadTaggedSave(tag) {
-        if (_.isUndefined(tag)) {
+        if (tag === undefined) {
             SharkGame.Log.addError("Tried to load a tagged save, but no tag was given.");
             throw new Error("Tried to load a tagged save, but no tag was given.");
         }

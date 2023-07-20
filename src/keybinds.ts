@@ -135,7 +135,7 @@ SharkGame.Keybinds = {
 
     handleKeyUp(keyID) {
         const modifiersEntry = this.modifierKeys[keyID];
-        if (!_.isUndefined(modifiersEntry)) {
+        if (modifiersEntry !== undefined) {
             this.modifierKeys[keyID] = 0;
         }
 
@@ -144,7 +144,7 @@ SharkGame.Keybinds = {
 
         const boundAction = this.keybinds[keyID];
         if (this.bindMode && boundAction !== "bind home ocean button") {
-            if (_.isUndefined(modifiersEntry)) {
+            if (modifiersEntry === undefined) {
                 this.settingKey = keyID;
                 this.updateBindModeState();
             }
@@ -155,7 +155,7 @@ SharkGame.Keybinds = {
 
     handleKeyDown(keyID) {
         const modifiersEntry = this.modifierKeys[keyID];
-        const isModifier = !_.isUndefined(modifiersEntry);
+        const isModifier = modifiersEntry !== undefined;
         if (isModifier) {
             this.modifierKeys[keyID] = 1;
         }
@@ -389,11 +389,11 @@ SharkGame.Keybinds = {
             $("#overlay").empty();
 
             textConatiner.append($("<h1>").html("ACTION BIND MODE"));
-            if (_.isUndefined(this.settingAction) && _.isUndefined(this.settingKey)) {
+            if (this.settingAction === undefined && this.settingKey === undefined) {
                 textConatiner.append($("<p>").html("<strong>Click the button you want to bind, then press a key to bind it to.</strong>"));
-            } else if (!_.isUndefined(this.settingAction) && _.isUndefined(this.settingKey)) {
+            } else if (this.settingAction !== undefined && this.settingKey === undefined) {
                 textConatiner.append($("<p>").html(`<strong>Press a key to bind to ${this.cleanActionID(this.settingAction)}.</strong>`));
-            } else if (_.isUndefined(this.settingAction) && !_.isUndefined(this.settingKey)) {
+            } else if (this.settingAction === undefined && this.settingKey !== undefined) {
                 textConatiner.append($("<p>").html(`<strong>Click a button to bind to ${this.settingKey}.</strong>`));
             } else {
                 textConatiner.append($("<p>").html(`<strong>Bound ${this.settingKey} to ${this.cleanActionID(this.settingAction)}.</strong>`));

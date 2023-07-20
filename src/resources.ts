@@ -671,7 +671,7 @@ SharkGame.Resources = {
                     if (SharkGame.flags.tokens) {
                         tokenLocation = SharkGame.flags.tokens[token.attr("id")];
                     }
-                    if (_.isUndefined(tokenLocation)) {
+                    if (tokenLocation === undefined) {
                         textToDisplay = "";
                         return false;
                     }
@@ -852,10 +852,10 @@ SharkGame.Resources = {
         },
 
         setup() {
-            if (_.isUndefined(SharkGame.flags.minuteHandTimer)) {
+            if (SharkGame.flags.minuteHandTimer === undefined) {
                 SharkGame.flags.minuteHandTimer = 0;
             }
-            if (_.isUndefined(SharkGame.flags.hourHandLeft)) {
+            if (SharkGame.flags.hourHandLeft === undefined) {
                 SharkGame.flags.hourHandLeft = 0;
             }
 

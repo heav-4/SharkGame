@@ -229,10 +229,10 @@ SharkGame.Gateway = {
     },
 
     updateWasScoutingStatus() {
-        if (!_.isUndefined(SharkGame.persistentFlags.scouting)) {
+        if (SharkGame.persistentFlags.scouting !== undefined) {
             SharkGame.persistentFlags.wasScouting = SharkGame.persistentFlags.scouting;
             SharkGame.persistentFlags.scouting = undefined;
-        } else if (_.isUndefined(SharkGame.persistentFlags.wasScouting)) {
+        } else if (SharkGame.persistentFlags.wasScouting === undefined) {
             // failsafe, assume we were indeed scouting
             SharkGame.persistentFlags.wasScouting = true;
         }
@@ -243,14 +243,14 @@ SharkGame.Gateway = {
     },
 
     wasOnScoutingMission() {
-        if (!_.isUndefined(SharkGame.persistentFlags.scouting)) {
+        if (SharkGame.persistentFlags.scouting !== undefined) {
             gateway.updateWasScoutingStatus();
         }
         return SharkGame.persistentFlags.wasScouting;
     },
 
     currentlyOnScoutingMission() {
-        if (!SharkGame.gameOver && _.isUndefined(SharkGame.persistentFlags.scouting)) {
+        if (!SharkGame.gameOver && SharkGame.persistentFlags.scouting === undefined) {
             gateway.updateScoutingStatus();
         }
         return SharkGame.persistentFlags.scouting;
@@ -657,7 +657,7 @@ SharkGame.Gateway = {
         },
 
         formatDestinyGamble() {
-            if (!_.isUndefined(SharkGame.persistentFlags.destinyRolls)) {
+            if (SharkGame.persistentFlags.destinyRolls !== undefined) {
                 switch (SharkGame.persistentFlags.destinyRolls) {
                     case 0:
                         $("#destinyGamble").html("No rerolls remain. Beat a world to recharge.").addClass("disabled");

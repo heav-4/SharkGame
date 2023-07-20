@@ -361,7 +361,7 @@ SharkGame.Lab = {
                     log.addMessage(upgrade.researchedMessage);
                 }
             }
-        } else if (!_.isUndefined(upgradeId)) {
+        } else if (upgradeId !== undefined) {
             upgrade = SharkGame.Upgrades.getUpgradeData(upgradeTable, upgradeId);
             if (SharkGame.Upgrades.purchased.includes(upgradeId)) {
                 return; // something went wrong don't even pay attention to this function
