@@ -31,6 +31,35 @@ declare global {
     const SharkGame: SharkGame;
 
     //#REGION: Data structure types
+    type ActionName =
+        | "test"
+        | "open bind menu"
+        | "bind home ocean button"
+        | "close current pane"
+        | "pause"
+        | "switch to home tab"
+        | "switch to lab tab"
+        | "switch to grotto tab"
+        | "switch to recycler tab"
+        | "switch to gate tab"
+        | "switch to reflection tab"
+        | "switch home button tab left"
+        | "switch home button tab right"
+        | "switch to buy 1"
+        | "switch to buy 10"
+        | "switch to buy 100"
+        | "switch to buy 1/3 max"
+        | "switch to buy 1/2 max"
+        | "switch to buy max"
+        | "switch to buy custom"
+        | "open options"
+        | "save"
+        | "skip world"
+        | "toggle idle time use"
+        | "return all tokens"
+        | "buy topmost upgrade"
+        | "press all buying buttons"
+        | "enter gate";
     type AspectName =
         | "apotheosis"
         | "pathOfIndustry"
@@ -96,7 +125,35 @@ declare global {
         | "basicmaterials";
     type ModifierName = string;
     type OptionCategory = "PERFORMANCE" | "LAYOUT" | "APPEARANCE" | "ACCESSIBILITY" | "OTHER" | "SAVES";
-    type OptionName = string;
+    type OptionName =
+        | "buyAmount"
+        | "grottoMode"
+        | "showPercentages"
+        | "framerate"
+        | "showAnimations"
+        | "minimizedTopbar"
+        | "logLocation"
+        | "groupResources"
+        | "smallTable"
+        | "logMessageMax"
+        | "sidebarWidth"
+        | "notation"
+        | "colorCosts"
+        | "boldCosts"
+        | "alwaysSingularTooltip"
+        | "tooltipQuantityReminders"
+        | "enableThemes"
+        | "showIcons"
+        | "showTabImages"
+        | "doAspectTable"
+        | "verboseTokenDescriptions"
+        | "minuteHandEffects"
+        | "idleEnabled"
+        | "showTooltips"
+        | "updateCheck"
+        | "truePause"
+        | "offlineModeActive"
+        | "autosaveFrequency";
     type ResourceCategory =
         | "animals"
         | "breeders"
@@ -313,7 +370,7 @@ declare global {
         name: string;
         description: string;
         getEffect(): string;
-        getUnlocked(): string;
+        getUnlocked(): boolean;
         getOn(): boolean;
         clicked(event: MouseEvent): void;
     };
@@ -830,7 +887,7 @@ declare global {
         shouldRemoveHomeButton(action: HomeAction): boolean;
         addButton(actionName: HomeActionName): void;
         getActionCategory(actionName: HomeActionName): string;
-        onHomeButton(mouseEnterEvent: JQuery.MouseEnterEvent, actionName: HomeActionName): void;
+        onHomeButton(mouseEnterEvent: JQuery.MouseEnterEvent | null, actionName: HomeActionName): void;
         onHomeUnhover(): void;
         getCost(action: HomeAction, amount: number): Record<ResourceName, number>;
         getMax(action: HomeAction): Decimal;
@@ -1002,6 +1059,37 @@ declare global {
         HomeMessageSprites: Record<string, HomeMessageSprite>;
         HomeMessages: { messages: Record<WorldName, HomeMessage[]> };
         InternalCategories: Record<InternalCategoryName, { name?: string; resources: ResourceName[] }>;
+        Keybinds: {
+            actions: ReadonlyArray<string>;
+            bindMode: boolean;
+            bindModeLock: boolean;
+            defaultBinds: Readonly<Record<string, HomeActionName | ActionName>>;
+            keybinds: Record<string, HomeActionName | ActionName>;
+            modifierKeys: Record<string, boolean>;
+            settingAction: string | undefined;
+            settingKey: string | undefined;
+            waitForKey: boolean;
+
+            // FIXME: Use ActionName here
+            // Can't really wrap my head around this stuff right now because
+            // of all the string replacement weirdness - Toby
+            addKeybind(keyID: string, actionType: ActionName | HomeActionName): void;
+            cleanActionID(actionID: string): string;
+            cleanKeyID(keyID: string): string;
+            composeKeys(keyID: string): string;
+            compressKeyID(keyID: string): string;
+            handleDownBind(keyID: string): boolean;
+            handleKeyDown(keyID: string): boolean;
+            handleKeyUp(keyID: string): boolean;
+            handleUpBind(keyID: string): boolean;
+            bindMenuNewBind(keyID: string): void;
+            updateBindModeOverlay(toggledByKey: boolean): void;
+            checkForBindModeCombo(): boolean;
+            init(): void;
+            resetKeybindsToDefault(): void;
+            toggleBindMode(toggledByKey: boolean): void;
+            updateBindModeState(toggledByKey: boolean): void;
+        };
         ModifierTypes: Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, Modifier>>>;
         Panes: Record<string, string[]>;
         ResourceCategories: Record<ResourceCategory, { name: string; disposeMessage: string[]; resources: ResourceName[] }>;

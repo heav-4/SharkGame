@@ -1,5 +1,5 @@
 SharkGame.Keybinds = {
-    defaultBinds: {
+    defaultBinds: Object.freeze({
         "Period": "bind home ocean button",
         "Escape": "close current pane",
         "P": "pause",
@@ -21,10 +21,10 @@ SharkGame.Keybinds = {
         "Shift + M": "switch to buy custom",
         "Control + O": "open options",
         "Control + S": "save",
-    },
+    }),
     keybinds: {},
 
-    actions: [
+    actions: Object.freeze([
         "nothing",
         "bind home ocean button",
         "close current pane",
@@ -52,15 +52,15 @@ SharkGame.Keybinds = {
         "switch to buy 1/2 max",
         "switch to buy max",
         "switch to buy custom",
-    ],
+    ]),
 
     modifierKeys: {
-        ShiftLeft: 0,
-        ShiftRight: 0,
-        AltLeft: 0,
-        AltRight: 0,
-        ControlLeft: 0,
-        ControlRight: 0,
+        ShiftLeft: false,
+        ShiftRight: false,
+        AltLeft: false,
+        AltRight: false,
+        ControlLeft: false,
+        ControlRight: false,
     },
 
     init() {
@@ -74,15 +74,12 @@ SharkGame.Keybinds = {
         this.settingKey = undefined;
     },
 
-    setup() {},
-
     resetKeybindsToDefault() {
-        this.keybinds = _.cloneDeep(this.defaultBinds);
+        this.keybinds = SharkGame.MiscUtil.cloneDeep(this.defaultBinds);
     },
 
     compressKeyID(keyID) {
-        keyID = keyID.replace(/ /gi, "").replace("+", "-");
-        return keyID;
+        return keyID.replace(/ /gi, "").replace("+", "-");
     },
 
     cleanActionID(actionID) {
@@ -105,7 +102,7 @@ SharkGame.Keybinds = {
     },
 
     // makes IDs human-readable
-    cleanID(keyID) {
+    cleanKeyID(keyID) {
         keyID = keyID
             .replace("Digit", "")
             .replace("Key", "")
@@ -113,11 +110,15 @@ SharkGame.Keybinds = {
             .replace("NumLock", "Num Lock")
             .replace("ScrollLock", "Scroll Lock")
             .replace("ContextMenu", "Context Menu");
+        // Replaces e.g. "Up Arrow" or "Numpad 9" with "Arrow Up" or "9 Numpad"
+        // Kinda weird but okay ig
         _.each(["Left", "Right", "Up", "Down", "Numpad"], (direction) => {
             if (keyID.includes(direction)) {
                 keyID = `${direction} ` + keyID.replace(direction, "");
             }
         });
+        // Undoes the above for "Page Up"
+        // This is quite janky, innit
         keyID = keyID.replace("Up Page", "Page Up").replace("Down Page", "Page Down");
         return keyID;
     },
@@ -136,10 +137,10 @@ SharkGame.Keybinds = {
     handleKeyUp(keyID) {
         const modifiersEntry = this.modifierKeys[keyID];
         if (modifiersEntry !== undefined) {
-            this.modifierKeys[keyID] = 0;
+            this.modifierKeys[keyID] = false;
         }
 
-        keyID = this.cleanID(keyID);
+        keyID = this.cleanKeyID(keyID);
         keyID = this.composeKeys(keyID);
 
         const boundAction = this.keybinds[keyID];
@@ -151,16 +152,17 @@ SharkGame.Keybinds = {
         } else if (boundAction) {
             return this.handleUpBind(boundAction);
         }
+        return false;
     },
 
     handleKeyDown(keyID) {
         const modifiersEntry = this.modifierKeys[keyID];
         const isModifier = modifiersEntry !== undefined;
         if (isModifier) {
-            this.modifierKeys[keyID] = 1;
+            this.modifierKeys[keyID] = true;
         }
 
-        keyID = this.cleanID(keyID);
+        keyID = this.cleanKeyID(keyID);
         keyID = this.composeKeys(keyID);
 
         const boundAction = this.keybinds[keyID];
@@ -175,192 +177,186 @@ SharkGame.Keybinds = {
         } else if (boundAction) {
             return this.handleDownBind(boundAction);
         }
+        return false;
     },
 
     handleUpBind(actionType) {
-        if (!this.tempDisableBind) {
-            switch (actionType) {
-                default:
-                    if (
-                        SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionType) &&
-                        $(`#${actionType}`).hasClass("keep-button-pressed")
-                    ) {
-                        $(`#${actionType}`).removeClass("keep-button-pressed");
-                        home.onHomeButton(null, actionType);
-                    } else {
-                        return false;
-                    }
-            }
+        if (
+            SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionType) &&
+            $(`#${actionType}`).hasClass("keep-button-pressed")
+        ) {
+            $(`#${actionType}`).removeClass("keep-button-pressed");
+            home.onHomeButton(null, actionType);
             return true;
+        } else {
+            return false;
         }
     },
 
     handleDownBind(actionType) {
         // make sure to remember to search all homeaction worlds in order when
         // looking for the data associated with it
-        if (!this.tempDisableBind && actionType) {
-            switch (actionType) {
-                case "test":
-                    break;
-                case "open bind menu":
-                    // do nothing for now
-                    // TODO: Implement this, I suppose
-                    break;
-                case "bind home ocean button":
-                    if (!this.bindModeLock) {
-                        this.toggleBindMode(true);
-                    }
-                    break;
-                case "close current pane":
-                    SharkGame.PaneHandler.tryClosePane();
-                    break;
-                case "pause":
-                    if (SharkGame.Aspects.meditation.level && !SharkGame.gameOver) {
-                        res.pause.togglePause();
-                    }
-                    break;
-                case "switch to home tab":
-                    SharkGame.TabHandler.keybindSwitchTab("home");
-                    break;
-                case "switch to lab tab":
-                    SharkGame.TabHandler.keybindSwitchTab("lab");
-                    break;
-                case "switch to grotto tab":
-                    SharkGame.TabHandler.keybindSwitchTab("stats");
-                    break;
-                case "switch to recycler tab":
-                    SharkGame.TabHandler.keybindSwitchTab("recycler");
-                    break;
-                case "switch to gate tab":
-                    SharkGame.TabHandler.keybindSwitchTab("gate");
-                    break;
-                case "switch to reflection tab":
-                    SharkGame.TabHandler.keybindSwitchTab("reflection");
-                    break;
-                case "switch home button tab left":
-                    if (SharkGame.Tabs.current === "home") {
-                        home.changeButtonTab(home.getPreviousButtonTab());
-                    }
-                    break;
-                case "switch home button tab right":
-                    if (SharkGame.Tabs.current === "home") {
-                        home.changeButtonTab(home.getNextButtonTab());
-                    }
-                    break;
-                case "switch to buy 1":
-                    if (!$("#buy-1").hasClass("disabled")) {
-                        SharkGame.Settings.current.buyAmount = 1;
-                        $("#custom-input").attr("disabled", true);
-                        $("button[id^='buy-']").removeClass("disabled");
-                        $("#buy-1").addClass("disabled");
-                    }
-                    break;
-                case "switch to buy 10":
-                    if (!$("#buy-10").hasClass("disabled")) {
-                        SharkGame.Settings.current.buyAmount = 10;
-                        $("#custom-input").attr("disabled", true);
-                        $("button[id^='buy-']").removeClass("disabled");
-                        $("#buy-10").addClass("disabled");
-                    }
-                    break;
-                case "switch to buy 100":
-                    if (!$("#buy-100").hasClass("disabled")) {
-                        SharkGame.Settings.current.buyAmount = 100;
-                        $("#custom-input").attr("disabled", true);
-                        $("button[id^='buy-']").removeClass("disabled");
-                        $("#buy-100").addClass("disabled");
-                    }
-                    break;
-                case "switch to buy 1/3 max":
-                    if (!$("#buy--3").hasClass("disabled")) {
-                        SharkGame.Settings.current.buyAmount = -3;
-                        $("#custom-input").attr("disabled", true);
-                        $("button[id^='buy-']").removeClass("disabled");
-                        $("#buy--3").addClass("disabled");
-                    }
-                    break;
-                case "switch to buy 1/2 max":
-                    if (!$("#buy--2").hasClass("disabled")) {
-                        SharkGame.Settings.current.buyAmount = -2;
-                        $("#custom-input").attr("disabled", true);
-                        $("button[id^='buy-']").removeClass("disabled");
-                        $("#buy--2").addClass("disabled");
-                    }
-                    break;
-                case "switch to buy max":
-                    if (!$("#buy--1").hasClass("disabled")) {
-                        SharkGame.Settings.current.buyAmount = -1;
-                        $("#custom-input").attr("disabled", true);
-                        $("button[id^='buy-']").removeClass("disabled");
-                        $("#buy--1").addClass("disabled");
-                    }
-                    break;
-                case "switch to buy custom":
-                    if (!$("#buy-custom").hasClass("disabled")) {
-                        SharkGame.Settings.current.buyAmount = "custom";
-                        $("#custom-input").attr("disabled", false);
-                        $("button[id^='buy-']").removeClass("disabled");
-                        $("#buy-custom").addClass("disabled");
-                    }
-                    break;
-                case "open options":
-                    if (!SharkGame.PaneHandler.isPaneAlreadyUp("Options")) {
-                        SharkGame.PaneHandler.showOptions();
-                    }
-                    break;
-                case "save":
-                    SharkGame.Save.saveGame();
-                    SharkGame.Log.addMessage("Saved game.");
-                    break;
-                case "skip world":
-                    if (!SharkGame.gameOver) {
-                        SharkGame.TitleBar.skipLink.onClick();
-                    }
-                    break;
-                case "toggle idle time use":
-                    if (SharkGame.persistentFlags.everIdled && !SharkGame.gameOver) {
-                        res.minuteHand.toggleMinuteHand();
-                    }
-                    break;
-                case "return all tokens":
-                    _.each(res.tokens.list, (token) => {
-                        res.tokens.tryReturnToken(null, false, token);
+        if (!actionType) return false;
+        switch (actionType) {
+            case "test":
+                break;
+            case "open bind menu":
+                // do nothing for now
+                // TODO: Implement this, I suppose
+                break;
+            case "bind home ocean button":
+                if (!this.bindModeLock) {
+                    this.toggleBindMode(true);
+                }
+                break;
+            case "close current pane":
+                SharkGame.PaneHandler.tryClosePane();
+                break;
+            case "pause":
+                if (SharkGame.Aspects.meditation.level && !SharkGame.gameOver) {
+                    res.pause.togglePause();
+                }
+                break;
+            case "switch to home tab":
+                SharkGame.TabHandler.keybindSwitchTab("home");
+                break;
+            case "switch to lab tab":
+                SharkGame.TabHandler.keybindSwitchTab("lab");
+                break;
+            case "switch to grotto tab":
+                SharkGame.TabHandler.keybindSwitchTab("stats");
+                break;
+            case "switch to recycler tab":
+                SharkGame.TabHandler.keybindSwitchTab("recycler");
+                break;
+            case "switch to gate tab":
+                SharkGame.TabHandler.keybindSwitchTab("gate");
+                break;
+            case "switch to reflection tab":
+                SharkGame.TabHandler.keybindSwitchTab("reflection");
+                break;
+            case "switch home button tab left":
+                if (SharkGame.Tabs.current === "home") {
+                    home.changeButtonTab(home.getPreviousButtonTab());
+                }
+                break;
+            case "switch home button tab right":
+                if (SharkGame.Tabs.current === "home") {
+                    home.changeButtonTab(home.getNextButtonTab());
+                }
+                break;
+            case "switch to buy 1":
+                if (!$("#buy-1").hasClass("disabled")) {
+                    SharkGame.Settings.current.buyAmount = 1;
+                    $("#custom-input").attr("disabled", "true");
+                    $("button[id^='buy-']").removeClass("disabled");
+                    $("#buy-1").addClass("disabled");
+                }
+                break;
+            case "switch to buy 10":
+                if (!$("#buy-10").hasClass("disabled")) {
+                    SharkGame.Settings.current.buyAmount = 10;
+                    $("#custom-input").attr("disabled", "true");
+                    $("button[id^='buy-']").removeClass("disabled");
+                    $("#buy-10").addClass("disabled");
+                }
+                break;
+            case "switch to buy 100":
+                if (!$("#buy-100").hasClass("disabled")) {
+                    SharkGame.Settings.current.buyAmount = 100;
+                    $("#custom-input").attr("disabled", "true");
+                    $("button[id^='buy-']").removeClass("disabled");
+                    $("#buy-100").addClass("disabled");
+                }
+                break;
+            case "switch to buy 1/3 max":
+                if (!$("#buy--3").hasClass("disabled")) {
+                    SharkGame.Settings.current.buyAmount = -3;
+                    $("#custom-input").attr("disabled", "true");
+                    $("button[id^='buy-']").removeClass("disabled");
+                    $("#buy--3").addClass("disabled");
+                }
+                break;
+            case "switch to buy 1/2 max":
+                if (!$("#buy--2").hasClass("disabled")) {
+                    SharkGame.Settings.current.buyAmount = -2;
+                    $("#custom-input").attr("disabled", "true");
+                    $("button[id^='buy-']").removeClass("disabled");
+                    $("#buy--2").addClass("disabled");
+                }
+                break;
+            case "switch to buy max":
+                if (!$("#buy--1").hasClass("disabled")) {
+                    SharkGame.Settings.current.buyAmount = -1;
+                    $("#custom-input").attr("disabled", "true");
+                    $("button[id^='buy-']").removeClass("disabled");
+                    $("#buy--1").addClass("disabled");
+                }
+                break;
+            case "switch to buy custom":
+                if (!$("#buy-custom").hasClass("disabled")) {
+                    SharkGame.Settings.current.buyAmount = "custom";
+                    $("#custom-input").attr("disabled", "false");
+                    $("button[id^='buy-']").removeClass("disabled");
+                    $("#buy-custom").addClass("disabled");
+                }
+                break;
+            case "open options":
+                if (!SharkGame.PaneHandler.isPaneAlreadyUp("Options")) {
+                    SharkGame.PaneHandler.showOptions();
+                }
+                break;
+            case "save":
+                SharkGame.Save.saveGame();
+                SharkGame.Log.addMessage("Saved game.");
+                break;
+            case "skip world":
+                if (!SharkGame.gameOver) {
+                    SharkGame.TitleBar.skipLink.onClick();
+                }
+                break;
+            case "toggle idle time use":
+                if (SharkGame.persistentFlags.everIdled && !SharkGame.gameOver) {
+                    res.minuteHand.toggleMinuteHand();
+                }
+                break;
+            case "return all tokens":
+                _.each(res.tokens.list, (token) => {
+                    res.tokens.tryReturnToken(null, false, token);
+                });
+                break;
+            case "buy topmost upgrade":
+                if (!cad.pause && !cad.stop) {
+                    SharkGame.Lab.onLabButton(SharkGame.Lab.findAllAffordableUpgrades()[0]);
+                }
+                break;
+            case "press all buying buttons":
+                if (!SharkGame.flags.pressedAllButtonsThisTick) {
+                    _.each(home.buttonNamesList, (actionName, actionData) => {
+                        // actionData gets immediately overwritten because
+                        // linter will yell at me if i define a variable in the switch statement
+                        // and this is a decent workaround
+                        actionData = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
+                        if (!home.doesButtonGiveNegativeThing(actionData) && home.shouldHomeButtonBeUsable(actionData) && !actionData.isRemoved) {
+                            home.onHomeButton(null, actionName);
+                        }
                     });
-                    break;
-                case "buy topmost upgrade":
-                    if (!cad.pause && !cad.stop) {
-                        SharkGame.Lab.onLabButton(SharkGame.Lab.findAllAffordableUpgrades()[0]);
-                    }
-                    break;
-                case "press all buying buttons":
-                    if (!SharkGame.flags.pressedAllButtonsThisTick) {
-                        _.each(home.buttonNamesList, (actionName, actionData) => {
-                            // actionData gets immediately overwritten because
-                            // linter will yell at me if i define a variable in the switch statement
-                            // and this is a decent workaround
-                            actionData = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
-                            if (!home.doesButtonGiveNegativeThing(actionData) && home.shouldHomeButtonBeUsable(actionData) && !actionData.isRemoved) {
-                                home.onHomeButton(null, actionName);
-                            }
-                        });
-                        SharkGame.flags.pressedAllButtonsThisTick = true;
-                    }
-                    break;
-                case "enter gate":
-                    if (SharkGame.Gate.shouldBeOpen()) {
-                        SharkGame.Gate.enterGate();
-                    }
-                    break;
-                default:
-                    if (SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionType)) {
-                        $(`#${actionType}`).addClass("keep-button-pressed");
-                    } else {
-                        return false;
-                    }
-            }
-            return true;
+                    SharkGame.flags.pressedAllButtonsThisTick = true;
+                }
+                break;
+            case "enter gate":
+                if (SharkGame.Gate.shouldBeOpen()) {
+                    SharkGame.Gate.enterGate();
+                }
+                break;
+            default:
+                if (SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionType)) {
+                    $(`#${actionType}`).addClass("keep-button-pressed");
+                } else {
+                    return false;
+                }
         }
-        return false;
+        return true;
     },
 
     addKeybind(keyID, actionType) {
@@ -430,14 +426,10 @@ SharkGame.Keybinds = {
 
     updateBindModeState(toggledByKey) {
         this.updateBindModeOverlay(toggledByKey);
-        if (this.checkForBindModeCombo()) {
+        if (this.settingAction !== undefined && this.settingKey !== undefined) {
             this.addKeybind(this.composeKeys(this.settingKey), this.settingAction);
-            this.toggleBindMode();
+            this.toggleBindMode(false);
         }
-    },
-
-    checkForBindModeCombo() {
-        return this.settingAction && this.settingKey;
     },
 
     toggleBindMode(toggledByKey) {
