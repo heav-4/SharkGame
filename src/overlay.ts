@@ -3,8 +3,6 @@ SharkGame.OverlayHandler = {
         $("#overlay").removeClass("gateway");
     },
 
-    setup() {},
-
     revealOverlay(duration, endOpacity, callback = $.noop) {
         if (duration === 0 || !SharkGame.Settings.current.showAnimations) {
             $("#overlay").css("opacity", endOpacity).show();
@@ -44,7 +42,7 @@ SharkGame.OverlayHandler = {
     },
 
     isOverlayShown() {
-        return !$("#overlay").is(":hidden") && $("#overlay").css("opacity") !== 0;
+        return !$("#overlay").is(":hidden") && $("#overlay").css("opacity") !== "0";
     },
 
     enterGateway() {

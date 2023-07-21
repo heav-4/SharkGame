@@ -643,6 +643,15 @@ declare global {
         elevateMemories(): void;
     };
 
+    type OverlayHandlerModule = {
+        init(): void;
+        revealOverlay(duration: number, endOpacity: number, callback?: () => void): void;
+        hideOverlay(duration?: number, callback?: () => void): void;
+        isOverlayShown(): boolean;
+        enterGateway(): void;
+        exitGateway(): void;
+    };
+
     type PaneHandlerModule = {
         paneStack: Pane[];
         currentPane?: Pane;
@@ -987,6 +996,7 @@ declare global {
         MathUtil: MathUtilModule;
         MiscUtil: MiscUtilModule;
         Memories: MemoryModule;
+        OverlayHandler: OverlayHandlerModule;
         PaneHandler: PaneHandlerModule;
         ResourceIncomeAffected;
         ResourceIncomeAffectors;
