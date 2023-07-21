@@ -3,7 +3,7 @@ img/zips
 js
 !js/lib
 css
-build.log
+typescript_build.log
 
 # yarn
 node_modules/
