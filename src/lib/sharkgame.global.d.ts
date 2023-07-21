@@ -637,8 +637,8 @@ declare global {
     type MemoryModule = {
         worldMemories: Record<WorldName, string[]>;
         persistentMemories: Record<WorldName, string[]>;
+        messageLookup: Map<string, number>;
         init(): void;
-        setup(): void;
         addMemory(worldType: WorldName, messageName: string): void;
         elevateMemories(): void;
     };

@@ -1,6 +1,7 @@
 SharkGame.Memories = {
-    worldMemories: {},
-    persistentMemories: {},
+    worldMemories: {} as Record<WorldName, string[]>,
+    persistentMemories: {} as Record<WorldName, string[]>,
+    messageLookup: new Map(),
 
     init() {
         // create the quick lookup table for home events
@@ -11,16 +12,14 @@ SharkGame.Memories = {
             });
         });
 
-        this.worldMemories = {};
-        this.persistentMemories = {};
+        this.worldMemories = {} as Record<WorldName, string[]>;
+        this.persistentMemories = {} as Record<WorldName, string[]>;
 
         $.each(SharkGame.WorldTypes, (worldType) => {
             this.worldMemories[worldType] = [];
             this.persistentMemories[worldType] = [];
         });
     },
-
-    setup() {},
 
     addMemory(worldType, messageName) {
         if (!mem.worldMemories[worldType].includes(messageName)) mem.worldMemories[worldType].push(messageName);
