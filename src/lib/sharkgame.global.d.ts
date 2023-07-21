@@ -448,6 +448,7 @@ declare global {
     type EventHandlerModule = {
         eventQueue: SharkEventHandler[][];
         init(): void;
+        setup(): void;
         handleEventTick(handlingTime: EventName | "load"): void;
     };
 

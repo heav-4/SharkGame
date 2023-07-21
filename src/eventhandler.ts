@@ -25,15 +25,14 @@ SharkGame.EventHandler = {
         const queue = SharkGame.EventHandler.eventQueue;
 
         queue.forEach((handlers, priority) => {
-            /** @type {SharkEventHandler[]} */
-            const cleanedEventHandlers = [];
+            const cleanedEventHandlers: SharkEventHandler[] = [];
             _.each(handlers, (eventHandler) => {
                 let keep = true;
                 if (eventHandler.handlingTime === handlingTime || handlingTime === "load") {
                     const action = eventHandler.getAction();
                     switch (action) {
                         case "trigger":
-                            keep = eventHandler.trigger();
+                            keep = eventHandler.trigger() ?? false;
                             break;
                         case "remove":
                             keep = false;
