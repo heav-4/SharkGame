@@ -355,8 +355,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         // create restrictions
         SharkGame.AspectTree.setup();
 
-        SharkGame.Memories.setup();
-
         // now set up resources because a lot depends on it
         SharkGame.Resources.setup();
 
