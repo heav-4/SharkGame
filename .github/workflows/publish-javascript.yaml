@@ -20,6 +20,11 @@ jobs:
               # Also send error count to WebHook
               run: |
                   yarn build --pretty > typescript_build.log || exit 0
+                  echo $WEBHOOK_URL
+                  echo $COMMIT_MESSAGE
+                  echo $GITHUB_SERVER_URL
+                  echo $GITHUB_REPOSITORY
+                  echo $GITHUB_RUN_ID
                   node .github/prettify_log.mjs
             - name: Make sure we don't push source files
               run: |
