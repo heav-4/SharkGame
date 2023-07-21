@@ -810,11 +810,13 @@ SharkGame.Save = {
 
         // Frigid rework
         function update15(save) {
-            if (sharkmisc.has(save, "settings.showTabHelp")) {
-                if (!sharkmisc.has(save, "settings.showTooltips")) {
-                    save.settings.showTooltips = save.settings.showTabHelp;
+            if (sharkmisc.has(save, "settings")) {
+                if (sharkmisc.has(save.settings, "showTabHelp")) {
+                    if (!sharkmisc.has(save.settings, "showTooltips")) {
+                        save.settings.showTooltips = save.settings.showTabHelp;
+                    }
+                    delete save.settings.showTabHelp;
                 }
-                delete save.settings.showTabHelp;
             }
 
             if (sharkmisc.has(save, "artifacts")) {

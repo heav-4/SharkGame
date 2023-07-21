@@ -625,13 +625,13 @@ declare global {
     };
 
     type MiscUtilModule = {
-        tryAddProperty(object: any, property: keyof any, value: any): any;
+        tryAddProperty(object: any, property: PropertyKey, value: any): any;
         /**
          * There may or may not be some problem with the "this" value.
          * I don't understand it intuitively enough to really check for it.
          */
         cloneDeep<T>(obj: T): T;
-        has: typeof Object.prototype.hasOwnProperty.call;
+        has<T>(obj: T, key: PropertyKey): boolean;
     };
 
     type MemoryModule = {

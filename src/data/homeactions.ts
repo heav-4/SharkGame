@@ -54,7 +54,7 @@ SharkGame.HomeActions = {
                 const defaultPropertiesToDefine = _.pickBy(
                     Object.getOwnPropertyDescriptors(defaultActions[actionName]),
                     (_propertyDescriptor, propertyName) => {
-                        return !sharkmisc.has(finalTable, [actionName, propertyName]);
+                        return !sharkmisc.has(finalTable, actionName) || !sharkmisc.has(finalTable[actionName], propertyName);
                     }
                 );
 

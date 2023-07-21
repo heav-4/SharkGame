@@ -168,15 +168,16 @@ SharkGame.Lab = {
                 (upgrade, upgradeId) =>
                     lab.isUpgradePossible(upgradeId) &&
                     !lab.isUpgradeVisible(upgradeId) &&
-                    sharkmisc.has(upgrade, "required.upgrades") &&
+                    sharkmisc.has(upgrade, "required") &&
+                    sharkmisc.has(upgrade.required, "upgrades") &&
                     _.every(upgrade.required.upgrades, (requiredUpgradeId) => SharkGame.Upgrades.purchased.includes(requiredUpgradeId))
             );
 
             if (hintedUpgrade === undefined) return;
             let hintResource;
-            if (sharkmisc.has(hintedUpgrade, "required.seen")) {
+            if (sharkmisc.has(hintedUpgrade, "required") && sharkmisc.has(hintedUpgrade.required, "seen")) {
                 hintResource = _.find(hintedUpgrade.required.seen, (resource) => world.doesResourceExist(resource));
-            } else if (sharkmisc.has(hintedUpgrade, "required.totals")) {
+            } else if (sharkmisc.has(hintedUpgrade, "required") && sharkmisc.has(hintedUpgrade.required, "totals")) {
                 hintResource = _.find(Object.keys(hintedUpgrade.required.totals), (resource) => world.doesResourceExist(resource));
             }
 
@@ -500,14 +501,14 @@ SharkGame.Lab = {
     isUpgradeVisible(upgradeId) {
         const upgrade = SharkGame.Upgrades.getUpgradeData(SharkGame.Upgrades.getUpgradeTable(), upgradeId);
         let isVisible = true;
-        if (sharkmisc.has(upgrade, "required.seen")) {
+        if (sharkmisc.has(upgrade, "required") && sharkmisc.has(upgrade.required, "seen")) {
             // Checks if any of the required resources has been seen
             // change to _.every to make it require all to have been seen
-            isVisible = isVisible && _.some(upgrade.required.seen, (requiredSeen) => res.getTotalResource(requiredSeen) > 0);
+            isVisible = isVisible && _.some(upgrade.required!.seen, (requiredSeen) => res.getTotalResource(requiredSeen) > 0);
         }
-        if (sharkmisc.has(upgrade, "required.totals")) {
+        if (sharkmisc.has(upgrade, "required") && sharkmisc.has(upgrade.required, "totals")) {
             isVisible =
-                isVisible && _.every(upgrade.required.totals, (requiredTotal, resourceName) => res.getTotalResource(resourceName) >= requiredTotal);
+                isVisible && _.every(upgrade.required!.totals, (requiredTotal, resourceName) => res.getTotalResource(resourceName) >= requiredTotal);
         }
         return isVisible || SharkGame.Upgrades.purchased.includes(upgradeId);
     },
@@ -517,13 +518,10 @@ SharkGame.Lab = {
         // In order to compensate, this code scales the background to be 1.3 times darker.
         const color = sharkcolor.getVariableColor("--color-light").replace(/[^0-9a-f]/gi, "");
         // Convert to rgb channels, convert from hex to decimal and scale it
-        let red = parseInt(color.substr(0, 2), 16) / 1.3;
-        let green = parseInt(color.substr(2, 2), 16) / 1.3;
-        let blue = parseInt(color.substr(4, 2), 16) / 1.3;
+        const red = (parseInt(color.substr(0, 2), 16) / 1.3).toString(16);
+        const green = (parseInt(color.substr(2, 2), 16) / 1.3).toString(16);
+        const blue = (parseInt(color.substr(4, 2), 16) / 1.3).toString(16);
         // Convert back to hex
-        red = parseInt(red).toString(16);
-        green = parseInt(green).toString(16);
-        blue = parseInt(blue).toString(16);
         const darkerColour = "#" + red + green + blue;
 
         const effects = [];
