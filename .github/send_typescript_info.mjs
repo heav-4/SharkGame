@@ -47,8 +47,7 @@ try {
             "Content-Type": "application/json",
         },
     });
-}
-catch (err) {
+} catch (err) {
     console.error(err);
     process.exit(99);
 }
