@@ -23,26 +23,32 @@ const body = buildLog
 
 const url = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
 
-await fetch(process.env.WEBHOOK_URL, {
-    method: "POST",
-    body: JSON.stringify({
-        username: "GitHub",
-        avatar_url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-        embeds: [
-            {
-                color: 0xff0000,
-                author: {
-                    name: process.env.COMMIT_MESSAGE,
-                    url,
+try {
+    await fetch(process.env.WEBHOOK_URL, {
+        method: "POST",
+        body: JSON.stringify({
+            username: "GitHub",
+            avatar_url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+            embeds: [
+                {
+                    color: 0xff0000,
+                    author: {
+                        name: process.env.COMMIT_MESSAGE,
+                        url,
+                    },
+                    url: "https://tobot.dev/",
+                    title,
+                    description: "```" + body + "```",
+                    timestamp: new Date().toISOString(),
                 },
-                url: "https://tobot.dev/",
-                title,
-                description: "```" + body + "```",
-                timestamp: new Date().toISOString(),
-            },
-        ],
-    }),
-    headers: {
-        "Content-Type": "application/json",
-    },
-});
+            ],
+        }),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+}
+catch (err) {
+    console.error(err);
+    process.exit(99);
+}

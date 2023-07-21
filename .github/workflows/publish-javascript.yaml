@@ -13,14 +13,15 @@ jobs:
               # Ignore postinstall because we don't need to run test in this build
               run: yarn --ignore-scripts
             - name: Build project
+              # `exit 0` temporarily so it ignores all the many many many build errors
+              run: |
+                  yarn build --pretty > typescript_build.log || exit 0
+            - name: Send error count to Webhook
               env:
                   WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
                   COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-              # `exit 0` temporarily so it ignores all the many many many build errors
-              # Also send error count to WebHook
               run: |
-                  yarn build --pretty > typescript_build.log || exit 0
-                  node .github/prettify_log.mjs
+                  node .github/send_typescript_info.mjs
             - name: Make sure we don't push source files
               run: |
                   sed -i 's/^js//' .gitignore
