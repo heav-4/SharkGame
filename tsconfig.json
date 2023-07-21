@@ -5,7 +5,9 @@
         "lib": ["ESNext", "DOM"],
         "outDir": "js",
         "target": "ESNext",
-        "sourceMap": true
+        "sourceMap": true,
+        "removeComments": true,
+        "checkJs": true
     },
     "include": ["src"]
 }
