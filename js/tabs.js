@@ -82,7 +82,7 @@ SharkGame.TabHandler = {
     validateTabWidth() {
         const logLocation = SharkGame.Settings.current.logLocation;
         if (logLocation !== "left" && logLocation !== "top") {
-            $("#tabList").css("margin-right", $(window).width() - document.getElementById("content").getBoundingClientRect().right + 14 + "px");
+            $("#tabList").css("margin-right", window.innerWidth - document.getElementById("content").getBoundingClientRect().right + 14 + "px");
         }
     },
     setUpTab() {
