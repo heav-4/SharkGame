@@ -2,8 +2,7 @@ name: Build Project and push JavaScript to dedicated branch
 on:
     push:
         branches:
-            # Replace this with `dev` if and when it gets merged
-            - typescript
+            - dev
 jobs:
     build:
         runs-on: ubuntu-latest
