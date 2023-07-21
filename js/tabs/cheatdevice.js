@@ -256,13 +256,6 @@ SharkGame.CheatsAndDebug = {
                 log.addMessage(cad.forceAllExist());
             },
         },
-        // challengeMe: {
-        //     name: "Spin the wheel of challenges",
-        //     location: "right",
-        //     click() {
-        //         log.addMessage(cad.challengeMePlease());
-        //     },
-        // },
         egg: {
             name: "egg",
             category: "nonsense",
@@ -276,7 +269,6 @@ SharkGame.CheatsAndDebug = {
     },
     setup() {
         if (SharkGame.persistentFlags.debug) {
-            // unlock cheats for anyone who already has debug mode access
             gateway.unlockCheats();
         }
     },
@@ -322,9 +314,8 @@ SharkGame.CheatsAndDebug = {
         });
         let selector;
         let container;
-        let buttonContainer; // prettier gets angry at me if i try to declare these case-specific variables inside the case
+        let buttonContainer;
         $.each(cad.cheatButtons, (buttonName, buttonData) => {
-            // const toAppendTo = buttonData.location === "right" ? $("#rightButtons") : $("#leftButtons");
             const toAppendTo = $("#" + buttonData.category);
             switch (buttonData.type) {
                 case "up-down":
@@ -407,7 +398,6 @@ SharkGame.CheatsAndDebug = {
             if (buttonData.updates) {
                 switch (buttonData.type) {
                     case "up-down":
-                        // does nothing yet
                         break;
                     default:
                         if ($("#" + buttonName).html() !== buttonData.name) {
@@ -599,7 +589,6 @@ SharkGame.CheatsAndDebug = {
     },
     doSomethingCoolPlease() {
         return "Did something really cool.";
-        // this doesn't do anything
     },
     beatWorldPlease() {
         SharkGame.wonGame = true;
@@ -818,32 +807,6 @@ SharkGame.CheatsAndDebug = {
                 return "Rolled a perfect twenty. Everything times 20.";
         }
     },
-    // challengeMePlease() {
-    //     switch (world.worldType) {
-    //         case "abandoned":
-    //             world.forceExistence("tar");
-    //             if (!SharkGame.ResourceMap.get("fish").income) SharkGame.ResourceMap.get("fish").income = {};
-    //             if (!SharkGame.ResourceMap.get("fish").baseIncome) SharkGame.ResourceMap.get("fish").baseIncome = {};
-    //             SharkGame.ResourceMap.get("fish").income.tar = 0.00001;
-    //             SharkGame.ResourceMap.get("fish").baseIncome.tar = 0.00001;
-    //             res.reapplyModifiers("fish", "tar");
-    //             return "Abandoned Challenge:<br>Dirty fish! Fish produce tar!";
-    //         case "haven":
-    //             SharkGame.ResourceMap.get("nurse").baseIncome.fish = -500000000;
-    //             res.reapplyModifiers("nurse", "fish");
-    //             SharkGame.ResourceMap.get("maker").baseIncome.fish = -50000000;
-    //             res.reapplyModifiers("maker", "fish");
-    //             SharkGame.ResourceMap.get("brood").baseIncome.fish = -500000000;
-    //             res.reapplyModifiers("brood", "fish");
-    //             SharkGame.ResourceMap.get("scientist").baseIncome.crystal = -10000;
-    //             res.reapplyModifiers("scientist", "crystal");
-    //             SharkGame.ResourceMap.get("treasurer").baseIncome.kelp = -5000;
-    //             res.reapplyModifiers("treasurer", "kelp");
-    //             SharkGame.ResourceMap.get("planter").baseIncome.sand = -100000;
-    //             res.reapplyModifiers("planter", "sand");
-    //             return "Haven Challenge:<br>Unionization! Specialists and breeders demand real paychecks!";
-    //     }
-    // },
     expensiveUpgradesPlease() {
         if (cad.upgradePriceModifier === 512) {
             return "I'm not letting you subject yourself to any more of this.";

@@ -33,7 +33,6 @@ SharkGame.WorldTypes = {
         style: "default",
         includedResources: ["basics", "sharks", "rays", "crabs", "basicmaterials", "kelpstuff", "sharkmachines"],
         modifiers: [],
-        // initial gate cost, scaled by planetary level
         gateRequirements: {
             slots: {
                 fish: 1e7,

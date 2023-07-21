@@ -3,6 +3,7 @@ img/zips
 
 !js/lib
 
+typescript_build.log
 
 # yarn
 node_modules/

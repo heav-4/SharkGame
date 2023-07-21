@@ -158,7 +158,6 @@ SharkGame.Stats = {
         }
     },
     updateTimers() {
-        // update run times
         const gameTime = sharktext.formatTime(Date.now() - SharkGame.timestampGameStart);
         if ($("#gameTime").html() !== gameTime) {
             $("#gameTime").html(gameTime);
@@ -264,18 +263,13 @@ SharkGame.Stats = {
         const drawnResourceMap = new Map();
         SharkGame.ResourceMap.forEach((generatorData, generatorName) => {
             if (res.getTotalResource(generatorName) > 0 && generatorData.income) {
-                // if the resource has an income requiring any costs
-                // and it isn't a forced income
-                // do not display the resource's income if it requires a non-existent resource (looking at you, sponge)
                 for (const incomeResourceName in generatorData.income) {
-                    // skip income that doesn't exist
                     if (SharkGame.PlayerResources.get(incomeResourceName) < generatorData.income[incomeResourceName] && !generatorData.forceIncome)
                         return;
                 }
                 $.each(generatorData.income, (incomeKey, incomeValue) => {
                     if (world.doesResourceExist(incomeKey) && SharkGame.FlippedBreakdownIncomeTable.get(incomeKey) && incomeValue !== 0) {
                         if (SharkGame.Settings.current.switchStats) {
-                            // Switch it!
                             if (!drawnResourceMap.has(incomeKey)) {
                                 drawnResourceMap.set(incomeKey, {});
                             }
@@ -285,7 +279,6 @@ SharkGame.Stats = {
                             if (!drawnResourceMap.has(generatorName)) {
                                 drawnResourceMap.set(generatorName, {});
                             }
-                            // Copy all the good incomes over
                             drawnResourceMap.get(generatorName)[incomeKey] = incomeValue;
                         }
                     }
@@ -293,9 +286,6 @@ SharkGame.Stats = {
             }
         });
         drawnResourceMap.forEach((headingData, headingName) => {
-            // if the resource has an income requiring any costs
-            // and it isn't a forced income
-            // do not display the resource's income if it requires a non-existent resource (looking at you, sponge)
             const subheadings = Object.keys(headingData).length;
             let resourceMapRow = $("<tr>");
             let counter = 0;
@@ -352,7 +342,6 @@ SharkGame.Stats = {
                 multipliers.aspect.push(res.getMultiplierProduct("aspect", generatorName, incomeKey));
             });
             $.each(multipliers, (category, values) => {
-                // thanks stackoverflow
                 multipliers[category] =
                     values.filter((value, index, list) => {
                         return list.indexOf(value) === index;
@@ -388,7 +377,6 @@ SharkGame.Stats = {
                     0
                     ? ""
                     : "+";
-                // which mode are we in?
                 if (SharkGame.Settings.current.grottoMode === "advanced") {
                     addCell([
                         res.INCOME_COLOR,
@@ -453,7 +441,6 @@ SharkGame.Stats = {
                 incomesTable.append(resourceMapRow);
                 resourceMapRow = $("<tr>");
             });
-            // throw away dangling values
             resourceMapRow = null;
             formatCounter++;
         });

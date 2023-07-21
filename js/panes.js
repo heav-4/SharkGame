@@ -66,7 +66,6 @@ SharkGame.PaneHandler = {
     buildPane() {
         const pane = $("<div>").attr("id", "pane");
         $("body").append(pane);
-        // set up structure of pane
         const titleDiv = $("<div>").attr("id", "paneHeader");
         titleDiv.append($("<div>").attr("id", "paneHeaderTitleDiv"));
         titleDiv.append($("<div>")
@@ -84,7 +83,6 @@ SharkGame.PaneHandler = {
         return pane;
     },
     addPaneToStack(title, contents, notCloseable, fadeInTime = 600, customOpacity) {
-        /** @type Pane */
         const stackObject = [title, contents, notCloseable, fadeInTime, customOpacity];
         if (this.currentPane) {
             this.paneStack.push(sharkmisc.cloneDeep(this.currentPane));
@@ -163,11 +161,9 @@ SharkGame.PaneHandler = {
     },
     showPane(title, contents, notCloseable, fadeInTime, customOpacity, preserveElements) {
         const pane = $("#pane");
-        // begin fading in/displaying overlay if it isn't already visible
         const overlay = $("#overlay");
         const overlayOpacity = $("#overlay").hasClass("gateway") ? 1.0 : customOpacity || 0.5;
         SharkGame.OverlayHandler.revealOverlay(fadeInTime, overlayOpacity);
-        // adjust header
         const titleDiv = $("#paneHeaderTitleDiv");
         const closeButtonDiv = $("#paneHeaderCloseButtonDiv");
         if (!title || title === "") {
@@ -176,12 +172,10 @@ SharkGame.PaneHandler = {
         else {
             titleDiv.show();
             if (!notCloseable) {
-                // put back to left
                 titleDiv.css({ "float": "left", "text-align": "left", "clear": "none" });
                 titleDiv.html("<h3>" + title + "</h3>");
             }
             else {
-                // center
                 titleDiv.css({ "float": "none", "text-align": "center", "clear": "both" });
                 titleDiv.html("<h2>" + title + "</h2>");
             }
@@ -203,7 +197,6 @@ SharkGame.PaneHandler = {
             pane.append($("<div>").attr("id", "paneContent"));
             paneContent = $("#paneContent");
         }
-        // adjust content
         paneContent.append(contents);
         if (SharkGame.Settings.current.showAnimations && customOpacity) {
             pane.show().css("opacity", 0).animate({ opacity: 1.0 }, fadeInTime);
@@ -232,7 +225,6 @@ SharkGame.PaneHandler = {
     },
     setUpOptions() {
         const optionsTable = $("<table>").attr("id", "optionTable");
-        // add settings specified in settings.js
         const categories = {};
         $.each(SharkGame.Settings, (name, setting) => {
             if (typeof setting.category === "string") {
@@ -250,12 +242,10 @@ SharkGame.PaneHandler = {
                     return;
                 }
                 const optionRow = $("<tr>");
-                // show setting name
                 optionRow.append($("<td>")
                     .addClass("optionLabel")
                     .html(setting.name + ":" + "<br/><span class='smallDesc'>(" + setting.desc + ")</span>"));
                 const currentSetting = SharkGame.Settings.current[settingName];
-                // show setting adjustment buttons
                 $.each(setting.options, (index, optionValue) => {
                     const isSelectedOption = optionValue === currentSetting;
                     optionRow.append($("<td>").append($("<button>")
@@ -267,8 +257,6 @@ SharkGame.PaneHandler = {
                 optionsTable.append(optionRow);
             });
         });
-        // SAVE IMPORT/EXPORT
-        // add save import/export
         let row = $("<tr>");
         row.append($("<td>").html("Import/Export Save:<br/><span class='smallDesc'>(Turn your save into text for other people to load, or as a backup.)</span>"));
         row.append($("<td>").append($("<button>")
@@ -294,10 +282,8 @@ SharkGame.PaneHandler = {
                 return;
             $("#importExportField").val(SharkGame.Save.exportData());
         })));
-        // add the actual text box
         row.append($("<td>").attr("colSpan", 4).append($("<input>").attr("type", "text").attr("id", "importExportField")));
         optionsTable.append(row);
-        // BACKUP MANAGEMENT
         row = $("<tr>");
         const row2 = $("<tr>");
         row.append($("<td>").html("Save Backups:<br/><span class='smallDesc'>(Create a backup save.)</span>"));
@@ -350,7 +336,6 @@ SharkGame.PaneHandler = {
             row2.append(loadButton);
         }
         optionsTable.append(row2);
-        // SETTING WIPE
         row = $("<tr>");
         row.append($("<td>").html("Wipe Settings:<br/><span class='smallDesc'>(Change all settings to default.)</span>"));
         row.append($("<td>").append($("<button>")
@@ -372,8 +357,6 @@ SharkGame.PaneHandler = {
             }
         })));
         optionsTable.append(row);
-        // SAVE WIPE
-        // add save wipe
         row = $("<tr>");
         row.append($("<td>").html("Wipe Save:<br/><span class='smallDesc'>(Completely wipe your main save and reset the game. COMPLETELY. FOREVER.)</span>"));
         row.append($("<td>").append($("<button>")
@@ -422,16 +405,9 @@ SharkGame.PaneHandler = {
         const settingInfo = buttonLabel.split("-");
         const settingName = settingInfo[1];
         const optionIndex = parseInt(settingInfo[2]);
-        // change setting to specified setting!
         SharkGame.Settings.current[settingName] = SharkGame.Settings[settingName].options[optionIndex];
-        // update relevant table cell!
-        // $('#option-' + settingName)
-        //     .html("(" + ((typeof newSetting === "boolean") ? (newSetting ? "on" : "off") : newSetting) + ")");
-        // enable all buttons
         $('button[id^="optionButton-' + settingName + '"]').removeClass("disabled");
-        // disable this button
         $(this).addClass("disabled");
-        // if there is a callback, call it, else call the no op
         (SharkGame.Settings[settingName].onChange || $.noop)();
     },
     showKeybinds() {

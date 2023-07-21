@@ -80,11 +80,9 @@ SharkGame.Keybinds = {
     cleanActionID(actionID) {
         if (!this.actions.includes(actionID)) {
             if (SharkGame.HomeActions.getActionTable()[actionID]) {
-                // see if this action happens to have a name in this world
                 actionID = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionID).name;
             }
             else {
-                // perform a manual search to find the name of this action
                 _.each(SharkGame.HomeActions, (homeActionsObject) => {
                     if (typeof homeActionsObject === "object" && homeActionsObject[actionID]) {
                         actionID = homeActionsObject[actionID].name;
@@ -95,7 +93,6 @@ SharkGame.Keybinds = {
         }
         return actionID;
     },
-    // makes IDs human-readable
     cleanKeyID(keyID) {
         keyID = keyID
             .replace("Digit", "")
@@ -104,15 +101,11 @@ SharkGame.Keybinds = {
             .replace("NumLock", "Num Lock")
             .replace("ScrollLock", "Scroll Lock")
             .replace("ContextMenu", "Context Menu");
-        // Replaces e.g. "Up Arrow" or "Numpad 9" with "Arrow Up" or "9 Numpad"
-        // Kinda weird but okay ig
         _.each(["Left", "Right", "Up", "Down", "Numpad"], (direction) => {
             if (keyID.includes(direction)) {
                 keyID = `${direction} ` + keyID.replace(direction, "");
             }
         });
-        // Undoes the above for "Page Up"
-        // This is quite janky, innit
         keyID = keyID.replace("Up Page", "Page Up").replace("Down Page", "Page Down");
         return keyID;
     },
@@ -181,16 +174,12 @@ SharkGame.Keybinds = {
         }
     },
     handleDownBind(actionType) {
-        // make sure to remember to search all homeaction worlds in order when
-        // looking for the data associated with it
         if (!actionType)
             return false;
         switch (actionType) {
             case "test":
                 break;
             case "open bind menu":
-                // do nothing for now
-                // TODO: Implement this, I suppose
                 break;
             case "bind home ocean button":
                 if (!this.bindModeLock) {
@@ -321,9 +310,6 @@ SharkGame.Keybinds = {
             case "press all buying buttons":
                 if (!SharkGame.flags.pressedAllButtonsThisTick) {
                     _.each(home.buttonNamesList, (actionName, actionData) => {
-                        // actionData gets immediately overwritten because
-                        // linter will yell at me if i define a variable in the switch statement
-                        // and this is a decent workaround
                         actionData = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
                         if (!home.doesButtonGiveNegativeThing(actionData) && home.shouldHomeButtonBeUsable(actionData) && !actionData.isRemoved) {
                             home.onHomeButton(null, actionName);
@@ -353,7 +339,6 @@ SharkGame.Keybinds = {
     bindMenuNewBind(keyID) {
         this.waitForKey = false;
         this.addKeybind(keyID, "nothing");
-        // just remake the whole pane
         SharkGame.PaneHandler.nextPaneInStack();
         SharkGame.PaneHandler.showKeybinds();
     },
@@ -417,23 +402,6 @@ SharkGame.Keybinds = {
         }
     },
     toggleBindMode(toggledByKey) {
-        // toggle bind mode:
-        // first, settingaction and settingkey to undefined
-        // then toggle the bindmode property in sharkgame.keybinds
-        // then, if it was just turned on, pop up an overlay window if not in the gate
-        // (make sure to turn off overlay in keybinds init)
-        // if it was just turned off, remove the overlay
-        //
-        // on key up don't accept input from the bind mode toggle key
-        // on keydown test to see if its the bindmode key and turn off bindmode if it is
-        // on keydown test to see if it's not a modifier key
-        // if it's not a modifier key, set the overlay to display the key on it,
-        // and set the settingkey property in sharkgame.keybinds
-        // then test to see if we have a settingaction
-        // if we do, bind it and toggle bind mode
-        //
-        // on home button press, check for bindmode
-        // if bindmode, set settingaction, update the overlay, and run checkForCombo
         this.settingKey = undefined;
         this.settingAction = undefined;
         if (SharkGame.PaneHandler.isStackClosable() && SharkGame.Tabs.current === "home") {

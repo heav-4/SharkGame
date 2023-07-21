@@ -14,7 +14,6 @@ SharkGame.Home = {
         home.lastValidMessage = "";
     },
     setup() {
-        // rename home tab
         const tabName = SharkGame.WorldTypes[world.worldType].name + " Ocean";
         home.tabName = tabName;
         if (SharkGame.Tabs.home) {
@@ -34,18 +33,14 @@ SharkGame.Home = {
             SharkGame.flags.selectedHomeMessage = SharkGame.HomeMessages.messages[world.worldType][0].name;
         }
         home.tickHomeMessages(true);
-        // button tabs
         const buttonTabDiv = $("<div>").attr("id", "homeTabs");
         content.append(buttonTabDiv);
         home.createButtonTabs();
-        // buy amount buttons
         if (SharkGame.persistentFlags.revealedBuyButtons) {
             main.createBuyButtons("buy", content, "append");
         }
-        // button list
         const buttonList = $("<div>").attr("id", "buttonList").addClass("homeScreen");
         content.append(buttonList);
-        // background art!
         if (SharkGame.Settings.current.showTabImages) {
             tabMessage.css("background-image", "url('" + home.tabBg + "')");
         }
@@ -64,8 +59,6 @@ SharkGame.Home = {
         let tabAmount = 0;
         if (!SharkGame.persistentFlags.revealedButtonTabs)
             return;
-        // add a header for each discovered category
-        // make it a link if it's not the current tab
         $.each(SharkGame.HomeActionCategories, (categoryName, category) => {
             const onThisTab = home.currentButtonTab === categoryName;
             let categoryDiscovered = false;
@@ -73,10 +66,8 @@ SharkGame.Home = {
                 categoryDiscovered = true;
             }
             else {
-                // Check if any action in category is discovered
                 categoryDiscovered = _.some(category.actions, (actionName) => {
                     const actionTable = SharkGame.HomeActions.getActionTable();
-                    // True if it exists and is discovered
                     return sharkmisc.has(actionTable, actionName) && actionTable[actionName].discovered;
                 });
             }
@@ -104,14 +95,11 @@ SharkGame.Home = {
                 tabAmount++;
             }
         });
-        // finally at the very end just throw the damn list away if it only has two options
-        // "all" + another category is completely pointless
         if (tabAmount > 2) {
             buttonTabDiv.append(buttonTabList);
         }
     },
     updateTab(tabToUpdate) {
-        // return if we're looking at all buttons, no change there
         if (home.currentButtonTab === "all") {
             return;
         }
@@ -166,7 +154,6 @@ SharkGame.Home = {
         home.lastValidMessage = lastValidMessage.name;
         home.updateMemories();
         const currentMessageData = SharkGame.HomeMessages.messages[world.worldType][SharkGame.Memories.messageLookup.get(SharkGame.flags.selectedHomeMessage)];
-        // if there's an unseen message, change to it
         const anyUnseen = home.areThereAnyUnseenHomeMessages();
         if (anyUnseen || ((lastValidMessage.transient || currentMessageData.transient) && currentMessageData.name !== lastValidMessage.name)) {
             home.updateMessage(home.lastValidMessage, isDuringTabSwitch);
@@ -182,7 +169,6 @@ SharkGame.Home = {
     },
     getLastValidMessage() {
         const lastValidMessageData = _.findLast(SharkGame.HomeMessages.messages[world.worldType], (extraMessage) => {
-            // check if all requirements met
             if (sharkmisc.has(extraMessage, "unlock")) {
                 let requirementsMet = true;
                 requirementsMet =
@@ -269,7 +255,6 @@ SharkGame.Home = {
             if (SharkGame.Settings.current.showTabImages) {
                 sceneImageDiv = $("<div>").attr("id", "tabSceneImage");
             }
-            // ⯇ ⯈
             SharkGame.Button.makeButton("sceneLeft", "⯇", sceneDiv, () => {
                 home.decrementHomeMessage();
             });
@@ -328,7 +313,6 @@ SharkGame.Home = {
         tracker.empty();
         if (!home.getLastValidMessage().transient) {
             _.each(SharkGame.HomeMessages.messages[world.worldType], (messageData) => {
-                // console.log(messageData.name);
                 if (SharkGame.flags.seenHomeMessages.includes(messageData.name) && !messageData.transient) {
                     tracker.append($("<div>")
                         .html("•")
@@ -338,7 +322,6 @@ SharkGame.Home = {
         }
     },
     update() {
-        // for each button entry in the home tab,
         $.each(SharkGame.HomeActions.getActionTable(), (actionName, actionData) => {
             const actionTab = home.getActionCategory(actionName);
             const onTab = actionTab === home.currentButtonTab || home.currentButtonTab === "all";
@@ -355,7 +338,6 @@ SharkGame.Home = {
                     }
                 }
                 else {
-                    // button exists
                     home.updateButton(actionName);
                 }
             }
@@ -369,9 +351,7 @@ SharkGame.Home = {
                 }
             }
         });
-        // update home message
         home.tickHomeMessages();
-        // update hovering messages
         if (document.getElementById("tooltipbox").className.split(" ").includes("forHomeButtonOrGrotto")) {
             if (document.getElementById("tooltipbox").attributes.current) {
                 home.onHomeHover(null, document.getElementById("tooltipbox").attributes.current.value);
@@ -396,7 +376,6 @@ SharkGame.Home = {
         let amount = amountToBuy;
         let enableButton = true;
         if (amountToBuy.lessThan(0)) {
-            // unlimited mode, calculate the highest we can go
             const max = home.getMax(actionData);
             const divisor = new Decimal(1).dividedBy(amountToBuy.times(-1));
             amount = max.times(divisor);
@@ -412,13 +391,11 @@ SharkGame.Home = {
             amount = amount.round();
         }
         const actionCost = home.getCost(actionData, amount);
-        // keep button disabled if the max returned less than 1
         if (enableButton) {
-            // disable button if resources can't be met
             enableButton = res.checkResources(actionCost);
         }
         if ($.isEmptyObject(actionCost)) {
-            enableButton = true; // always enable free buttons
+            enableButton = true;
         }
         let label = actionData.name;
         if (!$.isEmptyObject(actionCost) && amount.greaterThan(1)) {
@@ -430,7 +407,6 @@ SharkGame.Home = {
         else {
             button.addClass("disabled");
         }
-        // check for any infinite quantities
         if (_.some(actionCost, (cost) => !cost.isFinite())) {
             label += "<br>Maxed out";
         }
@@ -441,12 +417,6 @@ SharkGame.Home = {
             }
         }
         label = $('<span id="' + actionName + 'Label" class="click-passthrough">' + label + "</span>");
-        // Only redraw the whole button when necessary.
-        // This is necessary when buttons are new, or the icon setting has been changed.
-        // We can detect both cases for the icon-on settings by making sure we have an icon
-        // class that matches the setting.
-        // The icon-off setting is a little trickier.  It needs two cases.  We check for a lack of spans to
-        // see if the button is new, then check for the presence of any icon to see if the setting changed.
         if (button.html().includes("button-icon") !== SharkGame.Settings.current.showIcons) {
             button.html(label);
             let spritename;
@@ -469,11 +439,7 @@ SharkGame.Home = {
             }
         }
         else {
-            // The button already exists, so don't waste time drawing the icon.
-            // Only redraw the label, and even then only if it's changed.
             const labelSpan = $("#" + actionName + "Label");
-            // Quote-insensitive comparison, because the helper methods beautify the labels using single quotes
-            // but jquery returns the same elements back with double quotes.
             if (label.html() !== labelSpan.html()) {
                 labelSpan.html(label.html());
             }
@@ -487,35 +453,27 @@ SharkGame.Home = {
         else if (action.unauthorized !== undefined) {
             return true;
         }
-        // check to see if this action should be forcibly removed
         if (action.removedBy && home.shouldRemoveHomeButton(action)) {
             return false;
         }
-        // check resource prerequisites
         if (action.prereq.resource && !res.checkResources(action.prereq.resource, true)) {
             return false;
         }
-        // check if resource cost exists
         if (!_.every(action.cost, (cost) => world.doesResourceExist(cost.resource))) {
             return false;
         }
-        // check special worldtype prereqs
         if (action.prereq.world && world.worldType !== action.prereq.world) {
             return false;
         }
-        // check the special worldtype exclusions
         if (action.prereq.notWorlds && action.prereq.notWorlds.includes(world.worldType)) {
             return false;
         }
-        // check upgrade prerequisites
         if (!_.every(action.prereq.upgrade, (upgradeId) => SharkGame.Upgrades.purchased.includes(upgradeId))) {
             return false;
         }
-        // check if resulting resource exists
         if (!_.every(action.effect.resource, (_amount, resourceId) => world.doesResourceExist(resourceId))) {
             return false;
         }
-        // if nothing fails, return true
         return true;
     },
     shouldHomeButtonBeUsable(_actionData) {
@@ -523,9 +481,6 @@ SharkGame.Home = {
         if (cad.pause || cad.stop) {
             shouldBeUsable = false;
         }
-        // this function might contain more stuff later
-        // for now, the only exception to being able to
-        // use home buttons is if the game is paused
         return shouldBeUsable;
     },
     shouldRemoveHomeButton(action) {
@@ -551,7 +506,7 @@ SharkGame.Home = {
         this.buttonNamesList.push(actionName);
         const buttonListSel = $("#buttonList");
         const actionData = SharkGame.HomeActions.getActionTable()[actionName];
-        const buttonSelector = SharkGame.Button.makeHoverscriptButton(actionName, actionData.name, buttonListSel, home.onHomeButton, home.onHomeHover, home.onHomeUnhover); // box-shadow: 0 0 6px 3px #f00, 0 0 3px 1px #ff1a1a inset;
+        const buttonSelector = SharkGame.Button.makeHoverscriptButton(actionName, actionData.name, buttonListSel, home.onHomeButton, home.onHomeHover, home.onHomeUnhover);
         buttonSelector.html($("<span id='" + actionName + "Label' class='click-passthrough'></span>"));
         home.updateButton(actionName);
         if (SharkGame.Settings.current.showAnimations) {
@@ -560,7 +515,6 @@ SharkGame.Home = {
         if (home.shouldBeNewlyDiscovered(actionName, actionData)) {
             buttonSelector.addClass("newlyDiscovered");
         }
-        // still need to add increases/decreases check here, but this is not relevant to the actual game yet so i dont care
         if (home.doesButtonGiveNegativeThing(actionData)) {
             buttonSelector.addClass("gives-consumer");
         }
@@ -568,7 +522,6 @@ SharkGame.Home = {
     doesButtonGiveNegativeThing(actionData) {
         let givesBadThing = false;
         $.each(actionData.effect.resource, (resourceName) => {
-            // still need to add increases/decreases check here, but this is not relevant to the actual game yet so i dont care
             if (_.some(SharkGame.ResourceMap.get(resourceName).income, (incomeAmount, resource) => world.doesResourceExist(resource) &&
                 ((incomeAmount < 0 && !res.isInCategory(resource, "harmful")) || (res.isInCategory(resource, "harmful") && incomeAmount > 0)))) {
                 givesBadThing = true;
@@ -595,7 +548,6 @@ SharkGame.Home = {
         const amountToBuy = new Decimal(sharkmath.getBuyAmount());
         let button;
         if (!actionName) {
-            // get related entry in home button table
             button = $(this);
             actionName = button.attr("id");
         }
@@ -613,16 +565,11 @@ SharkGame.Home = {
         let actionCost = {};
         let amount = new Decimal(0);
         if (amountToBuy.lessThan(0)) {
-            // unlimited mode, calculate the highest we can go
             const max = home.getMax(action);
-            // floor max
             if (max > 0) {
-                // convert divisor from a negative number to a positive fraction
                 const divisor = new Decimal(1).dividedBy(amountToBuy.times(-1));
                 amount = max.times(divisor);
-                // floor amount
                 amount = amount.round();
-                // make it worth entering this function
                 if (amount.lessThan(1))
                     amount = new Decimal(1);
                 actionCost = home.getCost(action, amount);
@@ -636,8 +583,6 @@ SharkGame.Home = {
             amount = amountToBuy;
         }
         if ($.isEmptyObject(actionCost) && !amount.equals(0)) {
-            // free action
-            // do not repeat or check for costs
             if (action.effect.resource) {
                 res.changeManyResources(action.effect.resource);
             }
@@ -649,17 +594,13 @@ SharkGame.Home = {
             log.addMessage(SharkGame.choose(action.outcomes));
         }
         else if (amount.greaterThan(0)) {
-            // cost action
             if (action.effect.events) {
                 _.each(action.effect.events, (eventName) => {
                     SharkGame.Events[eventName].trigger();
                 });
             }
-            // did the player just purchase sharkonium?
             if (actionName === "transmuteSharkonium") {
-                // did they only buy one for some reason?
                 if (amountToBuy.equals(1)) {
-                    // keep track of how many times they've done that
                     if (!SharkGame.persistentFlags.individuallyBoughtSharkonium) {
                         SharkGame.persistentFlags.individuallyBoughtSharkonium = 0;
                     }
@@ -668,16 +609,11 @@ SharkGame.Home = {
                     }
                 }
                 else {
-                    // otherwise they know what they're doing, stop keeping track
                     SharkGame.persistentFlags.individuallyBoughtSharkonium = -1;
                 }
-                // see remindAboutBuyMax event
             }
-            // check cost, only proceed if sufficient resources (prevention against lazy cheating, god, at least cheat in the right resources)
             if (res.checkResources(actionCost)) {
-                // take cost
                 res.changeManyResources(actionCost, true);
-                // execute effects
                 if (action.effect.resource) {
                     let resourceChange;
                     if (!amount.equals(1)) {
@@ -688,7 +624,6 @@ SharkGame.Home = {
                     }
                     res.changeManyResources(resourceChange);
                 }
-                // print outcome to log
                 if (!action.multiOutcomes || amount.equals(1)) {
                     log.addMessage(SharkGame.choose(action.outcomes));
                 }
@@ -704,7 +639,6 @@ SharkGame.Home = {
             SharkGame.HomeActions.getActionTable()[actionName].newlyDiscovered = false;
             button.removeClass("newlyDiscovered");
         }
-        // disable button until next frame
         button.addClass("disabled");
     },
     onHomeHover(mouseEnterEvent, actionName) {
@@ -741,8 +675,7 @@ SharkGame.Home = {
         const usePlural = (_.some(effects.resource, (_amount, name) => sharktext.getDeterminer(name)) &&
             (buyingHowMuch > 1 || _.some(effects.resource, (amount) => amount > 1))) ||
             Object.keys(effects.resource).length > 1;
-        let addedAnyLabelsYet = false; // this keeps track of whether or not little tooltip text has already been appended
-        // append valid stuff for generators like production
+        let addedAnyLabelsYet = false;
         let text = "";
         if (_.some(validGenerators, (amount) => amount > 0)) {
             if (_.some(validGenerators, (amount, resourceName) => amount > 0 && res.isInCategory(resourceName, "harmful"))) {
@@ -962,7 +895,6 @@ SharkGame.Home = {
         $("#tooltipbox").removeClass("forHomeButtonOrGrotto").attr("current", "").removeClass("gives-consumer");
     },
     getCost(action, amount) {
-        /** @type {Record<Resource, number>} */
         const calcCost = {};
         const rawCost = action.cost;
         _.each(rawCost, (costObj) => {
@@ -991,7 +923,6 @@ SharkGame.Home = {
     getMax(action) {
         let max = new Decimal(1);
         if (action.max) {
-            // max is used as the determining resource for linear cost functions
             const resource = SharkGame.PlayerResources.get(action.max);
             const currAmount = new Decimal(resource.amount);
             max = new Decimal(1e308);
@@ -1010,7 +941,6 @@ SharkGame.Home = {
                         subMax = sharkmath.uniqueMax(currAmount, costResource, priceIncrease).minus(currAmount);
                         break;
                 }
-                // prevent flashing action costs
                 if (subMax.minus(subMax.round()).abs().lessThan(SharkGame.EPSILON)) {
                     subMax = subMax.round();
                 }

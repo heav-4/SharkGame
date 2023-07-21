@@ -17,7 +17,6 @@ SharkGame.Reflection = {
         SharkGame.TabHandler.registerTab(this);
     },
     setup() {
-        /* doesnt need to do anything */
     },
     switchTo() {
         const ref = SharkGame.Reflection;
@@ -54,8 +53,6 @@ SharkGame.Reflection = {
                 item.append(aspectLabel);
                 listSel.append(item);
                 if (SharkGame.Settings.current.showIcons) {
-                    // FIXME: artifacts -> aspects
-                    // base: ditto what i said above
                     const iconDiv = SharkGame.changeSprite(SharkGame.spriteIconPath, "aspects/" + aspectId, null, "aspects/apotheosis");
                     if (iconDiv) {
                         iconDiv.addClass("button-icon");
@@ -84,8 +81,6 @@ SharkGame.Reflection = {
                 item.append(aspectLabel);
                 listSelDisabled.append(item);
                 if (SharkGame.Settings.current.showIcons) {
-                    // FIXME: artifacts -> aspects
-                    // base: ditto what i said above
                     const iconDiv = SharkGame.changeSprite(SharkGame.spriteIconPath, "aspects/" + aspectId, null, "aspects/apotheosis");
                     if (iconDiv) {
                         iconDiv.addClass("button-icon");

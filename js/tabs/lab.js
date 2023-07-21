@@ -61,7 +61,6 @@ SharkGame.Lab = {
     init() {
         const lab = SharkGame.Lab;
         SharkGame.TabHandler.registerTab(this);
-        // add default purchased state to each upgrade
         lab.resetUpgrades();
     },
     setup() {
@@ -77,7 +76,6 @@ SharkGame.Lab = {
         $.each(SharkGame.ModifierTypes.upgrade, (type, modifiers) => {
             upgradeObject[type] = {};
             $.each(modifiers, (modifierName, object) => {
-                // additionally set values for the types and categories of stuff
                 object.category = "upgrade";
                 object.type = type;
                 upgradeObject[type][modifierName] = object.defaultValue;
@@ -105,11 +103,6 @@ SharkGame.Lab = {
         lab.updateUpgradeList();
         lab.update();
         lab.setHint(upgradeTable);
-        /* FIXME Make purchasable upgrades sticky if shorter than than window height
-            Css sticky does not work as #content has overflow: hidden because
-            of the float layout. Solution is either to find a hack, rewrite sticky with js,
-            or rework layout into flex.
-        */
     },
     setHint(upgradeTable, isNotStart) {
         const lab = SharkGame.Lab;
@@ -170,37 +163,28 @@ SharkGame.Lab = {
     },
     update() {
         const lab = SharkGame.Lab;
-        // cache a selector
         const buttonList = $("#buttonList");
         const upgradeTable = SharkGame.Upgrades.getUpgradeTable();
         lab.listEmpty = true;
-        // for each upgrade not yet bought
         $.each(upgradeTable, (upgradeId, upgrade) => {
             if (SharkGame.Upgrades.purchased.includes(upgradeId)) {
-                return; // skip this upgrade altogether
+                return;
             }
-            // check if a button exists
             const button = $("#" + upgradeId);
             if (button.length > 0) {
                 lab.listEmpty = false;
-                // button exists
                 lab.updateLabButton(upgradeId);
             }
             else {
-                // add it if prequisite upgrades have been completed
-                let prereqsMet = true; // assume true until proven false
-                // check upgrade prerequisites
+                let prereqsMet = true;
                 if (upgrade.required) {
-                    // check previous upgrades
                     if (upgrade.required.upgrades) {
                         prereqsMet = prereqsMet && this.areRequiredUpgradePrereqsPurchased(upgradeId);
                     }
-                    // validate if upgrade is possible
                     prereqsMet = prereqsMet && lab.isUpgradePossible(upgradeId) && lab.isUpgradeVisible(upgradeId);
                 }
                 if (prereqsMet) {
                     lab.listEmpty = false;
-                    // add button
                     const effects = SharkGame.Lab.getResearchEffects(upgrade);
                     const buttonSelector = SharkGame.Button.makeButton(upgradeId, upgrade.name + "<br/>" + upgrade.desc + "<br/>" + effects, buttonList, lab.onLabButton);
                     lab.updateLabButton(upgradeId);
@@ -231,7 +215,7 @@ SharkGame.Lab = {
         const upgradeCost = upgradeData.cost;
         let enableButton;
         if ($.isEmptyObject(upgradeCost)) {
-            enableButton = true; // always enable free buttons
+            enableButton = true;
         }
         else {
             enableButton = res.checkResources(upgradeCost);
@@ -296,14 +280,11 @@ SharkGame.Lab = {
             upgrade = SharkGame.Upgrades.getUpgradeData(upgradeTable, upgradeId);
             if (SharkGame.Upgrades.purchased.includes(upgradeId)) {
                 $(this).remove();
-                return; // something went wrong don't even pay attention to this function
+                return;
             }
             if (res.checkResources(upgrade.cost)) {
-                // kill button
                 $(this).remove();
-                // take resources
                 res.changeManyResources(upgrade.cost, true);
-                // purchase upgrade
                 SharkGame.Lab.addUpgrade(upgradeId);
                 if (upgrade.researchedMessage) {
                     log.addMessage(upgrade.researchedMessage);
@@ -313,12 +294,10 @@ SharkGame.Lab = {
         else if (upgradeId !== undefined) {
             upgrade = SharkGame.Upgrades.getUpgradeData(upgradeTable, upgradeId);
             if (SharkGame.Upgrades.purchased.includes(upgradeId)) {
-                return; // something went wrong don't even pay attention to this function
+                return;
             }
             if (res.checkResources(upgrade.cost)) {
-                // take resources
                 res.changeManyResources(upgrade.cost, true);
-                // purchase upgrade
                 SharkGame.Lab.addUpgrade(upgradeId);
                 if (upgrade.researchedMessage) {
                     log.addMessage(upgrade.researchedMessage);
@@ -337,9 +316,7 @@ SharkGame.Lab = {
         const upgrade = SharkGame.Upgrades.getUpgradeData(SharkGame.Upgrades.getUpgradeTable(), upgradeId);
         if (upgrade && !SharkGame.Upgrades.purchased.includes(upgradeId)) {
             SharkGame.Upgrades.purchased.push(upgradeId);
-            // l.updateResearchList();
             SharkGame.Gate.checkUpgradeRequirements(upgradeId);
-            // if the upgrade has effects, do them
             if (upgrade.effect) {
                 $.each(upgrade.effect, (effectType, effects) => {
                     $.each(effects, (affectedResource, degree) => {
@@ -347,13 +324,11 @@ SharkGame.Lab = {
                     });
                 });
             }
-            // if the upgrade is tied to events, trigger them
             if (upgrade.events) {
                 _.each(upgrade.events, (eventName) => {
                     SharkGame.Events[eventName].trigger();
                 });
             }
-            // Add upgrade to DOM
             const list = $("#upgradeList > ul");
             const upgradeElt = $("<li>").html(`${upgrade.name}<br/><span class='medDesc'>${upgrade.effectDesc}</span>`);
             const showAnims = SharkGame.Settings.current.showAnimations;
@@ -381,7 +356,6 @@ SharkGame.Lab = {
         const upgradeTable = SharkGame.Upgrades.getUpgradeTable();
         const lab = SharkGame.Lab;
         let allDone = true;
-        // TODO: Use .every instead of .each
         $.each(upgradeTable, (upgradeId) => {
             if (lab.isUpgradePossible(upgradeId)) {
                 allDone = allDone && SharkGame.Upgrades.purchased.includes(upgradeId);
@@ -412,17 +386,13 @@ SharkGame.Lab = {
         }
         if (upgradeData.required) {
             if (upgradeData.required.resources) {
-                // check if any related resources exist in the world for this to make sense
-                // unlike the costs where all resources in the cost must exist, this is an either/or scenario
                 let relatedResourcesExist = false;
                 _.each(upgradeData.required.resources, (resourceId) => {
                     relatedResourcesExist = relatedResourcesExist || world.doesResourceExist(resourceId);
                 });
                 isPossible = isPossible && relatedResourcesExist;
             }
-            // (recursive) check requisite techs
             isPossible = isPossible && _.every(upgradeData.required.upgrades, (upgrade) => lab.isUpgradePossible(upgrade));
-            // check resource cost
             isPossible = isPossible && _.every(upgradeData.cost, (_amount, resource) => world.doesResourceExist(resource));
         }
         return isPossible;
@@ -431,8 +401,6 @@ SharkGame.Lab = {
         const upgrade = SharkGame.Upgrades.getUpgradeData(SharkGame.Upgrades.getUpgradeTable(), upgradeId);
         let isVisible = true;
         if (sharkmisc.has(upgrade, "required") && sharkmisc.has(upgrade.required, "seen")) {
-            // Checks if any of the required resources has been seen
-            // change to _.every to make it require all to have been seen
             isVisible = isVisible && _.some(upgrade.required.seen, (requiredSeen) => res.getTotalResource(requiredSeen) > 0);
         }
         if (sharkmisc.has(upgrade, "required") && sharkmisc.has(upgrade.required, "totals")) {
@@ -442,14 +410,10 @@ SharkGame.Lab = {
         return isVisible || SharkGame.Upgrades.purchased.includes(upgradeId);
     },
     getResearchEffects(upgrade) {
-        // The CSS for the effect is .medDesc which contains "filter: brightness(1.3)"
-        // In order to compensate, this code scales the background to be 1.3 times darker.
         const color = sharkcolor.getVariableColor("--color-light").replace(/[^0-9a-f]/gi, "");
-        // Convert to rgb channels, convert from hex to decimal and scale it
         const red = (parseInt(color.substr(0, 2), 16) / 1.3).toString(16);
         const green = (parseInt(color.substr(2, 2), 16) / 1.3).toString(16);
         const blue = (parseInt(color.substr(4, 2), 16) / 1.3).toString(16);
-        // Convert back to hex
         const darkerColour = "#" + red + green + blue;
         const effects = [];
         $.each(upgrade.effect, (effectType, effectsList) => {
@@ -470,7 +434,6 @@ SharkGame.Lab = {
         upgradeList.empty();
         upgradeList.append($("<h3>").html("Researched Upgrades"));
         const list = $("<ul>");
-        // reverse object keys
         const upgrades = [];
         $.each(upgradeTable, (upgradeId) => {
             if (SharkGame.Upgrades.purchased.includes(upgradeId)) {

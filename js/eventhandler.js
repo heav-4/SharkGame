@@ -23,7 +23,6 @@ SharkGame.EventHandler = {
         }
         const queue = SharkGame.EventHandler.eventQueue;
         queue.forEach((handlers, priority) => {
-            /** @type {SharkEventHandler[]} */
             const cleanedEventHandlers = [];
             _.each(handlers, (eventHandler) => {
                 let keep = true;

@@ -9,7 +9,6 @@ SharkGame.HomeActions = {
         return SharkGame.HomeActions.generated[realWorldType];
     },
     getActionData(table, actionName) {
-        // probably find a way to forego the clonedeep here, but the performance impact seems negligible.
         const data = sharkmisc.cloneDeep(table[actionName]);
         if (data) {
             if (cad.actionPriceModifier !== 1) {
@@ -32,7 +31,6 @@ SharkGame.HomeActions = {
         }
         const worldActions = sharkmisc.cloneDeep(SharkGame.HomeActions[worldType]);
         const finalTable = {};
-        // sharkmisc.has
         _.each(Object.keys(worldActions), (actionName) => {
             if (!sharkmisc.has(defaultActions, actionName)) {
                 finalTable[actionName] = worldActions[actionName];
@@ -48,12 +46,7 @@ SharkGame.HomeActions = {
         });
         return finalTable;
     },
-    // something new to keep in mind:
-    // the new system for keeping home actions in check at huge numbers doesn't work if the price increase isn't a whole number
-    // so fractional costs are banned now
-    // that's not a big deal anyways though, just multiply some numbers around to make the equivalent balance work out in the end with a non-fractional cost
     default: {
-        // FREEBIES ////////////////////////////////////////////////////////////////////////////////
         catchFish: {
             name: "Catch fish",
             effect: {
@@ -122,9 +115,7 @@ SharkGame.HomeActions = {
                 },
             },
             cost: [],
-            prereq: {
-            // no prereqs
-            },
+            prereq: {},
             outcomes: [
                 "Tested.",
                 "Debugged.",
@@ -262,7 +253,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Take a great risk in catching a jellyfish without being stung.",
         },
-        // CONVERSIONS ////////////////////////////////////////////////////////////////////////////////
         seaApplesToScience: {
             name: "Study sea apples",
             effect: {
@@ -288,36 +278,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Dissect the sea apples our kelp attracts to gain additional science. Research!",
         },
-        /*
-        "spongeToScience": {
-            name: "Dissect sponge",
-            effect: {
-                resource: {
-                    science: 1
-                }
-            },
-            cost: [
-                {resource: "sponge", costFunction: "constant", priceIncrease: 1}
-            ],
-            max: "sponge",
-            prereq: {
-                resource: {
-                    sponge: 1
-                },
-                upgrade: [
-                    "xenobiology"
-                ]
-            },
-            outcomes: [
-                "Squishy porous science!",
-                "The sponge has been breached and the science is leaking out!",
-                "This is the best use of a sponge. Teeth dissections are the best.",
-                "Sponge is now so many shreds. But so much was learned!",
-                "The sponge is apparently not a plant. Yet plants feel more sophisticated than these things."
-            ],
-            helpText: "Dissect sponges to learn their porous secrets. Science!"
-        },
-        */
         pearlConversion: {
             name: "Convert clam pearls",
             effect: {
@@ -344,7 +304,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Convert a pearl (and the clam around it) into crystal.",
         },
-        // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
         transmuteSharkonium: {
             name: "Transmute stuff to sharkonium",
             effect: {
@@ -411,7 +370,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Smelt resources into coralglass for use in crustacean machines!",
         },
-        // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
         getShark: {
             name: "Recruit shark",
             effect: {
@@ -601,7 +559,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Hire a crab to find things that sharks and rays overlook.",
         },
-        // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
         getScientist: {
             name: "Train science shark",
             effect: {
@@ -639,39 +596,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Train a shark in the fine art of research and the science of, well, science.",
         },
-        /*
-        getProspector: {
-            name: "Recruit shark prospector",
-            effect: {
-                resource: {
-                    prospector: 1,
-                },
-            },
-            cost: [
-                { resource: "shark", costFunction: "constant", priceIncrease: 1 },
-                { resource: "crystal", costFunction: "linear", priceIncrease: 15 },
-            ],
-            max: "prospector",
-            prereq: {
-                upgrade: ["prospectorSharks"],
-            },
-            outcomes: [
-                "Ready to mine!",
-                "Well, there are worse jobs.",
-                "Pickaxe? Check. Hard work? Check. Lack of proper safety regulations? Double check.",
-                "I'm not sure why sharks think this is a good job? It sucks??",
-                "Trained in the art of mine-fu. Ready to bust crystals.",
-            ],
-            multiOutcomes: [
-                "How do you even get leverage underwater? Newton's third law? Anyone?",
-                "So, they're back in the mine.",
-                "Too bad there isn't something even better than crystal down there, like, diamonds or something.",
-                "Go! Collect resources! Give me stone!",
-                "No rock left unturned! Then, break the rocks you turn over, there might be goodies inside!",
-            ],
-            helpText: "Train and equip a shark to break crystals and mine stone in sub-ocean caverns.",
-        },
-        */
         getNurse: {
             name: "Train nurse shark",
             effect: {
@@ -701,7 +625,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Remove a shark from fish duty and set them to shark making duty.",
         },
-        // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
         getLaser: {
             name: "Equip laser ray",
             effect: {
@@ -736,43 +659,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Remove a ray from sand detail and let them fuse sand into raw crystal.",
         },
-        /*
-        getShoveler: {
-            name: "Equip shoveler ray",
-            effect: {
-                resource: {
-                    shoveler: 1,
-                },
-            },
-            cost: [
-                { resource: "ray", costFunction: "constant", priceIncrease: 1 },
-                { resource: "crystal", costFunction: "linear", priceIncrease: 15 },
-            ],
-            max: "shoveler",
-            prereq: {
-                resource: {
-                    ray: 1,
-                },
-                upgrade: ["crystalShovel"],
-            },
-            outcomes: [
-                "Shovel ray, at your service!",
-                "For shovelry!",
-                "The ray is excited to get started.",
-                "Gravel is the future...I guess!",
-                "Strapped a shovel to a ray. That ray is now a professional. Go get 'em!",
-            ],
-            multiOutcomes: [
-                "Blue heroes with spades!",
-                "No sand, only coarse, heavy pebbles!",
-                "Let's get shoveling!",
-                "Dig in!",
-                "And they said shovelry was dead.",
-                "The rays seemed bleak before. Now, they're excited.",
-            ],
-            helpText: "Remove a ray from fish detail and let them collect gravel instead.",
-        },
-        */
         getMaker: {
             name: "Instruct a ray maker",
             effect: {
@@ -807,44 +693,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Remove a ray from sand business and let them concentrate on making more rays.",
         },
-        /*
-        stoneGetMaker: {
-            name: "Instruct a ray maker",
-            effect: {
-                resource: {
-                    maker: 1,
-                },
-            },
-            cost: [
-                { resource: "ray", costFunction: "constant", priceIncrease: 2 },
-                { resource: "fish", costFunction: "linear", priceIncrease: 350 },
-            ],
-            max: "maker",
-            prereq: {
-                resource: {
-                    ray: 1,
-                },
-                upgrade: ["rayBiology"],
-                world: "stone",
-            },
-            outcomes: [
-                "More rays lets you get more rays which you can then use to get more rays.",
-                "The ray singularity begins!",
-                "A ray maker is ready.",
-                "Looks like you gave them quite the ray maker blow! 'Them' being the intangible enemy that is lacking in resources.",
-                "The ray seems concerned, but obliges. The mission has been given.",
-            ],
-            multiOutcomes: [
-                "All these makers. What are they making? What is it for? Oh. It's rays, and it's probably for sand or something.",
-                "More ray makers means more rays. Do you understand what that means?! Do you?! It means more rays. Good. On the same page, then.",
-                "Rapidly breeding aquatic wildlife is probably a severe ecological hazard. Good thing this isn't Earth's oceans, probably!",
-                "Have you ever thought about what the rays wanted? Because this might have been what they wanted after all.",
-                "MORE LASER RAYS FOR THE LASER ARMY-- oh. Well, this is good too.",
-            ],
-            helpText: "Remove a ray from fish business and let them concentrate on making more rays.",
-        },
-        */
-        // CRAB JOBS ////////////////////////////////////////////////////////////////////////////////
         getPlanter: {
             name: "Gear up planter crab",
             effect: {
@@ -880,43 +728,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Equip a crab with the equipment and training to plant kelp across the ocean bottom.",
         },
-        /*
-        getMiller: {
-            name: "Equip miller crab",
-            effect: {
-                resource: {
-                    miller: 1,
-                },
-            },
-            cost: [
-                { resource: "crab", costFunction: "constant", priceIncrease: 1 },
-                { resource: "gravel", costFunction: "linear", priceIncrease: 25 },
-                { resource: "crystal", costFunction: "linear", priceIncrease: 20 },
-            ],
-            max: "miller",
-            prereq: {
-                resource: {
-                    crab: 1,
-                },
-                upgrade: ["gravelMilling"],
-            },
-            outcomes: [
-                "Crab has milling gear.",
-                "Why is it milling, and not grinding?",
-                "Crab has been prepared for pebble disintegration.",
-                "How, you ask? With big, meaty claws, how else?",
-                "Making gravel flour, hopefully not for gravel bread.",
-            ],
-            multiOutcomes: [
-                "Doing nature's job for it.",
-                "Millions of years of erosion become mere minutes in your hands...",
-                "Be gone, gravel!",
-                "Sand, come to this world!",
-                "Crush the pebbles! Crush them into what is technically just smaller pebbles!",
-            ],
-            helpText: "Equip a crab with the equipment and training to grind gravel directly into sand.",
-        },
-        */
         getBrood: {
             name: "Form crab brood",
             effect: {
@@ -953,83 +764,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Meld several crabs into a terrifying, incomprehensible crab-producing brood cluster.",
         },
-        // LOBSTER JOBS ////////////////////////////////////////////////////////////////////////////////
-        /*
-        getRockLobster: {
-            name: "Train rock lobster",
-            effect: {
-                resource: {
-                    rockLobster: 1,
-                },
-            },
-            cost: [
-                { resource: "lobster", costFunction: "constant", priceIncrease: 1 },
-                { resource: "clam", costFunction: "linear", priceIncrease: 150 },
-            ],
-            max: "rockLobster",
-            prereq: {
-                resource: {
-                    lobster: 1,
-                },
-                upgrade: ["rockBreaking"],
-            },
-            outcomes: [
-                "Break the rocks, lobster. Break them!",
-                "Deployed lobster with a giant crystal nutcracker.",
-                "Ready to rock.",
-                "Crushing rocks is exactly as difficult as it sounds. This lobster can verify.",
-            ],
-            multiOutcomes: [
-                "Rocks, begone!",
-                "Stones? What stones?!",
-                "Goodbye, slate.",
-                "Goodbye, granite.",
-                "Goodbye, generic-looking stone.",
-                "Goodbye, pumice.",
-                "Goodbye, quartz.",
-                "Goodbye, basalt.",
-                "Goodbye, limestone.",
-                "Goodbye, schist.",
-                "Goodbye, diorite.",
-            ],
-            helpText: "Give a lobster the right gear to crack open stones in the name of gravel.",
-        },
-
-        getHarvester: {
-            name: "Train lobster harvester",
-            effect: {
-                resource: {
-                    harvester: 1,
-                },
-            },
-            cost: [
-                { resource: "lobster", costFunction: "constant", priceIncrease: 1 },
-                { resource: "clam", costFunction: "linear", priceIncrease: 25 },
-                { resource: "sponge", costFunction: "linear", priceIncrease: 5 },
-            ],
-            max: "harvester",
-            prereq: {
-                resource: {
-                    lobster: 1,
-                },
-                upgrade: ["crustaceanBiology"],
-            },
-            outcomes: [
-                "Yes, lobster, put these claws to better use.",
-                "It is time for this one to seek more interesting prey. Wait. Wait, no, it's just as stationary. Never mind. False alarm.",
-                "Lobster sticks to seabed!",
-            ],
-            multiOutcomes: [
-                "Cut down the kelp forests!",
-                "Rip the sponge and tear the kelp!",
-                "Harvest the seafloor!",
-                "The lobster tide shall claim the-- wait no you said harvesters. Okay. Adjusting that, then.",
-                "These guys are pretty unenthusiastic about everything they do, aren't they.",
-            ],
-            helpText: "Train a lobster to cut down kelp faster than anything can plant it. Sustainable!",
-        },
-        */
-        // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
         getCrystalMiner: {
             name: "Build crystal miner",
             effect: {
@@ -1233,7 +967,6 @@ SharkGame.HomeActions = {
             },
         },
         getClam: {},
-        // CONVERSIONS ////////////////////////////////////////////////////////////////////////////////
         spongeFiltration: {
             name: "Manufacture sponge filter",
             effect: {
@@ -1285,14 +1018,12 @@ SharkGame.HomeActions = {
             ],
             helpText: "Break down ancient parts to advance science.",
         },
-        // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
         transmuteSharkonium: {},
         forgeSpronge: {
             name: "Forge sponge into spronge",
             effect: {
                 resource: {
                     spronge: 1,
-                    // tar: 0.001,
                 },
             },
             cost: [
@@ -1364,7 +1095,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Convert clams (and crystals) directly into ancient parts.",
         },
-        // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
         getShark: {},
         getManta: {},
         getCrab: {},
@@ -1437,10 +1167,8 @@ SharkGame.HomeActions = {
             ],
             helpText: "Pay an octopus for their efficient clam retrieval services.",
         },
-        // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
         getScientist: {},
         getNurse: {},
-        // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
         getLaser: {},
         getMaker: {
             cost: [
@@ -1448,7 +1176,6 @@ SharkGame.HomeActions = {
                 { resource: "fish", costFunction: "linear", priceIncrease: 400 },
             ],
         },
-        // CRAB JOBS ////////////////////////////////////////////////////////////////////////////////
         getCollector: {
             name: "Instruct collector crab",
             effect: {
@@ -1486,7 +1213,6 @@ SharkGame.HomeActions = {
             helpText: "Instruct a crab on the proper way to collect sponges from rocks.",
         },
         getBrood: {},
-        // OCTOPUS JOBS ////////////////////////////////////////////////////////////////////////////////
         getInvestigator: {
             name: "Reassign octopus as Investigator",
             effect: {
@@ -1553,7 +1279,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Delegate an octopus to scavenge strange mechanical components from the city.",
         },
-        // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
         getCrystalMiner: {},
         getSandDigger: {},
         getFishMachine: {},
@@ -1565,7 +1290,6 @@ SharkGame.HomeActions = {
                 upgrade: ["recyclerDiscovery"],
             },
         },
-        // OCTOPUS MACHINES /////////////////////////////////////////////////////////
         getClamCollector: {
             name: "Build clam collector",
             effect: {
@@ -1662,7 +1386,6 @@ SharkGame.HomeActions = {
     haven: {
         catchFish: {},
         debugbutton: {},
-        // CONVERSIONS ////////////////////////////////////////////////////////////////////////////////
         seaApplesToScience: {
             effect: {
                 resource: {
@@ -1672,7 +1395,6 @@ SharkGame.HomeActions = {
                 },
             },
         },
-        // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
         transmuteSharkonium: {},
         fuseDelphinium: {
             name: "Fuse stuff into delphinium",
@@ -1711,7 +1433,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Fuse valuable resources into delphinium, which is kinda like sharkonium. Except worse.",
         },
-        // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
         getShark: {},
         getManta: {},
         getCrab: {},
@@ -1805,10 +1526,8 @@ SharkGame.HomeActions = {
             ],
             helpText: "Persuade one of the great whales to help us out. They can round up entire schools.",
         },
-        // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
         getScientist: {},
         getNurse: {},
-        // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
         getLaser: {},
         getMaker: {
             cost: [
@@ -1816,10 +1535,8 @@ SharkGame.HomeActions = {
                 { resource: "fish", costFunction: "linear", priceIncrease: 300 },
             ],
         },
-        // CRAB JOBS ////////////////////////////////////////////////////////////////////////////////
         getPlanter: {},
         getBrood: {},
-        // DOLPHIN JOBS ////////////////////////////////////////////////////////////////////////////////
         getTreasurer: {
             name: "Promote dolphin treasurer",
             effect: {
@@ -1919,7 +1636,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Train a dolphin to specialise in biology. Dolphin biology, specifically, and production, apparently.",
         },
-        // WHALE JOBS ////////////////////////////////////////////////////////////////////////////////
         getChorus: {
             name: "Assemble great chorus",
             effect: {
@@ -1956,13 +1672,11 @@ SharkGame.HomeActions = {
             ],
             helpText: "Form the singers of the eternal song. Let it flow through this world.",
         },
-        // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
         getCrystalMiner: {},
         getSandDigger: {},
         getFishMachine: {},
         getAutoTransmuter: {},
         getSkimmer: {},
-        // DOLPHIN MACHINES /////////////////////////////////////////////////////////
         getCrimsonCombine: {
             name: "Build crimson combine",
             effect: {
@@ -2085,9 +1799,7 @@ SharkGame.HomeActions = {
     frigid: {
         catchFish: {},
         debugbutton: {},
-        // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
         transmuteSharkonium: {},
-        // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
         getShark: {},
         getSquid: {
             name: "Enlist squid",
@@ -2178,12 +1890,9 @@ SharkGame.HomeActions = {
             ],
             helpText: "Attract an urchin who will gather kelp and sand. Urchins are used to the cold.",
         },
-        // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
         getScientist: {},
         getNurse: {},
-        // SQUID JOBS ////////////////////////////////////////////////////////////////////////////////
         getExtractionTeam: {
-            // i consider this a squid job
             name: "Organize extraction team",
             effect: {
                 resource: {
@@ -2251,9 +1960,7 @@ SharkGame.HomeActions = {
             ],
             helpText: "Bring together a group of squid to produce even more squid.",
         },
-        // CRAB JOB ////////////////////////////////////////////////////////////////////////////////
         getBrood: {},
-        // URCHIN JOB ////////////////////////////////////////////////////////////////////////////////////
         getSpawner: {
             name: "Designate urchin spawner",
             effect: {
@@ -2285,7 +1992,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Tell an urchin to go make more urchins.",
         },
-        // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
         getCrystalMiner: {},
         getSandDigger: {},
         getFishMachine: {},
@@ -2337,7 +2043,6 @@ SharkGame.HomeActions = {
         catchFish: {},
         debugbutton: {},
         getJellyfish: {},
-        // CONVERSIONS ////////////////////////////////////////////////////////////////////////////////
         jellyfishToScience: {
             name: "Dismantle jellyfish",
             effect: {
@@ -2385,9 +2090,7 @@ SharkGame.HomeActions = {
             ],
             helpText: "Smash large quantities of arcana to release the energy contained within, so that it might be used for the greater good.",
         },
-        // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
         transmuteSharkonium: {},
-        // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
         getShark: {
             name: "Recruit shark",
             effect: {
@@ -2624,7 +2327,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Convince a chimaera to hunt in the darker depths for us.",
         },
-        // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
         getDiver: {
             name: "Prepare diver shark",
             effect: {
@@ -2723,7 +2425,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Remove a shark from fish duty and set them to shark making duty.",
         },
-        // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
         getMaker: {
             name: "Instruct a ray maker",
             effect: {
@@ -2790,7 +2491,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Train a ray to study the mystical properties of arcana.",
         },
-        // EEL JOBS ////////////////////////////////////////////////////////////////////////////////
         getPit: {
             name: "Dig eel pit",
             effect: {
@@ -2856,7 +2556,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Specialise an eel in finding interesting things on the seabed.",
         },
-        // CHIMAERA JOBS ////////////////////////////////////////////////////////////////////////////////
         getExplorer: {
             name: "Prepare chimaera explorer",
             effect: {
@@ -2887,7 +2586,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Help prepare a chimaera for exploration to parts unknown in search of the mysterious and elusive arcana.",
         },
-        // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
         getCrystalMiner: {},
         getSandDigger: {},
         getFishMachine: {},
@@ -2933,7 +2631,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Fetch a clam. Why do we need clams now? Who knows.",
         },
-        // CONVERSIONS ////////////////////////////////////////////////////////////////////////////////
         seaApplesToScience: {
             name: "Study sea apples",
             effect: {
@@ -2996,7 +2693,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Convert pearls (and the clams around them) into crystal.",
         },
-        // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
         transmuteSharkonium: {
             name: "Transmute stuff to sharkonium",
             effect: {
@@ -3079,7 +2775,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Smelt resources into calcinium for use in crustacean machines.",
         },
-        // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
         getShark: {},
         getManta: {},
         getCrab: {},
@@ -3123,10 +2818,8 @@ SharkGame.HomeActions = {
             ],
             helpText: "Hire a lobster to scoop up clams for us.",
         },
-        // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
         getScientist: {},
         getNurse: {},
-        // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
         getMaker: {},
         getClamScavenger: {
             name: "Equip clam scavenger",
@@ -3166,7 +2859,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Strap a big goofy claw arm to a ray and train it to scoop huge amounts of clams.",
         },
-        // CRAB JOBS ////////////////////////////////////////////////////////////////////////////////
         getPlanter: {},
         getBrood: {},
         getSeabedStripper: {
@@ -3208,7 +2900,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Equip a planter with many additional arms for maximum efficiency.",
         },
-        // LOBSTER JOBS ////////////////////////////////////////////////////////////////////////////////
         getBerrier: {
             name: "Form lobster berrier",
             effect: {
@@ -3242,12 +2933,10 @@ SharkGame.HomeActions = {
             ],
             helpText: "Dedicate a lobster to egg production. We don't know how it works. Ask the lobsters.",
         },
-        // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
         getCrystalMiner: {},
         getSandDigger: {},
         getFishMachine: {},
         getAutoTransmuter: {},
-        // CRUSTACEAN MACHINES /////////////////////////////////////////////////////////
         getCalciniumConverter: {
             name: "Assemble calcinium converter",
             effect: {
@@ -3285,11 +2974,10 @@ SharkGame.HomeActions = {
                 "Focus. Focus. Come on...fuse!",
                 "Two becomes one.",
             ],
-            helpText: "Modify a lobster to fuse calcinium with cool cyborg laser beams.", // This crustacean machine distributes lobster eggs for optimal hatching conditions.
+            helpText: "Modify a lobster to fuse calcinium with cool cyborg laser beams.",
         },
     },
     volcanic: {
-        // FREEBIES ////////////////////////////////////////////////////////////////////////////////
         catchFish: {},
         debugbutton: {},
         prySponge: {
@@ -3348,7 +3036,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Grab a sponge from the seabed for future use.",
         },
-        // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
         toggleAutoSmelt: {
             name: "Use vents to smelt porite",
             effect: {
@@ -3415,7 +3102,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Smelt resources into porite for use in shrimp tools!",
         },
-        // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
         getManta: {
             prereq: {
                 resource: {
@@ -3488,7 +3174,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Convince shrimp to assist you in the gathering of algae, which increases how much sponge you can keep at once.",
         },
-        // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
         getMaker: {
             name: "Instruct a ray maker",
             effect: {
@@ -3566,41 +3251,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Teach a ray to quickly move sand around using a huge, specialized scoop.",
         },
-        // CRAB JOBS ////////////////////////////////////////////////////////////////////////////////
-        /* getCatcher: {
-            name: "Gear up catcher crab",
-            effect: {
-                resource: {
-                    catcher: 1,
-                },
-            },
-            cost: [
-                { resource: "crab", costFunction: "constant", priceIncrease: 1 },
-                { resource: "sand", costFunction: "linear", priceIncrease: 100 },
-            ],
-            max: "catcher",
-            prereq: {
-                upgrade: ["kelpCatching"],
-            },
-            outcomes: [
-                "Crab ready to catch.",
-                "Crab has its eyes on a piece of drifting kelp as soon as it reaches a vent.",
-                "This one will make a game-winning catch someday, I can just feel it.",
-                "Crab ready to pitch- I mean catch.",
-                "Equipped crab with extendo-reach.",
-                "This crab now reaches farther.",
-            ],
-            multiOutcomes: [
-                "A bunch of claw-doodad-wielding crabs make their way to the nearest vent.",
-                "The extendo-grip crabs are gripping stuff.",
-                "The crabs test out their new equipment by messing with each other from afar. Hey, get back to work!",
-                "The crabs nestle into their chosen spots around the vent output.",
-                "Though monotonous, they seem content with this life.",
-                "These crabs are ready to have some fun with extendo-reach.",
-                "The crabs just seem happy to help.",
-            ],
-            helpText: "Grant a crab the tools and training to help them catch stuff coming from the vents.",
-        }, */
         getCuriousCrab: {
             name: "Recognize curious crab",
             effect: {
@@ -3711,7 +3361,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Meld several crabs into a terrifying, incomprehensible crab-producing brood cluster.",
         },
-        // SHRIMP JOBS ////////////////////////////////////////////////////////////////////////////////
         getQueen: {
             name: "Crown shrimp queen",
             effect: {
@@ -3905,7 +3554,6 @@ SharkGame.HomeActions = {
     tempestuous: {
         catchFish: {},
         debugbutton: {},
-        // CONVERSIONS ////////////////////////////////////////////////////////////////////////////////
         seagrassToScience: {
             name: "Study seagrass flowers",
             effect: {
@@ -3935,9 +3583,7 @@ SharkGame.HomeActions = {
             ],
             helpText: "Dissect seagrass flowers to further the cause of science. This is research, probably!",
         },
-        // MAKE ADVANCED RESOURCES  ///////////////////////////////////////////////////////////////////////////////
         transmuteSharkonium: {},
-        // BUY ANIMALS ////////////////////////////////////////////////////////////////////////////////
         getShark: {},
         getManta: {},
         getCrab: {},
@@ -3980,14 +3626,12 @@ SharkGame.HomeActions = {
             ],
             helpText: "Fetch a billfish from the back of the cave and ask them to help us catch fish.",
         },
-        // SHARK JOBS ////////////////////////////////////////////////////////////////////////////////
         getScientist: {
             prereq: {
                 upgrade: ["statsDiscovery"],
             },
         },
         getNurse: {},
-        // RAY JOBS ////////////////////////////////////////////////////////////////////////////////
         getLaser: {
             cost: [
                 { resource: "ray", costFunction: "constant", priceIncrease: 1 },
@@ -4001,7 +3645,6 @@ SharkGame.HomeActions = {
             ],
         },
         getMaker: {},
-        // CRAB JOBS ////////////////////////////////////////////////////////////////////////////////
         getStormgoer: {
             name: "Gear up crab stormgoer",
             effect: {
@@ -4049,7 +3692,6 @@ SharkGame.HomeActions = {
             helpText: "Weigh down a crab with sand to keep it from being carried away in the storm.",
         },
         getBrood: {},
-        // BILLFISH JOBS ////////////////////////////////////////////////////////////////////////////////
         getBillfishPair: {
             name: "Match billfish pair",
             effect: {
@@ -4144,7 +3786,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Train a billfish to operate our machines, and give it the resources needed to tinker with them.",
         },
-        // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
         getSandDigger: {
             cost: [
                 {
@@ -4173,7 +3814,6 @@ SharkGame.HomeActions = {
 };
 SharkGame.HomeActionCategories = {
     all: {
-        // This category should be handled specially.
         name: "All",
         actions: [],
     },
@@ -4203,15 +3843,12 @@ SharkGame.HomeActionCategories = {
         name: "Jobs",
         actions: [
             "getDiver",
-            // "getProspector",
             "getScientist",
             "getLaser",
             "getShoveler",
             "getPlanter",
             "getCollector",
-            // "getMiller",
             "getFarmer",
-            // "getRockLobster",
             "getPhilosopher",
             "getTreasurer",
             "getTechnician",
@@ -4237,7 +3874,6 @@ SharkGame.HomeActionCategories = {
         actions: [
             "getNurse",
             "getMaker",
-            // "stoneGetMaker",
             "getBrood",
             "getQueen",
             "getBerrier",
@@ -4252,7 +3888,6 @@ SharkGame.HomeActionCategories = {
         name: "Processing",
         actions: [
             "seaApplesToScience",
-            // "spongeToScience",
             "jellyfishToScience",
             "pearlConversion",
             "advancedPearlConversion",
@@ -4278,8 +3913,6 @@ SharkGame.HomeActionCategories = {
             "getAutoTransmuter",
             "getFishMachine",
             "getSkimmer",
-            // "getCrusher",
-            // "getPulverizer",
             "getHeater",
         ],
     },
@@ -4293,7 +3926,6 @@ SharkGame.HomeActionCategories = {
             "getClamCollector",
             "getEggBrooder",
             "getSprongeSmelter",
-            // "getCoalescer",
             "getCrimsonCombine",
             "getKelpCultivator",
             "getSeabedStripper",

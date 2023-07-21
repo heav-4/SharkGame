@@ -1,7 +1,6 @@
 "use strict";
 SharkGame.Settings = {
     current: {},
-    // Internal / No category
     buyAmount: {
         defaultSetting: 1,
         options: [1, 10, 100, -3, -2, -1, "custom"],
@@ -14,7 +13,6 @@ SharkGame.Settings = {
         defaultSetting: "absolute",
         options: ["absolute", "percentage"],
     },
-    // PERFORMANCE
     framerate: {
         defaultSetting: 20,
         name: "Framerate/TPS",
@@ -30,9 +28,8 @@ SharkGame.Settings = {
         name: "Show Animations",
         desc: "Whether to show animated transitions.",
         category: "PERFORMANCE",
-        options: [true, false], // might remove this option? could be a pain to continue supporting it
+        options: [true, false],
     },
-    // LAYOUT
     minimizedTopbar: {
         defaultSetting: true,
         name: "Minimized Title Bar",
@@ -99,13 +96,12 @@ SharkGame.Settings = {
             }
         },
     },
-    // APPEARANCE
     notation: {
         defaultSetting: "default",
         name: "Number Notation",
         desc: "How numbers should be formatted.",
         category: "APPEARANCE",
-        options: ["default", /* "exponen", */ "SI"],
+        options: ["default", "SI"],
         onChange() {
             res.rebuildTable = true;
             stats.recreateIncomeTable = true;
@@ -179,7 +175,6 @@ SharkGame.Settings = {
             SharkGame.TabHandler.changeTab(SharkGame.Tabs.current);
         },
     },
-    // ACCESSIBILITY
     doAspectTable: {
         defaultSetting: "tree",
         name: "Aspect Table or Tree",
@@ -207,7 +202,6 @@ SharkGame.Settings = {
             res.minuteHand.updatePowers();
         },
     },
-    // OTHER
     idleEnabled: {
         defaultSetting: true,
         name: "Stored Offline Progress",
@@ -252,9 +246,7 @@ SharkGame.Settings = {
         category: "OTHER",
         options: [true, false],
     },
-    // SAVES (Needs to come last due to hard-coded import/export/wipe buttons at the bottom)
     autosaveFrequency: {
-        // times given in minutes
         defaultSetting: 5,
         name: "Autosave Frequency",
         desc: "Number of minutes between autosaves.",

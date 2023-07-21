@@ -19,8 +19,6 @@ SharkGame.FunFacts = {
         }
         let anyAvailableResource = false;
         $.each(this.resourceBased, (resource, facts) => {
-            // purposefully dilute some facts if we are not on the starter world
-            // I want these facts to be more likely relevant than not
             if (world.doesResourceExist(resource) && res.getTotalResource(resource)) {
                 anyAvailableResource = true;
                 if (!this.dilutedResources.includes(resource) || currentWorld === "start" || Math.random() < 0.25) {
@@ -33,11 +31,6 @@ SharkGame.FunFacts = {
             }
         });
         if (anyAvailableResource) {
-            // only 10% chance to include the 'default' facts
-            // this is because those facts are seen all over the place
-            // they would end up diluting the world-specific and resource-specific facts
-            //
-            // also acts as a failsafe in case there are no other facts to display
             if (Math.random() < 0.1 || pool.length === 0) {
                 _.each(this.default, (fact) => {
                     pool.push(sharktext.boldString("Fun fact: ") + `<i>${fact}</i>`);
@@ -78,7 +71,6 @@ SharkGame.FunFacts = {
         },
     },
     resourceBased: {
-        // add fish facts at some point
         shark: [
             "There are many species of sharks that investigate things with their mouths. This can end badly for the subject of investigation.",
             "There have been social behaviours observed in lemon sharks, and evidence that suggests they prefer company to being alone.",
@@ -121,7 +113,7 @@ SharkGame.FunFacts = {
             "The top 10 largest animal species are all whales.",
             "While some whales are active hunters, others are merely supersized filter feeders. This game's whales are of unspecified type.",
             "Most whales are very social creatures. Most whales travel in small groups called pods, which might make up clans, and then communities. (some, however, are solitary)",
-            "It is not completely understood why whales sing, but scientists agree it serves some kind of social purpose." /* Whales are observed to react to each other's songs and come to */,
+            "It is not completely understood why whales sing, but scientists agree it serves some kind of social purpose.",
         ],
         urchin: [
             "Sea urchins primarily eat kelp. A lot of kelp.",
@@ -133,7 +125,6 @@ SharkGame.FunFacts = {
             "Squid eat crabs. They're not eating yours out of politeness.",
             "Giant squid are real. They live incredibly deep in the ocean.",
             "Squid have no bones whatsoever.",
-            // Squid have camoflague look into it
         ],
         lobster: [
             "Lobsters really do eat clams. They instinctively know how to crack them open.",
@@ -145,10 +136,7 @@ SharkGame.FunFacts = {
             "There are real eusocial shrimps that live in communities in sponges on reefs, complete with queens.",
             "Shrimp are close relatives of lobsters. They have a lot of similarities, and in some ways are just smaller, narrower lobsters.",
         ],
-        eel: [
-        // "Eels come in a wide range of sizes, from just a few inches to multiple meters.",
-        // migratory eels, look into it
-        ],
+        eel: [],
         chimaera: [
             "Chimaera are closely related to sharks and rays.",
             "Chimaera are deep-sea animals, usually found more than 500 meters (~1500 feet) below the surface of the ocean.",
@@ -169,10 +157,8 @@ SharkGame.FunFacts = {
             "Sea apples are in no way actually attracted to kelp. The apples in this game are weird.",
         ],
         jellyfish: [
-            // "Sharks would definitely not have a way of acquiring most kinds of jellyfish in real life.",
             "Jellyfish can be extremely dangerous. Some kinds of box jellyfish have fatal stings.",
             "Turritopsis dohrnii is a species of jellyfish that can restart its lifecycle at will. In theory, this grants it an infinite lifespan.",
-            // do more research into jellies
         ],
         sharkonium: [
             "There is nothing suspicious about the machines.",

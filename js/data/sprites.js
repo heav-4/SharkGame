@@ -1,5 +1,4 @@
 "use strict";
-// FIXME: Remove redundant frame property
 SharkGame.Sprites = {
     "planets/abandoned": {
         frame: {

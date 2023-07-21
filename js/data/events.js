@@ -1,20 +1,4 @@
 "use strict";
-// welcome to the events system!
-// events are an important piece of a larger puzzle I'm trying to solve related to adding lots of behavior into the game
-// events will allow miscellaneous behavior to be organized into a single object
-// miscellaneous behavior is anything which does not belong in the core game loop.
-// Toby: Then why is it running in the core game loop?
-// this has the same purpose of the modifier system: flexibility while retaining performance and organization.
-//
-// events have triggers; they are very rigid, so we also need a system with which to trigger them
-// the ways we might trigger events:
-// - on buying an upgrade
-// - purposefully queuing up an event to have its requirements checked every tick until success
-// - on using the recycler
-// - on using a home button
-//
-// a system will be implemented to handle events which will simply be called every tick before and after regular processing.
-//
 SharkGame.Events = {
     frigidInitiateIcyDoom: {
         handlingTime: "beforeTick",
@@ -116,7 +100,7 @@ SharkGame.Events = {
             return "pass";
         },
         trigger() {
-            res.changeResource("sponge", 1); // sponge should never ever go below one once you have access to farms
+            res.changeResource("sponge", 1);
             return true;
         },
     },
@@ -326,7 +310,6 @@ SharkGame.Events = {
             SharkGame.TabHandler.setUpTab();
         },
     },
-    /* getAllAffordableUpgrades */
     updateLabNotifier: {
         handlingTime: "afterTick",
         priority: 0,

@@ -1,8 +1,6 @@
 "use strict";
 SharkGame.HomeMessages = {
-    // Priority: later messages display if available, otherwise earlier ones.
     messages: {
-        // FIRST RUN
         start: [
             {
                 name: "start-you-are-a-shark",
@@ -79,7 +77,6 @@ SharkGame.HomeMessages = {
                 message: "The gate beckons. The secret must be unlocked.",
             },
         ],
-        // LATER RUNS
         marine: [
             {
                 name: "marine-default",
@@ -116,21 +113,16 @@ SharkGame.HomeMessages = {
                 message: "A cold, rough limb fishes clams out of the seabed. The lobsters watch intently.",
             },
             {
-                // do color transition 1 here
                 name: "marine-bioengineering",
                 unlock: { upgrade: ["bioengineering"] },
                 message: "Stone-to-brain interface. Shelbernetic enhancements. Population automation. The lobsters say that calcinium is an extension of life itself.",
             },
             {
-                // second color transition
                 name: "marine-sentience",
                 unlock: { upgrade: ["sentientCircuitBoards"] },
                 message: "All of us have boards now. Children are born half-machine. The lobsters call it effective.",
-                // we can't understand it, no, we could never hope to understand it like the lobsters do
-                // 'they [the circuits] even die...just like us.'
             },
             {
-                // final color transition
                 name: "marine-abandoned",
                 unlock: { upgrade: ["mobiusShells"] },
                 message: "Murk spills out of the frenzy. A rancid fog begins to descend. This dying world drags everyone down with it.",
@@ -217,11 +209,6 @@ SharkGame.HomeMessages = {
                 unlock: { upgrade: ["billfishBiology"] },
                 message: "The billfish tell stories of life before the storm and an ancient visitor who brought them prosperity. They ask if you can bring them prosperity, too.",
             },
-            /*
-                name: "tempestuous-special",
-                unlock: { upgrade: ["cavernousContact"] },
-                message: "The billfish watch you with awe. Hope glimmers in their eyes.",
-            }, */
             {
                 name: "tempestuous-bottles",
                 unlock: { upgrade: ["magicBottles"] },
@@ -304,7 +291,6 @@ SharkGame.HomeMessages = {
                 unlock: { upgrade: ["algaeAcolytes"] },
                 message: "The acolytes gather. They pray for their king. They pray for their world. They pray for you.",
             },
-            // Rumor has it that the king of shrimps guards the key to a secret, sacred gate in his sandcastle.
             {
                 name: "volcanic-beauty",
                 unlock: { upgrade: ["finalDraft"] },

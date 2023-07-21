@@ -28,11 +28,8 @@ SharkGame.Gateway = {
     enterGate(loadingFromSave) {
         SharkGame.PaneHandler.wipeStack();
         SharkGame.OverlayHandler.enterGateway();
-        // ensure buy buttons will be revealed
         SharkGame.persistentFlags.revealedBuyButtons = true;
-        // be sure minute hand is off
         res.minuteHand.toggleOff();
-        // be sure we're not paused
         if (cad.pause) {
             res.pause.togglePause();
         }
@@ -59,7 +56,6 @@ SharkGame.Gateway = {
             SharkGame.flags.hourHandLeft = 0;
         const storedTime = SharkGame.flags.minuteHandTimer - SharkGame.flags.requestedTimeLeft - SharkGame.flags.hourHandLeft;
         SharkGame.persistentFlags.minuteStorage += storedTime;
-        // make sure the player is flagged as having idled so the minute hand shows up from now on
         res.minuteHand.allowMinuteHand();
         const baseReward = gateway.getBaseReward(loadingFromSave);
         const patienceReward = gateway.getPatienceReward(loadingFromSave);
@@ -67,18 +63,13 @@ SharkGame.Gateway = {
         const gumptionBonus = gateway.getGumptionBonus(loadingFromSave);
         gateway.ui.prepareBasePane(baseReward, patienceReward, speedReward, gumptionBonus, storedTime);
         gateway.grantEssenceReward(baseReward, patienceReward, speedReward);
-        // store memories
         SharkGame.Memories.elevateMemories();
-        // RESET COMPLETED GATE REQUIREMENTS
         SharkGame.Gate.completedRequirements = {};
-        // clear non-persistent flags just in case
         SharkGame.flags = {};
-        // SAVE
         SharkGame.Save.saveGame();
         $("#game").addClass("inGateway");
     },
     cleanUp() {
-        // empty out the game stuff behind
         main.purgeGame();
     },
     rerollWorlds() {
@@ -90,11 +81,8 @@ SharkGame.Gateway = {
         }
     },
     preparePlanetSelection(numPlanets) {
-        // empty existing pool
         gateway.planetPool = [];
-        // create pool of qualified types
         const qualifiedPlanetTypes = gateway.allowedWorlds.slice(0);
-        // look for uncompleted planet types
         const uncompletedPlanetTypes = gateway.allowedWorlds.slice(0);
         _.each(gateway.completedWorlds, (worldtype) => {
             const typeIndex = uncompletedPlanetTypes.indexOf(worldtype);
@@ -102,15 +90,10 @@ SharkGame.Gateway = {
                 uncompletedPlanetTypes.splice(typeIndex, 1);
             }
         });
-        // are there any? if so, set a random index out of the number of planets we're choosing
-        // the choice with this index is guaranteed to be an uncompleted planet
         let guaranteeWhichWorld;
         if (uncompletedPlanetTypes.length > 0) {
             guaranteeWhichWorld = Math.floor(Math.random() * numPlanets);
         }
-        // pull random types from the pool
-        // for each type pulled, generated a random level for the planet
-        // then add to the planet pool
         for (let i = 0; i < numPlanets; i++) {
             let choice;
             if (uncompletedPlanetTypes.length > 0 && guaranteeWhichWorld === i) {
@@ -120,22 +103,18 @@ SharkGame.Gateway = {
                 choice = SharkGame.choose(qualifiedPlanetTypes);
             }
             const index = qualifiedPlanetTypes.indexOf(choice);
-            // take it out of the qualified pool (avoid duplicates)
             qualifiedPlanetTypes.splice(index, 1);
             if (uncompletedPlanetTypes.indexOf(choice) > -1) {
                 uncompletedPlanetTypes.splice(uncompletedPlanetTypes.indexOf(choice), 1);
             }
-            // add choice to pool
             gateway.planetPool.push({
                 type: choice,
             });
         }
     },
     getVoiceMessage(wonGame, forceWorldBased) {
-        // the point of this function is to add to the message pool all available qualifying messages and then pick one
         const messagePool = [];
         const totalEssence = res.getTotalResource("essence");
-        // if the game wasn't won, add loss messages
         if (!wonGame) {
             messagePool.push(...gateway.Messages.loss);
         }
@@ -146,7 +125,6 @@ SharkGame.Gateway = {
             }
         }
         else {
-            // determine which essence based messages should go into the pool
             _.each(gateway.Messages.essenceBased, (message) => {
                 const min = message.min || 0;
                 const max = message.max || Number.MAX_VALUE;
@@ -154,12 +132,10 @@ SharkGame.Gateway = {
                     messagePool.push(...message.messages);
                 }
             });
-            // determine which planet based messages should go into the pool
             const planetPool = gateway.Messages.lastPlanetBased[world.worldType];
             if (planetPool) {
                 messagePool.push(...planetPool);
             }
-            // finally just add all the generics into the pool
             messagePool.push(...gateway.Messages.generic);
         }
         return '"' + SharkGame.choose(messagePool) + '"';
@@ -199,7 +175,6 @@ SharkGame.Gateway = {
             SharkGame.persistentFlags.scouting = undefined;
         }
         else if (SharkGame.persistentFlags.wasScouting === undefined) {
-            // failsafe, assume we were indeed scouting
             SharkGame.persistentFlags.wasScouting = true;
         }
     },
@@ -314,10 +289,8 @@ SharkGame.Gateway = {
     ui: {
         showGateway(baseReward, patienceReward, speedReward, gumptionRatio = gateway.getGumptionBonus(), forceWorldBased = false, storedTime = 0) {
             const gumptionBonus = Math.ceil(gumptionRatio * (baseReward + speedReward));
-            // get some useful numbers
             const essenceHeld = res.getResource("essence");
             const numenHeld = res.getResource("numen");
-            // construct the gateway content
             const gatewayContent = $("<div>");
             gatewayContent.append($("<p>").html("You are a shark in the space between worlds."));
             if (!SharkGame.wonGame) {
@@ -327,7 +300,6 @@ SharkGame.Gateway = {
             gatewayContent.append($("<em>")
                 .attr("id", "gatewayVoiceMessage")
                 .html(sharktext.boldString(gateway.getVoiceMessage(SharkGame.wonGame, forceWorldBased))));
-            // figure out all our rewards
             if (baseReward > 0) {
                 gatewayContent.append($("<p>").html("Entering this place has changed you, granting you <span class='essenceCount'>" +
                     sharktext.beautify(baseReward) +
@@ -373,11 +345,9 @@ SharkGame.Gateway = {
                     ", and you radiate divinity."));
             }
             gatewayContent.append($("<p>").attr("id", "gatewayStatusMessage").addClass("medDesc"));
-            // show end time
             const endRunInfoDiv = $("<div>");
             gateway.ui.showRunEndInfo(endRunInfoDiv);
             gatewayContent.append(endRunInfoDiv);
-            // add navigation buttons
             const navButtons = $("<div>").addClass("gatewayButtonList");
             SharkGame.Button.makeButton("backToGateway", "aspects", navButtons, () => {
                 gateway.ui.switchViews(gateway.ui.showAspects);
@@ -419,8 +389,6 @@ SharkGame.Gateway = {
             }
         },
         prepareBasePane(baseReward, patienceReward, speedReward, gumptionBonus, storedTime) {
-            // PREPARE GATEWAY PANE
-            // set up classes
             let pane;
             if (!SharkGame.paneGenerated) {
                 pane = SharkGame.PaneHandler.buildPane();
@@ -429,7 +397,6 @@ SharkGame.Gateway = {
                 pane = $("#pane");
             }
             pane.addClass("gateway");
-            // make overlay opaque
             if (SharkGame.Settings.current.showAnimations) {
                 gateway.transitioning = true;
             }
@@ -463,7 +430,6 @@ SharkGame.Gateway = {
             aspectTreeContent.append($("<p>").html("Your will flows into solid shapes beyond your control.<br>Focus."));
             aspectTreeContent.append(tree.drawTree(SharkGame.Settings.current.doAspectTable === "table"));
             const buttonDiv = $("<div>").attr("id", "aspectTreeNavButtons").addClass("gatewayButtonList");
-            // add return to gateway button
             SharkGame.Button.makeButton("backToGateway", "return to gateway", buttonDiv, () => {
                 gateway.ui.switchViews(gateway.ui.showGateway);
                 $("#tooltipbox").empty().removeClass("forAspectTree forAspectTreeUnpurchased");
@@ -491,10 +457,8 @@ SharkGame.Gateway = {
             gateway.transitioning = false;
         },
         showPlanets(foregoAnimation) {
-            // construct the gateway content
             const planetSelectionContent = $("<div>");
             planetSelectionContent.append($("<p>").html("Other worlds await."));
-            // show planet pool
             const planetPool = $("<div>").addClass("gatewayButtonList");
             _.each(gateway.planetPool, function callback(planetInfo) {
                 SharkGame.Button.makeButton("planet-" + planetInfo.type, planetInfo.type + " " + planetInfo.level, planetPool, function onClick() {
@@ -510,7 +474,6 @@ SharkGame.Gateway = {
             if (SharkGame.persistentFlags.debug) {
                 SharkGame.Button.makeButton("visitButton", "visit any world", planetSelectionContent, gateway.ui.showWorldVisitMenu);
             }
-            // add return to gateway button
             const returnButtonDiv = $("<div>");
             SharkGame.Button.makeButton("backToGateway", "return to gateway", returnButtonDiv, () => {
                 gateway.ui.switchViews(gateway.ui.showGateway);
@@ -538,7 +501,6 @@ SharkGame.Gateway = {
         confirmWorld() {
             const selectedWorldData = SharkGame.WorldTypes[gateway.selectedWorld];
             const seenWorldYet = gateway.completedWorlds.includes(gateway.selectedWorld);
-            // construct the gateway content
             const gatewayContent = $("<div>").append($("<p>").html((seenWorldYet ? "Replay the " + selectedWorldData.name + " W" : "Scout this w") + "orld?"));
             gatewayContent.append($("<p>")
                 .attr("id", "predicted-gain")
@@ -552,7 +514,6 @@ SharkGame.Gateway = {
                 "</strong> " +
                 sharktext.getResourceName("essence", undefined, undefined, sharkcolor.getElementColor("pane")) +
                 " overall."));
-            // add world image
             const spritename = seenWorldYet ? "planets/" + gateway.selectedWorld : "planets/missing";
             const iconDiv = SharkGame.changeSprite(SharkGame.spriteIconPath, spritename, null, "planets/missing");
             if (iconDiv) {
@@ -607,7 +568,6 @@ SharkGame.Gateway = {
                 gatewayContent.append(dialLabel);
                 gatewayContent.append($("<hr>"));
             }
-            // add confirm button
             const confirmButtonDiv = $("<div>");
             SharkGame.Button.makeButton("progress", "proceed", confirmButtonDiv, () => {
                 function checkAspects() {
@@ -625,14 +585,12 @@ SharkGame.Gateway = {
                         gateway.ui.showMinuteHandStorageExtraction(gateway.selectedWorld);
                     }
                     else {
-                        // kick back to main to start up the game again
                         world.worldType = gateway.selectedWorld;
                         main.loopGame();
                     }
                 }
             });
             gatewayContent.append(confirmButtonDiv);
-            // add return to planets button
             const returnButtonDiv = $("<div>");
             SharkGame.Button.makeButton("backToGateway", "reconsider", returnButtonDiv, () => {
                 gateway.ui.switchViews(gateway.ui.showPlanets);
@@ -655,7 +613,6 @@ SharkGame.Gateway = {
             }
         },
         showPlanetAttributes(worldData, seenWorldYet, contentDiv) {
-            /* eslint-disable no-fallthrough */
             switch (SharkGame.Aspects.distantForesight.level) {
                 case 1:
                     contentDiv.prepend($("<p>").html(worldData.foresight.longDesc));
@@ -704,7 +661,6 @@ SharkGame.Gateway = {
                         contentDiv.prepend($("<p>").html(worldData.foresight.vagueLongDesc));
                     }
             }
-            /* eslint-enable no-fallthrough */
         },
         showWorldVisitMenu() {
             const menuContent = $("<div>").append($("<p>").html("Pick a world to visit:"));
@@ -715,7 +671,6 @@ SharkGame.Gateway = {
                         gateway.ui.showMinuteHandStorageExtraction(planetName);
                     }
                     else {
-                        // kick back to main to start up the game again
                         world.worldType = planetName;
                         main.loopGame();
                     }
@@ -815,7 +770,6 @@ SharkGame.Gateway = {
             const times = timeLeft.split(" ");
             times.reverse();
             const precision = times.length;
-            /* eslint-disable no-fallthrough */
             if (gateway.completedWorlds.includes(worldtype)) {
                 switch (precision) {
                     case 7:
@@ -894,7 +848,6 @@ SharkGame.Gateway = {
                     .on("input", updateRequestedTime));
                 timeSelection.append($("<strong>").html("s"));
             }
-            /* eslint-enable no-fallthrough */
             timeSelection.append($("<p>").html(sharktext.boldString("ONLY TAKE AS MUCH AS YOU NEED!<br>Anything that you take but don't use will be discarded.")));
             timeSelection.append($("<hr>"));
             timeSelection.append($("<p>").attr("id", "remaining-time"));
@@ -1093,13 +1046,8 @@ SharkGame.Gateway.Messages = {
         "No matter. You will succeed in the future, no doubt.",
         "Never give in. Never surrender. Empty platitudes, perhaps, but sound advice nonetheless.",
         "Mistakes are filled with lessons. Learn never to repeat them.",
-        /*         "How does it feel to know that everyone who trusted you has perished?",
-        "Another world dies. Was this one significant to you?", */
         "A sad event. There is plenty of time to redeem yourself.",
-        /*         "What a pity. What a shame. I hear the mournful cries of a dying ocean.", */
         "You can do better. You will do better. Believe.",
-        /*         "You wish to get back here so quickly?",
-        "You and everything you knew has died. Perhaps not you. Perhaps not.", */
         "One more try, perhaps?",
         "Excellence is pure habit. We are what we repeatedly do. Try again, and do better.",
     ],

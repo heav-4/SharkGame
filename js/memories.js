@@ -3,7 +3,6 @@ SharkGame.Memories = {
     worldMemories: {},
     persistentMemories: {},
     init() {
-        // create the quick lookup table for home events
         SharkGame.Memories.messageLookup = new Map();
         _.each(SharkGame.HomeMessages.messages, (worldHomeMessageArray) => {
             $.each(worldHomeMessageArray, (index, homeMessageData) => {

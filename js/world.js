@@ -31,7 +31,6 @@ SharkGame.World = {
     resetWorldProperties() {
         const worldResources = world.worldResources;
         world.worldRestrictedCombinations.clear();
-        // set up defaults
         SharkGame.ResourceMap.forEach((_resourceData, resourceName) => {
             worldResources.set(resourceName, {});
             worldResources.get(resourceName).exists = true;
@@ -40,7 +39,6 @@ SharkGame.World = {
     applyWorldProperties() {
         const worldResources = world.worldResources;
         const worldInfo = SharkGame.WorldTypes[world.worldType];
-        // enable resources allowed on the planet
         if (worldInfo.includedResources) {
             SharkGame.ResourceMap.forEach((_resourceData, resourceName) => {
                 worldResources.get(resourceName).exists = false;
@@ -56,11 +54,9 @@ SharkGame.World = {
                 }
             });
         }
-        // disable resources not allowed on planet
         _.each(worldInfo.absentResources, (absentResource) => {
             worldResources.get(absentResource).exists = false;
         });
-        // apply world modifiers
         _.each(worldInfo.modifiers, (modifierData) => {
             res.applyModifier(modifierData.modifier, modifierData.resource, modifierData.amount);
         });
@@ -85,10 +81,7 @@ SharkGame.World = {
         if (SharkGame.flags.scouting) {
             return true;
         }
-        // if this is NOT marked as a scouting mission, make sure that's accurate
-        // (but if it IS marked as a scouting mission, we don't care if that's accurate, just blindly accept)
         if (!gateway.completedWorlds.includes(world.worldType)) {
-            // this should be a scouting mission
             SharkGame.flags.scouting = true;
             return true;
         }

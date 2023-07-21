@@ -20,21 +20,12 @@ SharkGame.TitleBar = {
             SharkGame.PaneHandler.showOptions();
         },
     },
-    /*     helpLink: {
-        name: "help",
-        main: true,
-        onClick() {
-            SharkGame.PaneHandler.showHelp();
-        },
-    }, */
     skipLink: {
         name: "skip",
         main: true,
         onClick() {
             if (main.isFirstTime()) {
-                // save people stranded on home world
                 if (confirm("Do you want to reset your game?")) {
-                    // just reset
                     main.resetGame();
                 }
             }
@@ -58,13 +49,6 @@ SharkGame.TitleBar = {
             SharkGame.PaneHandler.showChangelog();
         },
     },
-    /* creditsLink: {
-        name: "credits",
-        main: false,
-        onClick() {
-            SharkGame.PaneHandler.addPaneToStack("Credits", SharkGame.Panes.credits);
-        },
-    }, */ // credits now at bottom of page
     donateLink: {
         name: "donate",
         main: false,
@@ -91,13 +75,6 @@ SharkGame.TitleBar = {
             window.location.href = "https://shark.tobot.dev/";
         },
     },
-    /* noticeLink: {
-        name: "notice",
-        main: false,
-        onClick() {
-            SharkGame.PaneHandler.addPaneToStack("v0.2 OPEN ALPHA NOTICE", SharkGame.Panes.notice);
-        },
-    }, */
 };
 SharkGame.TitleBarHandler = {
     init() {
@@ -108,7 +85,6 @@ SharkGame.TitleBarHandler = {
             SharkGame.TitleBar.skipLink.name = "reset";
         }
         else {
-            // and then remember to actually set it back once it's not
             SharkGame.TitleBar.skipLink.name = "skip";
         }
         this.setUpTitleBar();

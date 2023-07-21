@@ -118,7 +118,6 @@ SharkGame.Log = {
         if (log.messages.length >= logMax) {
             while (log.messages.length > logMax) {
                 const oldestMessage = log.messages[0];
-                // remove oldest message
                 if (showAnims) {
                     log.messages[0].animate({ opacity: 0 }, 100, "swing", () => {
                         $(oldestMessage).remove();
@@ -127,17 +126,14 @@ SharkGame.Log = {
                 else {
                     oldestMessage.remove();
                 }
-                // shift array (remove first item)
                 log.messages.shift();
             }
         }
     },
     clearMessages(logThing = true) {
-        // remove each element from page
         _.each(log.messages, (message) => {
             message.remove();
         });
-        // wipe array
         log.messages = [];
         if (logThing)
             log.addMessage("Log cleared.");

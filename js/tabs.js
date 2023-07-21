@@ -29,12 +29,10 @@ SharkGame.TabHandler = {
                 return;
             }
             let reqsMet = true;
-            // check resources
             if (tab.discoverReq.resource) {
                 reqsMet &&= res.checkResources(tab.discoverReq.resource, true);
             }
             const upgradeTable = SharkGame.Upgrades.getUpgradeTable();
-            // check upgrades
             if (tab.discoverReq.upgrade) {
                 let anyUpgradeExists = false;
                 _.each(tab.discoverReq.upgrade, (upgradeName) => {
@@ -62,7 +60,6 @@ SharkGame.TabHandler = {
                 });
             }
             if (reqsMet) {
-                // special logic for special tabs
                 switch (tabName) {
                     case "reflection":
                         if (!SharkGame.persistentFlags.seenReflection)
@@ -75,7 +72,6 @@ SharkGame.TabHandler = {
                     default:
                         log.addDiscovery("Discovered " + tab.name + "!");
                 }
-                // unlock tab!
                 this.discoverTab(tabName);
             }
         });
@@ -91,14 +87,12 @@ SharkGame.TabHandler = {
     },
     setUpTab() {
         const tabs = SharkGame.Tabs;
-        // empty out content div
         const content = $("#content");
         content.empty();
         $("#contentMenu").empty();
         $("#contentMenu").append(`<ul id="tabList" class="${SharkGame.Settings.current.minimizedTopbar ? "" : "notFixed"}"></ul></div><div id="tabBorder" class="clear-fix">`);
         this.validateTabWidth();
         this.createTabNavigation();
-        // set up tab specific stuff
         const tab = tabs[tabs.current];
         const tabCode = tab.code;
         tabCode.switchTo();
@@ -123,8 +117,6 @@ SharkGame.TabHandler = {
         const tabs = SharkGame.Tabs;
         const tabList = $("#tabList");
         tabList.empty();
-        // add navigation
-        // check if we have more than one discovered tab, else bypass this
         let numTabsDiscovered = 0;
         $.each(tabs, (_tabName, tab) => {
             if (tab.discovered) {
@@ -132,8 +124,6 @@ SharkGame.TabHandler = {
             }
         });
         if (numTabsDiscovered > 1) {
-            // add a header for each discovered tab
-            // make it a link if it's not the current tab
             $.each(tabs, (tabId, tabData) => {
                 const onThisTab = SharkGame.Tabs.current === tabId;
                 if (tabData.discovered) {
@@ -169,7 +159,6 @@ SharkGame.TabHandler = {
         if ((tab === "reflection" && SharkGame.persistentFlags.seenReflection) || (tab === "cheats" && SharkGame.persistentFlags.seenCheatsTab)) {
             SharkGame.Tabs[tab].seen = true;
         }
-        // force a total redraw of the navigation
         this.createTabMenu();
     },
 };

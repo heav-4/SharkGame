@@ -1,12 +1,12 @@
 "use strict";
-SharkGame.PlayerResources = new Map(); // stats about resources player has
-SharkGame.PlayerIncomeTable = new Map(); // every resource and how much is produced
-SharkGame.ResourceMap = new Map(); // every resource and what it produces at base income and after modifiers are applied
-SharkGame.BreakdownIncomeTable = new Map(); // a map which has every single generator and what it produces, after costScaling
-SharkGame.FlippedBreakdownIncomeTable = new Map(); // each resource and what produces it and how much
-SharkGame.ModifierMap = new Map(); // the static multipliers and modifiers to each resource from upgrades, the world, etc
-SharkGame.ResourceIncomeAffectors = {}; // these two are used to preserve the integrity of the original table in sharkgame.resourcetable
-SharkGame.GeneratorIncomeAffectors = {}; // this allows free modification of these, in accordance with modifiers and events
+SharkGame.PlayerResources = new Map();
+SharkGame.PlayerIncomeTable = new Map();
+SharkGame.ResourceMap = new Map();
+SharkGame.BreakdownIncomeTable = new Map();
+SharkGame.FlippedBreakdownIncomeTable = new Map();
+SharkGame.ModifierMap = new Map();
+SharkGame.ResourceIncomeAffectors = {};
+SharkGame.GeneratorIncomeAffectors = {};
 SharkGame.Resources = {
     INCOME_COLOR: "#909090",
     TOTAL_INCOME_COLOR: "#A0A0A0",
@@ -18,34 +18,26 @@ SharkGame.Resources = {
     rebuildTable: false,
     collapsedRows: new Set(),
     init() {
-        // set all the amounts and total amounts of resources to 0
         $.each(SharkGame.ResourceTable, (resourceId, resource) => {
             SharkGame.ResourceMap.set(resourceId, sharkmisc.cloneDeep(resource));
         });
         SharkGame.ResourceMap.forEach((resource, resourceId) => {
-            // create the baseIncome data
             if (resource.baseIncome) {
-                // Turn getters into their current values
                 resource.income = Object.assign({}, resource.baseIncome);
             }
-            // create the playerresources map
             SharkGame.PlayerResources.set(resourceId, {
                 amount: 0,
                 totalAmount: 0,
             });
-            // populate the flipped income breakdown map
             SharkGame.FlippedBreakdownIncomeTable.set(resourceId, {});
-            // populate income table with an entry for each resource!!
             SharkGame.PlayerIncomeTable.set(resourceId, 0);
         });
-        // set up the modifier reference, and also set up the object we copy to every entry in the modifier map
         const multiplierObject = {};
         $.each(SharkGame.ModifierTypes, (category, types) => {
             multiplierObject[category] = {};
             $.each(types, (type, modifiers) => {
                 multiplierObject[category][type] = {};
                 $.each(modifiers, (name, object) => {
-                    // additionally set values for the types and categories of stuff
                     object.category = category;
                     object.type = type;
                     SharkGame.ModifierReference.set(name, object);
@@ -53,7 +45,6 @@ SharkGame.Resources = {
                 });
             });
         });
-        // build multiplier map
         SharkGame.ResourceMap.forEach((_resource, resourceId) => {
             SharkGame.ModifierMap.set(resourceId, sharkmisc.cloneDeep(multiplierObject));
         });
@@ -64,7 +55,6 @@ SharkGame.Resources = {
         res.clearNetworks();
     },
     setup() {
-        // reapply all modifiers
         SharkGame.ResourceMap.forEach((resource, resourceId) => {
             $.each(resource.baseIncome, (generatedId) => {
                 res.reapplyModifiers(resourceId, generatedId);
@@ -95,12 +85,6 @@ SharkGame.Resources = {
                 SharkGame.timestampSimulated += 1000;
                 SharkGame.EventHandler.handleEventTick("afterTick");
             }
-            // it should be noted that to greatly increase speed, events are not processed during res.RKMethod.
-            // this will need to be planned around; if we have a reactive event that could be triggered during
-            // offline progress, then we need to either design around that never happening or design around it
-            // happening within 60 seconds of loading a save. as of frigid update, this is not a concern,
-            // but i can think of a time in the future where it definitely will be.
-            // I'm willing to make things a little messy and add some special rules if it'll get the damn thing to work properly.
             if (timeDelta > 172800) {
                 timeDelta = res.doRKMethod(timeDelta, timeDelta / 1728, 50000);
             }
@@ -186,13 +170,11 @@ SharkGame.Resources = {
         return time;
     },
     recalculateIncomeTable(cheap) {
-        // clear income table first
         SharkGame.ResourceMap.forEach((_resource, resourceId) => {
             SharkGame.PlayerIncomeTable.set(resourceId, 0);
         });
         SharkGame.ResourceMap.forEach((resource, resourceId) => {
             if (world.doesResourceExist(resourceId)) {
-                // for this resource, calculate the income it generates
                 if (resource.income) {
                     let costScaling = 1;
                     const changeMap = new Map();
@@ -202,19 +184,16 @@ SharkGame.Resources = {
                         }
                     });
                     changeMap.forEach((generatedAmount, generatedResource) => {
-                        // run over all resources first to check if costs can be met
-                        // if the cost can't be taken, scale the cost and output down to feasible levels
                         if (!resource.forceIncome) {
                             if (generatedAmount < 0) {
                                 const resourceHeld = res.getResource(generatedResource);
                                 if (resourceHeld + generatedAmount <= 0) {
                                     const scaling = resourceHeld / -generatedAmount;
                                     if (scaling >= 0 && scaling < 1) {
-                                        // sanity checking
                                         costScaling = Math.min(costScaling, scaling);
                                     }
                                     else {
-                                        costScaling = 0; // better to break this way than break explosively
+                                        costScaling = 0;
                                     }
                                 }
                             }
@@ -302,15 +281,14 @@ SharkGame.Resources = {
     getIncome(resource) {
         return SharkGame.PlayerIncomeTable.get(resource);
     },
-    // Adds or subtracts resources based on amount given.
     changeResource(resource, amount, norecalculation) {
         if (Math.abs(amount) < SharkGame.EPSILON) {
-            return; // ignore changes below epsilon
+            return;
         }
         const resourceTable = SharkGame.PlayerResources.get(resource);
         const prevTotalAmount = resourceTable.totalAmount;
         if (!world.doesResourceExist(resource)) {
-            return; // don't change resources that don't technically exist
+            return;
         }
         resourceTable.amount += amount;
         if (resourceTable.amount < 0) {
@@ -323,7 +301,6 @@ SharkGame.Resources = {
             resourceTable.totalAmount += amount;
         }
         if (prevTotalAmount < SharkGame.EPSILON && amount > 0) {
-            // we got a new resource
             res.rebuildTable = true;
         }
         if (!norecalculation) {
@@ -369,7 +346,6 @@ SharkGame.Resources = {
         return SharkGame.ResourceCategories[category].resources.indexOf(resource) !== -1;
     },
     getBaseOfResource(resourceName) {
-        // if there are super-categories/base jobs of a resource, return that, otherwise return null
         for (const [resourceId, resource] of SharkGame.ResourceMap) {
             if (_.some(resource.jobs, (jobName) => jobName === resourceName)) {
                 return resourceId;
@@ -386,8 +362,6 @@ SharkGame.Resources = {
         }
         return false;
     },
-    // returns true if enough resources are held (>=)
-    // false if they are not
     checkResources(resourceList, checkTotal) {
         return _.every(resourceList, (required, resource) => {
             const currentAmount = checkTotal ? res.getTotalResource(resource) : res.getResource(resource);
@@ -412,15 +386,11 @@ SharkGame.Resources = {
         });
         return newList;
     },
-    // update values in table without adding rows
     updateResourcesTable() {
-        // if resource table does not exist, there are no resources, so do not construct table
-        // if a resource became visible when it previously wasn't, reconstruct the table
         if (res.rebuildTable) {
             res.reconstructResourcesTable();
         }
         else {
-            // loop over table rows, update values
             SharkGame.PlayerResources.forEach((resource, resourceName) => {
                 const oldValue = $("#amount-" + resourceName).html();
                 const newValue = "&nbsp;" + sharktext.beautify(resource.amount, true);
@@ -531,9 +501,7 @@ SharkGame.Resources = {
         },
         handleTokenDragStart(event) {
             event.originalEvent.dataTransfer.setData("tokenId", event.originalEvent.target.id);
-            // chrome forcing stinky workaround
             res.tokens.chromeForcesWorkarounds = event.originalEvent.target.id;
-            // event.originalEvent.dataTransfer.setData("tokenType", event.originalEvent.target.type);
             event.originalEvent.dataTransfer.setData("tokenLocation", SharkGame.flags.tokens[this.id]);
             const image = document.createElement("img");
             image.src = "img/small/general/theToken.png";
@@ -775,7 +743,7 @@ SharkGame.Resources = {
             $("#minute-hand-toggle").html("<strong>TOGGLE</strong>");
             $("#minute-hand-div").append($("<div>").attr("id", "minute-row-two"));
             $("#minute-row-two").append($("<span>").attr("id", "minute-multiplier"));
-            $("#minute-hand-div").append($("<div>").attr("id", "minute-time") /* .on("mouseenter", res.minuteHand.showTimeTooltip).on("mouseleave", res.tableTextLeave) */);
+            $("#minute-hand-div").append($("<div>").attr("id", "minute-time"));
             $("#minute-row-two").append($("<span>").html("("));
             const slider = $("<input>")
                 .attr("id", "minute-slider")
@@ -824,8 +792,6 @@ SharkGame.Resources = {
                 SharkGame.flags.minuteHandTimer -= timeRemoved;
                 if (SharkGame.flags.minuteHandTimer < 0) {
                     res.minuteHand.disableNextTick = true;
-                    // the net effect of this next statement is making the processing which
-                    // happens later in this tick give exactly as much income as needed to exhaust the minute hand
                     res.minuteHand.changeRealMultiplier(SharkGame.flags.minuteHandTimer / timeElapsed + res.minuteHand.realMultiplier - 1);
                     SharkGame.flags.minuteHandTimer = 0;
                     res.minuteHand.toggleMinuteHand();
@@ -962,13 +928,6 @@ SharkGame.Resources = {
                 }
             }
         },
-        /*         showTimeTooltip() {
-            if (SharkGame.Settings.current.showTooltips) {
-                $("#tooltipbox").html(`You have ${sharktext.boldString(res.minuteHand.formatMinuteTime(SharkGame.flags.minuteHandTimer))} left.` +
-                (SharkGame.flags.hourHandLeft ? `<br>(${sharktext.boldString(res.minuteHand.formatMinuteTime(SharkGame.flags.hourHandLeft))} is from the hour hand.)` : "") +
-                `<br>You have ${sharktext.boldString(res.minuteHand.formatMinuteTime(SharkGame.persistentFlags.minuteStorage))} in storage.`);
-            }
-        }, */
         toggleOff() {
             if (res.minuteHand.active) {
                 res.minuteHand.toggleMinuteHand();
@@ -1013,7 +972,6 @@ SharkGame.Resources = {
             SharkGame.persistentFlags.dialSetting = 1;
         },
     },
-    // add rows to table (more expensive than updating existing DOM elements)
     reconstructResourcesTable() {
         res.resetResourceTableMinWidth();
         let resourceTable = $("#resourceTable");
@@ -1024,9 +982,7 @@ SharkGame.Resources = {
         else {
             resourceTable.removeClass("littleGeneralText");
         }
-        // if resource table does not exist, create
         if (resourceTable.length <= 0) {
-            // check for aspect level here later
             statusDiv.prepend($("<div>").attr("id", "token-div"));
             statusDiv.prepend($("<div>").attr("id", "token-description"));
             statusDiv.prepend($("<div>").attr("id", "fake-minute-hand-div"));
@@ -1037,7 +993,6 @@ SharkGame.Resources = {
             tableContainer.append(resourceTable);
             statusDiv.append(tableContainer);
         }
-        // remove the table contents entirely
         resourceTable.empty();
         let anyResourcesInTable = false;
         if (SharkGame.Settings.current.groupResources) {
@@ -1064,7 +1019,6 @@ SharkGame.Resources = {
             });
         }
         else {
-            // iterate through data, if total amount > 0 add a row
             SharkGame.ResourceMap.forEach((_resource, resourceId) => {
                 if ((res.getTotalResource(resourceId) > 0 || SharkGame.PlayerResources.get(resourceId).discovered) &&
                     world.doesResourceExist(resourceId) &&
@@ -1075,8 +1029,6 @@ SharkGame.Resources = {
                 }
             });
         }
-        // if the table is still empty, hide the status div
-        // otherwise show it
         if (!anyResourcesInTable) {
             statusDiv.hide();
         }
@@ -1126,9 +1078,6 @@ SharkGame.Resources = {
                 }
             })
                 .on("dragend", res.tokens.handleDragEnd)
-                // .on("dragleave", () => {
-                //     $("#tooltipbox").html("");
-                // })
                 .on("drop", res.tokens.dropToken)
                 .on("click", res.tokens.tryClickToPlace));
             row.append($("<td>")
@@ -1149,9 +1098,6 @@ SharkGame.Resources = {
                 }
             })
                 .on("dragend", res.tokens.handleDragEnd)
-                // .on("dragleave", () => {
-                //     $("#tooltipbox").html("");
-                // })
                 .on("drop", res.tokens.dropToken)
                 .on("click", res.tokens.tryClickToPlace);
             row.append(incomeId);
@@ -1384,20 +1330,15 @@ SharkGame.Resources = {
         $(".tooltip").removeClass("forIncomeTable").attr("current", "");
     },
     buildIncomeNetwork() {
-        // completes the network of resources whose incomes are affected by other resources
-        // takes the order of the gia and reverses it to get the rgad.
         const gia = SharkGame.GeneratorIncomeAffectors;
         const rgad = SharkGame.GeneratorIncomeAffected;
         const resourceCategories = SharkGame.ResourceCategories;
-        // recursively parse the gia
         $.each(gia, (affectorResource) => {
             $.each(gia[affectorResource], (type) => {
                 $.each(gia[affectorResource][type], (affectedGeneratorCategory, value) => {
-                    // is it a category or a generator?
                     const nodes = res.isCategory(affectedGeneratorCategory)
                         ? resourceCategories[affectedGeneratorCategory].resources
                         : [affectedGeneratorCategory];
-                    // recursively reconstruct the table with the keys in the inverse order
                     $.each(nodes, (_key, affectedGenerator) => {
                         if (world.doesResourceExist(affectedGenerator) && world.doesResourceExist(affectorResource)) {
                             res.addNetworkNode(rgad, affectedGenerator, type, affectorResource, value);
@@ -1406,18 +1347,14 @@ SharkGame.Resources = {
                 });
             });
         });
-        // resources incomes below, generators above
         const ria = SharkGame.ResourceIncomeAffectors;
         const rad = SharkGame.ResourceIncomeAffected;
-        // recursively parse the ria
         $.each(ria, (affectorResource) => {
             $.each(ria[affectorResource], (type) => {
                 $.each(ria[affectorResource][type], (affectedResourceCategory, degree) => {
-                    // is it a category?
                     const nodes = res.isCategory(affectedResourceCategory)
                         ? resourceCategories[affectedResourceCategory].resources
                         : [affectedResourceCategory];
-                    // recursively reconstruct the table with the keys in the inverse order
                     $.each(nodes, (_key, affectedResource) => {
                         if (world.doesResourceExist(affectedResource) && world.doesResourceExist(affectorResource)) {
                             res.addNetworkNode(rad, affectedResource, type, affectorResource, degree);
@@ -1431,14 +1368,6 @@ SharkGame.Resources = {
         SharkGame.GeneratorIncomeAffected = {};
         SharkGame.ResourceIncomeAffected = {};
     },
-    /**
-     * Adds a parameter in a nested object, specifically 3 layers deep.
-     * @param {object} network The nested object to add a paramater to
-     * @param {string} high The top-level parameter to index
-     * @param {string} mid The second-level paramater to index
-     * @param {string} low The paramater to assign
-     * @param {number} value The value of that parameter
-     */
     addNetworkNode(network, high, mid, low, value) {
         if (!network[high]) {
             network[high] = {};
@@ -1448,12 +1377,6 @@ SharkGame.Resources = {
         }
         network[high][mid][low] = value;
     },
-    /**
-     * Completes the necessary steps to apply the effects of a modifier to the income table.
-     * @param {string} name The index of the modifier in the modifier map.
-     * @param {string} target The affected resource or category of resources.
-     * @param {any} degree The incoming change to the modifier, or a separate value denoting the strength of a world modifier.
-     */
     applyModifier(name, target, degree) {
         if (res.isCategory(target)) {
             target = res.getResourcesInCategory(target);
@@ -1468,11 +1391,6 @@ SharkGame.Resources = {
             SharkGame.ModifierMap.get(resource)[category][type][name] = modifier.apply(SharkGame.ModifierMap.get(resource)[category][type][name], degree, resource);
         });
     },
-    /**
-     * Reapplies the effects of all modifiers on a specific generator-income pair. Used when changing base income, which necessitates recalculation.
-     * @param {string} generator The generator in question.
-     * @param {string} generated The resource associated with the income.
-     */
     reapplyModifiers(generator, generated) {
         let income = SharkGame.ResourceMap.get(generator).baseIncome[generated];
         SharkGame.ModifierReference.forEach((modifier, name) => {
@@ -1482,12 +1400,6 @@ SharkGame.Resources = {
         });
         SharkGame.ResourceMap.get(generator).income[generated] = income;
     },
-    /**
-     * Gets the combined effect of all multiplicative modifiers of a certain type on a specific generator-income pair. Used in the grotto for advanced mode.
-     * @param {string} category The category of modifier (may be upgrade, world, or aspect).
-     * @param {string} generator The generator in question.
-     * @param {string} generated The generated resource.
-     */
     getMultiplierProduct(category, generator, generated) {
         let product = 1;
         $.each(SharkGame.ModifierTypes[category].multiplier, (name, data) => {
@@ -1506,11 +1418,6 @@ SharkGame.Resources = {
         });
         return grace;
     },
-    /**
-     * Takes an array of resources and gives back an object which is used to create text describing the resource and generator effects. It's complicated.
-     * @param {object} resources Object containing each resource and how much.
-     * @param {boolean} treatResourcesAsAffected Whether or not to condense the node with respect to the resources as affectors or as the affected.
-     */
     condenseNode(resources, treatResourcesAsAffected) {
         function convertType(whichType, degree) {
             switch (whichType) {

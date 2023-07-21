@@ -1,5 +1,4 @@
 "use strict";
-// idea: aspect which helps to reveal more of the tree
 SharkGame.Aspects = {
     deprecated: {
         theMinuteHand: {
@@ -544,39 +543,6 @@ SharkGame.Aspects = {
             tree.handleClickedAspect(this);
         },
     },
-    /*     keenEyesight: {
-        posX: 0,
-        posY: 50,
-        width: 40,
-        height: 40,
-
-        max: 10,
-        level: 0,
-        name: "Keen Eyesight",
-        description: "Learn to stop overlooking the small stuff.",
-        getCost(level) {
-            return 3 * level + 5;
-        },
-        getEffect(level) {
-            return (
-                "Unlocks a button to manually gather " +
-                sharktext.getResourceName("crystal", false, 420) +
-                ". " +
-                0.01 * level * SharkGame.Aspects.apotheosis.level +
-                " " +
-                sharktext.getResourceName("crystal", false, 420) +
-                " per click."
-            );
-        },
-        getUnlocked() {
-            //return SharkGame.Gateway.completedWorlds.includes("shrouded") ? "" : "Complete the Shrouded worldtype to unlock this aspect.";
-            return "This aspect will be implemented in a future update.";
-        },
-        prerequisites: ["crystallineSkin"],
-        clicked(_event) {
-            tree.increaseLevel(this);
-        },
-    }, */
     internalCalculator: {
         posX: 575,
         posY: 200,
@@ -634,7 +600,6 @@ SharkGame.Aspects = {
             }
         },
         getUnlocked() {
-            // return SharkGame.Gateway.completedWorlds.includes("tempestuous") ? "" : "Complete the Tempestuous worldtype to unlock this aspect.";
         },
         prerequisites: ["internalCalculator"],
         clicked(_event) {

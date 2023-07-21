@@ -42,7 +42,6 @@ SharkGame.Recycler = {
         SharkGame.TabHandler.registerTab(this);
     },
     setup() {
-        /* doesnt need to do anything */
     },
     switchTo() {
         const content = $("#content");
@@ -86,7 +85,6 @@ SharkGame.Recycler = {
         }
         const newValue = "CONTAINS:<br/>" + junkString.bold() + " RESIDUE<br/><br/>" + rec.getRecyclerEfficiencyString() + rec.getTarString().bold();
         const oldValue = junkDisplay.html();
-        // Fix up beautified strings to match jquery returns for matching purposes.
         if (oldValue !== newValue.replace(/'/g, '"').replace(/<br\/>/g, "<br>")) {
             junkDisplay.html(newValue);
         }
@@ -95,13 +93,11 @@ SharkGame.Recycler = {
         SharkGame.ResourceMap.forEach((_resource, resourceName) => {
             if (res.getTotalResource(resourceName) > 0) {
                 const inputButton = $("#input-" + resourceName);
-                // If this is a resource that's not in the recycler, skip it entirely.
                 if (inputButton.length === 0) {
                     return true;
                 }
                 const outputButton = $("#output-" + resourceName);
                 const resourceAmount = new Decimal(res.getResource(resourceName));
-                // determine amounts for input and what would be retrieved from output
                 const buy = new Decimal(sharkmath.getBuyAmount());
                 let inputAmount = buy;
                 let outputAmount = buy;
@@ -111,7 +107,6 @@ SharkGame.Recycler = {
                     inputAmount = resourceAmount.dividedBy(divisor).round();
                     outputAmount = maxOutputAmount.dividedBy(divisor).round();
                 }
-                // update input button
                 let disableButton = resourceAmount.lessThan(inputAmount) || inputAmount.lessThanOrEqualTo(0);
                 let label = "Recycle ";
                 if (inputAmount.greaterThan(0)) {
@@ -140,7 +135,6 @@ SharkGame.Recycler = {
                 if (inputButton.html() !== label.replace(/'/g, '"')) {
                     inputButton.html(label);
                 }
-                // update output button
                 disableButton = maxOutputAmount.lessThan(outputAmount) || outputAmount.lessThanOrEqualTo(0);
                 label = "Convert to ";
                 if (outputAmount > 0) {
@@ -194,7 +188,6 @@ SharkGame.Recycler = {
             log.addError("Not enough resources for that transaction. This might be caused by putting in way too many resources at once.");
         }
         rec.updateEfficiency(resourceName);
-        // disable button until next frame
         button.addClass("disabled");
     },
     onOutput() {
@@ -230,7 +223,6 @@ SharkGame.Recycler = {
         else {
             log.addMessage("You don't have enough for that!");
         }
-        // disable button until next frame
         button.addClass("disabled");
     },
     getMaxToBuy(resource) {
@@ -416,15 +408,10 @@ SharkGame.Recycler = {
             baseEfficiency = 1;
         }
         const purchaseAmount = sharkmath.getPurchaseAmount(resource);
-        // check if the amount to eat is less than the threshold
         if (purchaseAmount <= Math.pow(10, maxEfficiencyRecyclePowerOfTen)) {
             rec.efficiency = baseEfficiency;
         }
         else {
-            // otherwise, scale back based purely on the number to process
-            // 'cheating' by lowering the value of n is ok if the player wants to put in a ton of effort
-            // the system is more sensible, and people can get a feel for it easier if i make this change
-            // the amount that this effects things isn't crazy high either, so
             rec.efficiency = 1 / (Math.log10(purchaseAmount) - maxEfficiencyRecyclePowerOfTen + Math.round(1 / baseEfficiency));
         }
     },

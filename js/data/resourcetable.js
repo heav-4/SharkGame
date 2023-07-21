@@ -1,6 +1,5 @@
 "use strict";
 SharkGame.ResourceTable = {
-    // SPECIAL
     numen: {
         name: "numina",
         singleName: "numen",
@@ -106,7 +105,6 @@ SharkGame.ResourceTable = {
             },
         }),
     },
-    // MAGICAL
     sacrifice: {
         name: "sacrifices",
         singleName: "sacrifice",
@@ -121,7 +119,6 @@ SharkGame.ResourceTable = {
         color: "#E791FF",
         value: 1,
     },
-    // SCIENCE
     science: {
         name: "science",
         singleName: "science",
@@ -129,7 +126,6 @@ SharkGame.ResourceTable = {
         color: "#BBA4E0",
         value: 100,
     },
-    // ANIMALS
     fish: {
         name: "fish",
         singleName: "fish",
@@ -172,7 +168,6 @@ SharkGame.ResourceTable = {
         color: "#828FB5",
         value: 10,
     },
-    // MATERIALS
     sand: {
         name: "sand",
         singleName: "sand",
@@ -216,22 +211,8 @@ SharkGame.ResourceTable = {
         singleName: "seagrass",
         desc: "Little plants.",
         color: "#5AC766",
-        value: 10, // set this
+        value: 10,
     },
-    /* gravel: {
-        name: "gravel",
-        singleName: "gravel",
-        color: "#ABABAB",
-        value: 2,
-    },
-
-    stone: {
-        name: "stones",
-        singleName: "stone",
-        color: "#6B6B6B",
-        value: 3,
-    }, */
-    // PROCESSED
     sharkonium: {
         name: "sharkonium",
         singleName: "sharkonium",
@@ -246,7 +227,6 @@ SharkGame.ResourceTable = {
         color: "#ABABAB",
         value: 1,
     },
-    // FRENZY
     shark: {
         name: "sharks",
         singleName: "shark",
@@ -352,7 +332,7 @@ SharkGame.ResourceTable = {
             crystal: 100,
             tar: 0.04,
         }),
-        value: 33500, // 100 crystal 100 sand 25 sharkonium (3550)
+        value: 33500,
     },
     sandDigger: {
         name: "sand diggers",
@@ -363,7 +343,7 @@ SharkGame.ResourceTable = {
             sand: 200,
             tar: 0.02,
         }),
-        value: 120000, // 500 sand 150 sharkonium (12000)
+        value: 120000,
     },
     autoTransmuter: {
         name: "auto-transmuters",
@@ -379,7 +359,7 @@ SharkGame.ResourceTable = {
             },
             sharkonium: 20,
         }),
-        value: 155000, // 100 crystal 200 sharkonium (15500)
+        value: 155000,
     },
     fishMachine: {
         name: "fish machines",
@@ -390,7 +370,7 @@ SharkGame.ResourceTable = {
             fish: 400,
             tar: 0.02,
         }),
-        value: 70000, // 100 sharkonium (7000)
+        value: 70000,
     },
     skimmer: {
         name: "skimmers",
@@ -409,7 +389,6 @@ SharkGame.ResourceTable = {
         }),
         value: 50000,
     },
-    // MARINE
     lobster: {
         name: "lobsters",
         singleName: "lobster",
@@ -481,7 +460,6 @@ SharkGame.ResourceTable = {
         }),
         value: 1500,
     },
-    // SAVED FOR LATER
     coralglass: {
         name: "coralglass",
         singleName: "coralglass",
@@ -489,7 +467,6 @@ SharkGame.ResourceTable = {
         color: "#FDD5B4",
         value: 70,
     },
-    // volcanic
     shrimp: {
         name: "shrimp",
         singleName: "shrimp",
@@ -577,9 +554,6 @@ SharkGame.ResourceTable = {
         }),
         value: 753,
     },
-    // TEMPESTUOUS
-    // through to getting your chart, tempestuous has no machines and no sharkonium.
-    // once you get to the facility, you unlock it.
     billfish: {
         name: "billfish",
         singleName: "billfish",
@@ -642,7 +616,6 @@ SharkGame.ResourceTable = {
         }),
         value: 1000,
     },
-    // HAVEN
     dolphin: {
         name: "dolphins",
         singleName: "dolphin",
@@ -743,7 +716,6 @@ SharkGame.ResourceTable = {
         color: "#5BD1A8",
         value: 70,
     },
-    // SHROUDED
     chimaera: {
         name: "chimaeras",
         singleName: "chimaera",
@@ -815,15 +787,8 @@ SharkGame.ResourceTable = {
         }),
         value: 3000,
     },
-    // ABANDONED
     octopus: {
         name: "octopuses",
-        // which in turn took it from greek
-        // when it was taken from greek and made into latin it kept the original plural
-        // now the word is taken from latin and maybe we should take the original plural but
-        // look basically the point is this is a long and storied word
-        // and the english plural system should apply because we're talking about octopus, not ὀκτώπους, so just
-        // why are you reading this
         singleName: "octopus",
         desc: "Lifeforms of pure reason.",
         color: "#965F37",
@@ -974,15 +939,9 @@ SharkGame.ResourceTable = {
         value: 1000,
         forceIncome: true,
     },
-    // FRIGID
     squid: {
         name: "squid",
         singleName: "squid",
-        // when referring to a group of squid, they are squid.
-        // when referring to various kinds of squids, they are squids.
-        // therefore references to the different professions lumped in with other squids will use 'squids'
-        // and other circumstances referring to a single kind, like this one, will use 'squid'
-        // why are you reading this
         desc: "Indebted, and forever loyal.",
         color: "#FA9272",
         baseIncome: Object.freeze({
@@ -1053,32 +1012,6 @@ SharkGame.ResourceTable = {
     },
 };
 SharkGame.GeneratorIncomeAffectorsOriginal = {
-    // table of all the ways that various resources affect the production of others
-    // in the following structure:
-    // resource which affects the income... {
-    //                                      ...through this manner... {
-    //                                                          ...of this generator: by this degree
-    // see SharkGame.Resources.buildIncomeNetwork, then see SharkGame.Resource.getNetworkIncomeModifier
-    //
-    // multiply multiplies the income of the specified generator by    1 + degree * amount of resource
-    // exponentiate multiplies the income of a generator by            degree ^ amount
-    // reciprocal multiplies the income of a generator by              1  / (1 + degree * amount)
-    // polynomial multiplies the income of a generator by              amount ^ degree
-    //
-    // tip: use negative degree in multiply to soft cap things.
-    // e.g. if i set fish to multiply sharks' income by -0.01, then as the amount of fish approaches 100, shark income approaches 0.
-    // result: fish cannot go above 100 during gameplay.
-    //
-    // unsolved problem: offline progress is semi-incompatible with these calculations.
-    // because the growth is continuous, the math to predict these things would be difficult
-    // still possible for multiply and moreso for reciprocal, polynomial doesn't pose much of a problem
-    // exponentiate results in non-algebraic equations...which is really bad.
-    // additionally, differential equations are unreliable because this growth is not continuous.
-    // perhaps...simply calculate everything over the given number of steps the player is gone for
-    // but that could take a long time if the player leaves for too long. could take shortcut for long times.
-    // will solve later. for now, simply make some resource offline-immune.
-    // problem has since been solved
-    // introduced RK4 method, added income caps to stop over-zealous growth.
     ice: {
         multiply: {
             shark: -0.001,
@@ -1109,18 +1042,8 @@ SharkGame.GeneratorIncomeAffectorsOriginal = {
             fishMachine: 0.01,
         },
     },
-    // cool tooltip test crab
-    /*     crab: {
-        exponentiate: {
-            squid: 0.99,
-            shark: 0.99,
-        },
-    }, */
 };
-SharkGame.GeneratorIncomeAffected = {
-// This table automatically populates with the effects on every relevant resource
-// see SharkGame.Resources.buildIncomeNetwork
-};
+SharkGame.GeneratorIncomeAffected = {};
 SharkGame.ResourceIncomeAffectorsOriginal = {
     ice: {
         multiply: {
@@ -1165,29 +1088,8 @@ SharkGame.ResourceIncomeAffectorsOriginal = {
             algae: 0.02,
         },
     },
-    /*     shoveler: {
-        multiply: {
-            sand: 0.05,
-        },
-    }, */
-    // cool tooltip test shark
-    /*     shark: {
-        multiply: {
-            ray: 0.01,
-            crab: 0.1,
-        },
-        exponentiate: {
-            kelp: 0.95,
-            scientist: 1.02,
-        },
-    }, */
 };
-SharkGame.ResourceIncomeAffected = {
-// This table automatically populates with the effects on every relevant resource
-// see SharkGame.Resources.buildIncomeNetwork
-};
-// FIXME: Remove or document this
-// It's either an artifact of an old system, or future-proofing.
+SharkGame.ResourceIncomeAffected = {};
 SharkGame.ResourceSpecialProperties = {
     timeImmune: [],
     incomeCap: {},
@@ -1213,7 +1115,6 @@ SharkGame.ResourceCategories = {
             "science",
             "chart",
             "map",
-            // "knowledge",
         ],
     },
     magical: {
@@ -1273,8 +1174,6 @@ SharkGame.ResourceCategories = {
             "coral",
             "algae",
             "seagrass",
-            // "stone",
-            // "gravel",
         ],
     },
     processed: {

@@ -1,33 +1,18 @@
 "use strict";
-/**
- * @type Record<string, (a: number, b: number, k: number) => number>
- */
 SharkGame.MathUtil = {
-    // current = current amount
-    // desired = desired amount
-    // cost = constant price
-    // returns: cost to get to b from a
     constantCost(current, difference, cost) {
         if (typeof current === "object") {
             return cost.times(difference);
         }
         return difference * cost;
     },
-    // current = current amount
-    // available = available price amount
-    // cost = constant price
-    // returns: absolute max items that can be held with invested and current resources
     constantMax(current, available, cost) {
         if (typeof current === "object") {
             return available.dividedBy(cost).plus(current);
         }
-        available = Math.floor(Math.floor(available) * (1 - 1e-9) + 0.1); // safety margin
+        available = Math.floor(Math.floor(available) * (1 - 1e-9) + 0.1);
         return available / cost + current;
     },
-    // current = current amount
-    // desired = desired amount
-    // cost = cost increase per item
-    // returns: cost to get to b from a
     linearCost(current, difference, constant) {
         if (typeof current === "object") {
             return constant.dividedBy(2).times(difference.times(difference).plus(difference).plus(current.times(2).times(difference)));
@@ -36,29 +21,15 @@ SharkGame.MathUtil = {
             return (constant / 2) * (difference * difference + difference + 2 * difference * current);
         }
     },
-    // current = current amount
-    // available = available price amount
-    // cost = cost increase per item
-    // returns: absolute max items that can be held with invested and current resources
     linearMax(current, available, cost) {
         if (typeof current === "object") {
             return current.times(current).plus(current).plus(available.times(2).dividedBy(cost)).plus(0.25).squareRoot().minus(0.5);
         }
         else {
-            available = Math.floor(Math.floor(available) * (1 - 1e-9)); // safety margin
+            available = Math.floor(Math.floor(available) * (1 - 1e-9));
             return Math.sqrt(current * current + current + (2 * available) / cost + 0.25) - 0.5;
         }
     },
-    // these need to be adapted probably?
-    // will anything ever use these
-    // exponentialCost(a, b, k) {
-    //     return (k * Math.pow()) - ();
-    // },
-    //
-    // exponentialMax(a, b, k) {
-    //     return Math.floor(Math.log(Math.pow(b,a) + (b-1) * b / k) / Math.log(a));
-    // }
-    // artificial limit - whatever has these functions for cost/max can only have one of)
     uniqueCost(current, difference, cost) {
         if (typeof current === "object") {
             if (current.lessThan(1) && current.plus(difference).lessThanOrEqualTo(2)) {
@@ -72,10 +43,9 @@ SharkGame.MathUtil = {
             return cost;
         }
         else {
-            return Number.POSITIVE_INFINITY; // be careful this doesn't fuck things up
+            return Number.POSITIVE_INFINITY;
         }
     },
-    // this takes an argument to know whether or not to return a Decimal or a Number
     uniqueMax(current) {
         return typeof current === "object" ? new Decimal(1) : 1;
     },
@@ -91,7 +61,6 @@ SharkGame.MathUtil = {
         }
         return SharkGame.Settings.current.buyAmount;
     },
-    // This is weird
     getPurchaseAmount(resource, owned = res.getResource(resource)) {
         const buy = sharkmath.getBuyAmount();
         if (buy > 0) {
@@ -102,18 +71,12 @@ SharkGame.MathUtil = {
         }
     },
 };
-// linear floor(sqrt(current^2 + current + 2 * price/k + 1/4) - 1/2)
-// exponential floor(log(b^old + (b-1) * price / k) / log(b))
-// linear total cost = k / 2 * (n^2 + n)
-// exponential total cost = k * (b^n - 1) / (b - 1)
 SharkGame.TextUtil = {
     plural(number) {
         return number === 1 ? "" : "s";
     },
     getDeterminer(name) {
         const firstLetter = SharkGame.ResourceMap.get(name).name.charAt(0);
-        // note to self: make the next line not suck
-        // Possibly add an "uncountable" property to resources somehow? Manual works fine though
         if ([
             "kelp",
             "sand",
@@ -142,7 +105,6 @@ SharkGame.TextUtil = {
         }
     },
     getIsOrAre(name, amount = res.getResource(name)) {
-        // should make a universal list for these somewhere in textutil, ya?
         if ([
             "sand",
             "algae",
@@ -170,7 +132,6 @@ SharkGame.TextUtil = {
     shouldHideNumberOfThis(name) {
         return ["world", "aspectAffect", "specialResourceOne", "specialResourceTwo"].includes(name);
     },
-    /** @param {string} string */
     boldString(string) {
         return `<span class='bold'>${string}</span>`;
     },
@@ -204,7 +165,6 @@ SharkGame.TextUtil = {
                 formatted = number.toFixed(4) + "";
             }
             else if (number >= 0.00001) {
-                // number > 0.00001 && negative -> number > 0.00001 && number < 0 -> false
                 formatted = number.toFixed(5) + "";
             }
             else {
@@ -224,7 +184,6 @@ SharkGame.TextUtil = {
                     suffixes = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp"];
             }
             const digits = Math.floor(Math.log10(number));
-            // Max for a case where the supported suffix is not specified
             const precision = Math.max(0, 2 - (digits % 3));
             const suffixIndex = Math.floor(digits / 3);
             let suffix;
@@ -244,7 +203,6 @@ SharkGame.TextUtil = {
             }
             else {
                 suffix = suffixes[suffixIndex];
-                // fix number to be compliant with suffix
                 if (suffixIndex > 0) {
                     number /= Math.pow(1000, suffixIndex);
                 }
@@ -324,7 +282,6 @@ SharkGame.TextUtil = {
                 name = "egg";
             }
         }
-        // easter egg logic
         if (name === "world") {
             name = Math.random() > 0.0005 ? "world" : "ZA WARUDO";
         }
@@ -337,7 +294,6 @@ SharkGame.TextUtil = {
                 color = sharkcolor.colorLum(resource.color, -0.5);
             }
             else if (background) {
-                // this code
                 const backRLum = sharkcolor.getRelativeLuminance(background);
                 const colorRLum = sharkcolor.getRelativeLuminance(color);
                 let contrast;
@@ -347,18 +303,16 @@ SharkGame.TextUtil = {
                 else {
                     contrast = (backRLum + 0.05) / (colorRLum + 0.05);
                 }
-                const tolerance = 3.5; // for easy changing
+                const tolerance = 3.5;
                 if (contrast < tolerance) {
                     const requiredLuminance = tolerance * backRLum + 0.05 * tolerance - 0.05;
                     color = sharkcolor.correctLuminance(color, requiredLuminance > 1 ? (backRLum + 0.05) / tolerance - 0.05 : requiredLuminance);
                 }
             }
-            // if (background) color = background;
             extraStyle = " style='color:" + color + "'";
         }
         return "<span class='click-passthrough'" + extraStyle + ">" + name + "</span>";
     },
-    // make a resource list object into a string describing its contents
     resourceListToString(resourceList, darken, backgroundColor) {
         if ($.isEmptyObject(resourceList)) {
             return "";
@@ -373,20 +327,17 @@ SharkGame.TextUtil = {
                 formattedResourceList += " " + sharktext.getResourceName(resourceId, darken, resourceAmount, backgroundColor) + ", ";
             }
         });
-        // snip off trailing suffix
         formattedResourceList = formattedResourceList.slice(0, -2);
         return formattedResourceList;
     },
 };
 SharkGame.ColorUtil = {
     colorLum(hex, lum) {
-        // validate hex string
         hex = String(hex).replace(/[^0-9a-f]/gi, "");
         if (hex.length < 6) {
             hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
         }
         lum = lum || 0;
-        // convert to decimal and change luminosity
         let rgb = "#";
         for (let i = 0; i < 3; i++) {
             let color = parseInt(hex.substr(i * 2, 2), 16);
@@ -498,7 +449,6 @@ SharkGame.MiscUtil = {
     },
     cloneDeep(obj) {
         switch (typeof obj) {
-            // Immutable types
             case "bigint":
             case "number":
             case "string":
@@ -506,10 +456,8 @@ SharkGame.MiscUtil = {
             case "undefined":
             case "symbol":
                 return obj;
-            // Unsure how to handle functions. Just return unaltered for now
             case "function":
                 return obj;
-            // Objects
             case "object": {
                 if (obj === null) {
                     return null;
@@ -523,7 +471,6 @@ SharkGame.MiscUtil = {
                 }
                 else {
                     const clone = Object.create(Object.getPrototypeOf(obj));
-                    // with Object.getOwnPropertyDescriptor, it misses Symbols
                     const keys = Reflect.ownKeys(obj);
                     for (const key of keys) {
                         const descriptor = Reflect.getOwnPropertyDescriptor(obj, key);

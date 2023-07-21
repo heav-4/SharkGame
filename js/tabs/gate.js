@@ -31,14 +31,11 @@ SharkGame.Gate = {
     requirements: {},
     completedRequirements: {},
     init() {
-        // register tab
         SharkGame.TabHandler.registerTab(this);
         SharkGame.Gate.opened = false;
-        // redundant reset of gate requirements
         SharkGame.Gate.resetSlots();
     },
     setup() {
-        /* doesnt need to do anything */
     },
     resetSlots() {
         SharkGame.Gate.requirements = {};
@@ -109,7 +106,6 @@ SharkGame.Gate = {
         const slotsLeft = gate.getSlotsLeft();
         const upgradesLeft = gate.getUpgradesLeft();
         const resourcesLeft = gate.getResourcesLeft();
-        // this intentionally checks for !== false because if it is specifically false, then getSlotsLeft() found that this world has no slots
         if (slotsLeft !== false) {
             if (slotsLeft > 1) {
                 return gate.message;
@@ -117,38 +113,27 @@ SharkGame.Gate = {
             else if (slotsLeft === 1) {
                 return gate.messageOneSlot;
             }
-            // if we get here then slotsLeft somehow took on a value other than a positive integer or false
-            // in this situation simply assume slotsLeft === 0 and continue with execution
         }
-        // if there are no slots then see if there are any upgrades or resources needed
         if (upgradesLeft !== false || resourcesLeft !== false) {
             return gate.messagePaidNotOpen;
         }
-        // if there are no upgrades needed, then that implies that there are no gate requirements
-        // send an error to the log and return a debug message
         log.addError("No gate requirements found.");
         return "This is a failsafe message. Something has gone wrong internally.";
     },
     getSlotsLeft() {
         const gate = SharkGame.Gate;
         let incompleteSlots = 0;
-        // counts up the number of slots which are *not* filled
         _.each(gate.completedRequirements.slots, (resource) => {
             incompleteSlots += resource ? 0 : 1;
         });
-        // if there are any slots in the first place, return the number of slots unfilled
-        // if there are not any slots, return false to identify this fact
         return Object.keys(gate.requirements.slots).length !== 0 ? incompleteSlots : false;
     },
     getUpgradesLeft() {
         const gate = SharkGame.Gate;
         let incompleteUpgrades = 0;
-        // counts up the number of required upgrades which are *not* purchased
         _.each(gate.completedRequirements.upgrades, (upgradeName) => {
             incompleteUpgrades += upgradeName ? 0 : 1;
         });
-        // if there are any required upgrades in the first place, return the number of still required upgrades
-        // if there are not any required upgrades, return false to identify this fact
         if (gate.requirements.upgrades) {
             return gate.requirements.upgrades.length === 0 ? incompleteUpgrades : false;
         }
@@ -204,7 +189,6 @@ SharkGame.Gate = {
             $(this).remove();
             if (gate.shouldBeOpen()) {
                 message = gate.messageAllPaid;
-                // add enter gate button
                 SharkGame.Button.makeButton("gateEnter", "Enter gate", $("#buttonList"), gate.onEnterButton);
             }
             else {
@@ -250,13 +234,6 @@ SharkGame.Gate = {
         const slotsLeft = gate.getSlotsLeft();
         const upgradesLeft = gate.getUpgradesLeft();
         const resourcesLeft = gate.getResourcesLeft();
-        // lots of complicated logic here
-        // basically:
-        // - if the gate is open, show it as open
-        // - if the gate has more than 1 slot left, show it as closed
-        // - if the gate has 1 slot left and filling that slot would open it, then do the 1 slot remaining
-        // - if the gate has 1 slot left but filling that slot would NOT open it (there's an upgrade requirement), show it as closed
-        // - if all slots are filled but an upgrade is still needed then show the closed-but-filled image
         if (gate.shouldBeOpen()) {
             return gate.sceneOpenImage;
         }
