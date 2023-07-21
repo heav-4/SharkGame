@@ -2,6 +2,7 @@
 SharkGame.Memories = {
     worldMemories: {},
     persistentMemories: {},
+    messageLookup: new Map(),
     init() {
         SharkGame.Memories.messageLookup = new Map();
         _.each(SharkGame.HomeMessages.messages, (worldHomeMessageArray) => {
@@ -16,7 +17,6 @@ SharkGame.Memories = {
             this.persistentMemories[worldType] = [];
         });
     },
-    setup() { },
     addMemory(worldType, messageName) {
         if (!mem.worldMemories[worldType].includes(messageName))
             mem.worldMemories[worldType].push(messageName);
