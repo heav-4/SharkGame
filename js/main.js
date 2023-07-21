@@ -276,7 +276,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
         SharkGame.timestampRunStart = SharkGame.timestampRunStart || now;
         SharkGame.World.setup();
         SharkGame.AspectTree.setup();
-        SharkGame.Memories.setup();
         SharkGame.Resources.setup();
         SharkGame.Lab.setup();
         SharkGame.Home.setup();
