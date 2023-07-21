@@ -7,7 +7,7 @@ SharkGame.TitleBar = {
             try {
                 SharkGame.Save.saveGame();
             } catch (err) {
-                log.addError(err);
+                log.addError(err as Error);
             }
             log.addMessage("Saved game.");
         },
@@ -20,14 +20,6 @@ SharkGame.TitleBar = {
             SharkGame.PaneHandler.showOptions();
         },
     },
-
-    /*     helpLink: {
-        name: "help",
-        main: true,
-        onClick() {
-            SharkGame.PaneHandler.showHelp();
-        },
-    }, */
 
     skipLink: {
         name: "skip",
@@ -62,14 +54,6 @@ SharkGame.TitleBar = {
         },
     },
 
-    /* creditsLink: {
-        name: "credits",
-        main: false,
-        onClick() {
-            SharkGame.PaneHandler.addPaneToStack("Credits", SharkGame.Panes.credits);
-        },
-    }, */ // credits now at bottom of page
-
     donateLink: {
         name: "donate",
         main: false,
@@ -78,7 +62,7 @@ SharkGame.TitleBar = {
         },
     },
 
-    discordLink: {
+    discordInvite: {
         name: "discord",
         main: false,
         link: "https://discord.gg/eYqApFkFPY",
@@ -91,20 +75,12 @@ SharkGame.TitleBar = {
             try {
                 SharkGame.Save.saveGame();
             } catch (err) {
-                log.addError(err);
+                log.addError(err as Error);
             }
             log.addMessage("Saved game.");
             window.location.href = "https://shark.tobot.dev/";
         },
     },
-
-    /* noticeLink: {
-        name: "notice",
-        main: false,
-        onClick() {
-            SharkGame.PaneHandler.addPaneToStack("v0.2 OPEN ALPHA NOTICE", SharkGame.Panes.notice);
-        },
-    }, */
 };
 
 SharkGame.TitleBarHandler = {
@@ -124,13 +100,13 @@ SharkGame.TitleBarHandler = {
 
     updateTopBar() {
         if (SharkGame.Settings.current.minimizedTopbar) {
-            document.querySelector("body").classList.add("top-bar");
-            $("#wrapper").removeClass("notMinimized");
-            $("#tabList").removeClass("notFixed");
+            document.body.classList.add("top-bar");
+            document.getElementById("wrapper")?.classList.remove("notMinimized");
+            document.getElementById("tabList")?.classList.remove("notFixed");
         } else {
-            document.querySelector("body").classList.remove("top-bar");
-            $("#wrapper").addClass("notMinimized");
-            $("#tabList").addClass("notFixed");
+            document.body.classList.remove("top-bar");
+            document.getElementById("wrapper")?.classList.add("notMinimized");
+            document.getElementById("tabList")?.classList.add("notFixed");
         }
     },
 
@@ -145,8 +121,9 @@ SharkGame.TitleBarHandler = {
         SharkGame.TitleBarHandler.wipeTitleBar();
         $.each(SharkGame.TitleBar, (linkId, linkData) => {
             let option;
-            if (linkData.link) {
-                option = "<li><a id='" + linkId + "' href='" + linkData.link + "' target='_blank'>" + linkData.name + "</a></li>";
+            if (sharkmisc.has(linkData, "link")) {
+                option =
+                    "<li><a id='" + linkId + "' href='" + (linkData as { link: string }).link + "' target='_blank'>" + linkData.name + "</a></li>";
             } else {
                 option = "<li><a id='" + linkId + "' href='javascript:;'>" + linkData.name + "</a></li>";
             }
@@ -155,7 +132,9 @@ SharkGame.TitleBarHandler = {
             } else {
                 subTitleMenu.append(option);
             }
-            $("#" + linkId).on("click", linkData.onClick);
+            if (sharkmisc.has(linkData, "onClick")) {
+                $("#" + linkId).on("click", (linkData as { onClick(): void }).onClick);
+            }
         });
     },
 };

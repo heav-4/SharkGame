@@ -653,14 +653,15 @@ declare global {
         exitGateway(): void;
     };
 
+    type PaneContent = Array<JQuery.htmlString | JQuery.TypeOrArray<JQuery.Node | JQuery<JQuery.Node>>>;
     type PaneHandlerModule = {
         paneStack: Pane[];
         currentPane?: Pane;
         buildPane(): JQuery<HTMLDivElement>;
-        addPaneToStack(title: string, contents: JQuery<HTMLElement>, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
-        swapCurrentPane(title: string, contents: JQuery<HTMLElement>, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
+        addPaneToStack(title: string, contents: PaneContent, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
+        swapCurrentPane(title: string, contents: PaneContent, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
         wipeStack(): void;
-        showPane(title: string, contents: JQuery<HTMLElement>, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
+        showPane(title: string, contents: PaneContent, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
         hidePane(): void;
         showOptions(): void;
         setUpOptions(): JQuery<HTMLTableElement>;
@@ -755,11 +756,20 @@ declare global {
             main: boolean;
             onClick(): void;
         }
-    >;
+    > & {
+        discordInvite: {
+            name: string;
+            main: boolean;
+            link: string;
+        };
+    };
 
     type TitleBarHandlerModule = {
+        init(): void;
         correctTitleBar(): void;
         setUpTitleBar(): void;
+        updateTopBar(): void;
+        wipeTitleBar(): void;
     };
 
     type WorldModule = {

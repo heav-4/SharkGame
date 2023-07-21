@@ -174,9 +174,9 @@ SharkGame.Settings = {
         category: "APPEARANCE",
         onChange() {
             if (SharkGame.Settings.current.enableThemes) {
-                document.querySelector("body").classList.remove("no-theme");
+                document.body.classList.remove("no-theme");
             } else {
-                document.querySelector("body").classList.add("no-theme");
+                document.body.classList.add("no-theme");
             }
         },
     },
