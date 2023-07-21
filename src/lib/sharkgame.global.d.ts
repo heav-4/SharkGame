@@ -171,7 +171,7 @@ declare global {
     type ResourceName = string;
     type SaveString = `<~${string}~>` | `x${string}` | `{${string}}`;
     type SpriteName = string;
-    type TabName = string;
+    type TabName = "home" | "lab" | "stats" | "recycler" | "gate" | "reflection" | "cheats";
     type UpgradeName = string;
     type WorldName = "start" | "marine" | "haven" | "tempestuous" | "volcanic" | "abandoned" | "shrouded" | "frigid";
 
@@ -705,6 +705,7 @@ declare global {
     };
 
     type TabHandlerModule = {
+        init(): void;
         checkTabUnlocks(): void;
         setUpTab(): void;
         createTabMenu(): void;
@@ -712,6 +713,8 @@ declare global {
         createTabNavigation(): void;
         changeTab(tab: TabName): void;
         discoverTab(tab: TabName): void;
+        isTabUnlocked(tab: TabName): boolean;
+        validateTabWidth(): void;
     };
 
     type TabsModule = {
@@ -919,6 +922,7 @@ declare global {
         isUpgradeVisible(upgradeId: UpgradeName): boolean;
         getResearchEffects(upgrade: Upgrade): string;
         updateUpgradeList(): void;
+        findAllAffordableUpgrades(): UpgradeName[];
     };
 
     type RecyclerTab = SharkGameTabBase & {
@@ -1132,7 +1136,7 @@ declare global {
         /** Can be indexed with the name of a modifier to return the associated data in SharkGame.ModifierTypes. */
         ModifierReference: Map<ModifierName, Modifier>;
         PlayerIncomeTable: Map<ResourceName, number>;
-        PlayerResources: Map<ResourceName, { amount: number; totalAmount: number }>;
+        PlayerResources: Map<ResourceName, { amount: number; totalAmount: number; discovered?: boolean }>;
     };
 
     type SharkGame = SharkGameConstants & SharkGameUtils & SharkGameModules & SharkGameData & SharkGameRuntimeData & SharkGameTabs;

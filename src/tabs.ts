@@ -1,8 +1,7 @@
 "use strict";
 SharkGame.Tabs = {
     current: "home",
-};
-
+} as TabsModule; // Force the type so it doesn't complain about missing TabName keys
 SharkGame.TabHandler = {
     init() {
         SharkGame.Tabs.current = "home";
@@ -24,7 +23,7 @@ SharkGame.TabHandler = {
                 { maxWait: 600 }
             )
         );
-        resizeObserver.observe(document.getElementById("content"));
+        resizeObserver.observe(document.getElementById("content")!);
     },
 
     keybindSwitchTab(tab) {
@@ -100,7 +99,7 @@ SharkGame.TabHandler = {
     validateTabWidth() {
         const logLocation = SharkGame.Settings.current.logLocation;
         if (logLocation !== "left" && logLocation !== "top") {
-            $("#tabList").css("margin-right", $(window).width() - document.getElementById("content").getBoundingClientRect().right + 14 + "px");
+            $("#tabList").css("margin-right", window.innerWidth - document.getElementById("content")!.getBoundingClientRect().right + 14 + "px");
         }
     },
 

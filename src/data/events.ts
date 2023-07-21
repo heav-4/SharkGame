@@ -211,8 +211,8 @@ SharkGame.Events = {
             return "remove";
         },
         trigger() {
-            SharkGame.GeneratorIncomeAffectors.farmer.multiply.spongeFarm *= 2;
-            SharkGame.GeneratorIncomeAffectors.farmer.multiply.coralFarm *= 2;
+            SharkGame.GeneratorIncomeAffectors.farmer.multiply!.spongeFarm *= 2;
+            SharkGame.GeneratorIncomeAffectors.farmer.multiply!.coralFarm *= 2;
             SharkGame.ResourceIncomeAffectors.researcher.multiply.science *= 2;
             SharkGame.ResourceIncomeAffectors.shoveler.multiply.sand *= 2;
             res.clearNetworks();
@@ -250,8 +250,8 @@ SharkGame.Events = {
             return "remove";
         },
         trigger() {
-            SharkGame.GeneratorIncomeAffectors.farmer.multiply.spongeFarm *= 2;
-            SharkGame.GeneratorIncomeAffectors.farmer.multiply.coralFarm *= 2;
+            SharkGame.GeneratorIncomeAffectors.farmer.multiply!.spongeFarm *= 2;
+            SharkGame.GeneratorIncomeAffectors.farmer.multiply!.coralFarm *= 2;
             res.clearNetworks();
             res.buildIncomeNetwork();
         },
@@ -521,7 +521,7 @@ SharkGame.Events = {
             res.setTotalResource("chart", 0);
             res.setResource("billfishExplorer", 0);
             res.setTotalResource("billfishExplorer", 0);
-            SharkGame.PlayerResources.get("chart").discovered = false;
+            SharkGame.PlayerResources.get("chart")!.discovered = false;
             res.reconstructResourcesTable();
             SharkGame.TabHandler.setUpTab();
         },
@@ -533,8 +533,8 @@ SharkGame.Events = {
             return "remove";
         },
         trigger() {
-            SharkGame.GeneratorIncomeAffectors.billfishMechanic.multiply.sandDigger *= 5;
-            SharkGame.GeneratorIncomeAffectors.billfishMechanic.multiply.fishMachine *= 5;
+            SharkGame.GeneratorIncomeAffectors.billfishMechanic.multiply!.sandDigger *= 5;
+            SharkGame.GeneratorIncomeAffectors.billfishMechanic.multiply!.fishMachine *= 5;
             res.clearNetworks();
             res.buildIncomeNetwork();
         },

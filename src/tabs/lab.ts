@@ -451,7 +451,7 @@ SharkGame.Lab = {
     },
 
     findAllAffordableUpgrades() {
-        const which = [];
+        const which: UpgradeName[] = [];
         const table = SharkGame.Upgrades.getUpgradeTable();
         $.each(table, (upgradeName) => {
             if (!this.isUpgradePossible(upgradeName) || !this.isUpgradeVisible(upgradeName) || SharkGame.Upgrades.purchased.includes(upgradeName)) {
