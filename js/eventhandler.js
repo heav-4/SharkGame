@@ -30,7 +30,7 @@ SharkGame.EventHandler = {
                     const action = eventHandler.getAction();
                     switch (action) {
                         case "trigger":
-                            keep = eventHandler.trigger();
+                            keep = eventHandler.trigger() ?? false;
                             break;
                         case "remove":
                             keep = false;
