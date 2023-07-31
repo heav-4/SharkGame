@@ -1,12 +1,13 @@
 /// <reference path="./decimal.global.d.ts"/>
 
-import { PanZoom } from "panzoom";
+import type { default as createPanZoom, PanZoom } from "panzoom";
 
 export namespace SharkGame {}
 
 declare global {
     const DecimalHalfRound: { [K in keyof Decimal.Constructor]: Decimal.Constructor[K] } & { new (n: Decimal.Value): DecimalHalfRound };
     type DecimalHalfRound = { [K in keyof Decimal.Instance]: Decimal.Instance[K] };
+    const panzoom: typeof createPanZoom;
 }
 
 declare global {

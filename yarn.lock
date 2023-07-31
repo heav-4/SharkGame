@@ -391,6 +391,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"amator@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "amator@npm:1.1.0"
+  dependencies:
+    bezier-easing: ^2.0.3
+  checksum: 221bbe02bebcbe9a18c18b913bfd3aad4c64dcbce0102ad65630aefd5df6dfa529f1ef11c482f221453210499d7aa130b2ad5f4f3bfc356ab612e5b6151d00eb
+  languageName: node
+  linkType: hard
+
 "ansi-regex@npm:^5.0.1":
   version: 5.0.1
   resolution: "ansi-regex@npm:5.0.1"
@@ -547,6 +556,13 @@ __metadata:
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
   checksum: 9706c088a283058a8a99e0bf91b0a2f75497f185980d9ffa8b304de1d9e58ebda7c72c07ebf01dadedaac5b2907b2c6f566f660d62bd336c3468e960403b9d65
+  languageName: node
+  linkType: hard
+
+"bezier-easing@npm:^2.0.3":
+  version: 2.1.0
+  resolution: "bezier-easing@npm:2.1.0"
+  checksum: ec22666b5385979b3e7a63eaf2631395b1be5beb3aed4f14cc70ae9eb09032082584f7e3eec045e4c122466987ed7e159f5b39f82b8a9870cd55e75b0d55a7d5
   languageName: node
   linkType: hard
 
@@ -2163,6 +2179,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ngraph.events@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "ngraph.events@npm:1.2.2"
+  checksum: 358d312ebdf8eeddfac9741938f38cb7fe488b402641900613f632fe81fe63da92543db050c659e5a7dc7c28750b1109ce4d78cc9d68e66d732fba7128efbbc2
+  languageName: node
+  linkType: hard
+
 "node-gyp@npm:latest":
   version: 9.4.0
   resolution: "node-gyp@npm:9.4.0"
@@ -2321,6 +2344,17 @@ __metadata:
   dependencies:
     aggregate-error: ^3.0.0
   checksum: cb0ab21ec0f32ddffd31dfc250e3afa61e103ef43d957cc45497afe37513634589316de4eb88abdfd969fe6410c22c0b93ab24328833b8eb1ccc087fc0442a1c
+  languageName: node
+  linkType: hard
+
+"panzoom@npm:^9.4.3":
+  version: 9.4.3
+  resolution: "panzoom@npm:9.4.3"
+  dependencies:
+    amator: ^1.1.0
+    ngraph.events: ^1.2.2
+    wheel: ^1.0.0
+  checksum: ff3794917769e7aee91861faf86dc26c2017b559f51565ca9f039f6fb6852cfc58789fcf72e5f56748e5c041d8d71af756e3b06e2d2cf687d350b5651ee1e92a
   languageName: node
   linkType: hard
 
@@ -2626,6 +2660,7 @@ __metadata:
     eslint-plugin-n: ^16.0.0
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-promise: ^6.1.1
+    panzoom: ^9.4.3
     prettier: ^2.8.8
     sass: ^1.63.6
     simple-git-hooks: ^2.8.1
@@ -3023,6 +3058,13 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 474acf1146cb2701fe3b074892217553dfcf9a031280919ba1b8d651a068c9b15d863b7303cb15bd00a862b498e6cf4ad7b4a08fb134edd5a6f7641681cb54a2
+  languageName: node
+  linkType: hard
+
+"wheel@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "wheel@npm:1.0.0"
+  checksum: c192bf5d7fee1f463cf03ec4d2ff93fac06f1679d1832787f1a6d76306ef35e3848d7cd96023ce1cb1e781a898142b66fd5152f6b14b8c74dcbc2ab229fe8d10
   languageName: node
   linkType: hard
 
