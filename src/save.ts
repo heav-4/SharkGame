@@ -70,7 +70,7 @@ SharkGame.Save = {
             throw new Error("Couldn't save to local storage. Reason: " + err.message);
         }
 
-        return saveString;
+        return saveString as SaveString;
     },
 
     decodeSave(saveDataString) {

@@ -2913,38 +2913,6 @@ SharkGame.Upgrades = {
                 upgrades: ["seabedGeology"],
             },
         },
-        /*         kelpCatching: {
-            name: "Kelp Catching",
-            desc: `The vents spew out kelp, but we just pick it up when it hits the ground. Maybe it's more efficient (maybe sustainable?????) to grab it while it's still flying around.`,
-            researchedMessage: `We have found that crabs are great at catching things. Y'know, since, like, claws and stuff. With proper instruction, we can direct them to increase our kelp yield.`,
-            effectDesc: "Through careful observation and training, crabs can be made catchers to increase our kelp output from vents.",
-            cost: {
-                sand: 30000,
-                science: 500,
-            },
-            required: {
-                upgrades: ["sustainableSolutions"],
-            },
-        },
-        coralSymbiosis: {
-            name: "Coral Symbiosis",
-            desc: `Alright, so according to some very "helpful" comments from the shrimp, we need to live alongside the environment instead of taking advantage of it. Suuuure.`,
-            researchedMessage: `Almost all of the coral we find can catch small fish, and through that, we've found a way to live alongside them. By "hiring" them. To get us fish.`,
-            effectDesc:
-                "We don't just throw coral in a pile anymore; now they're all on payroll, and we take a cut of their fish. I hope you're happy, shrimps.",
-            cost: {
-                coral: 100,
-                science: 1000,
-            },
-            required: {
-                upgrades: ["sustainableSolutions"],
-            },
-            effect: {
-                addFishIncome: {
-                    coral: 0.2,
-                },
-            },
-        }, */
         agriculture: {
             name: "Agriculture",
             desc: "Apparently, we're not supposed to be stealing sponge off the seabed. Stealing from who, exactly???",

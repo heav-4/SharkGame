@@ -38,8 +38,7 @@ SharkGame.World = {
 
         // set up defaults
         SharkGame.ResourceMap.forEach((_resourceData, resourceName) => {
-            worldResources.set(resourceName, {});
-            worldResources.get(resourceName).exists = true;
+            worldResources.set(resourceName, { exists: true });
         });
     },
 
@@ -49,16 +48,16 @@ SharkGame.World = {
 
         // enable resources allowed on the planet
         if (worldInfo.includedResources) {
-            SharkGame.ResourceMap.forEach((_resourceData, resourceName) => {
-                worldResources.get(resourceName).exists = false;
+            SharkGame.ResourceMap.forEach((resource) => {
+                resource.exists = false;
             });
             _.each(worldInfo.includedResources, (group) => {
                 if (sharkmisc.has(SharkGame.InternalCategories, group)) {
-                    _.each(SharkGame.InternalCategories[group].resources, (resource) => {
-                        worldResources.get(resource).exists = true;
+                    _.each(SharkGame.InternalCategories[group as InternalCategoryName].resources, (resource) => {
+                        worldResources.get(resource)!.exists = true;
                     });
                 } else {
-                    worldResources.get(group).exists = true;
+                    worldResources.get(group)!.exists = true;
                 }
             });
         }
@@ -92,21 +91,5 @@ SharkGame.World = {
     forceExistence(resourceName) {
         const resource = world.worldResources.get(resourceName);
         if (resource) resource.exists = true;
-    },
-
-    isScoutingMission() {
-        if (SharkGame.flags.scouting) {
-            return true;
-        }
-
-        // if this is NOT marked as a scouting mission, make sure that's accurate
-        // (but if it IS marked as a scouting mission, we don't care if that's accurate, just blindly accept)
-        if (!gateway.completedWorlds.includes(world.worldType)) {
-            // this should be a scouting mission
-            SharkGame.flags.scouting = true;
-            return true;
-        } else {
-            return false;
-        }
     },
 };

@@ -172,7 +172,103 @@ declare global {
         | "special"
         | "specialists"
         | "stuff";
-    type ResourceName = string;
+    type ResourceName =
+        | "numen"
+        | "essence"
+        | "world"
+        | "specialResourceOne"
+        | "specialResourceTwo"
+        | "aspectAffect"
+        | "sacrifice"
+        | "arcana"
+        | "science"
+        | "fish"
+        | "seaApple"
+        | "sponge"
+        | "jellyfish"
+        | "clam"
+        | "sand"
+        | "crystal"
+        | "kelp"
+        | "coral"
+        | "algae"
+        | "seagrass"
+        | "sharkonium"
+        | "junk"
+        | "shark"
+        | "ray"
+        | "crab"
+        | "nurse"
+        | "maker"
+        | "brood"
+        | "scientist"
+        | "laser"
+        | "planter"
+        | "crystalMiner"
+        | "sandDigger"
+        | "autoTransmuter"
+        | "fishMachine"
+        | "skimmer"
+        | "lobster"
+        | "berrier"
+        | "harvester"
+        | "calcinium"
+        | "clamScavenger"
+        | "seabedStripper"
+        | "calciniumConverter"
+        | "coralglass"
+        | "shrimp"
+        | "queen"
+        | "curiousCrab"
+        | "shoveler"
+        | "farmer"
+        | "porite"
+        | "researcher"
+        | "acolyte"
+        | "spongeFarm"
+        | "coralFarm"
+        | "billfish"
+        | "stormgoer"
+        | "billfishExplorer"
+        | "chart"
+        | "map"
+        | "billfishMechanic"
+        | "billfishPair"
+        | "dolphin"
+        | "whale"
+        | "biologist"
+        | "treasurer"
+        | "historian"
+        | "chorus"
+        | "crimsonCombine"
+        | "kelpCultivator"
+        | "tirelessCrafter"
+        | "delphinium"
+        | "chimaera"
+        | "eel"
+        | "pit"
+        | "diver"
+        | "scholar"
+        | "explorer"
+        | "sifter"
+        | "octopus"
+        | "investigator"
+        | "scavenger"
+        | "collector"
+        | "clamCollector"
+        | "sprongeSmelter"
+        | "eggBrooder"
+        | "spronge"
+        | "tar"
+        | "ancientPart"
+        | "filter"
+        | "squid"
+        | "urchin"
+        | "spawner"
+        | "collective"
+        | "extractionTeam"
+        | "heater"
+        | "ice";
     type SaveString = `<~${string}~>` | `x${string}` | `{${string}}`;
     type SpriteName = string;
     type TabName = "home" | "lab" | "stats" | "recycler" | "gate" | "reflection" | "cheats";
@@ -192,7 +288,36 @@ declare global {
         clickDown(): void;
     };
 
-    type EventName = "beforeTick" | "afterTick" | "volcanicTallyPrySponge" | "volcanicToggleSmelt" | "volcanicBoughtFarm";
+    type EventCustomName =
+        | "abandonedRefundInvestigators"
+        | "aspectRefresh"
+        | "frigidAddUrchin"
+        | "frigidEmergencyIceCap"
+        | "frigidInitiateIcyDoom"
+        | "frigidThaw"
+        | "remindAboutBuyMax"
+        | "resetPressAllButtonsKeybind"
+        | "revealButtonTabs"
+        | "revealBuyButtons"
+        | "tempestuousEmergencySeagrass"
+        | "tempestuousFindCave"
+        | "tempestuousGiveSeagrass"
+        | "tempestuousHandleStorm"
+        | "tempestuousInternalExploration"
+        | "tempestuousMapSequence"
+        | "updateLabNotifier"
+        | "volcanicBoughtFarm"
+        | "volcanicCrabReform"
+        | "volcanicEnsureSponge"
+        | "volcanicFirstDraft"
+        | "volcanicGlassTempering"
+        | "volcanicHandleAlgaeSpongeRelationship"
+        | "volcanicHandleAutoSmelt"
+        | "volcanicSecondDraft"
+        | "volcanicSuperShovels"
+        | "volcanicTallyPrySponge"
+        | "volcanicToggleSmelt";
+    type EventName = "beforeTick" | "afterTick" | EventCustomName;
     type EventAction = "trigger" | "remove" | "pass";
     type SharkEventHandler = {
         handlingTime: EventName;
@@ -266,24 +391,28 @@ declare global {
         desc: string;
         researchedMessage: string;
         effectDesc: string;
-        cost: Record<ResourceName, number>;
+        cost: Partial<Record<ResourceName, number>>;
         effect?: Partial<{
-            incomeMultiplier: Record<ResourceName, number>;
-            sandMultiplier: Record<ResourceName, number>;
-            kelpMultiplier: Record<ResourceName, number>;
-            addJellyIncome: Record<ResourceName, number>;
-            resourceBoost: Record<ResourceName, number>;
-            incomeBoost: Record<ResourceName, number>;
+            incomeMultiplier: Partial<Record<ResourceName, number>>;
+            heaterMultiplier: Partial<Record<ResourceName, number>>;
+            sandMultiplier: Partial<Record<ResourceName, number>>;
+            kelpMultiplier: Partial<Record<ResourceName, number>>;
+            addJellyIncome: Partial<Record<ResourceName, number>>;
+            resourceBoost: Partial<Record<ResourceName, number>>;
+            incomeBoost: Partial<Record<ResourceName, number>>;
+            addAlgaeIncome: Partial<Record<ResourceName, number>>;
+            addSandIncome: Partial<Record<ResourceName, number>>;
         }>;
         required?: Partial<{
             upgrades: UpgradeName[];
             seen: ResourceName[];
             resources: ResourceName[];
-            totals?: Record<ResourceName, number>;
+            totals: Partial<Record<ResourceName, number>>;
         }>;
         events?: EventName[];
         customEffect?(background: string): string;
     };
+    type UpgradeOverrideTable = Partial<Record<UpgradeName, Partial<Upgrade>>>;
     type UpgradeTable = Record<UpgradeName, Upgrade>;
 
     type Modifier =
@@ -567,7 +696,7 @@ declare global {
         purchased: UpgradeName;
         /** Generated cache on-demand */
         generated: Record<WorldName, UpgradeTable>;
-        getUpgradeTable(worldType?: WorldName): UpgradeTable;
+        getUpgradeTable(worldType?: WorldName | "default"): UpgradeTable;
         /**
          * Retrieves, modifies, and returns the data for an upgrade. Implemented to intercept retreival of upgrade data to handle special logic where alternatives are inconvenient or impossible.
          * @param table The table to retrieve the upgrade data from
@@ -723,7 +852,7 @@ declare global {
     };
 
     type SettingsModule = Record<OptionName, Option<unknown>> & {
-        current: Record<OptionName, unknown>;
+        current: Record<Exclude<OptionName, "current">, unknown>;
     } & {
         buyAmount: InternalOption<number | "custom">;
         grottoMode: InternalOption<"simple" | "advanced">;
@@ -830,7 +959,6 @@ declare global {
          */
         doesResourceExist(resourceName: ResourceName): boolean;
         forceExistence(resourceName: ResourceName): void;
-        isScoutingMission(): boolean;
     };
     //#END REGION: Modules
 
@@ -1128,7 +1256,7 @@ declare global {
     };
     type SharkGameData = {
         Aspects: { deprecated: Record<string, DeprecatedAspect> } & Record<AspectName, Aspect>;
-        Events: Record<string, SharkEventHandler>;
+        Events: Record<EventCustomName, SharkEventHandler>;
         HomeActionCategories: Record<HomeActionCategory, { name: string; actions: HomeActionName[] }>;
         HomeActions: Partial<Record<WorldName, HomeActionTableOverrides>>;
         HomeMessageSprites: Record<string, HomeMessageSprite>;
@@ -1179,7 +1307,7 @@ declare global {
                 };
             }
         >;
-        Upgrades: Record<WorldName, UpgradeTable>;
+        Upgrades: { default: UpgradeTable } & Record<WorldName, UpgradeOverrideTable>;
         WorldTypes: Record<WorldName, World>;
     };
     type SharkGameRuntimeData = {

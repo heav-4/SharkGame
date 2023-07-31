@@ -522,6 +522,9 @@ SharkGame.MiscUtil = {
     },
 
     cloneDeep(obj) {
+        if (document.all !== undefined && obj === document.all) {
+            return document.all;
+        }
         switch (typeof obj) {
             // Immutable types
             case "bigint":
