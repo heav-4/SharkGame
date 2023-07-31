@@ -1,4 +1,7 @@
 /// <reference path="./decimal.global.d.ts"/>
+
+import { PanZoom } from "panzoom";
+
 export namespace SharkGame {}
 
 declare global {
@@ -325,6 +328,7 @@ declare global {
             present: ResourceName[];
             tip?: string;
         };
+        par?: number;
     };
     //#END REGION: Data structure types
 
@@ -374,6 +378,18 @@ declare global {
         getOn(): boolean;
         clicked(event: MouseEvent): void;
     };
+
+    type requirementReference = Record<
+        AspectName,
+        {
+            affordable: number;
+            locked: boolean;
+            prereqsMet: boolean;
+            isolated: boolean;
+            revealed: boolean;
+            max: boolean;
+        }
+    >;
     //#END REGION: Data structure types
 
     //#REGION: Modules
@@ -385,21 +401,19 @@ declare global {
         staticButtons: Record<string, StaticButton>;
         refundMode: boolean;
         debugMode: boolean;
-        setUp(): void;
+        requirementReference: requirementReference;
+        panzoom: PanZoom;
+        setup(): void;
         init(): void;
-        drawTree(disableCanvas: boolean): HTMLTableElement | HTMLDivElement;
+        drawTree(disableCanvas?: boolean): HTMLTableElement | HTMLCanvasElement;
         drawTable(table?: HTMLTableElement): HTMLTableElement;
         drawCanvas(): HTMLCanvasElement;
+        initTree(): void;
         getCursorPositionInCanvas(canvas: HTMLCanvasElement, event: MouseEvent): { posX: number; posY: number };
-        getButtonUnderMouse(mouseEvent: MouseEvent): StaticButton | Aspect;
+        getButtonUnderMouse(mouseEvent: MouseEvent): StaticButton | Aspect | void;
         updateMouse(event: MouseEvent): void;
         click(event: MouseEvent): void;
-        startPan(event: MouseEvent): void;
-        pan(event: MouseEvent): void;
-        endPan(): void;
         render(): void;
-        toggleRefundMode(): void;
-        updateTooltip(button?: Aspect | StaticButton): void;
         /**
          * Helper function that draws a rounded rectangle with an icon using the current state of the canvas
          * @param context
@@ -412,11 +426,21 @@ declare global {
          */
         renderButton(context: CanvasRenderingContext2D, posX: number, posY: number, width: number, height: number, icon: string, name: string): void;
         getLittleLevelText(aspectName: AspectName): string | undefined;
-        increaseLevel(aspect: AspectName): void;
+        handleClickedAspect(aspect: Aspect): void;
+        increaseLevel(aspect: Aspect, ignoreRestrictions: boolean): void;
         updateEssenceCounter(): void;
         applyAspects(): void;
         respecTree(totalWipe?: boolean): void;
-        handleClickedAspect(aspect: Aspect): void;
+        refundLevels(aspectData: Aspect): void;
+        applyScoutingRestrictionsIfNeeded(): boolean | void;
+        resetScoutingRestrictions(): void;
+        updateTooltip(button?: Aspect | StaticButton): void;
+        generateRequirementReference(): void;
+        updateRequirementReference(): void;
+        toggleRefundMode(): void;
+        toggleDebugMode(): void;
+        getTheoreticalRefundValue(aspect: Aspect): number;
+        setLevel(aspect: Aspect, targetLevel: number): void;
     };
 
     type ButtonModule = {
@@ -443,6 +467,7 @@ declare global {
         convertColorString(color: string): string;
         getBrightColor(color: string): string;
         getElementColor(id: string, propertyName: string): ReturnType<ColorUtilModule["convertColorString"]>;
+        getVariableColor(variable: string): string;
     };
 
     type EventHandlerModule = {
@@ -476,6 +501,7 @@ declare global {
         allowedWorlds: WorldName[];
         completedWorlds: WorldName[];
         planetPool: WorldName[];
+        badWorld?: boolean;
         ui: {
             showGateway(
                 essenceRewarded: number,
@@ -498,17 +524,27 @@ declare global {
             showMinuteHandStorageExtraction(worldtype: WorldName): void;
         };
         init(): void;
+        setup(): void;
         enterGate(loadingFromSave?: boolean): void;
         cleanUp(): void;
         rerollWorlds(): void;
+        preparePlanetSelection(numPlanets: number): void;
+        getVoiceMessage(wonGame: boolean, forceWorldBased: boolean): string;
+        playerHasSeenResource(resource: ResourceName): boolean;
+        markWorldCompleted(worldType: WorldName): void;
+        getTimeInLastWorld(formatLess: boolean): number | string;
+        updateWasScoutingStatus(): void;
+        updateScoutingStatus(): void;
+        wasOnScoutingMission(): boolean;
+        currentlyOnScoutingMission(): boolean;
+        getMinutesBelowPar(): number;
         /**
          * @param worldName world to check. Defaults to current world
          * @returns par time of world in minutes
          */
         getPar(worldName?: WorldName): number;
-        preparePlanetSelection(numPlanets: number): void;
-        getVoiceMessage(): string;
-        playerHasSeenResource(resource: ResourceName): boolean;
+        getSpeedReward(loadingFromSave: boolean): number;
+        getBaseReward(loadingFromSave: boolean, whichWorld?: WorldName): number;
         markWorldCompleted(worldType: WorldName): void;
     };
 
@@ -542,11 +578,12 @@ declare global {
 
     type LogModule = {
         initialised: boolean;
-        initialized: boolean;
         messages: JQuery<HTMLLIElement>;
         totalCount: number;
         init(): void;
         moveLog(): void;
+        changeHeight(): void;
+        isNextMessageEven(): boolean;
         addMessage(message: string | JQuery.Node): JQuery<HTMLLIElement>;
         addError(message: string | Error | JQuery.Node): ReturnType<LogModule["addMessage"]>;
         addDiscovery(message: string | JQuery.Node): ReturnType<LogModule["addMessage"]>;
@@ -577,6 +614,7 @@ declare global {
         resetTimers(): void;
         resetGame(): void;
         wipeGame(): void;
+        restoreGame(goal: string): void;
         setUpGame(): void;
         checkForCategorizationOversights(): void;
     };
@@ -746,7 +784,7 @@ declare global {
     };
 
     type TimeUtilModule = {
-        getRunTime(ignoreMinuteHandAndPause: boolean): number;
+        getRunTime(ignoreMinuteHandAndPause?: boolean): number;
     };
 
     type TitleBarModule = Record<
@@ -1063,10 +1101,20 @@ declare global {
             prySpongeGained?: number;
             storm?: Record<ResourceName, number>;
             tokens?: Record<`token-${number}`, "RETURNME" | "NA" | `resource-${ResourceName}` | `income-${ResourceName}`>;
+            minuteHandTimer: number;
+            hourHandLeft?: number;
+            bonusTime?: number;
+            requestedTimeLeft?: number;
         };
         gameOver: boolean;
         paneGenerated: boolean;
-        persistentFlags: Record<string, any>;
+        persistentFlags: {
+            scouting?: boolean;
+            wasScouting: boolean;
+            totalPausedTime: number;
+            currentPausedTime: number;
+            lastRunTime?: number;
+        };
         sidebarHidden: boolean;
         spriteHomeEventPath: string;
         spriteIconPath: string;

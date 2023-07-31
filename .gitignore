@@ -6,6 +6,7 @@ css
 typescript_build.log
 
 # yarn
+yarn.lock
 node_modules/
 .pnp.*
 .yarn/*
