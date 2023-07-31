@@ -347,7 +347,7 @@ SharkGame.PaneHandler = {
                     if (SharkGame.Settings[settingName]) {
                         SharkGame.Settings.current[settingName] = SharkGame.Settings[settingName].defaultSetting;
                         if (typeof SharkGame.Settings[settingName].onChange === "function") {
-                            SharkGame.Settings[settingName].onChange();
+                            SharkGame.Settings[settingName].onChange?.();
                         }
                     }
                 });

@@ -448,6 +448,9 @@ SharkGame.MiscUtil = {
         return object;
     },
     cloneDeep(obj) {
+        if (document.all !== undefined && obj === document.all) {
+            return document.all;
+        }
         switch (typeof obj) {
             case "bigint":
             case "number":

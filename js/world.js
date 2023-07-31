@@ -32,16 +32,15 @@ SharkGame.World = {
         const worldResources = world.worldResources;
         world.worldRestrictedCombinations.clear();
         SharkGame.ResourceMap.forEach((_resourceData, resourceName) => {
-            worldResources.set(resourceName, {});
-            worldResources.get(resourceName).exists = true;
+            worldResources.set(resourceName, { exists: true });
         });
     },
     applyWorldProperties() {
         const worldResources = world.worldResources;
         const worldInfo = SharkGame.WorldTypes[world.worldType];
         if (worldInfo.includedResources) {
-            SharkGame.ResourceMap.forEach((_resourceData, resourceName) => {
-                worldResources.get(resourceName).exists = false;
+            SharkGame.ResourceMap.forEach((resource) => {
+                resource.exists = false;
             });
             _.each(worldInfo.includedResources, (group) => {
                 if (sharkmisc.has(SharkGame.InternalCategories, group)) {
@@ -76,18 +75,6 @@ SharkGame.World = {
         const resource = world.worldResources.get(resourceName);
         if (resource)
             resource.exists = true;
-    },
-    isScoutingMission() {
-        if (SharkGame.flags.scouting) {
-            return true;
-        }
-        if (!gateway.completedWorlds.includes(world.worldType)) {
-            SharkGame.flags.scouting = true;
-            return true;
-        }
-        else {
-            return false;
-        }
     },
 };
 //# sourceMappingURL=world.js.map
