@@ -155,7 +155,7 @@ SharkGame.Home = {
     },
 
     getButtonTabs() {
-        const buttonTabsArray = [];
+        const buttonTabsArray = [] as HomeActionCategory[];
         $.each(SharkGame.HomeActionCategories, (categoryName) => {
             if ($(`#buttonTab-${categoryName}`).html() || home.currentButtonTab === categoryName) {
                 buttonTabsArray.push(categoryName);

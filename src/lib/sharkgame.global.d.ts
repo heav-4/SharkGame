@@ -104,6 +104,8 @@ declare global {
         | "places";
     // TODO: Replace with actual home action names
     type HomeActionName = string;
+    // TODO: Replace with actual home message names
+    type HomeMessageName = string;
 
     type InternalCategoryName =
         | "sharks"
@@ -355,6 +357,8 @@ declare global {
         multiOutcomes?: string[];
         helpText: string;
         unauthorized?: boolean;
+        discovered?: boolean;
+        newlyDiscovered?: boolean;
         removedBy?: Partial<{
             totalResourceThreshold: Record<ResourceName, number>;
             otherActions: HomeActionName[];
@@ -1078,7 +1082,8 @@ declare global {
 
     type HomeTab = SharkGameTabBase & {
         currentButtonTab: null | HomeActionCategory;
-        currentExtraMessageIndex: number;
+        lastValidMessage: HomeMessageName | "";
+        buttonNamesList: HomeActionName[];
         discoverActions(): void;
         createButtonTabs(): void;
         updateTab(tabToUpdate: string): void;
@@ -1088,11 +1093,21 @@ declare global {
         areActionPrereqsMet(actionName: HomeActionName): boolean;
         shouldRemoveHomeButton(action: HomeAction): boolean;
         addButton(actionName: HomeActionName): void;
+        getButtonTabs(): HomeActionCategory[];
+        getLastValidMessage(): HomeMessage;
         getActionCategory(actionName: HomeActionName): string;
         onHomeButton(mouseEnterEvent: JQuery.MouseEnterEvent | null, actionName: HomeActionName): void;
         onHomeUnhover(): void;
         getCost(action: HomeAction, amount: number): Record<ResourceName, number>;
         getMax(action: HomeAction): Decimal;
+        tickHomeMessages(isDuringTabSwitch?: boolean): void;
+        updateMemories(): void;
+        updateMessageSelectors(): void;
+        findNextHomeMessage(): HomeMessageName | false;
+        findPreviousHomeMessage(): HomeMessageName | false;
+        incrementHomeMessage(): boolean;
+        decrementHomeMessage(): boolean;
+        areThereAnyUnseenHomeMessages(): boolean;
     };
 
     type LabTab = SharkGameTabBase & {
@@ -1246,6 +1261,8 @@ declare global {
             hourHandLeft: number;
             bonusTime: number;
             requestedTimeLeft: number;
+            seenHomeMessages: HomeMessageName[];
+            selectedHomeMessage: HomeMessageName;
         }>;
         gameOver: boolean;
         lastActivity: number;
@@ -1265,6 +1282,8 @@ declare global {
             dialSetting: number;
             unlockedDebug?: boolean;
             debug?: boolean;
+            revealedButtonTabs?: boolean;
+            individuallyBoughtSharkonium?: number;
         };
         sidebarHidden: boolean;
         spriteHomeEventPath: string;
@@ -1279,7 +1298,7 @@ declare global {
     type SharkGameData = {
         Aspects: { deprecated: Record<string, DeprecatedAspect> } & Record<AspectName, Aspect>;
         Events: Record<EventCustomName, SharkEventHandler>;
-        HomeActionCategories: Record<HomeActionCategory, { name: string; actions: HomeActionName[] }>;
+        HomeActionCategories: Record<HomeActionCategory, { name: string; actions: HomeActionName[]; hasNewItem?: boolean }>;
         HomeActions: Partial<Record<WorldName, HomeActionTableOverrides>>;
         HomeMessageSprites: Record<string, HomeMessageSprite>;
         HomeMessages: { messages: Record<WorldName, HomeMessage[]> };
