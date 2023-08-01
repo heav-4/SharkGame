@@ -142,10 +142,10 @@ $.extend(SharkGame, {
      * @param {any[]} choices
      * @returns {any} A random element of choices
      */
-    choose(choices) {
+    choose(choices: Array<string>) {
         return choices[Math.floor(Math.random() * choices.length)];
     },
-    getImageIconHTML(imagePath, width, height) {
+    getImageIconHTML(imagePath: string | undefined, width: number | string, height: number | string) {
         if (!imagePath) {
             imagePath = "http://placekitten.com/g/" + Math.floor(width) + "/" + Math.floor(height);
         }
@@ -155,13 +155,18 @@ $.extend(SharkGame, {
         }
         return imageHtml;
     },
-    changeSprite(spritePath, imageName, imageDiv, backupImageName) {
+    changeSprite(spritePath: string, imageName: string, imageDiv: JQuery<HTMLDivElement>, backupImageName: string) {
         let spritesData;
 
-        if (spritePath === SharkGame.spriteIconPath) {
-            spritesData = SharkGame.Sprites;
-        } else if (spritePath === SharkGame.spriteHomeEventPath) {
-            spritesData = SharkGame.HomeMessageSprites;
+        switch (spritePath) {
+            case SharkGame.spriteIconPath:
+                spritesData = SharkGame.Sprites;
+                break;
+            case SharkGame.spriteHomeEventPath:
+                spritesData = SharkGame.HomeMessageSprites;
+                break;
+            default:
+                spritesData = SharkGame.Sprites;
         }
 
         let spriteData = spritesData[imageName];
@@ -216,7 +221,7 @@ SharkGame.Main = {
         // wipe it
         main.wipeGame();
         // load a save if needed
-        main.restoreGame("load");
+        main.restoreGame();
         // then set up the game according to this data
         main.setUpGame();
 
@@ -321,23 +326,14 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
     },
 
     // load stored game data, if there is anything to load
-    restoreGame(goal) {
-        switch (goal) {
-            case "load":
-                if (SharkGame.Save.savedGameExists()) {
-                    try {
-                        SharkGame.Save.loadGame();
-                        log.addMessage("Loaded game.");
-                    } catch (err) {
-                        log.addError(err);
-                    }
-                }
-                break;
-            case "loop":
-                // idk yet
-                break;
-            default:
-            // nothing to restore
+    restoreGame() {
+        if (SharkGame.Save.savedGameExists()) {
+            try {
+                SharkGame.Save.loadGame();
+                log.addMessage("Loaded game.");
+            } catch (err) {
+                log.addError(err);
+            }
         }
     },
 
@@ -504,6 +500,16 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 resources: {},
                 world: { type: world.worldType },
                 aspects: {},
+                settings: sharkmisc.cloneDeep(SharkGame.Settings.current),
+                completedWorlds: sharkmisc.cloneDeep(SharkGame.Gateway.completedWorlds),
+                persistentFlags: sharkmisc.cloneDeep(SharkGame.persistentFlags),
+                planetPool: sharkmisc.cloneDeep(gateway.planetPool),
+                timestampLastSave: Date.now(),
+                timestampGameStart: SharkGame.timestampGameStart,
+                timestampRunStart: Date.now(),
+                timestampRunEnd: SharkGame.timestampRunEnd,
+                keybinds: sharkmisc.cloneDeep(SharkGame.Keybinds.keybinds),
+                saveVersion: SharkGame.Save.saveUpdaters.length - 1,
             };
 
             _.each(SharkGame.ResourceCategories.special.resources, (resourceName) => {
@@ -518,21 +524,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 if (level) saveData.aspects[aspectId] = level;
             });
 
-            saveData.settings = sharkmisc.cloneDeep(SharkGame.Settings.current);
-
-            saveData.completedWorlds = sharkmisc.cloneDeep(SharkGame.Gateway.completedWorlds);
-            saveData.persistentFlags = sharkmisc.cloneDeep(SharkGame.persistentFlags);
-            saveData.planetPool = sharkmisc.cloneDeep(gateway.planetPool);
-
-            // add timestamp
-            saveData.timestampLastSave = Date.now();
-            saveData.timestampGameStart = SharkGame.timestampGameStart;
-            saveData.timestampRunStart = Date.now();
-            saveData.timestampRunEnd = SharkGame.timestampRunEnd;
-
-            saveData.keybinds = sharkmisc.cloneDeep(SharkGame.Keybinds.keybinds);
-
-            saveData.saveVersion = SharkGame.Save.saveUpdaters.length - 1;
             saveString = ascii85.encode(pako.deflate(JSON.stringify(saveData), { to: "string" }));
 
             SharkGame.Save.importData(saveString);
@@ -778,9 +769,9 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                     const thisButton = $(this);
                     if (thisButton.hasClass("disabled")) return;
                     if (thisButton[0].id === "buy-custom") {
-                        $("#custom-input").attr("disabled", false);
+                        $("#custom-input").attr("disabled", "false");
                     } else {
-                        $("#custom-input").attr("disabled", true);
+                        $("#custom-input").attr("disabled", "true");
                     }
                     SharkGame.Settings.current.buyAmount = amount === "custom" ? "custom" : parseInt(thisButton.attr("id").slice(4));
                     $("button[id^='buy-']").removeClass("disabled");
@@ -800,7 +791,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                     .attr("id", "custom-input")
                     .attr("value", 1)
                     .attr("min", "1")
-                    .attr("disabled", SharkGame.Settings.current.buyAmount !== "custom")
+                    .attr("disabled", String(SharkGame.Settings.current.buyAmount !== "custom"))
             )
         );
         document.getElementById("custom-input").addEventListener("input", main.onCustomChange);

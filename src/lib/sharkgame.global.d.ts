@@ -729,14 +729,16 @@ declare global {
         applyFramerate(): void;
         init(foregoLoad?: boolean): void;
         tick(): void;
+        startIdle(now: number, elapsedTime: number): void;
+        continueIdle(now: number, elapsedTime: number): void;
+        endIdle(): void;
         processSimTime(numberOfSeconds: number, load?: boolean): void;
         autosave(): void;
         checkForUpdate(): void;
         createBuyButtons(customLabel: string | undefined, addToWhere: JQuery, appendOrPrepend: "append" | "prepend", absoluteOnly?: boolean): void;
         onCustomChange(): void;
         showSidebarIfNeeded(): void;
-        applyProgressionSpeed(): void;
-        getProgressionConstant(alternative?: ProgressionType): 1.5 | 1 | 2 | 4;
+        shouldShowTooltips(): boolean;
         endGame(loadingFromSave?: boolean): void;
         purgeGame(): void;
         loopGame(): void;
@@ -744,7 +746,7 @@ declare global {
         resetTimers(): void;
         resetGame(): void;
         wipeGame(): void;
-        restoreGame(goal: string): void;
+        restoreGame(): void;
         setUpGame(): void;
         checkForCategorizationOversights(): void;
     };
@@ -825,6 +827,7 @@ declare global {
     type PaneHandlerModule = {
         paneStack: Pane[];
         currentPane?: Pane;
+        init(): void;
         buildPane(): JQuery<HTMLDivElement>;
         addPaneToStack(title: string, contents: PaneContent, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
         swapCurrentPane(title: string, contents: PaneContent, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
@@ -965,6 +968,7 @@ declare global {
     //#REGION: Tabs
     type SharkGameTabBase = {
         init(): void;
+        setup(): void;
         switchTo(): void;
         update(): void;
 
@@ -1225,6 +1229,7 @@ declare global {
             frigidAddedUrchin?: true;
             gaveSeagrass?: true;
             gotFarmsBeforeShrimpThreat?: boolean;
+            needOfflineProgress?: number;
             pathOfTimeApplied?: true;
             pressedAllButtonsThisTick?: boolean;
             prySpongeGained?: number;
@@ -1236,6 +1241,8 @@ declare global {
             requestedTimeLeft?: number;
         };
         gameOver: boolean;
+        lastActivity: number;
+        savedMouseActivity: number;
         paneGenerated: boolean;
         persistentFlags: {
             scouting?: boolean;
