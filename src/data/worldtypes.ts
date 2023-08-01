@@ -1,29 +1,12 @@
 "use strict";
 SharkGame.WorldTypes = {
-    test: {
-        name: "Test",
-        desc: "You REALLY shouldn't be seeing this.",
-        shortDesc: "testing",
-        entry: "You enter a debug ocean.",
-        style: "default",
-        absentResources: [],
-        modifiers: [],
-        gateRequirements: {
-            slots: {
-                fish: 1e3,
-                sand: 1e3,
-                crystal: 1e3,
-                kelp: 1e3,
-                seaApple: 1e3,
-                sharkonium: 1e3,
-            },
-        },
-    },
     start: {
         name: "Home",
+        vagueDesc: "...",
         desc: "...",
         shortDesc: "strange blue",
         foresight: {
+            vagueLongDesc: "...",
             longDesc: "...Home.",
             missing: [],
             present: [],
@@ -337,25 +320,7 @@ SharkGame.WorldTypes = {
         },
         par: 45,
     },
-    template: {
-        name: "",
-        desc: "description in gateway",
-        shortDesc: "status",
-        entry: "enter world",
-        style: "default",
-        absentResources: ["knowledge", "tar", "ice", "heater", "chimaera"],
-        modifiers: [{ type: "multiplier", modifier: "planetaryResourceBoost", resource: "fish", amount: 1.5 }],
-        gateType: "slots",
-        gateCosts: {
-            fish: 1,
-            sand: 1,
-            crystal: 1,
-            kelp: 1,
-            seaApple: 1,
-            sharkonium: 1,
-        },
-    },
-    stone: {
+    /* stone: {
         name: "Stone",
         desc: "A world unweathered by ocean currents. It has no natural sand.",
         shortDesc: "rock-bottom",
@@ -406,5 +371,5 @@ SharkGame.WorldTypes = {
             sponge: 1e9,
             clam: 1e7,
         },
-    },
+    }, */
 };

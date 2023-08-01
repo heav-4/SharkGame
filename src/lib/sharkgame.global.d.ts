@@ -329,9 +329,9 @@ declare global {
     type FunFact = string;
 
     type GateRequirements = Partial<{
-        upgrades: Record<UpgradeName, string>;
-        slots: Record<ResourceName, number>;
-        resources: Record<ResourceName, number>;
+        upgrades: UpgradeName[];
+        slots: Partial<Record<ResourceName, number>>;
+        resources: Partial<Record<ResourceName, number>>;
     }>;
 
     type HomeAction = {
@@ -429,26 +429,29 @@ declare global {
     type WorldModifier = {
         type: string;
         modifier: ModifierName;
-        resource: ResourceName;
+        resource: ResourceName | ResourceCategory;
         amount: number | ResourceName;
     };
 
     type World = {
-        name: WorldName;
+        name: string;
+        vagueDesc: string;
         desc: string;
         shortDesc: string;
         entry: string;
         style: string;
-        includedResources?: (ResourceName | ResourceCategory)[];
-        absentResources: (ResourceName | ResourceCategory)[];
+        includedResources?: (ResourceName | InternalCategoryName)[];
+        absentResources?: (ResourceName | InternalCategoryName)[];
         modifiers: WorldModifier[]; // TODO: Modifier type
         gateRequirements: GateRequirements;
         foresight?: {
+            vagueLongDesc: string;
             longDesc: string;
             missing: ResourceName[];
             present: ResourceName[];
             tip?: string;
         };
+        bonus?: number;
         par?: number;
     };
     //#END REGION: Data structure types
@@ -653,6 +656,7 @@ declare global {
         getVoiceMessage(wonGame: boolean, forceWorldBased: boolean): string;
         playerHasSeenResource(resource: ResourceName): boolean;
         markWorldCompleted(worldType: WorldName): void;
+        isWorldBeaten(worldType: WorldName): boolean;
         getTimeInLastWorld(formatLess: boolean): number | string;
         updateWasScoutingStatus(): void;
         updateScoutingStatus(): void;
