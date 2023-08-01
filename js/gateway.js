@@ -272,7 +272,9 @@ SharkGame.Gateway = {
         const gumptionBonus = gateway.getGumptionBonus();
         res.changeResource("essence", Math.ceil((1 + gumptionBonus) * (essenceReward + speedReward) + patienceReward));
     },
-    isWorldBeaten(worldType = "") {
+    isWorldBeaten(worldType) {
+        if (!worldType)
+            return false;
         return gateway.completedWorlds.indexOf(worldType) > -1;
     },
     shouldCheatsBeUnlocked() {
