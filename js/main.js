@@ -137,11 +137,15 @@ $.extend(SharkGame, {
     },
     changeSprite(spritePath, imageName, imageDiv, backupImageName) {
         let spritesData;
-        if (spritePath === SharkGame.spriteIconPath) {
-            spritesData = SharkGame.Sprites;
-        }
-        else if (spritePath === SharkGame.spriteHomeEventPath) {
-            spritesData = SharkGame.HomeMessageSprites;
+        switch (spritePath) {
+            case SharkGame.spriteIconPath:
+                spritesData = SharkGame.Sprites;
+                break;
+            case SharkGame.spriteHomeEventPath:
+                spritesData = SharkGame.HomeMessageSprites;
+                break;
+            default:
+                spritesData = SharkGame.Sprites;
         }
         let spriteData = spritesData[imageName];
         if (!imageDiv) {
@@ -183,7 +187,7 @@ SharkGame.Main = {
     init() {
         main.checkForCategorizationOversights();
         main.wipeGame();
-        main.restoreGame("load");
+        main.restoreGame();
         main.setUpGame();
         const isSafari = /constructor/i.test(window.HTMLElement) ||
             (!window.safari || (typeof safari !== "undefined" && window.safari.pushNotification)).toString() === "[object SafariRemoteNotification]";
@@ -251,22 +255,15 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
         SharkGame.Resources.pause.init();
         SharkGame.Resources.dial.init();
     },
-    restoreGame(goal) {
-        switch (goal) {
-            case "load":
-                if (SharkGame.Save.savedGameExists()) {
-                    try {
-                        SharkGame.Save.loadGame();
-                        log.addMessage("Loaded game.");
-                    }
-                    catch (err) {
-                        log.addError(err);
-                    }
-                }
-                break;
-            case "loop":
-                break;
-            default:
+    restoreGame() {
+        if (SharkGame.Save.savedGameExists()) {
+            try {
+                SharkGame.Save.loadGame();
+                log.addMessage("Loaded game.");
+            }
+            catch (err) {
+                log.addError(err);
+            }
         }
     },
     setUpGame() {
@@ -397,6 +394,16 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
                 resources: {},
                 world: { type: world.worldType },
                 aspects: {},
+                settings: sharkmisc.cloneDeep(SharkGame.Settings.current),
+                completedWorlds: sharkmisc.cloneDeep(SharkGame.Gateway.completedWorlds),
+                persistentFlags: sharkmisc.cloneDeep(SharkGame.persistentFlags),
+                planetPool: sharkmisc.cloneDeep(gateway.planetPool),
+                timestampLastSave: Date.now(),
+                timestampGameStart: SharkGame.timestampGameStart,
+                timestampRunStart: Date.now(),
+                timestampRunEnd: SharkGame.timestampRunEnd,
+                keybinds: sharkmisc.cloneDeep(SharkGame.Keybinds.keybinds),
+                saveVersion: SharkGame.Save.saveUpdaters.length - 1,
             };
             _.each(SharkGame.ResourceCategories.special.resources, (resourceName) => {
                 saveData.resources[resourceName] = {
@@ -410,16 +417,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
                 if (level)
                     saveData.aspects[aspectId] = level;
             });
-            saveData.settings = sharkmisc.cloneDeep(SharkGame.Settings.current);
-            saveData.completedWorlds = sharkmisc.cloneDeep(SharkGame.Gateway.completedWorlds);
-            saveData.persistentFlags = sharkmisc.cloneDeep(SharkGame.persistentFlags);
-            saveData.planetPool = sharkmisc.cloneDeep(gateway.planetPool);
-            saveData.timestampLastSave = Date.now();
-            saveData.timestampGameStart = SharkGame.timestampGameStart;
-            saveData.timestampRunStart = Date.now();
-            saveData.timestampRunEnd = SharkGame.timestampRunEnd;
-            saveData.keybinds = sharkmisc.cloneDeep(SharkGame.Keybinds.keybinds);
-            saveData.saveVersion = SharkGame.Save.saveUpdaters.length - 1;
             saveString = ascii85.encode(pako.deflate(JSON.stringify(saveData), { to: "string" }));
             SharkGame.Save.importData(saveString);
             res.minuteHand.applyHourHand();
@@ -634,10 +631,10 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
                 if (thisButton.hasClass("disabled"))
                     return;
                 if (thisButton[0].id === "buy-custom") {
-                    $("#custom-input").attr("disabled", false);
+                    $("#custom-input").attr("disabled", "false");
                 }
                 else {
-                    $("#custom-input").attr("disabled", true);
+                    $("#custom-input").attr("disabled", "true");
                 }
                 SharkGame.Settings.current.buyAmount = amount === "custom" ? "custom" : parseInt(thisButton.attr("id").slice(4));
                 $("button[id^='buy-']").removeClass("disabled");
@@ -655,7 +652,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
             .attr("id", "custom-input")
             .attr("value", 1)
             .attr("min", "1")
-            .attr("disabled", SharkGame.Settings.current.buyAmount !== "custom")));
+            .attr("disabled", String(SharkGame.Settings.current.buyAmount !== "custom"))));
         document.getElementById("custom-input").addEventListener("input", main.onCustomChange);
         if (SharkGame.Settings.current.customSetting) {
             $("#custom-input")[0].value = SharkGame.Settings.current.customSetting;
