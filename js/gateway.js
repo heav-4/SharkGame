@@ -25,7 +25,7 @@ SharkGame.Gateway = {
             SharkGame.persistentFlags.wasOnScoutingMission = undefined;
         }
     },
-    enterGate(loadingFromSave) {
+    enterGate(loadingFromSave = false) {
         SharkGame.PaneHandler.wipeStack();
         SharkGame.OverlayHandler.enterGateway();
         SharkGame.persistentFlags.revealedBuyButtons = true;
@@ -191,7 +191,7 @@ SharkGame.Gateway = {
         if (!SharkGame.gameOver && SharkGame.persistentFlags.scouting === undefined) {
             gateway.updateScoutingStatus();
         }
-        return SharkGame.persistentFlags.scouting;
+        return Boolean(SharkGame.persistentFlags.scouting);
     },
     getMinutesBelowPar() {
         const time = gateway.getPar() - gateway.getTimeInLastWorld(true) / 60000;
