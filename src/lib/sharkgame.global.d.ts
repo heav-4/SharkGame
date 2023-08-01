@@ -415,23 +415,14 @@ declare global {
     type UpgradeOverrideTable = Partial<Record<UpgradeName, Partial<Upgrade>>>;
     type UpgradeTable = Record<UpgradeName, Upgrade>;
 
-    type Modifier =
-        | {
-              defaultValue: string[];
-              name?: string;
-              apply(current: string[], degree: number | string, generator: string): string[];
-              effectDescription?(degree: number | string, generator: string): string;
-              getEffect?(genDegree: number, outDegree: number, gen: string, out: string): number;
-              applyToInput(input: number, genDegree: string[], outDegree: string[], gen: string, out: string): number;
-          }
-        | {
-              defaultValue: number;
-              name?: string;
-              apply(current: number, degree: number | string, generator: string): number;
-              effectDescription?(degree: number | string, generator: string): string;
-              getEffect?(genDegree: number, outDegree: number, gen: string, out: string): number;
-              applyToInput(input: number, genDegree: number, outDegree: number, gen: string, out: string): number;
-          };
+    type Modifier = {
+        defaultValue: number;
+        name?: string;
+        apply(current: number, degree: number, generator: ResourceName): number;
+        effectDescription?(degree: number, resource: ResourceName, background?: string): string;
+        getEffect?(genDegree: number, outDegree: number, gen: ResourceName, out: ResourceName): number;
+        applyToInput(input: number, genDegree: number, outDegree: number, gen: ResourceName, out: ResourceName): number;
+    };
 
     type Pane = [title: string, contents: JQuery<HTMLElement>, notCloseable: boolean | undefined, fadeInTime: number, customOpacity: number];
 

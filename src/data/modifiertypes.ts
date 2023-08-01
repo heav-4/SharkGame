@@ -29,7 +29,7 @@ SharkGame.ModifierReference = new Map();
 // Most modifiers behave this way. Their code is handled independently, specifically so that there are few restrictions on what they can achieve.
 
 /**
- * @type {Record<string, Record<string, Record<string, modifier>>>}
+ * @type {Record<string, Record<string, Record<string, Modifier>>>}
  */
 SharkGame.ModifierTypes = {
     upgrade: {
@@ -525,43 +525,6 @@ SharkGame.ModifierTypes = {
                 applyToInput(input, _genDegree, _outDegree, _gen, _out) {
                     // planetary income handled separately
                     return input;
-                },
-            },
-            planetaryStartingResources: {
-                defaultValue: 0,
-                name: "Planetary Starting Resources",
-                apply(current, degree, resource) {
-                    res.changeResource(resource * degree);
-                    return current + degree;
-                },
-                effectDescription(degree, resource, background) {
-                    return "Start with " + degree + " " + sharktext.getResourceName(resource, false, degree, background);
-                },
-                applyToInput(input, _genDegree, _outDegree, _gen, _out) {
-                    // starting resources has no bearing on income
-                    return input;
-                },
-            },
-            planetaryGeneratorRestriction: {
-                defaultValue: [],
-                name: "Restricted Generator-Income Combination",
-                apply(current, restriction, generator) {
-                    SharkGame.ResourceMap.get(generator).income[restriction] = 0;
-                    if (typeof current !== "object") {
-                        return [restriction];
-                    }
-                    current.push(restriction);
-                    return current;
-                },
-                effectDescription(restriction, generator, background) {
-                    return (
-                        sharktext.getResourceName(generator, false, 2, background) +
-                        " cannot produce " +
-                        sharktext.getResourceName(restriction, false, 2, background)
-                    );
-                },
-                applyToInput(input, genDegree, _outDegree, _gen, out) {
-                    return genDegree.includes(out) ? 0 : input;
                 },
             },
         },
