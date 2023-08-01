@@ -32,7 +32,7 @@ SharkGame.Gateway = {
         }
     },
 
-    enterGate(loadingFromSave) {
+    enterGate(loadingFromSave = false) {
         SharkGame.PaneHandler.wipeStack();
 
         SharkGame.OverlayHandler.enterGateway();
@@ -253,7 +253,7 @@ SharkGame.Gateway = {
         if (!SharkGame.gameOver && SharkGame.persistentFlags.scouting === undefined) {
             gateway.updateScoutingStatus();
         }
-        return SharkGame.persistentFlags.scouting;
+        return Boolean(SharkGame.persistentFlags.scouting);
     },
 
     getMinutesBelowPar() {

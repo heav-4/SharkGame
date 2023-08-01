@@ -444,7 +444,7 @@ declare global {
         absentResources?: (ResourceName | InternalCategoryName)[];
         modifiers: WorldModifier[]; // TODO: Modifier type
         gateRequirements: GateRequirements;
-        foresight?: {
+        foresight: {
             vagueLongDesc: string;
             longDesc: string;
             missing: ResourceName[];
@@ -612,7 +612,7 @@ declare global {
     };
 
     type GatewayModule = {
-        PresenceFeelings: Record<ResourceName, string>;
+        PresenceFeelings: Partial<Record<ResourceName, string>>;
         Messages: {
             essenceBased: { min: number; max: number; messages: string[] }[];
             lastPlanetBased: Record<WorldName, string[]>;
@@ -628,12 +628,12 @@ declare global {
         badWorld?: boolean;
         ui: {
             showGateway(
-                essenceRewarded: number,
-                patienceReward: number,
-                speedReward: number,
-                gumptionRatio: number,
-                forceWorldBased: boolean,
-                storedTime: number
+                essenceRewarded?: number,
+                patienceReward?: number,
+                speedReward?: number,
+                gumptionRatio?: number,
+                forceWorldBased?: boolean,
+                storedTime?: number
             ): void;
             showRunEndInfo(containerDiv: JQuery<HTMLDivElement>): void;
             showAspects(): void;
@@ -663,14 +663,24 @@ declare global {
         wasOnScoutingMission(): boolean;
         currentlyOnScoutingMission(): boolean;
         getMinutesBelowPar(): number;
+        shouldCheatsBeUnlocked(): boolean;
+        unlockCheats(): void;
         /**
          * @param worldName world to check. Defaults to current world
          * @returns par time of world in minutes
          */
         getPar(worldName?: WorldName): number;
         getSpeedReward(loadingFromSave: boolean): number;
+        getPatienceReward(loadingFromSave: boolean): number;
+        getGumptionBonus(loadingFromSave?: boolean): number;
         getBaseReward(loadingFromSave: boolean, whichWorld?: WorldName): number;
+        grantEssenceReward(baseReward: number, patienceReward: number, speedReward: number): void;
         markWorldCompleted(worldType: WorldName): void;
+        dial: {
+            init(): void;
+            changeSetting(event: any, arbitrary: number): void;
+            updateVisuals(): void;
+        };
     };
 
     type HomeActionsModule = {
@@ -836,6 +846,7 @@ declare global {
         showHelp(): void;
         showSpeedSelection(): void;
         showAspectWarning(): void;
+        showUnlockedCheatsMessage(): void;
     };
 
     type InternalOption<T> = {
@@ -868,6 +879,7 @@ declare global {
         savedGameExists(): boolean;
         deleteSave(): void;
         wipeSave(): void;
+        createTaggedSave(tag: string): void;
         saveUpdaters: MigrationFunction[];
     };
 
@@ -1043,11 +1055,11 @@ declare global {
             upgrades: Record<UpgradeName, string>;
             resources: Record<ResourceName, number>;
         };
-        completedRequirements: {
+        completedRequirements: Partial<{
             slots: Record<ResourceName, boolean>;
             upgrades: Record<UpgradeName, boolean>;
             resources: Record<ResourceName, boolean>;
-        };
+        }>;
 
         createSlots(gateRequirements: GateRequirements): void;
         getMessage(): string;
@@ -1218,25 +1230,26 @@ declare global {
 
         before: number;
         dt: number;
-        flags: {
-            abandonedRefundedInvestigators?: true;
-            autoSmelt?: boolean;
-            frigidAddedUrchin?: true;
-            gaveSeagrass?: true;
-            gotFarmsBeforeShrimpThreat?: boolean;
-            needOfflineProgress?: number;
-            pathOfTimeApplied?: true;
-            pressedAllButtonsThisTick?: boolean;
-            prySpongeGained?: number;
-            storm?: Record<ResourceName, number>;
-            tokens?: Record<`token-${number}`, "RETURNME" | "NA" | `resource-${ResourceName}` | `income-${ResourceName}`>;
+        flags: Partial<{
+            abandonedRefundedInvestigators: true;
+            autoSmelt: boolean;
+            frigidAddedUrchin: true;
+            gaveSeagrass: true;
+            gotFarmsBeforeShrimpThreat: boolean;
+            needOfflineProgress: number;
+            pathOfTimeApplied: true;
+            pressedAllButtonsThisTick: boolean;
+            prySpongeGained: number;
+            storm: Record<ResourceName, number>;
+            tokens: Record<`token-${number}`, "RETURNME" | "NA" | `resource-${ResourceName}` | `income-${ResourceName}`>;
             minuteHandTimer: number;
-            hourHandLeft?: number;
-            bonusTime?: number;
-            requestedTimeLeft?: number;
-        };
+            hourHandLeft: number;
+            bonusTime: number;
+            requestedTimeLeft: number;
+        }>;
         gameOver: boolean;
         lastActivity: number;
+        missingAspects?: boolean;
         savedMouseActivity: number;
         paneGenerated: boolean;
         persistentFlags: {
@@ -1245,6 +1258,13 @@ declare global {
             totalPausedTime: number;
             currentPausedTime: number;
             lastRunTime?: number;
+            revealedBuyButtons?: boolean;
+            wasOnScoutingMission?: boolean;
+            destinyRolls?: number;
+            minuteStorage: number;
+            dialSetting: number;
+            unlockedDebug?: boolean;
+            debug?: boolean;
         };
         sidebarHidden: boolean;
         spriteHomeEventPath: string;
