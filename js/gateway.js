@@ -637,7 +637,7 @@ SharkGame.Gateway = {
                     if (worldData.modifiers.length > 0) {
                         const modifierList = $("<ul>").addClass("gatewayPropertyList");
                         _.each(worldData.modifiers, (modifier) => {
-                            if (gateway.playerHasSeenResource(modifier.resource) || !(worldData.foresight.present.includes(modifier.resource))) {
+                            if (gateway.playerHasSeenResource(modifier.resource) || !worldData.foresight.present.includes(modifier.resource)) {
                                 modifierList.append($("<li>").html(SharkGame.ModifierReference.get(modifier.modifier).effectDescription(modifier.amount, modifier.resource, "#246c54")));
                             }
                             else {
