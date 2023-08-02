@@ -41,7 +41,7 @@ SharkGame.Events = {
             if (SharkGame.World.worldType !== "frigid") {
                 return "remove";
             }
-            if (SharkGame.Upgrades.purchased.indexOf("rapidRecharging") > -1) {
+            if (SharkGame.Upgrades.purchased.includes("rapidRecharging")) {
                 return "trigger";
             }
             return "pass";

@@ -243,20 +243,6 @@ SharkGame.ResourceTable = {
         value: 10, // set this
     },
 
-    /* gravel: {
-        name: "gravel",
-        singleName: "gravel",
-        color: "#ABABAB",
-        value: 2,
-    },
-
-    stone: {
-        name: "stones",
-        singleName: "stone",
-        color: "#6B6B6B",
-        value: 3,
-    }, */
-
     // PROCESSED
 
     sharkonium: {
@@ -1386,16 +1372,7 @@ SharkGame.ResourceCategories = {
             "Do you think the aim of the game is to make the numbers go DOWN?!",
             "Well I hope you know what you're doing.",
         ],
-        resources: [
-            "sand",
-            "crystal",
-            "kelp",
-            "coral",
-            "algae",
-            "seagrass",
-            // "stone",
-            // "gravel",
-        ],
+        resources: ["sand", "crystal", "kelp", "coral", "algae", "seagrass"],
     },
     processed: {
         name: "Processed",

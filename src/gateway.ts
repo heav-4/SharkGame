@@ -146,7 +146,7 @@ SharkGame.Gateway = {
             // take it out of the qualified pool (avoid duplicates)
             qualifiedPlanetTypes.splice(index, 1);
 
-            if (uncompletedPlanetTypes.indexOf(choice) > -1) {
+            if (uncompletedPlanetTypes.includes(choice)) {
                 uncompletedPlanetTypes.splice(uncompletedPlanetTypes.indexOf(choice), 1);
             }
 
@@ -251,9 +251,10 @@ SharkGame.Gateway = {
 
     currentlyOnScoutingMission() {
         if (!SharkGame.gameOver && SharkGame.persistentFlags.scouting === undefined) {
+            // Set scouting flag
             gateway.updateScoutingStatus();
         }
-        return Boolean(SharkGame.persistentFlags.scouting);
+        return SharkGame.persistentFlags.scouting!;
     },
 
     getMinutesBelowPar() {
@@ -349,8 +350,7 @@ SharkGame.Gateway = {
     },
 
     isWorldBeaten(worldType) {
-        if (!worldType) return false;
-        return gateway.completedWorlds.indexOf(worldType) > -1;
+        return worldType !== undefined && gateway.completedWorlds.includes(worldType);
     },
 
     shouldCheatsBeUnlocked() {
@@ -867,7 +867,7 @@ SharkGame.Gateway = {
                     if (worldData.modifiers.length > 0) {
                         const modifierList = $("<ul>").addClass("gatewayPropertyList");
                         _.each(worldData.modifiers, (modifier) => {
-                            if (gateway.playerHasSeenResource(modifier.resource) || !(worldData.foresight.present.indexOf(modifier.resource) > -1)) {
+                            if (gateway.playerHasSeenResource(modifier.resource) || !(worldData.foresight.present.includes(modifier.resource))) {
                                 modifierList.append(
                                     $("<li>").html(
                                         SharkGame.ModifierReference.get(modifier.modifier).effectDescription(

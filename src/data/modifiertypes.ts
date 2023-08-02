@@ -28,9 +28,6 @@ SharkGame.ModifierReference = new Map();
 //
 // Most modifiers behave this way. Their code is handled independently, specifically so that there are few restrictions on what they can achieve.
 
-/**
- * @type {Record<string, Record<string, Record<string, Modifier>>>}
- */
 SharkGame.ModifierTypes = {
     upgrade: {
         multiplier: {

@@ -142,10 +142,10 @@ $.extend(SharkGame, {
      * @param {any[]} choices
      * @returns {any} A random element of choices
      */
-    choose(choices: Array<string>) {
+    choose<T>(choices: T[]): T {
         return choices[Math.floor(Math.random() * choices.length)];
     },
-    getImageIconHTML(imagePath: string | undefined, width: number | string, height: number | string) {
+    getImageIconHTML(imagePath: string | undefined, width: number, height: number) {
         if (!imagePath) {
             imagePath = "http://placekitten.com/g/" + Math.floor(width) + "/" + Math.floor(height);
         }
@@ -791,17 +791,17 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                     .attr("id", "custom-input")
                     .attr("value", 1)
                     .attr("min", "1")
-                    .attr("disabled", String(SharkGame.Settings.current.buyAmount !== "custom"))
+                    .attr("disabled", (SharkGame.Settings.current.buyAmount !== "custom").toString())
             )
         );
-        document.getElementById("custom-input").addEventListener("input", main.onCustomChange);
+        document.getElementById("custom-input")!.addEventListener("input", main.onCustomChange);
         if (SharkGame.Settings.current.customSetting) {
-            $("#custom-input")[0].value = SharkGame.Settings.current.customSetting;
+            ($("#custom-input")[0] as HTMLInputElement).value = SharkGame.Settings.current.customSetting;
         }
     },
 
     onCustomChange() {
-        SharkGame.Settings.current.customSetting = $("#custom-input")[0].value;
+        SharkGame.Settings.current.customSetting = ($("#custom-input")[0] as HTMLInputElement).value;
     },
 
     showSidebarIfNeeded() {
@@ -810,7 +810,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         if (res.haveAnyResources()) {
             // show sidebar
             if (SharkGame.Settings.current.showAnimations) {
-                $("#sidebar").show("500");
+                $("#sidebar").show(500);
             } else {
                 $("#sidebar").show();
             }
@@ -856,6 +856,8 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
     checkForCategorizationOversights() {
         $.each(SharkGame.ResourceTable, (resourceName, resourceObj) => {
+            // FIXME: Useless if resourceName turns out to be string
+            resourceName = resourceName.toString();
             if (!res.getCategoryOfResource(resourceName)) {
                 log.addError(new Error(`${resourceName} does not have a category.`));
             }
@@ -880,7 +882,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
 
 SharkGame.Button = {
     makeHoverscriptButton(id, name, div, handler, hhandler, huhandler) {
-        return $("<button>")
+        return ($("<button>") as JQuery<HTMLButtonElement>)
             .html(name)
             .attr("id", id)
             .addClass("hoverbutton")
@@ -891,7 +893,7 @@ SharkGame.Button = {
     },
 
     makeButton(id, name, div, handler) {
-        return $("<button>").html(name).attr("id", id).appendTo(div).on("click", handler);
+        return ($("<button>") as JQuery<HTMLButtonElement>).html(name).attr("id", id).appendTo(div).on("click", handler);
     },
 };
 

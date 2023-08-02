@@ -1,7 +1,4 @@
 "use strict";
-/**
- * @type Record<string, (a: number, b: number, k: number) => number>
- */
 SharkGame.MathUtil = {
     // current = current amount
     // desired = desired amount
@@ -343,7 +340,7 @@ SharkGame.TextUtil = {
         }
 
         if (SharkGame.Settings.current.boldCosts) {
-            name = name.bold();
+            name = "<b>" + name + "</b>";
         }
 
         if (SharkGame.Settings.current.colorCosts !== "none") {
@@ -405,9 +402,9 @@ SharkGame.ColorUtil = {
         // convert to decimal and change luminosity
         let rgb = "#";
         for (let i = 0; i < 3; i++) {
-            let color = parseInt(hex.substr(i * 2, 2), 16);
-            color = Math.round(Math.min(Math.max(0, color + color * lum), 255)).toString(16);
-            rgb += ("00" + color).substr(color.length);
+            const color = parseInt(hex.substring(i * 2, (i + 1) * 2), 16);
+            const colorString = Math.round(Math.min(Math.max(0, color + color * lum), 255)).toString(16);
+            rgb += colorString.padStart(2, "0");
         }
 
         return rgb;
@@ -415,12 +412,9 @@ SharkGame.ColorUtil = {
 
     getRelativeLuminance(color) {
         color = String(color).replace(/[^0-9a-f]/gi, "");
-        let red = parseInt(color.substr(0, 2), 16);
-        let green = parseInt(color.substr(2, 2), 16);
-        let blue = parseInt(color.substr(4, 2), 16);
-        red = red / 255;
-        green = green / 255;
-        blue = blue / 255;
+        const red = parseInt(color.substring(0, 2), 16) / 255;
+        const green = parseInt(color.substring(2, 4), 16) / 255;
+        const blue = parseInt(color.substring(4, 6), 16) / 255;
         let lum = 0;
         _.each([red, green, blue], (piece, index) => {
             if (piece <= 0.03928) {
@@ -435,25 +429,22 @@ SharkGame.ColorUtil = {
 
     correctLuminance(color, luminance) {
         color = String(color).replace(/[^0-9a-f]/gi, "");
-        let red = parseInt(color.substr(0, 2), 16);
-        let green = parseInt(color.substr(2, 2), 16);
-        let blue = parseInt(color.substr(4, 2), 16);
-        red = red / 255;
-        green = green / 255;
-        blue = blue / 255;
+        const red = parseInt(color.substring(0, 2), 16) / 255;
+        const green = parseInt(color.substring(2, 4), 16) / 255;
+        const blue = parseInt(color.substring(4, 6), 16) / 255;
         const varA = 1.075 * (0.2126 * red ** 2 + 0.7152 * green ** 2 + 0.0722 * blue ** 2);
         const varB = -0.075 * (0.2126 * red + 0.7152 * green + 0.0722 * blue);
         const ratio = Math.max((-varB + Math.sqrt(varB ** 2 + 4 * varA * luminance)) / (2 * varA), 0);
-        red = parseInt(Math.min(255, 255 * red * ratio).toFixed(0))
+        const redString = parseInt(Math.min(255, 255 * red * ratio).toFixed(0))
             .toString(16)
             .padStart(2, "0");
-        green = parseInt(Math.min(255, 255 * green * ratio).toFixed(0))
+        const greenString = parseInt(Math.min(255, 255 * green * ratio).toFixed(0))
             .toString(16)
             .padStart(2, "0");
-        blue = parseInt(Math.min(255, 255 * blue * ratio).toFixed(0))
+        const blueString = parseInt(Math.min(255, 255 * blue * ratio).toFixed(0))
             .toString(16)
             .padStart(2, "0");
-        return "#" + red + green + blue;
+        return "#" + redString + greenString + blueString;
     },
 
     convertColorString(color) {
@@ -463,24 +454,21 @@ SharkGame.ColorUtil = {
             .split(" ");
         let colorstring = "#";
         for (let i = 0; i < 3; i++) {
-            colorstring += ("00" + parseInt(colors[i * 2]).toString(16)).substr(parseInt(colors[i * 2]).toString(16).length);
+            colorstring += ("00" + parseInt(colors[i * 2]).toString(16)).substring(parseInt(colors[i * 2]).toString(16).length);
         }
         return colorstring;
     },
 
     getBrightColor(color) {
         color = String(color).replace(/[^0-9a-f]/gi, "");
-        let red = parseInt(color.substr(0, 2), 16);
-        let green = parseInt(color.substr(2, 2), 16);
-        let blue = parseInt(color.substr(4, 2), 16);
-        red = red / 255;
-        green = green / 255;
-        blue = blue / 255;
+        const red = parseInt(color.substring(0, 2), 16) / 255;
+        const green = parseInt(color.substring(2, 4), 16) / 255;
+        const blue = parseInt(color.substring(4, 6), 16) / 255;
         const most = Math.max(red, green, blue);
-        red = parseInt((255 * (1 / most) * red).toFixed(0)).toString(16);
-        green = parseInt((255 * (1 / most) * green).toFixed(0)).toString(16);
-        blue = parseInt((255 * (1 / most) * blue).toFixed(0)).toString(16);
-        return "#" + red + green + blue;
+        const redString = parseInt((255 * (1 / most) * red).toFixed(0)).toString(16);
+        const greenString = parseInt((255 * (1 / most) * green).toFixed(0)).toString(16);
+        const blueString = parseInt((255 * (1 / most) * blue).toFixed(0)).toString(16);
+        return "#" + redString + greenString + blueString;
     },
 
     getElementColor(id, propertyName = "background-color") {
@@ -522,8 +510,8 @@ SharkGame.MiscUtil = {
     },
 
     cloneDeep(obj) {
-        if (document.all !== undefined && obj === document.all) {
-            return document.all;
+        if (obj instanceof HTMLAllCollection) {
+            return obj;
         }
         switch (typeof obj) {
             // Immutable types

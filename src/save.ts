@@ -302,8 +302,7 @@ SharkGame.Save = {
 
     exportData() {
         // get save
-        /** @type string */
-        let saveData;
+        let saveData: string;
         try {
             saveData = SharkGame.Save.saveGame();
         } catch (err) {
@@ -787,8 +786,7 @@ SharkGame.Save = {
                 }
             });
 
-            /** @type string[] */
-            const purchasedUpgrades = [];
+            const purchasedUpgrades: string[] = [];
             $.each(save.upgrades, (upgradeId, purchased) => {
                 if (purchased === true) {
                     purchasedUpgrades.push(upgradeId);
@@ -796,8 +794,7 @@ SharkGame.Save = {
             });
             save.upgrades = purchasedUpgrades;
 
-            /** @type string[] */
-            const completedWorlds = [];
+            const completedWorlds: string[] = [];
             _.each(save.completedWorlds, (completed, worldType) => {
                 if (completed === true) {
                     completedWorlds.push(worldType);

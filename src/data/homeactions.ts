@@ -314,37 +314,6 @@ SharkGame.HomeActions = {
             helpText: "Dissect the sea apples our kelp attracts to gain additional science. Research!",
         },
 
-        /*
-        "spongeToScience": {
-            name: "Dissect sponge",
-            effect: {
-                resource: {
-                    science: 1
-                }
-            },
-            cost: [
-                {resource: "sponge", costFunction: "constant", priceIncrease: 1}
-            ],
-            max: "sponge",
-            prereq: {
-                resource: {
-                    sponge: 1
-                },
-                upgrade: [
-                    "xenobiology"
-                ]
-            },
-            outcomes: [
-                "Squishy porous science!",
-                "The sponge has been breached and the science is leaking out!",
-                "This is the best use of a sponge. Teeth dissections are the best.",
-                "Sponge is now so many shreds. But so much was learned!",
-                "The sponge is apparently not a plant. Yet plants feel more sophisticated than these things."
-            ],
-            helpText: "Dissect sponges to learn their porous secrets. Science!"
-        },
-        */
-
         pearlConversion: {
             name: "Convert clam pearls",
             effect: {
@@ -676,40 +645,6 @@ SharkGame.HomeActions = {
             helpText: "Train a shark in the fine art of research and the science of, well, science.",
         },
 
-        /*
-        getProspector: {
-            name: "Recruit shark prospector",
-            effect: {
-                resource: {
-                    prospector: 1,
-                },
-            },
-            cost: [
-                { resource: "shark", costFunction: "constant", priceIncrease: 1 },
-                { resource: "crystal", costFunction: "linear", priceIncrease: 15 },
-            ],
-            max: "prospector",
-            prereq: {
-                upgrade: ["prospectorSharks"],
-            },
-            outcomes: [
-                "Ready to mine!",
-                "Well, there are worse jobs.",
-                "Pickaxe? Check. Hard work? Check. Lack of proper safety regulations? Double check.",
-                "I'm not sure why sharks think this is a good job? It sucks??",
-                "Trained in the art of mine-fu. Ready to bust crystals.",
-            ],
-            multiOutcomes: [
-                "How do you even get leverage underwater? Newton's third law? Anyone?",
-                "So, they're back in the mine.",
-                "Too bad there isn't something even better than crystal down there, like, diamonds or something.",
-                "Go! Collect resources! Give me stone!",
-                "No rock left unturned! Then, break the rocks you turn over, there might be goodies inside!",
-            ],
-            helpText: "Train and equip a shark to break crystals and mine stone in sub-ocean caverns.",
-        },
-        */
-
         getNurse: {
             name: "Train nurse shark",
             effect: {
@@ -777,44 +712,6 @@ SharkGame.HomeActions = {
             helpText: "Remove a ray from sand detail and let them fuse sand into raw crystal.",
         },
 
-        /*
-        getShoveler: {
-            name: "Equip shoveler ray",
-            effect: {
-                resource: {
-                    shoveler: 1,
-                },
-            },
-            cost: [
-                { resource: "ray", costFunction: "constant", priceIncrease: 1 },
-                { resource: "crystal", costFunction: "linear", priceIncrease: 15 },
-            ],
-            max: "shoveler",
-            prereq: {
-                resource: {
-                    ray: 1,
-                },
-                upgrade: ["crystalShovel"],
-            },
-            outcomes: [
-                "Shovel ray, at your service!",
-                "For shovelry!",
-                "The ray is excited to get started.",
-                "Gravel is the future...I guess!",
-                "Strapped a shovel to a ray. That ray is now a professional. Go get 'em!",
-            ],
-            multiOutcomes: [
-                "Blue heroes with spades!",
-                "No sand, only coarse, heavy pebbles!",
-                "Let's get shoveling!",
-                "Dig in!",
-                "And they said shovelry was dead.",
-                "The rays seemed bleak before. Now, they're excited.",
-            ],
-            helpText: "Remove a ray from fish detail and let them collect gravel instead.",
-        },
-        */
-
         getMaker: {
             name: "Instruct a ray maker",
             effect: {
@@ -849,44 +746,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Remove a ray from sand business and let them concentrate on making more rays.",
         },
-
-        /*
-        stoneGetMaker: {
-            name: "Instruct a ray maker",
-            effect: {
-                resource: {
-                    maker: 1,
-                },
-            },
-            cost: [
-                { resource: "ray", costFunction: "constant", priceIncrease: 2 },
-                { resource: "fish", costFunction: "linear", priceIncrease: 350 },
-            ],
-            max: "maker",
-            prereq: {
-                resource: {
-                    ray: 1,
-                },
-                upgrade: ["rayBiology"],
-                world: "stone",
-            },
-            outcomes: [
-                "More rays lets you get more rays which you can then use to get more rays.",
-                "The ray singularity begins!",
-                "A ray maker is ready.",
-                "Looks like you gave them quite the ray maker blow! 'Them' being the intangible enemy that is lacking in resources.",
-                "The ray seems concerned, but obliges. The mission has been given.",
-            ],
-            multiOutcomes: [
-                "All these makers. What are they making? What is it for? Oh. It's rays, and it's probably for sand or something.",
-                "More ray makers means more rays. Do you understand what that means?! Do you?! It means more rays. Good. On the same page, then.",
-                "Rapidly breeding aquatic wildlife is probably a severe ecological hazard. Good thing this isn't Earth's oceans, probably!",
-                "Have you ever thought about what the rays wanted? Because this might have been what they wanted after all.",
-                "MORE LASER RAYS FOR THE LASER ARMY-- oh. Well, this is good too.",
-            ],
-            helpText: "Remove a ray from fish business and let them concentrate on making more rays.",
-        },
-        */
 
         // CRAB JOBS ////////////////////////////////////////////////////////////////////////////////
 
@@ -926,44 +785,6 @@ SharkGame.HomeActions = {
             helpText: "Equip a crab with the equipment and training to plant kelp across the ocean bottom.",
         },
 
-        /*
-        getMiller: {
-            name: "Equip miller crab",
-            effect: {
-                resource: {
-                    miller: 1,
-                },
-            },
-            cost: [
-                { resource: "crab", costFunction: "constant", priceIncrease: 1 },
-                { resource: "gravel", costFunction: "linear", priceIncrease: 25 },
-                { resource: "crystal", costFunction: "linear", priceIncrease: 20 },
-            ],
-            max: "miller",
-            prereq: {
-                resource: {
-                    crab: 1,
-                },
-                upgrade: ["gravelMilling"],
-            },
-            outcomes: [
-                "Crab has milling gear.",
-                "Why is it milling, and not grinding?",
-                "Crab has been prepared for pebble disintegration.",
-                "How, you ask? With big, meaty claws, how else?",
-                "Making gravel flour, hopefully not for gravel bread.",
-            ],
-            multiOutcomes: [
-                "Doing nature's job for it.",
-                "Millions of years of erosion become mere minutes in your hands...",
-                "Be gone, gravel!",
-                "Sand, come to this world!",
-                "Crush the pebbles! Crush them into what is technically just smaller pebbles!",
-            ],
-            helpText: "Equip a crab with the equipment and training to grind gravel directly into sand.",
-        },
-        */
-
         getBrood: {
             name: "Form crab brood",
             effect: {
@@ -1000,84 +821,6 @@ SharkGame.HomeActions = {
             ],
             helpText: "Meld several crabs into a terrifying, incomprehensible crab-producing brood cluster.",
         },
-
-        // LOBSTER JOBS ////////////////////////////////////////////////////////////////////////////////
-
-        /*
-        getRockLobster: {
-            name: "Train rock lobster",
-            effect: {
-                resource: {
-                    rockLobster: 1,
-                },
-            },
-            cost: [
-                { resource: "lobster", costFunction: "constant", priceIncrease: 1 },
-                { resource: "clam", costFunction: "linear", priceIncrease: 150 },
-            ],
-            max: "rockLobster",
-            prereq: {
-                resource: {
-                    lobster: 1,
-                },
-                upgrade: ["rockBreaking"],
-            },
-            outcomes: [
-                "Break the rocks, lobster. Break them!",
-                "Deployed lobster with a giant crystal nutcracker.",
-                "Ready to rock.",
-                "Crushing rocks is exactly as difficult as it sounds. This lobster can verify.",
-            ],
-            multiOutcomes: [
-                "Rocks, begone!",
-                "Stones? What stones?!",
-                "Goodbye, slate.",
-                "Goodbye, granite.",
-                "Goodbye, generic-looking stone.",
-                "Goodbye, pumice.",
-                "Goodbye, quartz.",
-                "Goodbye, basalt.",
-                "Goodbye, limestone.",
-                "Goodbye, schist.",
-                "Goodbye, diorite.",
-            ],
-            helpText: "Give a lobster the right gear to crack open stones in the name of gravel.",
-        },
-
-        getHarvester: {
-            name: "Train lobster harvester",
-            effect: {
-                resource: {
-                    harvester: 1,
-                },
-            },
-            cost: [
-                { resource: "lobster", costFunction: "constant", priceIncrease: 1 },
-                { resource: "clam", costFunction: "linear", priceIncrease: 25 },
-                { resource: "sponge", costFunction: "linear", priceIncrease: 5 },
-            ],
-            max: "harvester",
-            prereq: {
-                resource: {
-                    lobster: 1,
-                },
-                upgrade: ["crustaceanBiology"],
-            },
-            outcomes: [
-                "Yes, lobster, put these claws to better use.",
-                "It is time for this one to seek more interesting prey. Wait. Wait, no, it's just as stationary. Never mind. False alarm.",
-                "Lobster sticks to seabed!",
-            ],
-            multiOutcomes: [
-                "Cut down the kelp forests!",
-                "Rip the sponge and tear the kelp!",
-                "Harvest the seafloor!",
-                "The lobster tide shall claim the-- wait no you said harvesters. Okay. Adjusting that, then.",
-                "These guys are pretty unenthusiastic about everything they do, aren't they.",
-            ],
-            helpText: "Train a lobster to cut down kelp faster than anything can plant it. Sustainable!",
-        },
-        */
 
         // SHARK MACHINES ////////////////////////////////////////////////////////////////////////////////
 
@@ -2479,7 +2222,7 @@ SharkGame.HomeActions = {
                 "This world dies slower.",
             ],
             get helpText() {
-                return SharkGame.Upgrades.purchased.indexOf("rapidRecharging") > -1
+                return SharkGame.Upgrades.purchased.includes("rapidRecharging")
                     ? "Construct one of the machines we used to slow the formerly-advancing ice shelf. Not much use now."
                     : "Construct a machine to slow down the advancing ice shelf.";
             },
@@ -3799,41 +3542,6 @@ SharkGame.HomeActions = {
         },
 
         // CRAB JOBS ////////////////////////////////////////////////////////////////////////////////
-
-        /* getCatcher: {
-            name: "Gear up catcher crab",
-            effect: {
-                resource: {
-                    catcher: 1,
-                },
-            },
-            cost: [
-                { resource: "crab", costFunction: "constant", priceIncrease: 1 },
-                { resource: "sand", costFunction: "linear", priceIncrease: 100 },
-            ],
-            max: "catcher",
-            prereq: {
-                upgrade: ["kelpCatching"],
-            },
-            outcomes: [
-                "Crab ready to catch.",
-                "Crab has its eyes on a piece of drifting kelp as soon as it reaches a vent.",
-                "This one will make a game-winning catch someday, I can just feel it.",
-                "Crab ready to pitch- I mean catch.",
-                "Equipped crab with extendo-reach.",
-                "This crab now reaches farther.",
-            ],
-            multiOutcomes: [
-                "A bunch of claw-doodad-wielding crabs make their way to the nearest vent.",
-                "The extendo-grip crabs are gripping stuff.",
-                "The crabs test out their new equipment by messing with each other from afar. Hey, get back to work!",
-                "The crabs nestle into their chosen spots around the vent output.",
-                "Though monotonous, they seem content with this life.",
-                "These crabs are ready to have some fun with extendo-reach.",
-                "The crabs just seem happy to help.",
-            ],
-            helpText: "Grant a crab the tools and training to help them catch stuff coming from the vents.",
-        }, */
 
         getCuriousCrab: {
             name: "Recognize curious crab",

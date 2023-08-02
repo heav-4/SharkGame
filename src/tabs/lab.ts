@@ -518,9 +518,9 @@ SharkGame.Lab = {
         // In order to compensate, this code scales the background to be 1.3 times darker.
         const color = sharkcolor.getVariableColor("--color-light").replace(/[^0-9a-f]/gi, "");
         // Convert to rgb channels, convert from hex to decimal and scale it
-        const red = (parseInt(color.substr(0, 2), 16) / 1.3).toString(16);
-        const green = (parseInt(color.substr(2, 2), 16) / 1.3).toString(16);
-        const blue = (parseInt(color.substr(4, 2), 16) / 1.3).toString(16);
+        const red = (parseInt(color.substring(0, 2), 16) / 1.3).toString(16);
+        const green = (parseInt(color.substring(2, 4), 16) / 1.3).toString(16);
+        const blue = (parseInt(color.substring(4, 6), 16) / 1.3).toString(16);
         // Convert back to hex
         const darkerColour = "#" + red + green + blue;
 

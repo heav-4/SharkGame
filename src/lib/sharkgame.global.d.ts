@@ -132,34 +132,35 @@ declare global {
     type ModifierName = string;
     type OptionCategory = "PERFORMANCE" | "LAYOUT" | "APPEARANCE" | "ACCESSIBILITY" | "OTHER" | "SAVES";
     type OptionName =
-        | "buyAmount"
-        | "grottoMode"
-        | "showPercentages"
-        | "framerate"
-        | "showAnimations"
-        | "minimizedTopbar"
-        | "logLocation"
-        | "groupResources"
-        | "smallTable"
-        | "logMessageMax"
-        | "sidebarWidth"
-        | "notation"
-        | "colorCosts"
-        | "boldCosts"
         | "alwaysSingularTooltip"
-        | "tooltipQuantityReminders"
-        | "enableThemes"
-        | "showIcons"
-        | "showTabImages"
+        | "autosaveFrequency"
+        | "boldCosts"
+        | "buyAmount"
+        | "colorCosts"
+        | "customSetting"
         | "doAspectTable"
-        | "verboseTokenDescriptions"
-        | "minuteHandEffects"
+        | "enableThemes"
+        | "framerate"
+        | "grottoMode"
+        | "groupResources"
         | "idleEnabled"
-        | "showTooltips"
-        | "updateCheck"
-        | "truePause"
+        | "logLocation"
+        | "logMessageMax"
+        | "minimizedTopbar"
+        | "minuteHandEffects"
+        | "notation"
         | "offlineModeActive"
-        | "autosaveFrequency";
+        | "showAnimations"
+        | "showIcons"
+        | "showPercentages"
+        | "showTabImages"
+        | "showTooltips"
+        | "sidebarWidth"
+        | "smallTable"
+        | "tooltipQuantityReminders"
+        | "truePause"
+        | "updateCheck"
+        | "verboseTokenDescriptions";
     type ResourceCategory =
         | "animals"
         | "breeders"
@@ -576,7 +577,7 @@ declare global {
             id: string,
             content: string,
             parentDiv: HTMLDivElement | JQuery<HTMLDivElement>,
-            onClick: (event: JQuery.MouseDownEvent) => void,
+            onClick: (event: JQuery.ClickEvent) => void,
             onMouseEnter: (event: JQuery.MouseEnterEvent) => void,
             onMouseLeave: (event: JQuery.MouseLeaveEvent) => void
         ): JQuery<HTMLButtonElement>;
@@ -584,7 +585,7 @@ declare global {
             id: string,
             content: string,
             parentDiv: HTMLDivElement | JQuery<HTMLDivElement>,
-            onClick: (event: JQuery.MouseDownEvent) => void
+            onClick: (event: JQuery.ClickEvent) => void
         ): JQuery<HTMLButtonElement>;
     };
 
@@ -1270,20 +1271,21 @@ declare global {
         savedMouseActivity: number;
         paneGenerated: boolean;
         persistentFlags: {
-            scouting?: boolean;
-            wasScouting: boolean;
-            totalPausedTime: number;
             currentPausedTime: number;
-            lastRunTime?: number;
-            revealedBuyButtons?: boolean;
-            wasOnScoutingMission?: boolean;
-            destinyRolls?: number;
-            minuteStorage: number;
-            dialSetting: number;
-            unlockedDebug?: boolean;
             debug?: boolean;
-            revealedButtonTabs?: boolean;
+            destinyRolls?: number;
+            dialSetting: number;
             individuallyBoughtSharkonium?: number;
+            lastRunTime?: number;
+            minuteStorage: number;
+            revealedButtonTabs?: boolean;
+            revealedBuyButtons?: boolean;
+            scouting?: boolean;
+            tooltipUnlocked?: boolean;
+            totalPausedTime: number;
+            unlockedDebug?: boolean;
+            wasOnScoutingMission?: boolean;
+            wasScouting: boolean;
         };
         sidebarHidden: boolean;
         spriteHomeEventPath: string;

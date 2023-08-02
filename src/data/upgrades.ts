@@ -55,8 +55,7 @@ SharkGame.Upgrades = {
     },
 
     generateUpgradeTable(worldType = world.worldType) {
-        /** @type {UpgradeTable} */
-        let finalTable = {};
+        let finalTable: UpgradeTable = {};
         const defaultUpgrades = sharkmisc.cloneDeep(SharkGame.Upgrades.default);
         if (sharkmisc.has(SharkGame.Upgrades, worldType)) {
             const worldUpgrades = sharkmisc.cloneDeep(SharkGame.Upgrades[worldType]);

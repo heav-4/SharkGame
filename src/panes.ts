@@ -104,8 +104,7 @@ SharkGame.PaneHandler = {
     },
 
     addPaneToStack(title, contents, notCloseable, fadeInTime = 600, customOpacity) {
-        /** @type Pane */
-        const stackObject = [title, contents, notCloseable, fadeInTime, customOpacity];
+        const stackObject: Pane = [title, contents, notCloseable, fadeInTime, customOpacity];
         if (this.currentPane) {
             this.paneStack.push(sharkmisc.cloneDeep(this.currentPane));
         }
