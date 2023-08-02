@@ -343,7 +343,7 @@ SharkGame.Resources = {
         return typeof SharkGame.ResourceCategories[name] !== "undefined";
     },
     isInCategory(resource, category) {
-        return SharkGame.ResourceCategories[category].resources.indexOf(resource) !== -1;
+        return SharkGame.ResourceCategories[category].resources.includes(resource);
     },
     getBaseOfResource(resourceName) {
         for (const [resourceId, resource] of SharkGame.ResourceMap) {
@@ -1129,16 +1129,12 @@ SharkGame.Resources = {
             if (!world.doesResourceExist(generatedResource))
                 return true;
             if (amount > 0) {
-                isGeneratingText += `<br>
-                ${sharktext
-                    .beautifyIncome(amount, " " + sharktext.getResourceName(generatedResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")))
-                    .bold()}`;
+                isGeneratingText += `<br><b>
+                ${sharktext.beautifyIncome(amount, " " + sharktext.getResourceName(generatedResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")))}</b>`;
             }
             else if (amount < 0) {
-                isConsumingText += `<br>
-                ${sharktext
-                    .beautifyIncome(-amount, " " + sharktext.getResourceName(generatedResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")))
-                    .bold()}`;
+                isConsumingText += `<br><b>
+                ${sharktext.beautifyIncome(-amount, " " + sharktext.getResourceName(generatedResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")))}</b>`;
             }
         });
         let producertext = "";
@@ -1151,7 +1147,9 @@ SharkGame.Resources = {
                         (sharktext.shouldHideNumberOfThis(which) ? "" : "<strong>" + sharktext.beautify(res.getResource(which)) + "</strong> ") +
                             sharktext.getResourceName(which, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                             "  <span class='littleTooltipText'>at</span>  " +
-                            sharktext.beautifyIncome(amount).bold();
+                            "<b>" +
+                            sharktext.beautifyIncome(amount) +
+                            "</b>";
                 }
                 else if (amount < 0) {
                     consumertext += "<br>";
@@ -1159,7 +1157,9 @@ SharkGame.Resources = {
                         (sharktext.shouldHideNumberOfThis(which) ? "" : "<strong>" + sharktext.beautify(res.getResource(which)) + "</strong> ") +
                             sharktext.getResourceName(which, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                             "  <span class='littleTooltipText'>at</span>  " +
-                            sharktext.beautifyIncome(-amount).bold();
+                            "<b>" +
+                            sharktext.beautifyIncome(-amount) +
+                            "</b>";
                 }
             }
         });

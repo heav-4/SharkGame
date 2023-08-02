@@ -8,9 +8,16 @@
         "es2023": true
     },
     "parserOptions": {
-        "ecmaVersion": 2023
+        "ecmaVersion": 2023,
+        "project": "./tsconfig.json"
     },
-    "extends": ["eslint:recommended", "standard", "plugin:prettier/recommended", "plugin:@typescript-eslint/recommended"],
+    "extends": [
+        "eslint:recommended",
+        "standard",
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:deprecation/recommended"
+    ],
     "parser": "@typescript-eslint/parser",
     "plugins": ["@typescript-eslint"],
     "globals": {

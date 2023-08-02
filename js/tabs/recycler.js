@@ -83,7 +83,15 @@ SharkGame.Recycler = {
         else {
             junkString = sharktext.beautify(junkAmount);
         }
-        const newValue = "CONTAINS:<br/>" + junkString.bold() + " RESIDUE<br/><br/>" + rec.getRecyclerEfficiencyString() + rec.getTarString().bold();
+        const newValue = "CONTAINS:<br/>" +
+            "<b>" +
+            junkString +
+            "</b>" +
+            " RESIDUE<br/><br/>" +
+            rec.getRecyclerEfficiencyString() +
+            "<b>" +
+            rec.getTarString() +
+            "</b>";
         const oldValue = junkDisplay.html();
         if (oldValue !== newValue.replace(/'/g, '"').replace(/<br\/>/g, "<br>")) {
             junkDisplay.html(newValue);
@@ -164,7 +172,7 @@ SharkGame.Recycler = {
         SharkGame.ResourceMap.forEach((_resource, resourceName) => {
             if (res.getTotalResource(resourceName) > 0 &&
                 rec.allowedCategories[res.getCategoryOfResource(resourceName)] &&
-                rec.bannedResources.indexOf(resourceName) === -1) {
+                !rec.bannedResources.includes(resourceName)) {
                 SharkGame.Button.makeHoverscriptButton("input-" + resourceName, "Recycle " + sharktext.getResourceName(resourceName, undefined, undefined, sharkcolor.getVariableColor("--color-light")), inputButtonDiv, rec.onInput, rec.onInputHover, rec.onInputUnhover);
                 SharkGame.Button.makeHoverscriptButton("output-" + resourceName, "Convert to " + sharktext.getResourceName(resourceName, undefined, undefined, sharkcolor.getVariableColor("--color-light")), outputButtonDiv, rec.onOutput, rec.onOutputHover, rec.onOutputUnhover);
             }
@@ -291,7 +299,9 @@ SharkGame.Recycler = {
             let amountstring = sharktext.beautify(produced);
             amountstring =
                 "<br/><br/>AND " +
-                    amountstring.bold() +
+                    "<b>" +
+                    amountstring +
+                    "</b>" +
                     " " +
                     sharktext.getResourceName("tar", undefined, undefined, sharkcolor.getElementColor("junkDisplay"));
             if (tarTolerance > 0) {
@@ -319,11 +329,16 @@ SharkGame.Recycler = {
         else {
             amountstring = sharktext.beautify((rec.efficiency * res.getResource(rec.hoveredResource)) / -sharkmath.getBuyAmount());
         }
-        return ((rec.getEfficiency() * 100).toFixed(2).toString().bold() +
+        return ("<b>" +
+            (rec.getEfficiency() * 100).toFixed(2).toString() +
+            "</b>" +
             "<b>%<br/>EFFICIENCY</b><br/><br/>EQUIVALENT TO:<br/>" +
-            amountstring.bold() +
+            "<b>" +
+            amountstring +
+            "</b>" +
             " " +
-            sharktext.getResourceName(rec.hoveredResource, undefined, undefined, sharkcolor.getElementColor("junkDisplay")).bold() +
+            sharktext.getResourceName(rec.hoveredResource, undefined, undefined, "<b>" + sharkcolor.getElementColor("junkDisplay")) +
+            "</b>" +
             "<br/>WORTH OF RESIDUE");
     },
     updateExpectedOutput() {

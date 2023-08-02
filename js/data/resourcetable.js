@@ -1167,14 +1167,7 @@ SharkGame.ResourceCategories = {
             "Do you think the aim of the game is to make the numbers go DOWN?!",
             "Well I hope you know what you're doing.",
         ],
-        resources: [
-            "sand",
-            "crystal",
-            "kelp",
-            "coral",
-            "algae",
-            "seagrass",
-        ],
+        resources: ["sand", "crystal", "kelp", "coral", "algae", "seagrass"],
     },
     processed: {
         name: "Processed",

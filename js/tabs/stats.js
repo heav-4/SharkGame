@@ -184,9 +184,9 @@ SharkGame.Stats = {
                         const changeChar = !(realIncome < 0) ? "+" : "";
                         let newValue = "<span style='color: " +
                             res.TOTAL_INCOME_COLOR +
-                            "'>" +
-                            (changeChar + sharktext.beautifyIncome(realIncome)).bold() +
-                            "</span>";
+                            "'><b>" +
+                            (changeChar + sharktext.beautifyIncome(realIncome)) +
+                            "</b></span>";
                         if (cell.html() !== newValue.replace(/'/g, '"')) {
                             cell.html(newValue);
                         }
@@ -197,7 +197,7 @@ SharkGame.Stats = {
                             cell = $("#table-amount-" + resourceId);
                         }
                         newValue = !sharktext.shouldHideNumberOfThis(resourceId)
-                            ? "<div style='text-align:right'>" + sharktext.beautify(res.getResource(resourceId)).bold() + "</div>"
+                            ? "<div style='text-align:right'><b>" + sharktext.beautify(res.getResource(resourceId)) + "</b></div>"
                             : "";
                         if (cell.html() !== newValue.replace(/'/g, '"')) {
                             cell.html(newValue);
@@ -294,7 +294,7 @@ SharkGame.Stats = {
                 resourceMapRow.append($("<td>")
                     .attr("rowspan", subheadings)
                     .html(!sharktext.shouldHideNumberOfThis(headingName)
-                    ? "<div style='text-align:right'>" + sharktext.beautify(res.getResource(headingName)).bold() + "</div>"
+                    ? "<div style='text-align:right'><b>" + sharktext.beautify(res.getResource(headingName)) + "</b></div>"
                     : "")
                     .addClass(rowStyle)
                     .attr("id", "table-amount-" + headingName));
@@ -363,7 +363,7 @@ SharkGame.Stats = {
                 if (SharkGame.Settings.current.switchStats) {
                     resourceMapRow.append($("<td>")
                         .html(!sharktext.shouldHideNumberOfThis(generatorName)
-                        ? "<div style='text-align:right'>" + sharktext.beautify(res.getResource(subheadingKey)).bold() + "</div>"
+                        ? "<div style='text-align:right'><b>" + sharktext.beautify(res.getResource(subheadingKey)) + "</b></div>"
                         : "")
                         .addClass(rowStyle)
                         .attr("id", "table-amount-" + generatorName + "-" + incomeKey));
@@ -448,26 +448,14 @@ SharkGame.Stats = {
             const row = $("<tr>");
             let columns = incomesTable[0].children[0].children.length;
             if (SharkGame.Settings.current.switchStats) {
-                row.append($("<td>")
-                    .html("<span><u>" + "RESOURCE".bold() + "</u></span>")
-                    .addClass("evenRow"));
-                row.append($("<td>")
-                    .html("<span><u>" + "AMOUNT".bold() + "</u></span>")
-                    .addClass("evenRow"));
-                row.append($("<td>")
-                    .html("<span><u>" + "GENERATOR".bold() + "</u></span>")
-                    .addClass("evenRow"));
+                row.append($("<td>").html("<span><u><b>RESOURCE</b></u></span>").addClass("evenRow"));
+                row.append($("<td>").html("<span><u><b>AMOUNT</b></u></span>").addClass("evenRow"));
+                row.append($("<td>").html("<span><u><b>GENERATOR</b></u></span>").addClass("evenRow"));
             }
             else {
-                row.append($("<td>")
-                    .html("<span><u>" + "AMOUNT".bold() + "</u></span>")
-                    .addClass("evenRow"));
-                row.append($("<td>")
-                    .html("<span><u>" + "GENERATOR".bold() + "</u></span>")
-                    .addClass("evenRow"));
-                row.append($("<td>")
-                    .html("<span><u>" + "RESOURCE".bold() + "</u></span>")
-                    .addClass("evenRow"));
+                row.append($("<td>").html("<span><u><b>AMOUNT</b></u></span>").addClass("evenRow"));
+                row.append($("<td>").html("<span><u><b>GENERATOR</b></u></span>").addClass("evenRow"));
+                row.append($("<td>").html("<span><u><b>RESOURCE</b></u></span>").addClass("evenRow"));
             }
             row.append($("<td>")
                 .html("<span><u><b>" + (SharkGame.Settings.current.grottoMode === "advanced" ? "BASE INCOME" : "INCOME PER") + "</b></u></span>")

@@ -2033,7 +2033,7 @@ SharkGame.HomeActions = {
                 "This world dies slower.",
             ],
             get helpText() {
-                return SharkGame.Upgrades.purchased.indexOf("rapidRecharging") > -1
+                return SharkGame.Upgrades.purchased.includes("rapidRecharging")
                     ? "Construct one of the machines we used to slow the formerly-advancing ice shelf. Not much use now."
                     : "Construct a machine to slow down the advancing ice shelf.";
             },

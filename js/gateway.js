@@ -104,7 +104,7 @@ SharkGame.Gateway = {
             }
             const index = qualifiedPlanetTypes.indexOf(choice);
             qualifiedPlanetTypes.splice(index, 1);
-            if (uncompletedPlanetTypes.indexOf(choice) > -1) {
+            if (uncompletedPlanetTypes.includes(choice)) {
                 uncompletedPlanetTypes.splice(uncompletedPlanetTypes.indexOf(choice), 1);
             }
             gateway.planetPool.push({
@@ -191,7 +191,7 @@ SharkGame.Gateway = {
         if (!SharkGame.gameOver && SharkGame.persistentFlags.scouting === undefined) {
             gateway.updateScoutingStatus();
         }
-        return Boolean(SharkGame.persistentFlags.scouting);
+        return SharkGame.persistentFlags.scouting;
     },
     getMinutesBelowPar() {
         const time = gateway.getPar() - gateway.getTimeInLastWorld(true) / 60000;
@@ -273,9 +273,7 @@ SharkGame.Gateway = {
         res.changeResource("essence", Math.ceil((1 + gumptionBonus) * (essenceReward + speedReward) + patienceReward));
     },
     isWorldBeaten(worldType) {
-        if (!worldType)
-            return false;
-        return gateway.completedWorlds.indexOf(worldType) > -1;
+        return worldType !== undefined && gateway.completedWorlds.includes(worldType);
     },
     shouldCheatsBeUnlocked() {
         return res.getTotalResource("essence") >= 1000 && !SharkGame.persistentFlags.unlockedDebug;
@@ -639,7 +637,7 @@ SharkGame.Gateway = {
                     if (worldData.modifiers.length > 0) {
                         const modifierList = $("<ul>").addClass("gatewayPropertyList");
                         _.each(worldData.modifiers, (modifier) => {
-                            if (gateway.playerHasSeenResource(modifier.resource) || !(worldData.foresight.present.indexOf(modifier.resource) > -1)) {
+                            if (gateway.playerHasSeenResource(modifier.resource) || !(worldData.foresight.present.includes(modifier.resource))) {
                                 modifierList.append($("<li>").html(SharkGame.ModifierReference.get(modifier.modifier).effectDescription(modifier.amount, modifier.resource, "#246c54")));
                             }
                             else {

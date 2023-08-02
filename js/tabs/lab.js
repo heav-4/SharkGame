@@ -411,9 +411,9 @@ SharkGame.Lab = {
     },
     getResearchEffects(upgrade) {
         const color = sharkcolor.getVariableColor("--color-light").replace(/[^0-9a-f]/gi, "");
-        const red = (parseInt(color.substr(0, 2), 16) / 1.3).toString(16);
-        const green = (parseInt(color.substr(2, 2), 16) / 1.3).toString(16);
-        const blue = (parseInt(color.substr(4, 2), 16) / 1.3).toString(16);
+        const red = (parseInt(color.substring(0, 2), 16) / 1.3).toString(16);
+        const green = (parseInt(color.substring(2, 4), 16) / 1.3).toString(16);
+        const blue = (parseInt(color.substring(4, 6), 16) / 1.3).toString(16);
         const darkerColour = "#" + red + green + blue;
         const effects = [];
         $.each(upgrade.effect, (effectType, effectsList) => {

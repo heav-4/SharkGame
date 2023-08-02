@@ -687,10 +687,9 @@ SharkGame.Home = {
         $.each(validGenerators, (incomeResource, amount) => {
             if (amount > 0) {
                 text +=
-                    sharktext
-                        .beautifyIncome(buyingHowMuch * amount, " " +
-                        sharktext.getResourceName(incomeResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")))
-                        .bold() + "<br/>";
+                    "<b>" +
+                        sharktext.beautifyIncome(buyingHowMuch * amount, " " + sharktext.getResourceName(incomeResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color"))) +
+                        "</b><br/>";
             }
         });
         if (_.some(validGenerators, (amount) => amount < 0)) {
@@ -703,10 +702,9 @@ SharkGame.Home = {
         $.each(validGenerators, (incomeResource, amount) => {
             if (amount < 0) {
                 text +=
-                    sharktext
-                        .beautifyIncome(-buyingHowMuch * amount, " " +
-                        sharktext.getResourceName(incomeResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")))
-                        .bold() + "<br/>";
+                    "<b>" +
+                        sharktext.beautifyIncome(-buyingHowMuch * amount, " " + sharktext.getResourceName(incomeResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color"))) +
+                        "</b><br/>";
             }
         });
         const condensedObject = res.condenseNode(effects.resource);
@@ -856,11 +854,13 @@ SharkGame.Home = {
         $.each(effects.resource, (resource, amount) => {
             if (buyingHowMuch * amount !== 1) {
                 text =
-                    sharktext.beautify(buyingHowMuch * amount).bold() +
+                    "<b>" +
+                        sharktext.beautify(buyingHowMuch * amount) +
+                        "</b>" +
                         " " +
-                        sharktext
-                            .getResourceName(resource, false, buyingHowMuch * amount, sharkcolor.getElementColor("tooltipbox", "background-color"))
-                            .bold() +
+                        "<b>" +
+                        sharktext.getResourceName(resource, false, buyingHowMuch * amount, sharkcolor.getElementColor("tooltipbox", "background-color")) +
+                        "</b>" +
                         "<br>" +
                         (SharkGame.Settings.current.tooltipQuantityReminders
                             ? "<span class='medDesc littleTooltipText'>(you have " + sharktext.beautify(res.getResource(resource)) + ")</span><br>"
@@ -871,7 +871,8 @@ SharkGame.Home = {
                 const determiner = sharktext.getDeterminer(resource);
                 text =
                     (determiner ? determiner + " " : "") +
-                        sharktext.getResourceName(resource, false, 1, sharkcolor.getElementColor("tooltipbox", "background-color")).bold() +
+                        sharktext.getResourceName(resource, false, 1, sharkcolor.getElementColor("tooltipbox", "<b>" + "background-color")) +
+                        "</b>" +
                         "<br>" +
                         (SharkGame.Settings.current.tooltipQuantityReminders
                             ? "<span class='medDesc littleTooltipText'>(you have " + sharktext.beautify(res.getResource(resource)) + ")</span><br>"

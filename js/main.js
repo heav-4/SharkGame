@@ -652,7 +652,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
             .attr("id", "custom-input")
             .attr("value", 1)
             .attr("min", "1")
-            .attr("disabled", String(SharkGame.Settings.current.buyAmount !== "custom"))));
+            .attr("disabled", (SharkGame.Settings.current.buyAmount !== "custom").toString())));
         document.getElementById("custom-input").addEventListener("input", main.onCustomChange);
         if (SharkGame.Settings.current.customSetting) {
             $("#custom-input")[0].value = SharkGame.Settings.current.customSetting;
@@ -664,7 +664,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
     showSidebarIfNeeded() {
         if (res.haveAnyResources()) {
             if (SharkGame.Settings.current.showAnimations) {
-                $("#sidebar").show("500");
+                $("#sidebar").show(500);
             }
             else {
                 $("#sidebar").show();
@@ -698,6 +698,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
     },
     checkForCategorizationOversights() {
         $.each(SharkGame.ResourceTable, (resourceName, resourceObj) => {
+            resourceName = resourceName.toString();
             if (!res.getCategoryOfResource(resourceName)) {
                 log.addError(new Error(`${resourceName} does not have a category.`));
             }
