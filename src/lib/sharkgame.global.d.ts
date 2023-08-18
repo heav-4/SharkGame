@@ -383,8 +383,8 @@ declare global {
         message: string;
         unlock?:
             | Partial<{
-                  totalResource: Record<ResourceName, number>;
-                  resource: Record<ResourceName, number>;
+                  totalResource: Partial<Record<ResourceName, number>>;
+                  resource: Partial<Record<ResourceName, number>>;
                   upgrade: UpgradeName[];
                   homeAction: HomeActionName[];
               }>
