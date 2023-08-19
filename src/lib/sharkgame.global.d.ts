@@ -8,6 +8,10 @@ declare global {
     const DecimalHalfRound: { [K in keyof Decimal.Constructor]: Decimal.Constructor[K] } & { new (n: Decimal.Value): DecimalHalfRound };
     type DecimalHalfRound = { [K in keyof Decimal.Instance]: Decimal.Instance[K] };
     const panzoom: typeof createPanZoom;
+
+    type RecursivePartial<T> = {
+        [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object | undefined ? RecursivePartial<T[P]> : T[P];
+    };
 }
 
 declare global {
@@ -160,7 +164,9 @@ declare global {
         | "tooltipQuantityReminders"
         | "truePause"
         | "updateCheck"
-        | "verboseTokenDescriptions";
+        | "iconPositions"
+        | "verboseTokenDescriptions"
+        | "switchStats";
     type ResourceCategory =
         | "animals"
         | "breeders"
@@ -278,8 +284,12 @@ declare global {
     type UpgradeName = string;
     type WorldName = "start" | "marine" | "haven" | "tempestuous" | "volcanic" | "abandoned" | "shrouded" | "frigid";
 
+    type TokenId = `token-${number}`;
+    type TokenValue = "RETURNME" | "NA" | `resource-${ResourceName}` | `income-${ResourceName}`;
+
     type ProgressionType = "2-scale";
     type CostFunction = "linear" | "constant" | "unique";
+    type Operation = "multiply" | "exponentiate" | "polynomial" | "reciprocate";
 
     type CheatButtonType = undefined | "numeric" | "up-down";
     type CheatButton = {
@@ -333,8 +343,8 @@ declare global {
 
     type GateRequirements = Partial<{
         upgrades: UpgradeName[];
-        slots: Partial<Record<ResourceName, number>>;
-        resources: Partial<Record<ResourceName, number>>;
+        slots: ResourceAmounts;
+        resources: ResourceAmounts;
     }>;
 
     type HomeAction = {
@@ -396,23 +406,23 @@ declare global {
         desc: string;
         researchedMessage: string;
         effectDesc: string;
-        cost: Partial<Record<ResourceName, number>>;
+        cost: ResourceAmounts;
         effect?: Partial<{
-            incomeMultiplier: Partial<Record<ResourceName, number>>;
-            heaterMultiplier: Partial<Record<ResourceName, number>>;
-            sandMultiplier: Partial<Record<ResourceName, number>>;
-            kelpMultiplier: Partial<Record<ResourceName, number>>;
-            addJellyIncome: Partial<Record<ResourceName, number>>;
-            resourceBoost: Partial<Record<ResourceName, number>>;
-            incomeBoost: Partial<Record<ResourceName, number>>;
-            addAlgaeIncome: Partial<Record<ResourceName, number>>;
-            addSandIncome: Partial<Record<ResourceName, number>>;
+            incomeMultiplier: ResourceAmounts;
+            heaterMultiplier: ResourceAmounts;
+            sandMultiplier: ResourceAmounts;
+            kelpMultiplier: ResourceAmounts;
+            addJellyIncome: ResourceAmounts;
+            resourceBoost: ResourceAmounts;
+            incomeBoost: ResourceAmounts;
+            addAlgaeIncome: ResourceAmounts;
+            addSandIncome: ResourceAmounts;
         }>;
         required?: Partial<{
             upgrades: UpgradeName[];
             seen: ResourceName[];
             resources: ResourceName[];
-            totals: Partial<Record<ResourceName, number>>;
+            totals: ResourceAmounts;
         }>;
         events?: EventName[];
         customEffect?(background: string): string;
@@ -459,6 +469,20 @@ declare global {
         bonus?: number;
         par?: number;
     };
+
+    type PlayerResource = {
+        amount: number;
+        totalAmount: number;
+        discovered?: boolean;
+    };
+
+    type ResourceCategoryObject = {
+        name: string;
+        disposeMessage: string[];
+        resources: ResourceName[];
+    };
+
+    type ResourceAmounts = Partial<Record<ResourceName, number | Decimal>>;
     //#END REGION: Data structure types
 
     //#REGION: Data structure types
@@ -561,7 +585,7 @@ declare global {
         applyAspects(): void;
         respecTree(totalWipe?: boolean): void;
         refundLevels(aspectData: Aspect): void;
-        applyScoutingRestrictionsIfNeeded(): boolean | void;
+        applyScoutingRestrictionsIfNeeded(): boolean;
         resetScoutingRestrictions(): void;
         updateTooltip(button?: Aspect | StaticButton): void;
         generateRequirementReference(): void;
@@ -647,7 +671,7 @@ declare global {
             formatDestinyGamble(): void;
             confirmWorld(): void;
             switchViews(callback: () => void): void;
-            showPlanetAttributes(worldData: World, contentDiv: JQuery<HTMLDivElement>): void;
+            showPlanetAttributes(worldData: World, seenWorldYet: boolean, contentDiv: JQuery<HTMLDivElement>): void;
             showWorldVisitMenu(): void;
             updatePlanetButtons(): void;
             showMinuteHandStorageExtraction(worldtype: WorldName): void;
@@ -658,7 +682,7 @@ declare global {
         cleanUp(): void;
         rerollWorlds(): void;
         preparePlanetSelection(numPlanets: number): void;
-        getVoiceMessage(wonGame: boolean, forceWorldBased: boolean): string;
+        getVoiceMessage(wonGame?: boolean, forceWorldBased?: boolean): string;
         playerHasSeenResource(resource: ResourceName): boolean;
         markWorldCompleted(worldType: WorldName): void;
         isWorldBeaten(worldType: WorldName): boolean;
@@ -703,9 +727,9 @@ declare global {
     };
 
     type UpgradesModule = {
-        purchased: UpgradeName;
+        purchased: UpgradeName[];
         /** Generated cache on-demand */
-        generated: Record<WorldName, UpgradeTable>;
+        generated: Partial<Record<WorldName, UpgradeTable>>;
         getUpgradeTable(worldType?: WorldName | "default"): UpgradeTable;
         /**
          * Retrieves, modifies, and returns the data for an upgrade. Implemented to intercept retreival of upgrade data to handle special logic where alternatives are inconvenient or impossible.
@@ -714,6 +738,8 @@ declare global {
          */
         getUpgradeData(table: UpgradeTable, upgradeName: UpgradeName): Upgrade;
         generateUpgradeTable(worldType: WorldName): UpgradeTable;
+
+        purchaseQueue: UpgradeName[];
     };
 
     type LogModule = {
@@ -736,6 +762,7 @@ declare global {
     type MainModule = {
         tickHandler: number;
         autosaveHandler: number;
+        checkForUpdateHandler: number;
         applyFramerate(): void;
         init(foregoLoad?: boolean): void;
         tick(): void;
@@ -768,8 +795,7 @@ declare global {
          * @param cost constant price
          * @returns cost to get to b from a
          */
-        constantCost(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
-        constantCost(current: number, difference: number, cost: number): number;
+        constantCost<INumber extends Decimal | number>(current: INumber, difference: INumber, cost: INumber): INumber;
         /**
          * @param current current amount
          * @param available available price amount
@@ -842,14 +868,28 @@ declare global {
         addPaneToStack(title: string, contents: PaneContent, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
         swapCurrentPane(title: string, contents: PaneContent, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
         wipeStack(): void;
-        showPane(title: string, contents: PaneContent, notCloseable?: boolean, fadeInTime?: number, customOpacity?: number): void;
+        nextPaneInStack(): void;
+        isStackClosable(): boolean;
+        tryClosePane(): boolean;
+        tryWipeStack(): boolean;
+        isPaneUp(): boolean;
+        isCurrentPaneCloseable(): boolean;
+        isPaneAlreadyUp(title: string): boolean;
+        showPane(
+            title: string,
+            contents: PaneContent,
+            notCloseable?: boolean,
+            fadeInTime?: number,
+            customOpacity?: number,
+            preserveElements?: boolean
+        ): void;
         hidePane(): void;
         showOptions(): void;
         setUpOptions(): JQuery<HTMLTableElement>;
         onOptionClick(): void;
+        showKeybinds(): void;
         showChangelog(): void;
         showHelp(): void;
-        showSpeedSelection(): void;
         showAspectWarning(): void;
         showUnlockedCheatsMessage(): void;
     };
@@ -873,32 +913,198 @@ declare global {
         showPercentages: InternalOption<"absolute" | "percentage">;
     };
 
-    type Save = Record<string, unknown>;
-    type MigrationFunction = (save: Save) => Save;
+    type Resource = {
+        name: string;
+        singleName: string;
+        desc: string;
+        color: string;
+        value: number;
+        forceIncome?: boolean;
+        baseIncome?: ResourceAmounts;
+        jobs?: ResourceName[];
+        income?: ResourceAmounts;
+    };
+
+    type ResourceModule = {
+        INCOME_COLOR: string;
+        TOTAL_INCOME_COLOR: string;
+        UPGRADE_MULTIPLIER_COLOR: string;
+        WORLD_MULTIPLIER_COLOR: string;
+        ASPECT_MULTIPLIER_COLOR: string;
+        RESOURCE_AFFECT_MULTIPLIER_COLOR: string;
+
+        specialMultiplier: number;
+        idleMultiplier: number;
+        rebuildTable: boolean;
+
+        collapsedRows: Set<ResourceCategory>;
+
+        init(): void;
+        setup(): void;
+        processIncomes(timeDelta: number, debug: boolean, simulatingOffline: boolean): void;
+        doRKMethod(time: number, factor: number, threshold: number): number;
+        recalculateIncomeTable(cheap?: boolean): void;
+        getProductAmountFromGeneratorResource(generator: ResourceName, product: ResourceName, numGenerator?: number): number;
+        getNetworkIncomeModifier(network: "generator" | "resource", resource: ResourceName, baseIncome: number): number;
+        getGameSpeedModifier(): number;
+        getSpecialMultiplier(): ResourceModule["specialMultiplier"];
+        getIncome(resource: ResourceName): number;
+        changeResource(resource: ResourceName, amount: number, norecalculation?: boolean): void;
+        setResource(resource: ResourceName, newValue: number): void;
+        setTotalResource(resource: ResourceName, newValue: number): void;
+        getResource(resource: ResourceName): number;
+        getTotalResource(resource: ResourceName): number;
+        isCategoryVisible(category: ResourceCategoryObject): boolean;
+        getCategoryOfResource(resourceName: ResourceName): ResourceCategory;
+        getResourcesInCategory(categoryName: ResourceCategory): ResourceName[];
+        isCategory(name: string): name is ResourceCategory;
+        isInCategory(resource: ResourceName, category: ResourceCategory): boolean;
+        getBaseOfResource(resourceName: ResourceName): ResourceName | null;
+        haveAnyResources(): boolean;
+        checkResources(resourceList: ResourceAmounts, checkTotal?: boolean): boolean;
+        changeManyResources(resourceList: ResourceAmounts, subtract?: boolean): void;
+        scaleResourceList(resourceList: ResourceAmounts, amount: number): ResourceAmounts;
+        updateResourcesTable(): void;
+
+        tokens: {
+            list: JQuery<HTMLDivElement>[];
+            chromeForcesWorkarounds: string;
+
+            setup(): void;
+            makeToken(): JQuery<HTMLDivElement>;
+            tooltip(_event: JQuery.MouseEnterEvent | null): void;
+            tryReturnToken(_event: JQuery.ClickEvent | null, duringLoad: boolean, token: JQuery<HTMLDivElement>): void;
+            handleTokenDragStart(event: JQuery.DragStartEvent): void;
+            handleResourceDragStart(event: JQuery.DragStartEvent): void;
+            handleDragEnd(_event: JQuery.DragEndEvent): void;
+            updateColorfulDropZones(): void;
+            updateTokenDescriptions(): false | void;
+            reapplyToken(token: JQuery<HTMLDivElement>): void;
+            dropToken(event: JQuery.DropEvent): void;
+            markLocation(originalId: TokenId, newId: TokenValue | TokenId): void;
+            unmarkLocation(locationPrevious: TokenValue, id: TokenId): void;
+            applyTokenEffect(targetId: TokenValue | TokenId, _id: TokenId, reverseOrApply: "reverse" | "apply"): void;
+            canBePlacedOn(placedOnWhat: string): boolean;
+            tryClickToPlace(event: JQuery.ClickEvent): void;
+        };
+
+        minuteHand: {
+            active: boolean;
+            disableNextTick: boolean;
+            realMultiplier: number;
+            onMessages: string[];
+            offMessages: string[];
+            allowMinuteHand(): void;
+            init(): void;
+            setup(): void;
+            buildUI(): void;
+            updateMinuteHand(timeElapsed: number): void;
+            toggleMinuteHand(): void;
+            changeSelectedMultiplier(_event: JQuery.Event | null, arbitrary: number): void;
+            changeRealMultiplier(someNumber: number): void;
+            updateDisplay(): void;
+            updateMinuteHandLabel(): void;
+            applyHourHand(): void;
+            giveRequestedTime(): void;
+            formatMinuteTime(milliseconds: number, alwaysRoundSeconds?: boolean): string;
+            updatePowers(): void;
+            showTooltip(): void;
+            toggleOff(): void;
+            addBonusTime(time: number): void;
+        };
+
+        pause: {
+            init(): void;
+            togglePause(): void;
+            showTooltip(): void;
+        };
+
+        dial: {
+            init(): void;
+        };
+
+        reconstructResourcesTable(): void;
+        setResourceTableMinWidth(): void;
+        resetResourceTableMinWidth(): void;
+        collapseResourceTableRow(categoryName: ResourceCategory): void;
+        constructResourceTableRow(resourceKey: ResourceName): JQuery<HTMLElement>;
+        tableTextEnter(_mouseEnterEvent: JQuery.MouseEnterEvent, resourceName: ResourceName): void;
+        tableTextLeave(): void;
+        buildIncomeNetwork(): void;
+        clearNetworks(): void;
+        addNetworkNode(network: Record<string, Record<string, Record<string, number>>>, high: string, mid: string, low: string, value: number): void;
+        applyModifier(name: ModifierName, target: string, degree: number): void;
+        reapplyModifiers(generator: string, generated: string): void;
+        getMultiplierProduct(category: string, generator: string, generated: string): number;
+        testGracePeriod(): boolean;
+        condenseNode(resources: ResourceAmounts, treatResourcesAsAffected: boolean): void;
+    };
+
+    type Save = {
+        version: string;
+        resources: Partial<Record<ResourceName, PlayerResource>>;
+        tabs: Partial<TabsModule>;
+        completedRequirements: GateTab["completedRequirements"];
+        world: {
+            type: WorldName;
+        };
+        aspects: Partial<Record<AspectName, Aspect["level"]>>;
+        gateway: {
+            betweenRuns: boolean;
+            wonGame: boolean;
+        };
+        memories: {
+            world: MemoryModule["worldMemories"];
+            persistent: MemoryModule["persistentMemories"];
+            stats: {};
+        };
+        upgrades: UpgradeName[];
+
+        settings: SettingsModule["current"];
+        completedWorlds: GatewayModule["completedWorlds"];
+        flags: SharkGame["flags"];
+        persistentFlags: SharkGame["persistentFlags"];
+        planetPool: GatewayModule["planetPool"];
+        keybinds: SharkGameData["Keybinds"]["keybinds"];
+
+        timestampLastSave: number;
+        timestampGameStart: number;
+        timestampRunStart: number;
+        timestampRunEnd: number;
+        saveVersion: number;
+    };
+
+    type OldSave = Record<string, unknown>;
+    type MigrationFunction = (save: OldSave) => OldSave;
     type SaveModule = {
         saveFileName: "sharkGameSave";
         saveGame(): SaveString;
-        loadGame(importSaveData?: SaveString): void;
+        decodeSave(saveDataString: string): Save;
+        loadGame(importSaveData?: string): void;
         importData(data: SaveString): void;
         exportData(): SaveString;
-        savedGameExists(): boolean;
-        deleteSave(): void;
-        wipeSave(): void;
+        savedGameExists(tag?: string): boolean;
+        deleteSave(tag?: string): void;
+        getTaggedSaveCharacteristics(tag: string): string;
         createTaggedSave(tag: string): void;
+        loadTaggedSave(tag?: string): void;
+        wipeSave(): void;
         saveUpdaters: MigrationFunction[];
     };
 
     type TabHandlerModule = {
         init(): void;
+        keybindSwitchTab(tab: TabName): void;
         checkTabUnlocks(): void;
+        isTabUnlocked(tab: TabName): boolean;
+        validateTabWidth(): void;
         setUpTab(): void;
         createTabMenu(): void;
         registerTab(tab: SharkGameTabBase): void;
+        updateRegistration(tab: SharkGameTabBase): void;
         createTabNavigation(): void;
         changeTab(tab: TabName): void;
         discoverTab(tab: TabName): void;
-        isTabUnlocked(tab: TabName): boolean;
-        validateTabWidth(): void;
     };
 
     type TabsModule = {
@@ -911,6 +1117,7 @@ declare global {
             discovered: SharkGameTabBase["tabDiscovered"];
             code: SharkGameTabBase;
             discoverReq: SharkGameTabBase["discoverReq"];
+            seen: boolean;
         }
     >;
 
@@ -918,14 +1125,20 @@ declare global {
         plural(number: number): "" | "s";
         getDeterminer(name: ResourceName): "" | "a" | "an";
         getIsOrAre(name: ResourceName, amount?: number): "is" | "are";
+        shouldHideNumberOfThis(name: string): boolean;
         boldString(string: string): `<span class='bold'>${string}</span>`;
         beautify(number: number, suppressDecimals?: boolean, toPlaces?: number): string;
         beautifyIncome(number: number, also?: string): string;
         formatTime(milliseconds: number): string;
-        getResourceName(resourceName: ResourceName, darken?: boolean, arbitraryAmount?: boolean | number, background?: string): string;
-        applyResourceColoration(resourceName: ResourceName, textToColor: string): string;
+        getResourceName(
+            resourceName: ResourceName | ResourceCategory,
+            darken?: boolean,
+            arbitraryAmount?: false | number,
+            background?: string,
+            textToColor?: string
+        ): string;
         /** make a resource list object into a string describing its contents */
-        resourceListToString(resourceList: Record<ResourceName, number>, darken: boolean, backgroundColor?: string): string;
+        resourceListToString(resourceList: Record<ResourceName, number | Decimal>, darken: boolean, backgroundColor?: string): string;
     };
 
     type TimeUtilModule = {
@@ -990,7 +1203,7 @@ declare global {
         tabName: string;
         tabBg?: string;
         discoverReq: Partial<{ resource: Record<ResourceName, number>; upgrade: UpgradeName[] }>;
-        message?: string;
+        message: string;
     };
 
     type CheatsAndDebugTab = SharkGameTabBase & {
@@ -1117,9 +1330,11 @@ declare global {
         listEmpty: boolean;
         messageDone: string;
         resetUpgrades(): void;
-        setHint(upgradeTable: UpgradeTable): void;
+        setHint(upgradeTable: UpgradeTable, isNotStart?: boolean): void;
+        areRequiredUpgradePrereqsPurchased(upgradeId: UpgradeName): boolean;
         updateLabButton(upgradeName: UpgradeName): void;
-        onLabButton(): void;
+        updateMessage(suppressAnimation?: boolean): void;
+        onLabButton(upgradeId?: UpgradeName): void;
         addUpgrade(upgradeId: UpgradeName): void;
         allResearchDone(): boolean;
         isUpgradePossible(upgradeName: UpgradeName): boolean;
@@ -1207,13 +1422,13 @@ declare global {
         Memories: MemoryModule;
         OverlayHandler: OverlayHandlerModule;
         PaneHandler: PaneHandlerModule;
-        ResourceIncomeAffected;
-        ResourceIncomeAffectors;
-        ResourceIncomeAffectorsOriginal;
-        ResourceMap;
-        Resources;
+        ResourceIncomeAffected: Partial<Record<ResourceName, Partial<Record<Operation, ResourceAmounts>>>>;
+        ResourceIncomeAffectors: SharkGameModules["ResourceIncomeAffected"];
+        ResourceIncomeAffectorsOriginal: SharkGameModules["ResourceIncomeAffected"];
+        ResourceMap: Map<ResourceName, Resource>;
+        Resources: ResourceModule;
         ResourceSpecialProperties: { timeImmune: ResourceName[]; incomeCap: Record<ResourceName, number> };
-        ResourceTable;
+        ResourceTable: Record<ResourceName, Resource>;
         Save: SaveModule;
         Settings: SettingsModule;
         TabHandler: TabHandlerModule;
@@ -1240,7 +1455,7 @@ declare global {
         Changelog: Record<string, string[]>;
     };
     type SharkGameUtils = {
-        changeSprite(spritePath: string, imageName: string, imageDiv: JQuery<HTMLDivElement>, backupImageName: string): JQuery<HTMLDivElement>;
+        changeSprite(spritePath: string, imageName: string, imageDiv: JQuery<HTMLDivElement> | null, backupImageName: string): JQuery<HTMLDivElement>;
         choose<T>(choices: T[]): T;
         getImageIconHTML(imagePath: string | undefined, width: number | string, height: number | string): string;
 
@@ -1257,36 +1472,45 @@ declare global {
             pressedAllButtonsThisTick: boolean;
             prySpongeGained: number;
             storm: Record<ResourceName, number>;
-            tokens: Record<`token-${number}`, "RETURNME" | "NA" | `resource-${ResourceName}` | `income-${ResourceName}`>;
+            tokens: Record<TokenId, TokenValue>;
             minuteHandTimer: number;
             hourHandLeft: number;
             bonusTime: number;
             requestedTimeLeft: number;
             seenHomeMessages: HomeMessageName[];
             selectedHomeMessage: HomeMessageName;
+            egg: boolean;
+            upgradeTimes: Partial<Record<UpgradeName, number>>;
         }>;
         gameOver: boolean;
         lastActivity: number;
         missingAspects?: boolean;
         savedMouseActivity: number;
         paneGenerated: boolean;
-        persistentFlags: {
+        persistentFlags: Partial<{
             currentPausedTime: number;
-            debug?: boolean;
-            destinyRolls?: number;
+            debug: boolean;
+            destinyRolls: number;
             dialSetting: number;
-            individuallyBoughtSharkonium?: number;
-            lastRunTime?: number;
+            individuallyBoughtSharkonium: number;
+            lastRunTime: number;
             minuteStorage: number;
-            revealedButtonTabs?: boolean;
-            revealedBuyButtons?: boolean;
-            scouting?: boolean;
-            tooltipUnlocked?: boolean;
+            revealedButtonTabs: boolean;
+            revealedBuyButtons: boolean;
+            scouting: boolean;
+            tooltipUnlocked: boolean;
             totalPausedTime: number;
-            unlockedDebug?: boolean;
-            wasOnScoutingMission?: boolean;
+            unlockedDebug: boolean;
+            wasOnScoutingMission: boolean;
             wasScouting: boolean;
-        };
+            aspectStorage: Partial<Record<AspectName, Aspect["level"]>>;
+            pause: boolean;
+            selectedMultiplier: number;
+            seenReflection: boolean;
+            seenCheatsTab: boolean;
+            everIdled: boolean;
+            requestedTime: number;
+        }>;
         sidebarHidden: boolean;
         spriteHomeEventPath: string;
         spriteIconPath: string;
@@ -1337,8 +1561,8 @@ declare global {
             updateBindModeState(toggledByKey: boolean): void;
         };
         ModifierTypes: Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, Modifier>>>;
-        Panes: Record<string, string[]>;
-        ResourceCategories: Record<ResourceCategory, { name: string; disposeMessage: string[]; resources: ResourceName[] }>;
+        Panes: Record<string, string>;
+        ResourceCategories: Record<ResourceCategory, ResourceCategoryObject>;
         Sprites: Record<
             SpriteName,
             {
@@ -1358,7 +1582,7 @@ declare global {
         FlippedBreakdownIncomeTable: Map<ResourceName, Record<ResourceName, number>>;
         GeneratorIncomeAffected: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
         GeneratorIncomeAffectors: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
-        GeneratorIncomeAffectorsOriginal: Record<ResourceName, Partial<Record<"multiply" | "exponentiate", Record<ResourceName, number>>>>; // TOOD: Might be a better type available later;
+        GeneratorIncomeAffectorsOriginal: Record<ResourceName, Partial<Record<Operation, Record<ResourceName, number>>>>; // TODO: Might be a better type available later;
         ModifierMap: Map<
             ResourceName,
             Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>
@@ -1366,7 +1590,7 @@ declare global {
         /** Can be indexed with the name of a modifier to return the associated data in SharkGame.ModifierTypes. */
         ModifierReference: Map<ModifierName, Modifier>;
         PlayerIncomeTable: Map<ResourceName, number>;
-        PlayerResources: Map<ResourceName, { amount: number; totalAmount: number; discovered?: boolean }>;
+        PlayerResources: Map<ResourceName, PlayerResource>;
     };
 
     type SharkGame = SharkGameConstants & SharkGameUtils & SharkGameModules & SharkGameData & SharkGameRuntimeData & SharkGameTabs;

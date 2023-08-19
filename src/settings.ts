@@ -262,7 +262,7 @@ SharkGame.Settings = {
         onChange() {
             clearInterval(SharkGame.Main.checkForUpdateHandler);
             if (SharkGame.Settings.current.updateCheck) {
-                SharkGame.Main.checkForUpdateHandler = setInterval(main.checkForUpdates, 300000);
+                SharkGame.Main.checkForUpdateHandler = window.setInterval(main.checkForUpdate, 300000);
             }
         },
     },
@@ -294,7 +294,7 @@ SharkGame.Settings = {
         options: [1, 2, 5, 10, 30],
         onChange() {
             clearInterval(main.autosaveHandler);
-            main.autosaveHandler = setInterval(main.autosave, SharkGame.Settings.current.autosaveFrequency * 60000);
+            main.autosaveHandler = window.setInterval(main.autosave, SharkGame.Settings.current.autosaveFrequency * 60000);
             log.addMessage(
                 "Now autosaving every " +
                     SharkGame.Settings.current.autosaveFrequency +

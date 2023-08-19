@@ -904,7 +904,7 @@ SharkGame.Gateway = {
         },
 
         showWorldVisitMenu() {
-            const menuContent = $("<div>").append($("<p>").html("Pick a world to visit:"));
+            const menuContent = $("<div>").append($("<p>").html("Pick a world to visit:")) as JQuery<HTMLDivElement>;
             const visitButtons = $("<div>").attr("id", "visitButtons");
 
             _.each(gateway.allowedWorlds, (planetName) => {

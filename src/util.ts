@@ -279,19 +279,20 @@ SharkGame.TextUtil = {
         }
 
         const abs = Math.abs(number);
+        let numberString: string;
         if (abs >= 0.001) {
-            number = sharktext.beautify(number, false, 2);
-            number += also;
-            number += "/s";
+            numberString = sharktext.beautify(number, false, 2);
+            numberString += also;
+            numberString += "/s";
         } else if (abs > 0.000001) {
             number *= 3600;
-            number = number.toFixed(3);
-            number += also;
-            number += "/h";
+            numberString = number.toFixed(3);
+            numberString += also;
+            numberString += "/h";
         } else {
-            number = 0 + also + "/s";
+            numberString = 0 + also + "/s";
         }
-        return number;
+        return numberString;
     },
 
     formatTime(milliseconds) {
@@ -322,7 +323,7 @@ SharkGame.TextUtil = {
             return textToColor || SharkGame.ResourceCategories[resourceName].name;
         }
         const resource = SharkGame.ResourceMap.get(resourceName);
-        const amount = arbitraryAmount || Math.floor(SharkGame.PlayerResources.get(resourceName).amount);
+        const amount = arbitraryAmount || Math.floor(SharkGame.PlayerResources.get(resourceName)!.amount);
         let name = textToColor || (amount - 1 < SharkGame.EPSILON ? resource.singleName : resource.name);
         let extraStyle = "";
 
@@ -379,9 +380,9 @@ SharkGame.TextUtil = {
             if (typeof resourceAmount === "object") {
                 resourceAmount = resourceAmount.toNumber();
             }
-            if (resourceAmount > 0 && world.doesResourceExist(resourceId)) {
+            if (resourceAmount > 0 && world.doesResourceExist(resourceId as ResourceName)) {
                 formattedResourceList += sharktext.beautify(resourceAmount);
-                formattedResourceList += " " + sharktext.getResourceName(resourceId, darken, resourceAmount, backgroundColor) + ", ";
+                formattedResourceList += " " + sharktext.getResourceName(resourceId as ResourceName, darken, resourceAmount, backgroundColor) + ", ";
             }
         });
         // snip off trailing suffix

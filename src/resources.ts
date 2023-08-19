@@ -6,7 +6,7 @@ SharkGame.BreakdownIncomeTable = new Map(); // a map which has every single gene
 SharkGame.FlippedBreakdownIncomeTable = new Map(); // each resource and what produces it and how much
 SharkGame.ModifierMap = new Map(); // the static multipliers and modifiers to each resource from upgrades, the world, etc
 SharkGame.ResourceIncomeAffectors = {}; // these two are used to preserve the integrity of the original table in sharkgame.resourcetable
-SharkGame.GeneratorIncomeAffectors = {}; // this allows free modification of these, in accordance with modifiers and events
+SharkGame.GeneratorIncomeAffectors = {} as SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"]; // this allows free modification of these, in accordance with modifiers and events
 
 SharkGame.Resources = {
     INCOME_COLOR: "#909090",
@@ -16,7 +16,8 @@ SharkGame.Resources = {
     ASPECT_MULTIPLIER_COLOR: "#70B5A0",
     RESOURCE_AFFECT_MULTIPLIER_COLOR: "#BFBF5A",
 
-    specialMultiplier: null,
+    specialMultiplier: 1,
+    idleMultiplier: 1,
     rebuildTable: false,
 
     collapsedRows: new Set(),
@@ -48,7 +49,9 @@ SharkGame.Resources = {
         });
 
         // set up the modifier reference, and also set up the object we copy to every entry in the modifier map
-        const multiplierObject = {};
+        const multiplierObject = {} as RecursivePartial<
+            Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, Modifier>>>
+        >;
         $.each(SharkGame.ModifierTypes, (category, types) => {
             multiplierObject[category] = {};
             $.each(types, (type, modifiers) => {
@@ -156,14 +159,9 @@ SharkGame.Resources = {
     },
 
     doRKMethod(time, factor, threshold) {
-        let originalResources;
-        let originalIncomes;
-        let stepTwoIncomes;
-        let stepThreeIncomes;
-
         while (time > threshold) {
-            originalResources = sharkmisc.cloneDeep(SharkGame.PlayerResources);
-            originalIncomes = sharkmisc.cloneDeep(SharkGame.PlayerIncomeTable);
+            const originalResources = sharkmisc.cloneDeep(SharkGame.PlayerResources);
+            const originalIncomes = sharkmisc.cloneDeep(SharkGame.PlayerIncomeTable);
 
             SharkGame.PlayerIncomeTable.forEach((income, resourceId) => {
                 if (!SharkGame.ResourceSpecialProperties.timeImmune.includes(resourceId)) {
@@ -172,7 +170,7 @@ SharkGame.Resources = {
             });
 
             res.recalculateIncomeTable(true);
-            stepTwoIncomes = sharkmisc.cloneDeep(SharkGame.PlayerIncomeTable);
+            const stepTwoIncomes = sharkmisc.cloneDeep(SharkGame.PlayerIncomeTable);
 
             SharkGame.PlayerIncomeTable.forEach((amount, resourceId) => {
                 if (!SharkGame.ResourceSpecialProperties.timeImmune.includes(resourceId)) {
@@ -181,7 +179,7 @@ SharkGame.Resources = {
             });
 
             res.recalculateIncomeTable(true);
-            stepThreeIncomes = sharkmisc.cloneDeep(SharkGame.PlayerIncomeTable);
+            const stepThreeIncomes = sharkmisc.cloneDeep(SharkGame.PlayerIncomeTable);
 
             SharkGame.PlayerIncomeTable.forEach((amount, resourceId) => {
                 if (!SharkGame.ResourceSpecialProperties.timeImmune.includes(resourceId)) {
@@ -211,7 +209,7 @@ SharkGame.Resources = {
         return time;
     },
 
-    recalculateIncomeTable(cheap) {
+    recalculateIncomeTable(cheap = false) {
         // clear income table first
         SharkGame.ResourceMap.forEach((_resource, resourceId) => {
             SharkGame.PlayerIncomeTable.set(resourceId, 0);
@@ -293,8 +291,9 @@ SharkGame.Resources = {
         );
     },
 
-    getNetworkIncomeModifier(network, resource, baseIncome) {
-        switch (network) {
+    getNetworkIncomeModifier(networkType, resource, baseIncome) {
+        let network;
+        switch (networkType) {
             case "generator":
                 network = SharkGame.GeneratorIncomeAffected;
                 break;
@@ -339,11 +338,11 @@ SharkGame.Resources = {
     },
 
     getIncome(resource) {
-        return SharkGame.PlayerIncomeTable.get(resource);
+        return SharkGame.PlayerIncomeTable.get(resource)!;
     },
 
     // Adds or subtracts resources based on amount given.
-    changeResource(resource, amount, norecalculation) {
+    changeResource(resource, amount, norecalculation = false) {
         if (Math.abs(amount) < SharkGame.EPSILON) {
             return; // ignore changes below epsilon
         }
@@ -413,13 +412,13 @@ SharkGame.Resources = {
     },
 
     getResourcesInCategory(categoryName) {
-        const resources = [];
+        const resources: ResourceName[] = [];
         SharkGame.ResourceCategories[categoryName].resources.forEach((resourceName) => resources.push(resourceName));
         return resources;
     },
 
-    isCategory(name) {
-        return typeof SharkGame.ResourceCategories[name] !== "undefined";
+    isCategory(name): name is ResourceCategory {
+        return typeof SharkGame.ResourceCategories[name as ResourceCategory] !== "undefined";
     },
 
     isInCategory(resource, category) {
@@ -446,7 +445,7 @@ SharkGame.Resources = {
 
     // returns true if enough resources are held (>=)
     // false if they are not
-    checkResources(resourceList, checkTotal) {
+    checkResources(resourceList, checkTotal = false) {
         return _.every(resourceList, (required, resource) => {
             const currentAmount = checkTotal ? res.getTotalResource(resource) : res.getResource(resource);
             if (typeof required === "object") {
@@ -466,7 +465,7 @@ SharkGame.Resources = {
     },
 
     scaleResourceList(resourceList, amount) {
-        const newList = {};
+        const newList: ResourceAmounts = {};
         $.each(resourceList, (resource, resourceAmount) => {
             newList[resource] = resourceAmount * amount;
         });
@@ -511,7 +510,7 @@ SharkGame.Resources = {
     },
 
     tokens: {
-        list: [] as JQuery<HTMLDivElement>[],
+        list: [],
         chromeForcesWorkarounds: "",
 
         setup() {
@@ -529,8 +528,8 @@ SharkGame.Resources = {
             }
 
             _.each(this.list, (token) => {
-                if (!SharkGame.flags.tokens![token.attr("id")!]) {
-                    SharkGame.flags.tokens![token.attr("id")!] = "RETURNME";
+                if (!SharkGame.flags.tokens![token.attr("id") as TokenId]) {
+                    SharkGame.flags.tokens![token.attr("id") as TokenId] = "RETURNME";
                 }
                 $("#token-div").append(
                     token
@@ -544,13 +543,14 @@ SharkGame.Resources = {
                         .on("mouseenter", res.tokens.tooltip)
                         .on("mouseleave", res.tableTextLeave)
                 );
+
                 if (
-                    SharkGame.flags.tokens[token.attr("id")] !== "NA" &&
-                    SharkGame.flags.tokens[token.attr("id")] !== "RETURNME" &&
-                    world.doesResourceExist(SharkGame.flags.tokens[token.attr("id")].split("-")[1])
+                    SharkGame.flags.tokens![token.attr("id") as TokenId] !== "NA" &&
+                    SharkGame.flags.tokens![token.attr("id") as TokenId] !== "RETURNME" &&
+                    world.doesResourceExist(SharkGame.flags.tokens![token.attr("id") as TokenId].split("-")[1] as ResourceName)
                 ) {
-                    res.tokens.markLocation(token.attr("id"), SharkGame.flags.tokens[token.attr("id")]);
-                    res.tokens.unmarkLocation("NA", token.attr("id"));
+                    res.tokens.markLocation(token.attr("id") as TokenId, SharkGame.flags.tokens![token.attr("id") as TokenId]);
+                    res.tokens.unmarkLocation("NA", token.attr("id") as TokenId);
                 } else {
                     res.tokens.tryReturnToken(null, true, token);
                 }
@@ -559,7 +559,7 @@ SharkGame.Resources = {
         },
 
         makeToken() {
-            const identifier = "token-" + (this.list.length + 1);
+            const identifier: TokenId = `token-${this.list.length + 1}`;
             const token = SharkGame.changeSprite(SharkGame.spriteIconPath, "general/slottedmarker", null, "general/missing-action")
                 .attr("id", identifier)
                 .attr("draggable", "true")
@@ -573,7 +573,7 @@ SharkGame.Resources = {
 
         tooltip(_event) {
             if (SharkGame.Settings.current.showTooltips) {
-                if (SharkGame.flags.tokens[this.id] === "NA") {
+                if (SharkGame.flags.tokens![this.id] === "NA") {
                     $("#tooltipbox")
                         .html(
                             sharktext.boldString(
@@ -593,13 +593,13 @@ SharkGame.Resources = {
                 log.addError("Tried to find this token: " + token.attr("id"));
                 return;
             }
-            if (SharkGame.flags.tokens[token.attr("id")] !== "NA") {
-                if (!duringLoad && SharkGame.flags.tokens[token.attr("id")] !== "RETURNME") {
-                    res.tokens.unmarkLocation(SharkGame.flags.tokens[token.attr("id")], token.attr("id"));
+            if (SharkGame.flags.tokens![token.attr("id") as TokenId] !== "NA") {
+                if (!duringLoad && SharkGame.flags.tokens![token.attr("id") as TokenId] !== "RETURNME") {
+                    res.tokens.unmarkLocation(SharkGame.flags.tokens![token.attr("id") as TokenId], token.attr("id") as TokenId);
                 }
                 SharkGame.changeSprite(SharkGame.spriteIconPath, "general/slottedmarker", token, "general/missing-action");
-                token.attr("draggable", true);
-                SharkGame.flags.tokens[token.attr("id")] = "NA";
+                token.attr("draggable", "true");
+                SharkGame.flags.tokens![token.attr("id") as TokenId] = "NA";
                 res.tokens.updateTokenDescriptions();
                 res.tableTextLeave();
             }
@@ -619,8 +619,8 @@ SharkGame.Resources = {
         },
 
         handleResourceDragStart(event) {
-            event.originalEvent.dataTransfer.setData("tokenId", $("#" + this.id).attr("tokenId"));
-            res.tokens.chromeForcesWorkarounds = $("#" + this.id).attr("tokenId");
+            event.originalEvent.dataTransfer.setData("tokenId", $("#" + this.id).attr("tokenId") as TokenId);
+            res.tokens.chromeForcesWorkarounds = $("#" + this.id).attr("tokenId") as TokenId;
             event.originalEvent.dataTransfer.setData("tokenLocation", event.originalEvent.target.id);
             const image = document.createElement("img");
             image.src = "img/small/general/theToken.png";
@@ -655,21 +655,23 @@ SharkGame.Resources = {
                 let textToDisplay = "";
                 _.each(res.tokens.list, (token) => {
                     if (textToDisplay) textToDisplay += "<br>";
-                    textToDisplay += "Token #" + token.attr("id").split("-")[1] + " is ";
+                    textToDisplay += "Token #" + token.attr("id")!.split("-")[1] + " is ";
                     let tokenLocation;
                     if (SharkGame.flags.tokens) {
-                        tokenLocation = SharkGame.flags.tokens[token.attr("id")];
+                        tokenLocation = SharkGame.flags.tokens[token.attr("id") as TokenId];
                     }
-                    if (tokenLocation === undefined) {
+                    if (tokenLocation === undefined || tokenLocation === "RETURNME") {
                         textToDisplay = "";
                         return false;
                     }
                     if (tokenLocation === "NA") {
                         textToDisplay += "in its slot.";
                     } else if (tokenLocation.includes("income")) {
-                        textToDisplay += "boosting all " + sharktext.getResourceName(tokenLocation.split("-")[1], false, 1) + " gains.";
+                        textToDisplay +=
+                            "boosting all " + sharktext.getResourceName(tokenLocation.split("-")[1] as ResourceName, false, 1) + " gains.";
                     } else if (tokenLocation.includes("resource")) {
-                        textToDisplay += "boosting " + sharktext.getResourceName(tokenLocation.split("-")[1], false, 1) + " efficiency.";
+                        textToDisplay +=
+                            "boosting " + sharktext.getResourceName(tokenLocation.split("-")[1] as ResourceName, false, 1) + " efficiency.";
                     }
                 });
                 $("#token-description").html(textToDisplay);
@@ -680,17 +682,17 @@ SharkGame.Resources = {
 
         reapplyToken(token) {
             if (SharkGame.flags.tokens) {
-                $("#" + SharkGame.flags.tokens[token.attr("id")])
+                $("#" + SharkGame.flags.tokens[token.attr("id") as TokenId])
                     .css("background-image", "url(img/small/general/theToken.png)")
-                    .attr("draggable", true)
-                    .attr("tokenId", token.attr("id"));
+                    .attr("draggable", "true")
+                    .attr("tokenId", token.attr("id") as TokenId);
             }
         },
 
         dropToken(event) {
             res.tableTextLeave();
-            const originalTokenId = event.originalEvent.dataTransfer.getData("tokenId");
-            const previousLocation = event.originalEvent.dataTransfer.getData("tokenLocation");
+            const originalTokenId = event.originalEvent.dataTransfer.getData("tokenId") as TokenId;
+            const previousLocation = event.originalEvent.dataTransfer.getData("tokenLocation") as TokenValue;
 
             res.tokens.unmarkLocation(previousLocation, originalTokenId);
 
@@ -704,16 +706,18 @@ SharkGame.Resources = {
 
         markLocation(originalId, newId) {
             res.tokens.applyTokenEffect(newId, originalId, "apply");
-            if (newId.includes("token")) {
-                SharkGame.changeSprite(SharkGame.spriteIconPath, "general/slottedmarker", $("#" + newId), "general/missing-action");
-                $("#" + newId).attr("draggable", true);
-                SharkGame.flags.tokens[newId] = "NA";
+            if (newId.startsWith("token-")) {
+                const newTokenId = newId as TokenId;
+                SharkGame.changeSprite(SharkGame.spriteIconPath, "general/slottedmarker", $("#" + newTokenId), "general/missing-action");
+                $("#" + newTokenId).attr("draggable", "true");
+                SharkGame.flags.tokens![newTokenId] = "NA";
             } else {
-                $("#" + newId)
+                const newTokenValue = newId as TokenValue;
+                $("#" + newTokenValue)
                     .css("background-image", "url(img/small/general/theToken.png)")
-                    .attr("draggable", true)
+                    .attr("draggable", "true")
                     .attr("tokenId", originalId);
-                SharkGame.flags.tokens[originalId] = newId;
+                SharkGame.flags.tokens![originalId] = newTokenValue;
             }
             res.tokens.updateTokenDescriptions();
         },
@@ -721,10 +725,10 @@ SharkGame.Resources = {
         unmarkLocation(locationPrevious, id) {
             if (locationPrevious === "NA") {
                 SharkGame.changeSprite(SharkGame.spriteIconPath, "general/hole", $("#" + id), "general/missing-action");
-                $("#" + id).attr("draggable", false);
+                $("#" + id).attr("draggable", "false");
             } else {
                 $("#" + locationPrevious)
-                    .attr("draggable", false)
+                    .attr("draggable", "false")
                     .attr("tokenId", "")
                     .css("background-image", "");
             }
@@ -747,17 +751,19 @@ SharkGame.Resources = {
         },
 
         canBePlacedOn(placedOnWhat) {
-            const resource = placedOnWhat.split("-")[1];
+            const resource = placedOnWhat.split("-")[1] as ResourceName;
             if (placedOnWhat.includes("resource")) {
                 return (
                     !$("#" + placedOnWhat).attr("tokenId") &&
                     _.some(
-                        SharkGame.ResourceMap.get(resource).income,
+                        SharkGame.ResourceMap.get(resource)!.income,
                         (amount, generatedResource) => amount !== 0 && world.doesResourceExist(generatedResource)
                     )
                 );
             } else if (placedOnWhat.includes("income")) {
-                return !$("#" + placedOnWhat).attr("tokenId") && SharkGame.PlayerIncomeTable.get(resource);
+                return !!(!$("#" + placedOnWhat).attr("tokenId") && SharkGame.PlayerIncomeTable.get(resource));
+            } else {
+                return false;
             }
         },
 
@@ -772,8 +778,8 @@ SharkGame.Resources = {
                     }
                 });
             } else if ($("#" + textId).attr("tokenId")) {
-                res.tokens.markLocation($("#" + textId).attr("tokenId"), $("#" + textId).attr("tokenId"));
-                res.tokens.unmarkLocation(textId, $("#" + textId).attr("tokenId"));
+                res.tokens.markLocation($("#" + textId).attr("tokenId") as TokenId, $("#" + textId).attr("tokenId") as TokenId);
+                res.tokens.unmarkLocation(textId as TokenValue, $("#" + textId).attr("tokenId") as TokenId);
             }
         },
     },
@@ -852,7 +858,7 @@ SharkGame.Resources = {
                 $("#minute-hand-div").empty();
             } else if ($("#minute-hand-toggle").length === 0) {
                 this.buildUI();
-                this.changeSelectedMultiplier(null, SharkGame.persistentFlags.selectedMultiplier);
+                this.changeSelectedMultiplier(null, SharkGame.persistentFlags.selectedMultiplier!);
                 this.updateMinuteHandLabel();
             }
         },
@@ -880,7 +886,7 @@ SharkGame.Resources = {
                 .attr("min", 1)
                 .attr("max", 9)
                 .attr("step", 1)
-                .attr("value", Math.log2(SharkGame.persistentFlags.selectedMultiplier))
+                .attr("value", Math.log2(SharkGame.persistentFlags.selectedMultiplier!))
                 .on("input", res.minuteHand.changeSelectedMultiplier);
             $("#minute-row-two").append(slider);
             $("#minute-row-two").append($("<span>").html(") <strong>SPEED</strong>"));
@@ -916,16 +922,16 @@ SharkGame.Resources = {
             } else {
                 const timeRemoved = timeElapsed * (res.minuteHand.realMultiplier - 1);
 
-                if (SharkGame.flags.hourHandLeft > 0) {
-                    SharkGame.flags.hourHandLeft -= timeRemoved;
-                } else if (SharkGame.flags.requestedTimeLeft > 0) {
-                    SharkGame.flags.requestedTimeLeft -= timeRemoved;
+                if (SharkGame.flags.hourHandLeft! > 0) {
+                    SharkGame.flags.hourHandLeft! -= timeRemoved;
+                } else if (SharkGame.flags.requestedTimeLeft! > 0) {
+                    SharkGame.flags.requestedTimeLeft! -= timeRemoved;
                 }
 
-                if (SharkGame.flags.hourHandLeft < 0) {
+                if (SharkGame.flags.hourHandLeft! < 0) {
                     SharkGame.flags.hourHandLeft = 0;
                 }
-                if (SharkGame.flags.requestedTimeLeft < 0) {
+                if (SharkGame.flags.requestedTimeLeft! < 0) {
                     SharkGame.flags.requestedTimeLeft = 0;
                 }
 
@@ -943,11 +949,11 @@ SharkGame.Resources = {
         },
 
         toggleMinuteHand() {
-            if (!res.minuteHand.active && SharkGame.flags.minuteHandTimer > 0) {
+            if (!res.minuteHand.active && SharkGame.flags.minuteHandTimer! > 0) {
                 main.endIdle();
                 if (cad.pause) res.pause.togglePause();
                 res.minuteHand.active = true;
-                res.minuteHand.changeRealMultiplier(SharkGame.persistentFlags.selectedMultiplier);
+                res.minuteHand.changeRealMultiplier(SharkGame.persistentFlags.selectedMultiplier!);
                 $("#minute-hand-toggle").addClass("minuteOn");
                 log.addMessage("<span class='minuteOn'>" + SharkGame.choose(res.minuteHand.onMessages) + "</span>");
             } else if (res.minuteHand.active) {
@@ -964,7 +970,7 @@ SharkGame.Resources = {
             if (arbitrary) {
                 multiplier = arbitrary;
             } else {
-                multiplier = 2 ** Math.floor(document.getElementById("minute-slider").value);
+                multiplier = 2 ** parseInt((document.getElementById("minute-slider") as HTMLInputElement).value);
             }
             SharkGame.persistentFlags.selectedMultiplier = multiplier;
             if (res.minuteHand.active) {
@@ -990,10 +996,10 @@ SharkGame.Resources = {
         },
 
         updateMinuteHandLabel() {
-            const multiplier = SharkGame.persistentFlags.selectedMultiplier.toString().padStart(3, " ").replaceAll(" ", "&nbsp;&nbsp;");
+            const multiplier = SharkGame.persistentFlags.selectedMultiplier!.toString().padStart(3, " ").replaceAll(" ", "&nbsp;&nbsp;");
             $("#minute-multiplier").html("<span class='click-passthrough bold'>" + multiplier + "×</span>");
             $("#minute-time").html(sharktext.boldString("(" + res.minuteHand.formatMinuteTime(SharkGame.flags.minuteHandTimer) + ")"));
-            if (SharkGame.flags.minuteHandTimer < 100) {
+            if (SharkGame.flags.minuteHandTimer! < 100) {
                 $("#minute-hand-toggle").addClass("disabled");
                 $("#minute-time").addClass("noTime");
             } else {
@@ -1005,13 +1011,13 @@ SharkGame.Resources = {
         applyHourHand() {
             const hourHand = 60000 * SharkGame.Aspects.theHourHand.level;
             SharkGame.flags.hourHandLeft = hourHand;
-            SharkGame.flags.minuteHandTimer += hourHand;
+            SharkGame.flags.minuteHandTimer! += hourHand;
             this.updateDisplay();
         },
 
         giveRequestedTime() {
             if (SharkGame.persistentFlags.requestedTime) {
-                SharkGame.flags.minuteHandTimer += SharkGame.persistentFlags.requestedTime;
+                SharkGame.flags.minuteHandTimer! += SharkGame.persistentFlags.requestedTime;
                 this.addBonusTime(SharkGame.persistentFlags.requestedTime);
                 SharkGame.flags.requestedTimeLeft = SharkGame.persistentFlags.requestedTime;
                 SharkGame.Log.addMessage(`Took ${this.formatMinuteTime(SharkGame.persistentFlags.requestedTime)} out of storage.`);
@@ -1020,7 +1026,7 @@ SharkGame.Resources = {
             this.updateDisplay();
         },
 
-        formatMinuteTime(milliseconds, alwaysRoundSeconds) {
+        formatMinuteTime(milliseconds, alwaysRoundSeconds = false) {
             const numSeconds = Math.floor(milliseconds / 100) / 10;
             const numMinutes = Math.floor(numSeconds / 60);
             const numHours = Math.floor(numMinutes / 60);
@@ -1044,7 +1050,7 @@ SharkGame.Resources = {
             $("#minute-slider").removeClass("power1").removeClass("power2").removeClass("power3").removeClass("power4").removeClass("power5");
             $("#minute-hand-toggle").removeClass("power1").removeClass("power2").removeClass("power3").removeClass("power4").removeClass("power5");
             if (res.minuteHand.active && SharkGame.Settings.current.minuteHandEffects) {
-                const multiplier = 2 ** Math.floor(document.getElementById("minute-slider").value);
+                const multiplier = 2 ** parseInt((document.getElementById("minute-slider") as HTMLInputElement).value);
                 if (multiplier === 2) {
                     $("#minute-slider").addClass("power1");
                     $("#minute-hand-toggle").addClass("power1");
@@ -1077,14 +1083,6 @@ SharkGame.Resources = {
                 }
             }
         },
-
-        /*         showTimeTooltip() {
-            if (SharkGame.Settings.current.showTooltips) {
-                $("#tooltipbox").html(`You have ${sharktext.boldString(res.minuteHand.formatMinuteTime(SharkGame.flags.minuteHandTimer))} left.` +
-                (SharkGame.flags.hourHandLeft ? `<br>(${sharktext.boldString(res.minuteHand.formatMinuteTime(SharkGame.flags.hourHandLeft))} is from the hour hand.)` : "") +
-                `<br>You have ${sharktext.boldString(res.minuteHand.formatMinuteTime(SharkGame.persistentFlags.minuteStorage))} in storage.`);
-            }
-        }, */
 
         toggleOff() {
             if (res.minuteHand.active) {
@@ -1264,9 +1262,6 @@ SharkGame.Resources = {
                         }
                     })
                     .on("dragend", res.tokens.handleDragEnd)
-                    // .on("dragleave", () => {
-                    //     $("#tooltipbox").html("");
-                    // })
                     .on("drop", res.tokens.dropToken)
                     .on("click", res.tokens.tryClickToPlace)
             );
@@ -1322,7 +1317,7 @@ SharkGame.Resources = {
             return;
         }
         if (!resourceName) {
-            resourceName = $(this).attr("id");
+            resourceName = $(this).attr("id") as ResourceName;
             if (!resourceName) return;
         }
         const generators = SharkGame.FlippedBreakdownIncomeTable.get(resourceName);
@@ -1530,15 +1525,15 @@ SharkGame.Resources = {
         if (SharkGame.ResourceMap.get(resourceName).desc) {
             text += "<hr class='hrForTooltipSeparation'><span class='medDesc'>" + SharkGame.ResourceMap.get(resourceName).desc + "</span>";
         }
-        if (document.getElementById("tooltipbox").innerHTML !== text.replace(/'/g, '"')) {
-            document.getElementById("tooltipbox").innerHTML = text;
+        if (document.getElementById("tooltipbox")!.innerHTML !== text.replace(/'/g, '"')) {
+            document.getElementById("tooltipbox")!.innerHTML = text;
         }
         $("#tooltipbox").removeClass("forHomeButtonOrGrotto").removeClass("gives-consumer").attr("current", "");
         $(".tooltip").addClass("forIncomeTable").attr("current", resourceName);
     },
 
     tableTextLeave() {
-        document.getElementById("tooltipbox").innerHTML = "";
+        document.getElementById("tooltipbox")!.innerHTML = "";
         $(".tooltip").removeClass("forIncomeTable").attr("current", "");
     },
 
@@ -1596,11 +1591,6 @@ SharkGame.Resources = {
 
     /**
      * Adds a parameter in a nested object, specifically 3 layers deep.
-     * @param {object} network The nested object to add a paramater to
-     * @param {string} high The top-level parameter to index
-     * @param {string} mid The second-level paramater to index
-     * @param {string} low The paramater to assign
-     * @param {number} value The value of that parameter
      */
     addNetworkNode(network, high, mid, low, value) {
         if (!network[high]) {
@@ -1616,7 +1606,7 @@ SharkGame.Resources = {
      * Completes the necessary steps to apply the effects of a modifier to the income table.
      * @param {string} name The index of the modifier in the modifier map.
      * @param {string} target The affected resource or category of resources.
-     * @param {any} degree The incoming change to the modifier, or a separate value denoting the strength of a world modifier.
+     * @param {number} degree The incoming change to the modifier, or a separate value denoting the strength of a world modifier.
      */
     applyModifier(name, target, degree) {
         if (res.isCategory(target)) {
@@ -1682,8 +1672,8 @@ SharkGame.Resources = {
      * @param {object} resources Object containing each resource and how much.
      * @param {boolean} treatResourcesAsAffected Whether or not to condense the node with respect to the resources as affectors or as the affected.
      */
-    condenseNode(resources, treatResourcesAsAffected) {
-        function convertType(whichType, degree) {
+    condenseNode(resources, treatResourcesAsAffected = false) {
+        function convertType(whichType: "multiply" | "exponentiate", degree: number) {
             switch (whichType) {
                 case "multiply":
                     return degree > 0 ? "increase" : "decrease";

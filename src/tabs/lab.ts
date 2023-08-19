@@ -77,7 +77,7 @@ SharkGame.Lab = {
 
     setup() {
         _.each(SharkGame.Upgrades.purchaseQueue, (upgradeId) => {
-            SharkGame.Lab.addUpgrade(upgradeId, "load");
+            SharkGame.Lab.addUpgrade(upgradeId);
         });
         SharkGame.TabHandler.updateRegistration(this);
     },
@@ -131,7 +131,7 @@ SharkGame.Lab = {
         */
     },
 
-    setHint(upgradeTable, isNotStart) {
+    setHint(upgradeTable, isNotStart = false) {
         const lab = SharkGame.Lab;
         if (lab.allResearchDone()) {
             let message;
@@ -143,7 +143,7 @@ SharkGame.Lab = {
                     message = "The scientists rest content, sure that they're done with their work.";
             }
 
-            $("#buttonList").html($("<p>").html(message));
+            $("#buttonList").html(($("<p>") as JQuery<HTMLElement>).html(message));
             if (isNotStart) lab.updateMessage();
         } else if (lab.listEmpty) {
             let message;
@@ -309,7 +309,7 @@ SharkGame.Lab = {
         }
     },
 
-    updateMessage(suppressAnimation) {
+    updateMessage(suppressAnimation = false) {
         const lab = SharkGame.Lab;
         const allResearchDone = lab.allResearchDone();
         let message = allResearchDone ? lab.messageDone : lab.message;
@@ -343,7 +343,7 @@ SharkGame.Lab = {
         if (typeof upgradeId === "object") {
             if ($(this).hasClass("disabled")) return;
 
-            upgradeId = $(this).attr("id");
+            upgradeId = $(this).attr("id")!;
             upgrade = SharkGame.Upgrades.getUpgradeData(upgradeTable, upgradeId);
             if (SharkGame.Upgrades.purchased.includes(upgradeId)) {
                 $(this).remove();

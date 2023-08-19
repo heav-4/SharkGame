@@ -5,7 +5,7 @@ SharkGame.Save = {
     saveGame() {
         // populate save data object
         let saveString = "";
-        const saveData = {
+        const saveData: RecursivePartial<Save> = {
             version: SharkGame.VERSION,
             resources: {},
             tabs: {},
@@ -18,7 +18,7 @@ SharkGame.Save = {
 
         SharkGame.PlayerResources.forEach((resource, resourceId) => {
             if (resource.amount > 0 || resource.totalAmount > 0) {
-                saveData.resources[resourceId] = {
+                saveData.resources![resourceId] = {
                     amount: resource.amount,
                     totalAmount: resource.totalAmount,
                 };
@@ -29,14 +29,14 @@ SharkGame.Save = {
         // Save non-zero artifact levels
         _.each(SharkGame.Aspects, ({ level }, aspectId) => {
             if (aspectId === "deprecated") return;
-            if (level) saveData.aspects[aspectId] = level;
+            if (level) saveData.aspects![aspectId as AspectName] = level as number;
         });
 
         $.each(SharkGame.Tabs, (tabId, tab) => {
             if (tabId !== "current") {
-                saveData.tabs[tabId] = [tab.discovered, tab.seen];
+                saveData.tabs![tabId] = [tab.discovered, tab.seen];
             } else {
-                saveData.tabs.current = tab;
+                saveData.tabs!.current = tab;
             }
         });
 
@@ -51,8 +51,8 @@ SharkGame.Save = {
 
         saveData.keybinds = SharkGame.Keybinds.keybinds;
 
-        saveData.memories.world = sharkmisc.cloneDeep(SharkGame.Memories.worldMemories);
-        saveData.memories.persistent = sharkmisc.cloneDeep(SharkGame.Memories.persistentMemories);
+        saveData.memories!.world = sharkmisc.cloneDeep(SharkGame.Memories.worldMemories);
+        saveData.memories!.persistent = sharkmisc.cloneDeep(SharkGame.Memories.persistentMemories);
 
         // add timestamp
         saveData.timestampLastSave = Date.now();
@@ -67,7 +67,7 @@ SharkGame.Save = {
             if (saveString === undefined || saveString === "<~~>") throw new Error("Something went wrong while saving");
             localStorage.setItem(SharkGame.Save.saveFileName, saveString);
         } catch (err) {
-            throw new Error("Couldn't save to local storage. Reason: " + err.message);
+            throw new Error("Couldn't save to local storage. Reason: " + (err as Error).message);
         }
 
         return saveString as SaveString;
@@ -170,8 +170,8 @@ SharkGame.Save = {
             $.each(saveData.resources, (resourceId, resource) => {
                 // check that this isn't an old resource that's been removed from the game for whatever reason
                 if (SharkGame.PlayerResources.has(resourceId)) {
-                    SharkGame.PlayerResources.get(resourceId).amount = isNaN(resource.amount) ? 0 : resource.amount;
-                    SharkGame.PlayerResources.get(resourceId).totalAmount = isNaN(resource.totalAmount) ? 0 : resource.totalAmount;
+                    SharkGame.PlayerResources.get(resourceId)!.amount = isNaN(resource.amount) ? 0 : resource.amount;
+                    SharkGame.PlayerResources.get(resourceId)!.totalAmount = isNaN(resource.totalAmount) ? 0 : resource.totalAmount;
                 }
             });
 
@@ -294,7 +294,7 @@ SharkGame.Save = {
             SharkGame.Save.loadGame(data);
             main.setUpGame();
         } catch (err) {
-            log.addError(err);
+            log.addError(err as Error);
         }
         // refresh current tab
         SharkGame.TabHandler.setUpTab();
@@ -306,7 +306,7 @@ SharkGame.Save = {
         try {
             saveData = SharkGame.Save.saveGame();
         } catch (err) {
-            log.addError(err);
+            log.addError(err as Error);
         }
         // check if save isn't encoded
         if (saveData.substring(0, 2) !== "<~") {
@@ -329,7 +329,7 @@ SharkGame.Save = {
             SharkGame.Log.addError("Tried to get characteristics of a tagged save, but no tag was given.");
             throw new Error("Tried to get characteristics of a tagged save, but no tag was given.");
         }
-        const save = this.decodeSave(localStorage.getItem(SharkGame.Save.saveFileName + tag));
+        const save = this.decodeSave(localStorage.getItem(SharkGame.Save.saveFileName + tag)!);
         let text;
         if (save) {
             text = ` from ${SharkGame.TextUtil.formatTime(Date.now() - save.timestampLastSave)} ago`;
@@ -358,7 +358,7 @@ SharkGame.Save = {
         }
 
         if (this.savedGameExists(tag)) {
-            this.importData(localStorage.getItem(SharkGame.Save.saveFileName + tag));
+            this.importData(localStorage.getItem(SharkGame.Save.saveFileName + tag) as SaveString);
         } else {
             SharkGame.Log.addError(`Tried to load ${SharkGame.Save.saveFileName + tag}, but no such save exists.`);
         }

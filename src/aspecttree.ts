@@ -684,7 +684,7 @@ SharkGame.AspectTree = {
         }
         tree.updateRequirementReference();
         if (SharkGame.Settings.current.doAspectTable === "table") {
-            this.drawTable(document.getElementById("aspectTable"));
+            this.drawTable(document.getElementById("aspectTable") as HTMLTableElement);
             this.updateEssenceCounter();
         } else {
             requestAnimationFrame(tree.render);
@@ -710,10 +710,12 @@ SharkGame.AspectTree = {
                 if (aspectData.core) {
                     return true;
                 }
-                SharkGame.persistentFlags.aspectStorage[aspectName] = aspectData.level;
+                SharkGame.persistentFlags.aspectStorage![aspectName] = aspectData.level;
                 SharkGame.Aspects[aspectName].level = 0;
             });
         }
+
+        return false;
     },
 
     resetScoutingRestrictions() {

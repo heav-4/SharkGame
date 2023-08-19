@@ -4,7 +4,7 @@ window.SharkGame = window.SharkGame || {};
 window.onmousemove = (event) => {
     SharkGame.lastActivity = Date.now();
 
-    const tooltip = document.getElementById("tooltipbox");
+    const tooltip = document.getElementById("tooltipbox")!;
     const posX = event.clientX;
     const posY = event.clientY;
 
@@ -203,7 +203,7 @@ SharkGame.Main = {
         if (main.tickHandler) {
             clearInterval(main.tickHandler);
         }
-        main.tickHandler = setInterval(main.tick, SharkGame.INTERVAL);
+        main.tickHandler = window.setInterval(main.tick, SharkGame.INTERVAL);
     },
 
     // specifically wipe all progress
@@ -332,7 +332,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 SharkGame.Save.loadGame();
                 log.addMessage("Loaded game.");
             } catch (err) {
-                log.addError(err);
+                log.addError(err as Error);
             }
         }
     },
@@ -391,13 +391,13 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         SharkGame.TitleBarHandler.updateTopBar();
 
         if (main.autosaveHandler === -1) {
-            main.autosaveHandler = setInterval(main.autosave, SharkGame.Settings.current.autosaveFrequency * 60000);
+            main.autosaveHandler = window.setInterval(main.autosave, SharkGame.Settings.current.autosaveFrequency * 60000);
         }
 
         // window.addEventListener("beforeunload", main.autosave);
 
         if (SharkGame.Settings.current.updateCheck) {
-            main.checkForUpdateHandler = setInterval(main.checkForUpdate, 300000);
+            main.checkForUpdateHandler = window.setInterval(main.checkForUpdate, 300000);
         }
 
         $("#title").on("click", (event) => {
@@ -535,7 +535,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 SharkGame.Save.saveGame();
                 log.addMessage("Game saved.");
             } catch (err) {
-                log.addError(err);
+                log.addError(err as Error);
             }
         }
     },
@@ -690,7 +690,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             SharkGame.Save.saveGame();
             log.addMessage("Autosaved.");
         } catch (err) {
-            log.addError(err);
+            log.addError(err as Error);
         }
     },
 
@@ -708,7 +708,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                             SharkGame.Save.saveGame();
                             history.go(0);
                         } catch (err) {
-                            log.addError(err);
+                            log.addError(err as Error);
                             console.error(err);
                             log.addMessage("Something went wrong while saving.");
                         }
@@ -851,13 +851,13 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         if (!(main.isFirstTime() && res.getResource("shark") < 5)) {
             SharkGame.persistentFlags.tooltipUnlocked = true;
         }
-        return SharkGame.persistentFlags.tooltipUnlocked;
+        return !!SharkGame.persistentFlags.tooltipUnlocked;
     },
 
     checkForCategorizationOversights() {
         $.each(SharkGame.ResourceTable, (resourceName, resourceObj) => {
             // FIXME: Useless if resourceName turns out to be string
-            resourceName = resourceName.toString();
+            resourceName = resourceName.toString() as ResourceName;
             if (!res.getCategoryOfResource(resourceName)) {
                 log.addError(new Error(`${resourceName} does not have a category.`));
             }

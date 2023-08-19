@@ -183,7 +183,7 @@ SharkGame.Stats = {
     },
 
     onDispose() {
-        const resourceName = $(this).attr("id").split("-")[1];
+        const resourceName = $(this).attr("id")!.split("-")[1] as ResourceName;
         const resourceAmount = res.getResource(resourceName);
         let amountToDispose = SharkGame.Settings.current.buyAmount;
         if (amountToDispose < 0) {
@@ -220,13 +220,13 @@ SharkGame.Stats = {
     updateIncomeTable() {
         SharkGame.ResourceMap.forEach((_resource, resourceId) => {
             if (res.getTotalResource(resourceId) > 0) {
-                if (SharkGame.ResourceMap.get(resourceId).income) {
-                    const income = SharkGame.ResourceMap.get(resourceId).income;
+                if (SharkGame.ResourceMap.get(resourceId)!.income) {
+                    const income = SharkGame.ResourceMap.get(resourceId)!.income;
                     $.each(income, (incomeKey, incomeValue) => {
                         let cell = $("#income-" + resourceId + "-" + incomeKey);
                         let realIncome;
                         if (SharkGame.BreakdownIncomeTable.get(resourceId)) {
-                            realIncome = SharkGame.BreakdownIncomeTable.get(resourceId)[incomeKey];
+                            realIncome = SharkGame.BreakdownIncomeTable.get(resourceId)![incomeKey];
                         } else {
                             return true;
                         }

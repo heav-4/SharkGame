@@ -77,7 +77,7 @@ SharkGame.PaneHandler = {
     },
 
     buildPane() {
-        const pane = $("<div>").attr("id", "pane");
+        const pane = $("<div>").attr("id", "pane") as JQuery<HTMLDivElement>;
         $("body").append(pane);
 
         // set up structure of pane
@@ -160,6 +160,7 @@ SharkGame.PaneHandler = {
             this.nextPaneInStack();
             return true;
         }
+        return false;
     },
 
     tryWipeStack() {
@@ -172,7 +173,7 @@ SharkGame.PaneHandler = {
     },
 
     isPaneUp() {
-        return !$("#pane").is(":hidden") && $("#pane").html();
+        return !!(!$("#pane").is(":hidden") && $("#pane").html());
     },
 
     isCurrentPaneCloseable() {
@@ -251,16 +252,16 @@ SharkGame.PaneHandler = {
         }
 
         if (!notCloseable) {
-            document.getElementById("overlay").addEventListener("click", SharkGame.PaneHandler.nextPaneInStack);
+            document.getElementById("overlay")!.addEventListener("click", SharkGame.PaneHandler.nextPaneInStack);
             overlay.addClass("pointy");
         } else {
-            document.getElementById("overlay").removeEventListener("click", SharkGame.PaneHandler.nextPaneInStack);
+            document.getElementById("overlay")!.removeEventListener("click", SharkGame.PaneHandler.nextPaneInStack);
             overlay.removeClass("pointy");
         }
     },
 
     hidePane() {
-        document.getElementById("overlay").removeEventListener("click", SharkGame.PaneHandler.nextPaneInStack);
+        document.getElementById("overlay")!.removeEventListener("click", SharkGame.PaneHandler.nextPaneInStack);
         $("#overlay").removeClass("pointy");
         SharkGame.OverlayHandler.hideOverlay();
         $("#pane").hide();
@@ -272,7 +273,7 @@ SharkGame.PaneHandler = {
     },
 
     setUpOptions() {
-        const optionsTable = $("<table>").attr("id", "optionTable");
+        const optionsTable = $("<table>").attr("id", "optionTable") as JQuery<HTMLTableElement>;
 
         // add settings specified in settings.js
         const categories = {};
@@ -338,7 +339,7 @@ SharkGame.PaneHandler = {
                     .addClass("option-button")
                     .on("click", function callback() {
                         if ($(this).hasClass("disabled")) return;
-                        const importText = $("#importExportField").val();
+                        const importText = $("#importExportField").val() as SaveString;
                         if (importText === "") {
                             SharkGame.PaneHandler.nextPaneInStack();
                             log.addError("You need to paste something in first!");
@@ -535,7 +536,7 @@ SharkGame.PaneHandler = {
 
     onOptionClick() {
         if ($(this).hasClass("disabled")) return;
-        const buttonLabel = $(this).attr("id");
+        const buttonLabel = $(this).attr("id")!;
         const settingInfo = buttonLabel.split("-");
         const settingName = settingInfo[1];
         const optionIndex = parseInt(settingInfo[2]);
