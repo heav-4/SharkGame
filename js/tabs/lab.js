@@ -65,7 +65,7 @@ SharkGame.Lab = {
     },
     setup() {
         _.each(SharkGame.Upgrades.purchaseQueue, (upgradeId) => {
-            SharkGame.Lab.addUpgrade(upgradeId, "load");
+            SharkGame.Lab.addUpgrade(upgradeId);
         });
         SharkGame.TabHandler.updateRegistration(this);
     },
@@ -104,7 +104,7 @@ SharkGame.Lab = {
         lab.update();
         lab.setHint(upgradeTable);
     },
-    setHint(upgradeTable, isNotStart) {
+    setHint(upgradeTable, isNotStart = false) {
         const lab = SharkGame.Lab;
         if (lab.allResearchDone()) {
             let message;
@@ -246,7 +246,7 @@ SharkGame.Lab = {
             button.html(newButton.html());
         }
     },
-    updateMessage(suppressAnimation) {
+    updateMessage(suppressAnimation = false) {
         const lab = SharkGame.Lab;
         const allResearchDone = lab.allResearchDone();
         let message = allResearchDone ? lab.messageDone : lab.message;

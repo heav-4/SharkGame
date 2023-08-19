@@ -579,6 +579,7 @@ SharkGame.AspectTree = {
                 SharkGame.Aspects[aspectName].level = 0;
             });
         }
+        return false;
     },
     resetScoutingRestrictions() {
         if (!SharkGame.persistentFlags.aspectStorage) {

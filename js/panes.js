@@ -128,6 +128,7 @@ SharkGame.PaneHandler = {
             this.nextPaneInStack();
             return true;
         }
+        return false;
     },
     tryWipeStack() {
         while (this.currentPane) {
@@ -138,7 +139,7 @@ SharkGame.PaneHandler = {
         return true;
     },
     isPaneUp() {
-        return !$("#pane").is(":hidden") && $("#pane").html();
+        return !!(!$("#pane").is(":hidden") && $("#pane").html());
     },
     isCurrentPaneCloseable() {
         if (this.currentPane) {
