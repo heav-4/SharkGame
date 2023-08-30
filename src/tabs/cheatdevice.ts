@@ -447,7 +447,7 @@ SharkGame.CheatsAndDebug = {
             }
         }
         setTimeout(nextStyle);
-        intervalId = window.setInterval(nextStyle, time);
+        intervalId = setInterval(nextStyle, time);
         cad.cycling = false;
     },
 

@@ -761,7 +761,7 @@ SharkGame.Resources = {
                     )
                 );
             } else if (placedOnWhat.includes("income")) {
-                return !!(!$("#" + placedOnWhat).attr("tokenId") && SharkGame.PlayerIncomeTable.get(resource));
+                return !$("#" + placedOnWhat).attr("tokenId") && SharkGame.PlayerIncomeTable.has(resource);
             } else {
                 return false;
             }

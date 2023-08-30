@@ -173,7 +173,7 @@ SharkGame.PaneHandler = {
     },
 
     isPaneUp() {
-        return !!(!$("#pane").is(":hidden") && $("#pane").html());
+        return !$("#pane").is(":hidden") && $("#pane").html() !== "";
     },
 
     isCurrentPaneCloseable() {
