@@ -177,7 +177,7 @@ SharkGame.Main = {
         if (main.tickHandler) {
             clearInterval(main.tickHandler);
         }
-        main.tickHandler = window.setInterval(main.tick, SharkGame.INTERVAL);
+        main.tickHandler = setInterval(main.tick, SharkGame.INTERVAL);
     },
     resetGame() {
         SharkGame.Save.wipeSave();
@@ -297,10 +297,10 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
         });
         SharkGame.TitleBarHandler.updateTopBar();
         if (main.autosaveHandler === -1) {
-            main.autosaveHandler = window.setInterval(main.autosave, SharkGame.Settings.current.autosaveFrequency * 60000);
+            main.autosaveHandler = setInterval(main.autosave, SharkGame.Settings.current.autosaveFrequency * 60000);
         }
         if (SharkGame.Settings.current.updateCheck) {
-            main.checkForUpdateHandler = window.setInterval(main.checkForUpdate, 300000);
+            main.checkForUpdateHandler = setInterval(main.checkForUpdate, 300000);
         }
         $("#title").on("click", (event) => {
             if (event.clientX < 100 && event.clientY > 150 && event.clientY < 200) {
@@ -691,10 +691,10 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`);
         SharkGame.timestampRunStart = Date.now();
     },
     shouldShowTooltips() {
-        if (!(main.isFirstTime() && res.getResource("shark") < 5)) {
+        if (!main.isFirstTime() || res.getResource("shark") >= 5) {
             SharkGame.persistentFlags.tooltipUnlocked = true;
         }
-        return !!SharkGame.persistentFlags.tooltipUnlocked;
+        return SharkGame.persistentFlags.tooltipUnlocked === true;
     },
     checkForCategorizationOversights() {
         $.each(SharkGame.ResourceTable, (resourceName, resourceObj) => {

@@ -8,7 +8,7 @@
         "sourceMap": true,
         "removeComments": true,
         "checkJs": true,
-        "moduleResolution": "NodeNext"
+        "moduleResolution": "Bundler"
     },
     "include": ["src"]
 }
