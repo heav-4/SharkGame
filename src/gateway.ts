@@ -1001,7 +1001,11 @@ SharkGame.Gateway = {
 
             function updateRequestedTime() {
                 let requestedTime = getRequestedTime();
-                const storage = SharkGame.persistentFlags.minuteStorage;
+                const storage = SharkGame.persistentFlags.minuteStorage ?? 0;
+
+                if (requestedTime < 0) {
+                    requestedTime = 0;
+                }
 
                 if (requestedTime > storage) {
                     requestedTime = storage;
