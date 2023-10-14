@@ -22,6 +22,7 @@ SharkGame.CheatsAndDebug = {
     noNumberBeautifying: false,
     cycling: false,
     frozen: false,
+    temperature: 287.15, // kelvin.
 
     defaultParameters: {
         pause: false,
@@ -620,8 +621,10 @@ SharkGame.CheatsAndDebug = {
         });
     },
     doSomethingCoolPlease() {
+        cad.temperature *= 0.99;
         return "Did something really cool.";
         // this doesn't do anything
+        // is what a liar would say, since it makes it cooler now.
     },
     beatWorldPlease() {
         SharkGame.wonGame = true;
