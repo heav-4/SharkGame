@@ -621,7 +621,7 @@ SharkGame.CheatsAndDebug = {
         });
     },
     doSomethingCoolPlease() {
-        cad.temperature *= 0.99;
+        cad.temperature *= 0.95;
         return "Did something really cool.";
         // this doesn't do anything
         // is what a liar would say, since it makes it cooler now.
