@@ -350,7 +350,7 @@ declare global {
     type HomeAction = {
         name: string;
         effect: Partial<{
-            resource: Record<ResourceName, number>;
+            resource: Partial<Record<ResourceName, number>>;
             events: EventName[];
         }>;
         cost: {
@@ -360,7 +360,7 @@ declare global {
         }[];
         max?: ResourceName;
         prereq: Partial<{
-            resource: Record<ResourceName, number>;
+            resource: Partial<Record<ResourceName, number>>;
             upgrade: UpgradeName[];
             notWorlds: WorldName[];
         }>;
@@ -1322,6 +1322,8 @@ declare global {
         incrementHomeMessage(): boolean;
         decrementHomeMessage(): boolean;
         areThereAnyUnseenHomeMessages(): boolean;
+        shouldHomeButtonBeUsable(): boolean;
+        doesButtonGiveNegativeThing(actionData: HomeAction): boolean;
     };
 
     type LabTab = SharkGameTabBase & {

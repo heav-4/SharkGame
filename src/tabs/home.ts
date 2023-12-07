@@ -557,11 +557,6 @@ SharkGame.Home = {
             return false;
         }
 
-        // check special worldtype prereqs
-        if (action.prereq.world && world.worldType !== action.prereq.world) {
-            return false;
-        }
-
         // check the special worldtype exclusions
         if (action.prereq.notWorlds && action.prereq.notWorlds.includes(world.worldType)) {
             return false;
@@ -572,14 +567,14 @@ SharkGame.Home = {
             return false;
         }
         // check if resulting resource exists
-        if (!_.every(action.effect.resource, (_amount, resourceId) => world.doesResourceExist(resourceId))) {
+        if (!_.every(action.effect.resource, (_amount, resourceId) => world.doesResourceExist(resourceId as ResourceName))) {
             return false;
         }
         // if nothing fails, return true
         return true;
     },
 
-    shouldHomeButtonBeUsable(_actionData) {
+    shouldHomeButtonBeUsable() {
         let shouldBeUsable = true;
 
         if (cad.pause || cad.stop) {
