@@ -103,9 +103,9 @@ $.extend(SharkGame, {
     ],
     GAME_NAME: null,
     ACTUAL_GAME_NAME: "Shark Game",
-    VERSION: "20220712a",
+    VERSION: "20240106a",
     ORIGINAL_VERSION: 0.71,
-    VERSION_NAME: "The Volcanic Update",
+    VERSION_NAME: "The Tempestuous Update",
     EPSILON: 1e-6, // floating point comparison is a joy
     BIGGEST_SAFE_NUMBER: 1000000000000,
     MAX: 1e300,
@@ -898,6 +898,11 @@ SharkGame.Button = {
 };
 
 SharkGame.Changelog = {
+    "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20240106a": [
+        "Behind the scenes, started using typescript. There are literally thousands of errors. Pray for us.",
+        "FIXED THE NEGATIVE WORLD TIME BUG.",
+        "Did something cool (actually we did not do anything cool).",
+    ],
     "<a href='https://github.com/Toby222/SharkGame'>New Frontiers</a> patch 20230618a": [
         "Added Tempestuous worldtype.",
         "Added home message history. You may now freely scroll back and forth between previously seen home messages while in a world.",
