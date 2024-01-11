@@ -42,6 +42,5 @@
     },
     "simple-git-hooks": {
         "pre-commit": "yarn test"
-    },
-    "packageManager": "yarn@4.0.2"
+    }
 }
