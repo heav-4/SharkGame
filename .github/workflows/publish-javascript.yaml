@@ -3,6 +3,7 @@ on:
     push:
         branches:
             - dev
+            - alpha
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -31,8 +32,8 @@ jobs:
             - name: Switch to JavaScript branch
               run: |
                   git fetch
-                  git reset --soft origin/javascript
-                  git switch javascript
+                  git reset --soft origin/javascript/$GITHUB_REF_NAME
+                  git switch javascript/$GITHUB_REF_NAME
             - name: Commit all changes
               run: |
                   git config --local user.email "action@github.com"
