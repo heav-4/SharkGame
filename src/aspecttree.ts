@@ -217,7 +217,7 @@ SharkGame.AspectTree = {
 
         $.each(SharkGame.Aspects, (aspectId, aspectData) => {
             const reqref = tree.requirementReference[aspectId];
-            if (!reqref.revealed) return;
+            if (!reqref || !reqref.revealed) return;
 
             let basicText = "";
             let cantBuyText = "";
