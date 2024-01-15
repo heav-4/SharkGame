@@ -419,9 +419,9 @@ SharkGame.Home = {
         home.tickHomeMessages();
 
         // update hovering messages
-        if (document.getElementById("tooltipbox").className.split(" ").includes("forHomeButtonOrGrotto")) {
-            if (document.getElementById("tooltipbox").attributes.current) {
-                home.onHomeHover(null, document.getElementById("tooltipbox").attributes.current.value);
+        if (document.getElementById("tooltipbox")!.className.split(" ").includes("forHomeButtonOrGrotto")) {
+            if ((<Tooltipbox>document.getElementById("tooltipbox")).attributes.current) {
+                home.onHomeHover(null, (<Tooltipbox>document.getElementById("tooltipbox")).attributes.current.value);
             }
         }
     },
@@ -1050,8 +1050,8 @@ SharkGame.Home = {
             }
         });
 
-        if (document.getElementById("tooltipbox").innerHTML !== text.replace(/'/g, '"').replace(/br\//g, "br")) {
-            document.getElementById("tooltipbox").innerHTML = text;
+        if (document.getElementById("tooltipbox")!.innerHTML !== text.replace(/'/g, '"').replace(/br\//g, "br")) {
+            document.getElementById("tooltipbox")!.innerHTML = text;
         }
 
         if ($("#tooltipbox").attr("current") !== actionName) {
@@ -1063,7 +1063,7 @@ SharkGame.Home = {
     },
 
     onHomeUnhover() {
-        document.getElementById("tooltipbox").innerHTML = "";
+        document.getElementById("tooltipbox")!.innerHTML = "";
         $("#tooltipbox").removeClass("forHomeButtonOrGrotto").attr("current", "").removeClass("gives-consumer");
     },
 

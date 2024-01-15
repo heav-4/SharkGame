@@ -473,7 +473,7 @@ SharkGame.ColorUtil = {
     },
 
     getElementColor(id, propertyName = "background-color") {
-        const color = getComputedStyle(document.getElementById(id)).getPropertyValue(propertyName);
+        const color = getComputedStyle(document.getElementById(id)!).getPropertyValue(propertyName);
         return sharkcolor.convertColorString(color);
     },
 
@@ -582,5 +582,18 @@ SharkGame.MiscUtil = {
 
     has(object, key) {
         return Object.prototype.hasOwnProperty.call(object, key);
+    },
+
+    assertDefined(val) {
+        if (val === undefined || val === null) {
+            const error = new Error();
+            // This error will be thrown at the end of the function so that
+            // this function doesn't return null or undefined for TS
+            const errorLine = error.stack?.split("\n")[1].replace(/@.*\//, "@");
+            // This regex removes the files's url other than the filename
+            log.addError(new Error("A variable is undefined or null that can't be at " + errorLine));
+            throw error;
+        }
+        return val;
     },
 };

@@ -1179,7 +1179,9 @@ SharkGame.Gateway = {
             if (arbitrary) {
                 SharkGame.persistentFlags.dialSetting = arbitrary;
             } else {
-                SharkGame.persistentFlags.dialSetting = Math.round(4 ** (document.getElementById("dial-slider").value - 1));
+                SharkGame.persistentFlags.dialSetting = Math.round(
+                    4 ** (Number((document.getElementById("dial-slider") as HTMLInputElement).value) - 1)
+                );
             }
             gateway.dial.updateVisuals();
         },

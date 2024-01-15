@@ -55,6 +55,9 @@ window.ascii85 = new (class ascii85 {
             return "Ascii85CodecError" + (this.message ? ": " + this.message : "");
         }
     });
+    isSave(string) {
+        return string.slice(0, 2) === "<~" && string.slice(-2) === "~>";
+    }
     encode(bytes) {
         assertOrBadInput(!/[^\x00-\xFF]/.test(bytes), "Input contains out-of-range characters."); // disallow two-byte chars
         const padding = "\x00\x00\x00\x00".slice(bytes.length % 4 || 4);
@@ -86,7 +89,7 @@ window.ascii85 = new (class ascii85 {
         return "<~" + String.fromCharCode.apply(String, out_array) + "~>";
     }
     decode(a85text) {
-        assertOrBadInput(a85text.slice(0, 2) === "<~" && a85text.slice(-2) === "~>", "Invalid initial/final ascii85 characters");
+        assertOrBadInput(this.isSave(a85text), "Invalid initial/final ascii85 characters");
         // kill whitespace, handle special 'z' case
         a85text = a85text.slice(2, -2).replace(/\s/g, "").replace("z", "!!!!!");
         assertOrBadInput(!/[^\x21-\x75]/.test(a85text), "Input contains out-of-range characters.");

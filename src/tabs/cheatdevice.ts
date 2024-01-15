@@ -59,7 +59,7 @@ SharkGame.CheatsAndDebug = {
         },
         giveSomething: {
             get name() {
-                const resource = $("#somethingSelector")[0].value;
+                const resource = ($("#somethingSelector")[0] as HTMLInputElement).value as ResourceName;
                 return (
                     "Give " +
                     sharktext.beautify(sharkmath.getBuyAmount(true)) +
@@ -70,7 +70,7 @@ SharkGame.CheatsAndDebug = {
             type: "choice",
             choiceId: "somethingSelector",
             getChoices() {
-                const existingStuff = [];
+                const existingStuff: ResourceName[] = [];
                 SharkGame.ResourceMap.forEach((_resource, resourceId) => {
                     if (world.doesResourceExist(resourceId)) {
                         existingStuff.push(resourceId);
@@ -81,12 +81,14 @@ SharkGame.CheatsAndDebug = {
             updates: true,
             category: "stuff",
             click() {
-                log.addMessage(cad.giveSomething($("#somethingSelector")[0].value, sharkmath.getBuyAmount(true)));
+                log.addMessage(
+                    cad.giveSomething(($("#somethingSelector")[0] as HTMLInputElement).value as ResourceName, sharkmath.getBuyAmount(true))
+                );
             },
         },
         removeSomething: {
             get name() {
-                const resource = $("#somethingSelector")[0].value;
+                const resource = ($("#somethingSelector")[0] as HTMLInputElement).value as ResourceName;
                 return (
                     "Remove " +
                     sharktext.beautify(sharkmath.getBuyAmount(true)) +
@@ -97,7 +99,9 @@ SharkGame.CheatsAndDebug = {
             updates: true,
             category: "stuff",
             click() {
-                log.addMessage(cad.giveSomething($("#somethingSelector")[0].value, -sharkmath.getBuyAmount(true)));
+                log.addMessage(
+                    cad.giveSomething(($("#somethingSelector")[0] as HTMLInputElement).value as ResourceName, -sharkmath.getBuyAmount(true))
+                );
             },
         },
         pause: {
@@ -211,6 +215,7 @@ SharkGame.CheatsAndDebug = {
         },
         beatWorld: {
             name: "Beat this world immediately",
+            updates: false,
             category: "misc",
             click() {
                 log.addMessage(cad.beatWorldPlease());
@@ -218,6 +223,7 @@ SharkGame.CheatsAndDebug = {
         },
         addUpgrades: {
             name: "Get all upgrades",
+            updates: false,
             category: "misc",
             click() {
                 cad.addUpgradesPlease();
@@ -225,6 +231,7 @@ SharkGame.CheatsAndDebug = {
         },
         addIdleTime: {
             name: "Add idle time",
+            updates: false,
             category: "misc",
             click() {
                 cad.addIdleTimePlease();
@@ -232,7 +239,8 @@ SharkGame.CheatsAndDebug = {
         },
         rollDice: {
             name: "Roll the dice for wacky effects",
-            location: "right",
+            updates: false,
+            // location: "right",
             category: "nonsense",
             click() {
                 log.addMessage(cad.rollTheDicePlease());
@@ -250,7 +258,8 @@ SharkGame.CheatsAndDebug = {
         },
         forceExistence: {
             name: "Make all resources exist",
-            location: "right",
+            updates: false,
+            // location: "right",
             category: "nonsense",
             click() {
                 log.addMessage(cad.forceAllExist());
@@ -265,6 +274,7 @@ SharkGame.CheatsAndDebug = {
         // },
         egg: {
             name: "egg",
+            updates: false,
             category: "nonsense",
             click() {
                 log.addMessage(cad.doEgg());
@@ -305,7 +315,7 @@ SharkGame.CheatsAndDebug = {
             $("#cheatsDisplay").append($("<tr>").attr("id", parameter + "Row"));
         });
 
-        const categories = [];
+        const categories: CheatButtonCategory[] = [];
         let placeLeft = true;
         _.each(cad.cheatButtons, (buttonData) => {
             const category = buttonData.category;
@@ -329,12 +339,12 @@ SharkGame.CheatsAndDebug = {
             }
         });
 
-        let selector;
+        let selector: JQuery<HTMLSelectElement>;
         let container;
         let buttonContainer; // prettier gets angry at me if i try to declare these case-specific variables inside the case
         $.each(cad.cheatButtons, (buttonName, buttonData) => {
             // const toAppendTo = buttonData.location === "right" ? $("#rightButtons") : $("#leftButtons");
-            const toAppendTo = $("#" + buttonData.category);
+            const toAppendTo = $("#" + buttonData.category) as JQuery<HTMLDivElement>;
             switch (buttonData.type) {
                 case "up-down":
                     if (!buttonData.clickUp || !buttonData.clickDown) {
@@ -358,7 +368,7 @@ SharkGame.CheatsAndDebug = {
                     SharkGame.Button.makeButton(buttonName, buttonData.name, toAppendTo, buttonData.click);
                     break;
                 case "choice":
-                    selector = $("<select>").attr("id", buttonData.choiceId);
+                    selector = $("<select>").attr("id", buttonData.choiceId) as JQuery<HTMLSelectElement>;
                     _.each(buttonData.getChoices(), (choice) => {
                         selector.append("<option>" + choice + "</option>");
                     });
@@ -839,6 +849,8 @@ SharkGame.CheatsAndDebug = {
             case 20:
                 res.specialMultiplier *= 20;
                 return "Rolled a perfect twenty. Everything times 20.";
+            default:
+                return "";
         }
     },
     // challengeMePlease() {

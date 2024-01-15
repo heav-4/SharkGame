@@ -1,4 +1,5 @@
 /// <reference path="./decimal.global.d.ts"/>
+/// <reference path="./ascii85.global.d.ts"/>
 
 import type { default as createPanZoom, PanZoom } from "panzoom";
 
@@ -36,6 +37,10 @@ declare global {
 }
 
 declare global {
+    interface Window {
+        SharkGame: SharkGame;
+    }
+
     const SharkGame: SharkGame;
 
     //#REGION: Data structure types
@@ -278,7 +283,6 @@ declare global {
         | "extractionTeam"
         | "heater"
         | "ice";
-    type SaveString = `<~${string}~>` | `x${string}` | `{${string}}`;
     type SpriteName = string;
     type TabName = "home" | "lab" | "stats" | "recycler" | "gate" | "reflection" | "cheats";
     type UpgradeName = string;
@@ -291,11 +295,13 @@ declare global {
     type CostFunction = "linear" | "constant" | "unique";
     type Operation = "multiply" | "exponentiate" | "polynomial" | "reciprocate";
 
-    type CheatButtonType = undefined | "numeric" | "up-down";
+    type CheatButtonType = undefined | "numeric" | "up-down" | "choice";
+    type CheatButtonCategory = "stuff" | "debug" | "modifiers" | "misc" | "nonsense";
     type CheatButton = {
         readonly name: string;
         type: CheatButtonType;
         updates: boolean;
+        category: CheatButtonCategory;
         click(): void;
         clickUp(): void;
         clickDown(): void;
@@ -340,6 +346,14 @@ declare global {
     };
 
     type FunFact = string;
+
+    interface Tooltipbox extends HTMLSpanElement {
+        attributes: {
+            current: Attr & {
+                value: ResourceName;
+            };
+        } & HTMLSpanElement["attributes"];
+    }
 
     type GateRequirements = Partial<{
         upgrades: UpgradeName[];
@@ -619,7 +633,7 @@ declare global {
         correctLuminance(color: string, luminance: number): string;
         convertColorString(color: string): string;
         getBrightColor(color: string): string;
-        getElementColor(id: string, propertyName: string): ReturnType<ColorUtilModule["convertColorString"]>;
+        getElementColor(id: string, propertyName?: string): ReturnType<ColorUtilModule["convertColorString"]>;
         getVariableColor(variable: string): string;
     };
 
@@ -744,7 +758,7 @@ declare global {
 
     type LogModule = {
         initialised: boolean;
-        messages: JQuery<HTMLLIElement>;
+        messages: JQuery<HTMLLIElement>[];
         totalCount: number;
         init(): void;
         moveLog(): void;
@@ -839,6 +853,7 @@ declare global {
          */
         cloneDeep<T>(obj: T): T;
         has<T>(obj: T, key: PropertyKey): boolean;
+        assertDefined<T>(val: T | undefined | null): T;
     };
 
     type MemoryModule = {
@@ -1028,7 +1043,7 @@ declare global {
         resetResourceTableMinWidth(): void;
         collapseResourceTableRow(categoryName: ResourceCategory): void;
         constructResourceTableRow(resourceKey: ResourceName): JQuery<HTMLElement>;
-        tableTextEnter(_mouseEnterEvent: JQuery.MouseEnterEvent, resourceName: ResourceName): void;
+        tableTextEnter(_mouseEnterEvent: JQuery.MouseEnterEvent | null, resourceName: ResourceName): void;
         tableTextLeave(): void;
         buildIncomeNetwork(): void;
         clearNetworks(): void;
@@ -1202,11 +1217,17 @@ declare global {
         tabSeen: boolean;
         tabName: string;
         tabBg?: string;
-        discoverReq: Partial<{ resource: Record<ResourceName, number>; upgrade: UpgradeName[] }>;
+        discoverReq: Partial<{
+            resource: Record<ResourceName, number>;
+            upgrade: UpgradeName[];
+            flag: SharkGame["flags"] & SharkGame["persistentFlags"];
+        }>;
         message: string;
     };
 
     type CheatsAndDebugTab = SharkGameTabBase & {
+        sceneImage: string;
+
         pause: boolean;
         stop: boolean;
         speed: number;
@@ -1214,6 +1235,8 @@ declare global {
         actionPriceModifier: number;
         noNumberBeautifying: boolean;
         cycling: boolean;
+        frozen: boolean;
+        temperature: number;
 
         defaultParameters: {
             pause: boolean;
@@ -1223,13 +1246,15 @@ declare global {
             actionPriceModifier: number;
             noNumberBeautifying: boolean;
             cycling: boolean;
+            frozen: boolean;
         };
 
         cheatButtons: Record<string, CheatButton>;
 
         cycleStyles(time?: number): void;
         discoverAll(): void;
-        giveEverything(amount?: number): void;
+        giveEverything(amount?: number): string;
+        giveSomething(resourceId?: ResourceName, amount?: number): string;
         debug(): void;
         hideDebug(): void;
         toggleDebugButton(): void;
@@ -1237,6 +1262,7 @@ declare global {
         toggleStopPlease(): void;
         freezeGamePlease(): string;
         unfreezePlease(): string;
+        toggleFreezePlease(): string;
         freeEssencePlease(howMuch?: number): string;
         goFasterPlease(): string;
         reallyFastPlease(): string;
@@ -1248,11 +1274,17 @@ declare global {
         doSomethingCoolPlease(): string;
         beatWorldPlease(): string;
         toggleBeautify(): void;
-        rollTheDicePlease(number: number): string;
+        rollTheDicePlease(number?: number): string;
         expensiveUpgradesPlease(): string;
         cheaperUpgradesPlease(): string;
         expensiveStuffPlease(): string;
         cheaperStuffPlease(): string;
+        toggleFreeStuff(): string;
+        toggleFreeUpgrades(): string;
+        addUpgradesPlease(): void;
+        addIdleTimePlease(time?: number): void;
+        forceAllExist(): string;
+        doEgg(): string;
     };
 
     type GateTab = SharkGameTabBase & {
@@ -1309,8 +1341,10 @@ declare global {
         addButton(actionName: HomeActionName): void;
         getButtonTabs(): HomeActionCategory[];
         getLastValidMessage(): HomeMessage;
+        shouldBeNewlyDiscovered(actionName: HomeActionName, actionData: HomeAction): boolean | undefined;
         getActionCategory(actionName: HomeActionName): string;
         onHomeButton(mouseEnterEvent: JQuery.MouseEnterEvent | null, actionName: HomeActionName): void;
+        onHomeHover(mouseEnterEvent: JQuery.MouseEnterEvent | null, actionName: HomeActionName): void;
         onHomeUnhover(): void;
         getCost(action: HomeAction, amount: number): Record<ResourceName, number>;
         getMax(action: HomeAction): Decimal;
@@ -1454,6 +1488,10 @@ declare global {
         ORIGINAL_VERSION: string;
         VERSION_NAME: string;
         VERSION: string;
+
+        IDLE_THRESHOLD: number;
+        IDLE_FADE_TIME: number;
+
         Changelog: Record<string, string[]>;
     };
     type SharkGameUtils = {
@@ -1486,8 +1524,8 @@ declare global {
         }>;
         gameOver: boolean;
         lastActivity: number;
+        lastMouseActivity: number;
         missingAspects?: boolean;
-        savedMouseActivity: number;
         paneGenerated: boolean;
         persistentFlags: Partial<{
             currentPausedTime: number;
@@ -1513,6 +1551,7 @@ declare global {
             everIdled: boolean;
             requestedTime: number;
         }>;
+        savedMouseActivity: number;
         sidebarHidden: boolean;
         spriteHomeEventPath: string;
         spriteIconPath: string;

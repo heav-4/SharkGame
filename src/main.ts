@@ -494,7 +494,6 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
             SharkGame.persistentFlags.currentPausedTime = 0;
 
             // populate save data object
-            let saveString = "";
             const saveData = {
                 version: SharkGame.VERSION,
                 resources: {},
@@ -524,7 +523,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 if (level) saveData.aspects[aspectId] = level;
             });
 
-            saveString = ascii85.encode(pako.deflate(JSON.stringify(saveData), { to: "string" }));
+            const saveString = ascii85.encode(pako.deflate(JSON.stringify(saveData), { to: "string" }));
 
             SharkGame.Save.importData(saveString);
 
@@ -637,9 +636,9 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         }
 
         // see if resource table tooltip needs updating
-        if (document.getElementById("tooltipbox").className.split(" ").includes("forIncomeTable")) {
-            if (document.getElementById("tooltipbox").attributes.current) {
-                res.tableTextEnter(null, document.getElementById("tooltipbox").attributes.current.value);
+        if (document.getElementById("tooltipbox")!.className.split(" ").includes("forIncomeTable")) {
+            if ((<Tooltipbox>document.getElementById("tooltipbox")).attributes.current) {
+                res.tableTextEnter(null, (<Tooltipbox>document.getElementById("tooltipbox")).attributes.current.value);
             }
         }
     },

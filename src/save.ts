@@ -75,7 +75,7 @@ SharkGame.Save = {
 
     decodeSave(saveDataString) {
         // if first letter of string is <, data is encoded in ascii85, decode it.
-        if (saveDataString.substring(0, 2) === "<~") {
+        if (ascii85.isSave(saveDataString)) {
             try {
                 saveDataString = ascii85.decode(saveDataString);
             } catch (err) {
@@ -123,23 +123,27 @@ SharkGame.Save = {
             const currentVersion = SharkGame.Save.saveUpdaters.length - 1;
             if (!sharkmisc.has(saveData, "saveVersion")) {
                 saveData = SharkGame.Save.saveUpdaters[0](saveData);
-            } else if (typeof saveData.saveVersion !== "number" || saveData.saveVersion <= 12) {
-                // After save version 12, packing support was removed; Backwards compatibility is not maintained because gameplay changed significantly after this point.
-                throw new Error("This is a save from before New Frontiers 0.2, after which the save system was changed.");
-            } else if (saveData.saveVersion === 15 || saveData.saveVersion === 16) {
-                // gonna reset aspects, need to inform player
-                SharkGame.missingAspects = true;
+            } else {
+                if (typeof saveData.saveVersion !== "number" || saveData.saveVersion <= 12) {
+                    // After save version 12, packing support was removed; Backwards compatibility is not maintained because gameplay changed significantly after this point.
+                    throw new Error("This is a save from before New Frontiers 0.2, after which the save system was changed.");
+                } else if (saveData.saveVersion === 15 || saveData.saveVersion === 16) {
+                    // gonna reset aspects, need to inform player
+                    SharkGame.missingAspects = true;
+                }
+
+                if (saveData.saveVersion < currentVersion) {
+                    for (let i = saveData.saveVersion + 1; i <= currentVersion; i++) {
+                        const updater = SharkGame.Save.saveUpdaters[i];
+                        saveData = updater(saveData);
+                        saveData.saveVersion = i;
+                    }
+                    // let player know update went fine
+                    log.addMessage("Updated save data from v " + saveData.version + " to " + SharkGame.VERSION + ".");
+                }
             }
 
-            if (saveData.saveVersion < currentVersion) {
-                for (let i = saveData.saveVersion + 1; i <= currentVersion; i++) {
-                    const updater = SharkGame.Save.saveUpdaters[i];
-                    saveData = updater(saveData);
-                    saveData.saveVersion = i;
-                }
-                // let player know update went fine
-                log.addMessage("Updated save data from v " + saveData.version + " to " + SharkGame.VERSION + ".");
-            }
+            saveData = saveData as Save;
 
             // we're going to assume that everything has already been reset; we assume that we're just loading values into a blank slate
 
@@ -253,7 +257,7 @@ SharkGame.Save = {
                 SharkGame.Settings.current[settingId] = currentvalue;
                 // update anything tied to this setting right off the bat
                 if (SharkGame.Settings[settingId] && typeof SharkGame.Settings[settingId].onChange === "function") {
-                    SharkGame.Settings[settingId].onChange();
+                    SharkGame.Settings[settingId].onChange!();
                 }
             });
 
@@ -302,18 +306,18 @@ SharkGame.Save = {
 
     exportData() {
         // get save
-        let saveData: string;
+        let saveData;
         try {
             saveData = SharkGame.Save.saveGame();
         } catch (err) {
             log.addError(err as Error);
         }
         // check if save isn't encoded
-        if (saveData.substring(0, 2) !== "<~") {
+        if (!ascii85.isSave(saveData!)) {
             // encode it
-            saveData = ascii85.encode(saveData);
+            saveData = ascii85.encode(saveData!);
         }
-        return saveData;
+        return saveData!;
     },
 
     savedGameExists(tag = "") {

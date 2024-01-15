@@ -234,7 +234,7 @@ SharkGame.Recycler = {
     onInput() {
         const button = $(this);
         if (button.hasClass("disabled")) return;
-        const resourceName = button.attr("id").split("-")[1];
+        const resourceName = sharkmisc.assertDefined(button.attr("id")).split("-")[1] as ResourceName;
         const resourceAmount = res.getResource(resourceName);
         const junkPerResource = SharkGame.ResourceMap.get(resourceName).value;
         const amount = sharkmath.getPurchaseAmount(resourceName);
@@ -257,7 +257,7 @@ SharkGame.Recycler = {
     onOutput() {
         const button = $(this);
         if (button.hasClass("disabled")) return;
-        const resourceName = button.attr("id").split("-")[1];
+        const resourceName = button.attr("id").split("-")[1] as ResourceName;
         const junkAmount = new Decimal(res.getResource("junk"));
         const junkPerResource = new Decimal(SharkGame.ResourceMap.get(resourceName).value);
 

@@ -412,7 +412,7 @@ SharkGame.AspectTree = {
         // Only one call to getComputedStyle for two properties, otherwise we'd use sharkcolor.getElementColor
         // Also, beware that these values change if the button is pressed, but that should never happen in the same frame
         // as the aspect tree gets redrawn
-        const buttonStyle = getComputedStyle(document.getElementById("backToGateway"));
+        const buttonStyle = getComputedStyle(document.getElementById("backToGateway")!);
         const buttonColor = buttonStyle.backgroundColor;
         const borderColor = buttonStyle.borderTopColor;
 
@@ -437,7 +437,7 @@ SharkGame.AspectTree = {
             context.restore();
 
             context.save();
-            context.fillStyle = getComputedStyle(document.getElementById("backToGateway")).color;
+            context.fillStyle = getComputedStyle(document.getElementById("backToGateway")!).color;
             context.fillText("on scouting missions", 440, 10);
             context.fillText("you can only bring core aspects", 440, 25);
             context.fillText("non-core aspects ->", 440, 60);
@@ -596,10 +596,10 @@ SharkGame.AspectTree = {
         }
         const textToDisplay = tree.getLittleLevelText(name);
         if (textToDisplay) {
-            context.fillStyle = getComputedStyle(document.getElementById("backToGateway")).color;
+            context.fillStyle = getComputedStyle(document.getElementById("backToGateway")!).color;
             context.fillText(textToDisplay, posX + width + 5, posY + height / 2);
             // revert back to the previous fillStyle right afterward
-            context.fillStyle = getComputedStyle(document.getElementById("backToGateway")).backgroundColor;
+            context.fillStyle = getComputedStyle(document.getElementById("backToGateway")!).backgroundColor;
         }
     },
 
@@ -654,8 +654,9 @@ SharkGame.AspectTree = {
     },
 
     updateEssenceCounter() {
-        if (document.getElementById("essenceCount")) {
-            document.getElementById("essenceCount").innerHTML = sharktext.beautify(res.getResource("essence"), false, 2);
+        const essenceCountElt = document.getElementById("essenceCount");
+        if (essenceCountElt) {
+            essenceCountElt.innerHTML = sharktext.beautify(res.getResource("essence"), false, 2);
         }
     },
 

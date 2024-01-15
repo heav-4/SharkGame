@@ -11,7 +11,7 @@ SharkGame.FunFacts = {
     },
 
     getPool() {
-        const pool = [];
+        const pool: string[] = [];
         const currentWorld = world.worldType;
         if (
             this.worldBased[currentWorld] &&

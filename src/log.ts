@@ -36,7 +36,7 @@ SharkGame.Log = {
                 $("#rightLogContainer").append(logDiv.append("<h3>Log<h3/>").append($("<ul id='messageList'></ul>").addClass("forRightSide")));
                 $("#wrapper").removeClass("topLogActive");
                 $("#titlebackground").removeClass("topLogActive");
-                $("#rightLogContainer").css("position", "static").css("top", $("#rightLogContainer").offset().top).css("position", "sticky");
+                $("#rightLogContainer").css("position", "static").css("top", $("#rightLogContainer").offset()!.top).css("position", "sticky");
                 SharkGame.TabHandler.validateTabWidth();
                 this.changeHeight();
         }
@@ -57,7 +57,10 @@ SharkGame.Log = {
     changeHeight() {
         if (SharkGame.Settings.current.logLocation !== "left" && SharkGame.Settings.current.logLocation !== "top") {
             const maxHeight =
-                $(window).outerHeight(true) - document.getElementById("messageList").getBoundingClientRect().top - $("#copyright").height() - 10;
+                sharkmisc.assertDefined($(window).outerHeight(true)) -
+                document.getElementById("messageList")!.getBoundingClientRect().top -
+                sharkmisc.assertDefined($("#copyright").height()) -
+                10;
             $("#messageList").css("max-height", maxHeight + "px");
         }
     },
@@ -72,13 +75,13 @@ SharkGame.Log = {
         if (!log.initialised) {
             log.init();
         }
-        const messageItem = $("<li>").html(message);
+        const messageItem = $("<li>").html(message) as JQuery<HTMLLIElement>;
 
         if (log.isNextMessageEven()) {
             messageItem.addClass("evenMessage");
         }
 
-        function height(elt, position) {
+        function height(elt: HTMLElement, position: "bottom" | "top") {
             return (
                 elt.getBoundingClientRect().top +
                 (position === "bottom" ? elt.getBoundingClientRect().y : 0) -
@@ -86,7 +89,7 @@ SharkGame.Log = {
             );
         }
 
-        const messageList = document.querySelector("#messageList");
+        const messageList = document.querySelector("#messageList")!;
         log.messages.push(messageItem);
 
         if (messageList.scrollTop !== 0) {
@@ -99,7 +102,7 @@ SharkGame.Log = {
                 }
             }
 
-            const desiredTopElt = log.messages[_.clamp(highestVisible + 1, log.messages.length - 1)][0];
+            const desiredTopElt = log.messages[_.clamp(highestVisible ?? 0 + 1, log.messages.length - 1)][0];
             const desiredTop = messageList.scrollTop + height(desiredTopElt, "top");
             $(messageList).animate({ scrollTop: desiredTop + "px" }, 50, "linear");
         } else if (showAnims) {

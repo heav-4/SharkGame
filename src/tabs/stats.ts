@@ -116,8 +116,8 @@ SharkGame.Stats = {
 
         stats.updateTimers();
 
-        if (document.getElementById("tooltipbox").attributes.current) {
-            stats.networkTextEnter(null, document.getElementById("tooltipbox").attributes.current.value);
+        if (document.getElementById("tooltipbox")!.attributes.current) {
+            stats.networkTextEnter(null, (<Tooltipbox>document.getElementById("tooltipbox")).attributes.current.value);
         }
     },
 
@@ -730,10 +730,10 @@ SharkGame.Stats = {
     toggleMode() {
         if (SharkGame.Settings.current.grottoMode === "simple") {
             SharkGame.Settings.current.grottoMode = "advanced";
-            document.getElementById("modeButton").innerHTML = "Swap to Simple mode";
+            document.getElementById("modeButton")!.innerHTML = "Swap to Simple mode";
         } else {
             SharkGame.Settings.current.grottoMode = "simple";
-            document.getElementById("modeButton").innerHTML = "Swap to Advanced mode";
+            document.getElementById("modeButton")!.innerHTML = "Swap to Advanced mode";
         }
         stats.createIncomeTable();
         stats.updateTableKey();
@@ -741,19 +741,19 @@ SharkGame.Stats = {
 
     updateTableKey() {
         if (SharkGame.Settings.current.grottoMode !== "advanced" || SharkGame.Stats.incomeTableEmpty) {
-            document.getElementById("tableKey").innerHTML = "";
+            document.getElementById("tableKey")!.innerHTML = "";
             return;
         }
 
         if (world.worldType !== "start") {
-            document.getElementById("tableKey").innerHTML =
+            document.getElementById("tableKey")!.innerHTML =
                 "<br> <b><u>TABLE KEY</b></u>" +
                 `<br> <span style='color:${res.UPGRADE_MULTIPLIER_COLOR}'><b>This color</b></span> is for <strong>U</strong>pgrade effects.` +
                 `<br> <span style='color:${res.WORLD_MULTIPLIER_COLOR}'><b>This color</b></span> is for <strong>W</strong>orld effects.` +
                 `<br> <span style='color:${res.ASPECT_MULTIPLIER_COLOR}'><b>This color</b></span> is for <strong>A</strong>spect effects.` +
                 `<br> <span style='color:${res.RESOURCE_AFFECT_MULTIPLIER_COLOR}'><b>This color</b></span> is for how some <strong>R</strong>esources affect each other.`;
         } else {
-            document.getElementById("tableKey").innerHTML =
+            document.getElementById("tableKey")!.innerHTML =
                 "<br> <b><u>TABLE KEY</b></u>" +
                 `<br> <span style='color:${res.UPGRADE_MULTIPLIER_COLOR}'><b>This color</b></span> is for upgrade effects.`;
         }
@@ -903,15 +903,15 @@ SharkGame.Stats = {
             }
         }
 
-        if (document.getElementById("tooltipbox").innerHTML !== text.replace(/'/g, '"')) {
-            document.getElementById("tooltipbox").innerHTML = text;
+        if (document.getElementById("tooltipbox")!.innerHTML !== text.replace(/'/g, '"')) {
+            document.getElementById("tooltipbox")!.innerHTML = text;
         }
         $("#tooltipbox").removeClass("forIncomeTable").attr("current", "");
         $("#tooltipbox").addClass("forHomeButtonOrGrotto").attr("current", networkResource);
     },
 
     networkTextLeave() {
-        document.getElementById("tooltipbox").innerHTML = "";
+        document.getElementById("tooltipbox")!.innerHTML = "";
         $("#tooltipbox").removeClass("forHomeButtonOrGrotto").attr("current", "");
     },
 };
