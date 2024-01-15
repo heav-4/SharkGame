@@ -515,7 +515,12 @@ SharkGame.MiscUtil = {
             return obj;
         }
         if (obj instanceof Node) {
-            return obj.cloneNode(true);
+            console.warn(
+                "deepClone called with Node. " +
+                    "This would cause unintended side-effects (e.g. missing event listeners). " +
+                    "So we'll just return the object unchanged."
+            );
+            return obj;
         }
         switch (typeof obj) {
             // Immutable types
