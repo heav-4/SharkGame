@@ -514,6 +514,9 @@ SharkGame.MiscUtil = {
         if (obj instanceof HTMLAllCollection) {
             return obj;
         }
+        if (obj instanceof Node) {
+            return obj.cloneNode(true);
+        }
         switch (typeof obj) {
             // Immutable types
             case "bigint":
