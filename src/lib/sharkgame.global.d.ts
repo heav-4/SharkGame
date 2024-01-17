@@ -572,8 +572,8 @@ declare global {
         panzoom: PanZoom;
         setup(): void;
         init(): void;
-        drawTree(disableCanvas?: boolean): HTMLTableElement | HTMLCanvasElement;
-        drawTable(table?: HTMLTableElement): HTMLTableElement;
+        drawTree(disableCanvas?: boolean): JQuery<HTMLTableElement> | HTMLCanvasElement;
+        drawTable(table?: JQuery<HTMLTableElement>): JQuery<HTMLTableElement>;
         drawCanvas(): HTMLCanvasElement;
         initTree(): void;
         getCursorPositionInCanvas(canvas: HTMLCanvasElement, event: MouseEvent): { posX: number; posY: number };

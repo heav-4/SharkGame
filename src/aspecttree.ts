@@ -685,7 +685,7 @@ SharkGame.AspectTree = {
         }
         tree.updateRequirementReference();
         if (SharkGame.Settings.current.doAspectTable === "table") {
-            this.drawTable(document.getElementById("aspectTable") as HTMLTableElement);
+            this.drawTable($("#aspectTable"));
             this.updateEssenceCounter();
         } else {
             requestAnimationFrame(tree.render);
