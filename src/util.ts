@@ -76,7 +76,7 @@ SharkGame.MathUtil = {
 
     // this takes an argument to know whether or not to return a Decimal or a Number
     uniqueMax(current) {
-        return typeof current === "object" ? new Decimal(1) : 1;
+        return typeof current === "number" ? 1 : new Decimal(1);
     },
 
     getBuyAmount(noMaxBuy) {

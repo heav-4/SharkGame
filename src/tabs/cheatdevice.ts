@@ -51,6 +51,7 @@ SharkGame.CheatsAndDebug = {
             get name() {
                 return "Remove " + sharktext.beautify(sharkmath.getBuyAmount(true)) + " of Everything";
             },
+            type: "clickable",
             updates: true,
             category: "stuff",
             click() {
@@ -96,6 +97,7 @@ SharkGame.CheatsAndDebug = {
                     sharktext.getResourceName(resource, false, sharkmath.getBuyAmount(true), sharkcolor.getVariableColor("--color-light"))
                 );
             },
+            type: "clickable",
             updates: true,
             category: "stuff",
             click() {
@@ -108,6 +110,7 @@ SharkGame.CheatsAndDebug = {
             get name() {
                 return cad.pause ? "Unpause Game" : "Pause Game";
             },
+            type: "clickable",
             updates: true,
             category: "debug",
             click() {
@@ -118,6 +121,7 @@ SharkGame.CheatsAndDebug = {
             get name() {
                 return cad.stop ? "Resume Execution" : "Halt Execution";
             },
+            type: "clickable",
             updates: true,
             category: "debug",
             click() {
@@ -127,6 +131,7 @@ SharkGame.CheatsAndDebug = {
         changeSpeed: {
             name: "Game speed",
             type: "up-down",
+            updates: false,
             category: "modifiers",
             clickUp() {
                 const msg = cad.goFasterPlease();
@@ -140,6 +145,7 @@ SharkGame.CheatsAndDebug = {
         changeUpgradePrices: {
             name: "Upgrade prices",
             type: "up-down",
+            updates: false,
             category: "modifiers",
             clickUp() {
                 const msg = cad.expensiveUpgradesPlease();
@@ -154,6 +160,7 @@ SharkGame.CheatsAndDebug = {
             name: "Cost of stuff",
             type: "up-down",
             category: "modifiers",
+            updates: false,
             clickUp() {
                 const msg = cad.expensiveStuffPlease();
                 if (msg) log.addMessage(msg);
@@ -167,6 +174,7 @@ SharkGame.CheatsAndDebug = {
             get name() {
                 return cad.actionPriceModifier ? "Enable free stuff" : "Disable free stuff";
             },
+            type: "clickable",
             category: "modifiers",
             updates: true,
             click() {
@@ -178,6 +186,7 @@ SharkGame.CheatsAndDebug = {
             get name() {
                 return cad.upgradePriceModifier ? "Enable free upgrades" : "Disable free upgrades";
             },
+            type: "clickable",
             category: "modifiers",
             updates: true,
             click() {
@@ -193,6 +202,7 @@ SharkGame.CheatsAndDebug = {
                     return "Disable debug button";
                 }
             },
+            type: "clickable",
             category: "debug",
             updates: true,
             click() {
@@ -207,6 +217,7 @@ SharkGame.CheatsAndDebug = {
                     return "Disable number formatting";
                 }
             },
+            type: "clickable",
             category: "debug",
             updates: true,
             click() {
@@ -215,6 +226,7 @@ SharkGame.CheatsAndDebug = {
         },
         beatWorld: {
             name: "Beat this world immediately",
+            type: "clickable",
             updates: false,
             category: "misc",
             click() {
@@ -223,6 +235,7 @@ SharkGame.CheatsAndDebug = {
         },
         addUpgrades: {
             name: "Get all upgrades",
+            type: "clickable",
             updates: false,
             category: "misc",
             click() {
@@ -231,6 +244,7 @@ SharkGame.CheatsAndDebug = {
         },
         addIdleTime: {
             name: "Add idle time",
+            type: "clickable",
             updates: false,
             category: "misc",
             click() {
@@ -239,6 +253,7 @@ SharkGame.CheatsAndDebug = {
         },
         rollDice: {
             name: "Roll the dice for wacky effects",
+            type: "clickable",
             updates: false,
             // location: "right",
             category: "nonsense",
@@ -250,6 +265,7 @@ SharkGame.CheatsAndDebug = {
             get name() {
                 return cad.frozen ? "Unfreeze game" : "Freeze the game";
             },
+            type: "clickable",
             updates: true,
             category: "nonsense",
             click() {
@@ -258,6 +274,7 @@ SharkGame.CheatsAndDebug = {
         },
         forceExistence: {
             name: "Make all resources exist",
+            type: "clickable",
             updates: false,
             // location: "right",
             category: "nonsense",
@@ -274,6 +291,7 @@ SharkGame.CheatsAndDebug = {
         // },
         egg: {
             name: "egg",
+            type: "clickable",
             updates: false,
             category: "nonsense",
             click() {

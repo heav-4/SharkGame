@@ -39,7 +39,6 @@ SharkGame.Gate = {
     init() {
         // register tab
         SharkGame.TabHandler.registerTab(this);
-        SharkGame.Gate.opened = false;
         // redundant reset of gate requirements
         SharkGame.Gate.resetSlots();
     },
@@ -62,7 +61,7 @@ SharkGame.Gate = {
             req.slots = {};
             sharkmisc.tryAddProperty(creq, "slots", {});
             $.each(gateRequirements.slots, (resourceId, requiredAmount) => {
-                req.slots[resourceId] = Math.floor(requiredAmount);
+                req.slots![resourceId] = Math.floor(requiredAmount);
                 sharkmisc.tryAddProperty(creq.slots, resourceId, false);
             });
         }
@@ -71,7 +70,7 @@ SharkGame.Gate = {
             req.upgrades = [];
             sharkmisc.tryAddProperty(creq, "upgrades", {});
             $.each(gateRequirements.upgrades, (_index, upgradeId) => {
-                req.upgrades.push(upgradeId);
+                req.upgrades!.push(upgradeId);
                 sharkmisc.tryAddProperty(creq.upgrades, upgradeId, false);
             });
         }
@@ -80,7 +79,7 @@ SharkGame.Gate = {
             req.resources = {};
             sharkmisc.tryAddProperty(creq, "resources", {});
             $.each(gateRequirements.resources, (resourceId, requiredAmount) => {
-                req.resources[resourceId] = requiredAmount;
+                req.resources![resourceId] = requiredAmount;
                 sharkmisc.tryAddProperty(creq.resources, resourceId, false);
             });
         }
@@ -96,9 +95,9 @@ SharkGame.Gate = {
 
         if (!gate.shouldBeOpen()) {
             if (SharkGame.WorldTypes[world.worldType].gateRequirements.slots) {
-                const buttonList = $("#buttonList");
+                const buttonList = $("#buttonList") as JQuery<HTMLDivElement>;
                 $.each(gate.requirements.slots, (resource, requiredAmount) => {
-                    if (!gate.completedRequirements.slots[resource]) {
+                    if (!gate.completedRequirements!.slots![resource]) {
                         const resourceName = sharktext.getResourceName(
                             resource,
                             false,
@@ -110,8 +109,8 @@ SharkGame.Gate = {
                             "Insert " + sharktext.beautify(requiredAmount) + " " + resourceName + " into " + resourceName + " slot",
                             buttonList,
                             gate.onGateButton,
-                            gate.onHover,
-                            gate.onUnhover
+                            gate.onSlotHover,
+                            gate.onSlotUnhover
                         );
                     }
                 });
@@ -171,7 +170,7 @@ SharkGame.Gate = {
 
         // if there are any slots in the first place, return the number of slots unfilled
         // if there are not any slots, return false to identify this fact
-        return Object.keys(gate.requirements.slots).length !== 0 ? incompleteSlots : false;
+        return gate.requirements.slots !== undefined ? incompleteSlots : false;
     },
 
     getUpgradesLeft() {
@@ -198,7 +197,7 @@ SharkGame.Gate = {
             gate.checkResourceRequirements(resource);
         });
 
-        const remaining = [];
+        const remaining: ResourceName[] = [];
         $.each(gate.completedRequirements.resources, (resource, completed) => {
             if (completed) {
                 remaining.push(resource);
@@ -207,12 +206,12 @@ SharkGame.Gate = {
         return remaining || false;
     },
 
-    onHover() {
+    onSlotHover() {
         const gate = SharkGame.Gate;
         const button = $(this);
-        const resourceName = button.attr("id").split("-")[1];
+        const resourceName = button.attr("id")!.split("-")[1] as ResourceName;
         const amount = res.getResource(resourceName);
-        const required = gate.requirements.slots[resourceName];
+        const required = gate.requirements.slots![resourceName]!;
         if (amount < required) {
             button.html(
                 `Need <span class='click-passthrough' style='color:#FFDE0A'>${sharktext.beautify(
@@ -221,29 +220,29 @@ SharkGame.Gate = {
                     resourceName,
                     false,
                     false,
-                    sharkcolor.getElementColor(button.attr("id"), "background-color")
+                    sharkcolor.getElementColor(button.attr("id")!, "background-color")
                 )} for ${sharktext.getResourceName(
                     resourceName,
                     false,
                     false,
-                    sharkcolor.getElementColor(button.attr("id"), "background-color")
+                    sharkcolor.getElementColor(button.attr("id")!, "background-color")
                 )} slot`
             );
         }
     },
 
-    onUnhover() {
+    onSlotUnhover() {
         const gate = SharkGame.Gate;
         const button = $(this);
-        const resourceName = button.attr("id").split("-")[1];
-        const required = gate.requirements.slots[resourceName];
+        const resourceName = button.attr("id")!.split("-")[1] as ResourceName;
+        const required = gate.requirements.slots![resourceName]!;
         button.html(
             "Insert " +
                 sharktext.beautify(required) +
                 " " +
-                sharktext.getResourceName(resourceName, false, false, sharkcolor.getElementColor(button.attr("id"), "background-color")) +
+                sharktext.getResourceName(resourceName, false, false, sharkcolor.getElementColor(button.attr("id")!, "background-color")) +
                 " into " +
-                sharktext.getResourceName(resourceName, false, false, sharkcolor.getElementColor(button.attr("id"), "background-color")) +
+                sharktext.getResourceName(resourceName, false, false, sharkcolor.getElementColor(button.attr("id")!, "background-color")) +
                 " slot"
         );
     },
@@ -252,12 +251,12 @@ SharkGame.Gate = {
 
     onGateButton() {
         const gate = SharkGame.Gate;
-        const resourceId = $(this).attr("id").split("-")[1];
+        const resourceId = $(this).attr("id")!.split("-")[1] as ResourceName;
 
         let message = "";
-        const cost = gate.requirements.slots[resourceId] * (res.getResource("numen") + 1);
+        const cost = gate.requirements.slots![resourceId]! * (res.getResource("numen") + 1);
         if (res.getResource(resourceId) >= cost) {
-            gate.completedRequirements.slots[resourceId] = true;
+            gate.completedRequirements.slots![resourceId]! = true;
             res.changeResource(resourceId, -cost);
             $(this).remove();
             if (gate.shouldBeOpen()) {
@@ -302,8 +301,8 @@ SharkGame.Gate = {
 
     checkResourceRequirements(resourceName) {
         const gate = SharkGame.Gate;
-        if (gate.requirements.resources && res.getResource(resourceName) >= gate.requirements.resources[resourceName]) {
-            gate.completedRequirements.resources[resourceName] = true;
+        if (gate.requirements.resources && res.getResource(resourceName) >= gate.requirements.resources![resourceName]!) {
+            gate.completedRequirements.resources![resourceName] = true;
         }
     },
 
@@ -322,7 +321,7 @@ SharkGame.Gate = {
         // - if all slots are filled but an upgrade is still needed then show the closed-but-filled image
         if (gate.shouldBeOpen()) {
             return gate.sceneOpenImage;
-        } else if (slotsLeft > 1) {
+        } else if (slotsLeft && slotsLeft > 1) {
             return gate.sceneClosedImage;
         } else if (slotsLeft === 1 && !upgradesLeft && !resourcesLeft) {
             return gate.sceneAlmostOpenImage;

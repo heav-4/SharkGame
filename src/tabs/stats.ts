@@ -116,13 +116,16 @@ SharkGame.Stats = {
 
         stats.updateTimers();
 
-        if (document.getElementById("tooltipbox")!.attributes.current) {
-            stats.networkTextEnter(null, (<Tooltipbox>document.getElementById("tooltipbox")).attributes.current.value);
+        if ((<Tooltipbox>document.getElementById("tooltipbox")).attributes.current) {
+            stats.networkTextEnter(
+                null,
+                (<Tooltipbox>document.getElementById("tooltipbox")).attributes.current.value as `#network-${ResourceName}-${ResourceName}`
+            );
         }
     },
 
     createDisposeButtons() {
-        const buttonDiv = $("#disposeResource").addClass("disposeArrangement");
+        const buttonDiv = $("#disposeResource").addClass("disposeArrangement") as JQuery<HTMLDivElement>;
         SharkGame.ResourceMap.forEach((_resource, resourceId) => {
             if (res.getTotalResource(resourceId) > 0 && stats.bannedDisposeCategories.indexOf(res.getCategoryOfResource(resourceId)) === -1) {
                 SharkGame.Button.makeButton(
@@ -315,16 +318,16 @@ SharkGame.Stats = {
     },
 
     createIncomeTable() {
-        let incomesTable = $("#incomeTable");
+        let incomesTable = $("#incomeTable") as JQuery<HTMLTableElement>;
         if (incomesTable.length === 0) {
-            incomesTable = $("<table>").attr("id", "incomeTable");
+            incomesTable = $("<table>").attr("id", "incomeTable") as JQuery<HTMLTableElement>;
         } else {
             incomesTable.empty();
         }
 
         let formatCounter = 1;
 
-        const drawnResourceMap = new Map();
+        const drawnResourceMap = new Map<ResourceName, ResourceAmounts>();
         SharkGame.ResourceMap.forEach((generatorData, generatorName) => {
             if (res.getTotalResource(generatorName) > 0 && generatorData.income) {
                 // if the resource has an income requiring any costs
@@ -344,14 +347,14 @@ SharkGame.Stats = {
                                 drawnResourceMap.set(incomeKey, {});
                             }
 
-                            drawnResourceMap.get(incomeKey)[generatorName] = incomeValue;
+                            drawnResourceMap.get(incomeKey)![generatorName] = incomeValue;
                         } else {
                             if (!drawnResourceMap.has(generatorName)) {
                                 drawnResourceMap.set(generatorName, {});
                             }
 
                             // Copy all the good incomes over
-                            drawnResourceMap.get(generatorName)[incomeKey] = incomeValue;
+                            drawnResourceMap.get(generatorName)![incomeKey] = incomeValue;
                         }
                     }
                 });
@@ -396,14 +399,14 @@ SharkGame.Stats = {
                     .addClass(rowStyle)
             );
 
-            function addCell(text, rowspan, id) {
+            function addCell(text?: [string, string], rowspan?: "inline", id?: string) {
                 if (id) {
                     if (id.includes("network")) {
                         resourceMapRow.append(
                             $("<td>")
                                 .attr("rowspan", rowspan === "inline" ? 1 : subheadings)
                                 .attr("id", id)
-                                .html(text ? `<span style='color:${text[0]}'>${text[1]}</span>` : undefined)
+                                .html(text ? `<span style='color:${text[0]}'>${text[1]}</span>` : "")
                                 .addClass(rowStyle)
                                 .on("mouseenter", stats.networkTextEnter)
                                 .on("mouseleave", stats.networkTextLeave)
@@ -413,7 +416,7 @@ SharkGame.Stats = {
                             $("<td>")
                                 .attr("rowspan", rowspan === "inline" ? 1 : subheadings)
                                 .attr("id", id)
-                                .html(text ? `<span style='color:${text[0]}'>${text[1]}</span>` : undefined)
+                                .html(text ? `<span style='color:${text[0]}'>${text[1]}</span>` : "")
                                 .addClass(rowStyle)
                         );
                     }
@@ -421,13 +424,13 @@ SharkGame.Stats = {
                     resourceMapRow.append(
                         $("<td>")
                             .attr("rowspan", rowspan === "inline" ? 1 : subheadings)
-                            .html(text ? `<span style='color:${text[0]}'>${text[1]}</span>` : undefined)
+                            .html(text ? `<span style='color:${text[0]}'>${text[1]}</span>` : "")
                             .addClass(rowStyle)
                     );
                 }
             }
 
-            const multipliers = {
+            const multipliers: Record<string, number[]> = {
                 upgrade: [],
                 world: [],
                 aspect: [],
@@ -625,7 +628,7 @@ SharkGame.Stats = {
             columns -= 4;
 
             if (SharkGame.Settings.current.grottoMode === "advanced") {
-                function tooltip($elt, html) {
+                function tooltip($elt: JQuery<HTMLElement>, html: string) {
                     return $elt.on("mouseenter", () => $("#tooltipbox").html(html)).on("mouseleave", () => $("#tooltipbox").html(""));
                 }
 
@@ -695,9 +698,9 @@ SharkGame.Stats = {
     },
 
     createTotalAmountTable() {
-        let totalAmountTable = $("#totalAmountTable");
+        let totalAmountTable = $("#totalAmountTable") as JQuery<HTMLTableElement>;
         if (totalAmountTable.length === 0) {
-            totalAmountTable = $("<table>").attr("id", "totalAmountTable");
+            totalAmountTable = $("<table>").attr("id", "totalAmountTable") as JQuery<HTMLTableElement>;
         } else {
             totalAmountTable.empty();
         }
@@ -759,25 +762,27 @@ SharkGame.Stats = {
         }
     },
 
-    networkTextEnter(_mouseEnterEvent, networkResource = "nothing") {
-        if (!networkResource || !networkResource.includes("network")) {
-            networkResource = $(this).attr("id");
-            if (!networkResource || !networkResource.includes("network")) return;
+    // TODO TEST THIS FUNCTION BEFORE COMMITING
+    networkTextEnter(_mouseEnterEvent, networkResource) {
+        console.log(networkResource);
+        if (!networkResource) {
+            networkResource = $(this).attr("id") as `#network-${ResourceName}-${ResourceName}`;
+            if (!networkResource) return;
         }
 
         const idArray = networkResource.split("-");
-        const generatorName = idArray[1];
-        const generatedName = idArray[2];
+        const generatorName = idArray[1] as ResourceName;
+        const generatedName = idArray[2] as ResourceName;
 
         let addedAnyLabelsYet = false;
 
         let text = "";
 
-        const generatorObject = {};
+        const generatorObject = {} as ResourceAmounts;
         generatorObject[generatorName] = 1;
         const generatorCondensedObject = res.condenseNode(generatorObject, true);
 
-        const generatedObject = {};
+        const generatedObject = {} as ResourceAmounts;
         generatedObject[generatedName] = 1;
         const generatedCondensedObject = res.condenseNode(generatedObject, true);
 

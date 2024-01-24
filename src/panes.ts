@@ -103,7 +103,7 @@ SharkGame.PaneHandler = {
         return pane;
     },
 
-    addPaneToStack(title, contents, notCloseable, fadeInTime = 600, customOpacity) {
+    addPaneToStack(title, contents, notCloseable = false, fadeInTime = 600, customOpacity = 0.5) {
         const stackObject: Pane = [title, contents, notCloseable, fadeInTime, customOpacity];
         if (this.currentPane) {
             this.paneStack.push(sharkmisc.cloneDeep(this.currentPane));
@@ -112,8 +112,8 @@ SharkGame.PaneHandler = {
         this.showPane(title, contents, notCloseable, fadeInTime, customOpacity, true);
     },
 
-    swapCurrentPane(title, contents, notCloseable, fadeInTime = 600, customOpacity) {
-        const stackObject = [title, contents, notCloseable, fadeInTime, customOpacity];
+    swapCurrentPane(title, contents, notCloseable = false, fadeInTime = 600, customOpacity = 0.5) {
+        const stackObject: Pane = [title, contents, notCloseable, fadeInTime, customOpacity];
         this.currentPane = stackObject;
         this.showPane(title, contents, notCloseable, fadeInTime, customOpacity);
     },
@@ -198,7 +198,7 @@ SharkGame.PaneHandler = {
         return alreadyUp;
     },
 
-    showPane(title, contents, notCloseable, fadeInTime, customOpacity, preserveElements) {
+    showPane(title, contents, notCloseable, fadeInTime = 600, customOpacity, preserveElements) {
         const pane = $("#pane");
 
         // begin fading in/displaying overlay if it isn't already visible
@@ -276,9 +276,9 @@ SharkGame.PaneHandler = {
         const optionsTable = $("<table>").attr("id", "optionTable") as JQuery<HTMLTableElement>;
 
         // add settings specified in settings.js
-        const categories = {};
+        const categories = {} as Record<OptionCategory, ("current" | OptionName)[]>;
         $.each(SharkGame.Settings, (name, setting) => {
-            if (typeof setting.category === "string") {
+            if ("category" in setting) {
                 if (!categories[setting.category]) {
                     categories[setting.category] = [];
                 }
@@ -339,7 +339,7 @@ SharkGame.PaneHandler = {
                     .addClass("option-button")
                     .on("click", function callback() {
                         if ($(this).hasClass("disabled")) return;
-                        const importText = $("#importExportField").val() as SaveString;
+                        const importText = $("#importExportField").val();
                         if (importText === "") {
                             SharkGame.PaneHandler.nextPaneInStack();
                             log.addError("You need to paste something in first!");

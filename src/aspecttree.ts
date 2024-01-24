@@ -30,13 +30,14 @@ SPRITE_SHEET.src = "https://github.com/Toby222/SharkGame/blob/alpha/img/sprites.
 EVENT_SPRITE_SHEET.src = "https://github.com/Toby222/SharkGame/blob/alpha/img/homemessagesprites.png?raw=true";
 
 SharkGame.AspectTree = {
-    context: undefined,
+    context: null,
     pointerType: "mouse",
     debugMode: false,
     refundMode: false,
     previousButton: undefined,
     staticButtons: {
         respec: {
+            isStatic: true,
             posX: 10,
             get posY() {
                 return 10;
@@ -65,6 +66,7 @@ SharkGame.AspectTree = {
             },
         },
         respecAll: {
+            isStatic: true,
             posX: 10,
             get posY() {
                 return tree.staticButtons.respec.posY + tree.staticButtons.respec.height + 10;
@@ -90,6 +92,7 @@ SharkGame.AspectTree = {
             },
         },
         debug: {
+            isStatic: true,
             posX: 760,
             posY: 10,
             width: 30,
@@ -109,14 +112,14 @@ SharkGame.AspectTree = {
                 tree.updateTooltip(this);
             },
             getUnlocked() {
-                return SharkGame.persistentFlags.debug;
+                return SharkGame.persistentFlags.debug === true;
             },
             getOn() {
                 return tree.debugMode;
             },
         },
-    },
-    requirementReference: {},
+    } as const,
+    requirementReference: {} as requirementReference,
 
     init() {
         $.each(SharkGame.Aspects, (aspectId, aspectData) => {
@@ -200,8 +203,8 @@ SharkGame.AspectTree = {
 
         table.append(headerRow);
 
-        function clickCallback(event) {
-            const aspectId = event.currentTarget.getAttribute("data-aspectId");
+        function clickCallback(event: JQuery.ClickEvent) {
+            const aspectId = event.currentTarget.getAttribute("data-aspectId") as AspectName;
             const aspect = SharkGame.Aspects[aspectId];
 
             aspect.clicked(event);
@@ -300,7 +303,7 @@ SharkGame.AspectTree = {
     },
 
     initTree() {
-        this.panzoom = panzoom($("canvas")[0], {
+        const panzoomConfig = {
             maxZoom: 2,
             minZoom: 0.8,
             bounds: {
@@ -312,11 +315,14 @@ SharkGame.AspectTree = {
             boundsDisabledForZoom: true,
             smoothScroll: {
                 amplitude: 0.05,
-            },
+            } as unknown as boolean, // library's types are incorrect
             onTouch: () => false,
-            beforeMouseDown: (event) => event.target.id !== "treeCanvas" || this.getButtonUnderMouse(event) !== undefined,
-            beforeWheel: (event) => event.target.id !== "treeCanvas",
-        });
+            beforeMouseDown: (event: MouseEvent) =>
+                (event.target as HTMLElement)?.id !== "treeCanvas" || this.getButtonUnderMouse(event) !== undefined,
+            beforeWheel: (event: MouseEvent) => (event.target as HTMLElement)?.id !== "treeCanvas",
+        };
+
+        this.panzoom = panzoom($("canvas")[0], panzoomConfig);
         this.panzoom.on("transform", () => {
             requestAnimationFrame(tree.render);
         });
@@ -329,15 +335,17 @@ SharkGame.AspectTree = {
      */
     getCursorPositionInCanvas(canvas, event) {
         const rect = canvas.getBoundingClientRect();
+        // const posX = ("clientX" in event ? event.clientX : event.targetTouches[0]?.clientX || event.changedTouches[0].clientX) - rect.left;
+        // const posY = ("clientY" in event ? event.clientY : event.targetTouches[0]?.clientY || event.changedTouches[0].clientY) - rect.top;
+        console.log(event.clientX || event.targetTouches[0]?.clientX || event.changedTouches[0].clientX);
         const posX = (event.clientX || event.targetTouches[0]?.clientX || event.changedTouches[0].clientX) - rect.left;
         const posY = (event.clientY || event.targetTouches[0]?.clientY || event.changedTouches[0].clientY) - rect.top;
         const result = { posX, posY };
         return result;
     },
 
-    /** @param {MouseEvent} event */
     getButtonUnderMouse(event) {
-        const context = tree.context;
+        const context = sharkmisc.assertDefined(tree.context);
         const mousePos = tree.getCursorPositionInCanvas(context.canvas, event);
         const transform = this.panzoom.getTransform();
 
@@ -370,7 +378,6 @@ SharkGame.AspectTree = {
         return aspect;
     },
 
-    /** @param {MouseEvent} event */
     updateMouse(event) {
         const button = event.type === "mouseleave" ? undefined : tree.getButtonUnderMouse(event);
         tree.updateTooltip(button);
@@ -379,7 +386,6 @@ SharkGame.AspectTree = {
         }
     },
 
-    /** @param {MouseEvent} event */
     click(event) {
         const button = tree.getButtonUnderMouse(event);
         if (button === undefined) {
@@ -397,7 +403,7 @@ SharkGame.AspectTree = {
     },
 
     render() {
-        const context = tree.context;
+        const context = sharkmisc.assertDefined(tree.context);
         if (context === undefined) return;
         const transform = tree.panzoom.getTransform();
 
@@ -558,6 +564,7 @@ SharkGame.AspectTree = {
      * @param {number} width The width of the rectangle
      * @param {number} height The height of the rectangle
      * @param {string} icon The icon to draw in the rectangle
+     * @param {boolean} eventIcon
      * @param {string} name The name of the button
      */
     renderButton(context, posX, posY, width, height, icon = "general/missing-action", eventIcon = false, name) {
@@ -604,12 +611,12 @@ SharkGame.AspectTree = {
     },
 
     getLittleLevelText(aspectName) {
-        const reqref = tree.requirementReference[aspectName];
-        if (!reqref) return;
+        if (!(aspectName in tree.requirementReference)) return;
+        const reqref = tree.requirementReference[aspectName as AspectName];
 
         if (!reqref.locked && reqref.prereqsMet) {
             if (!reqref.max) {
-                return SharkGame.Aspects[aspectName].level + " / " + SharkGame.Aspects[aspectName].max;
+                return SharkGame.Aspects[aspectName as AspectName].level + " / " + SharkGame.Aspects[aspectName as AspectName].max;
             }
             return "MAX";
         }
@@ -628,7 +635,7 @@ SharkGame.AspectTree = {
         tree.updateTooltip(aspect);
     },
 
-    increaseLevel(aspect, ignoreRestrictions) {
+    increaseLevel(aspect, ignoreRestrictions = false) {
         let cost = 0;
         if (!ignoreRestrictions) {
             if (
@@ -733,40 +740,26 @@ SharkGame.AspectTree = {
 
     updateTooltip(button) {
         const tooltipBox = $("#tooltipbox");
-        const context = tree.context;
+        const context = sharkmisc.assertDefined(tree.context);
         // tooltips aren't needed on the aspect table
-        if (!context) return;
         if (button === undefined) {
             context.canvas.style.cursor = "grab";
             tooltipBox.empty().removeClass("forAspectTree forAspectTreeUnpurchased forAspectTreeAffordable");
+        } else if ("isStatic" in button) {
+            if (!button.getUnlocked || button.getUnlocked()) {
+                tooltipBox.html(button.getEffect()).removeClass("forAspectTree forAspectTreeAffordable").addClass("forAspectTreeUnpurchased");
+                context.canvas.style.cursor = "pointer";
+            }
         } else {
-            let name;
-            _.forEach(tree.staticButtons, (buttonData, buttonName) => {
-                if (buttonData.name === (button as StaticButton).name) {
-                    name = buttonName;
+            let name: AspectName | undefined;
+
+            _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
+                if (aspectName === "deprecated") return;
+                if (aspectData.name === button.name) {
+                    name = aspectName;
                     return false;
                 }
             });
-
-            if (!name) {
-                _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
-                    if (aspectName === "deprecated") return;
-                    if (aspectData.name === button.name) {
-                        name = aspectName;
-                        return false;
-                    }
-                });
-            } else {
-                // we have a static button
-                if (!button.getUnlocked || button.getUnlocked()) {
-                    tooltipBox
-                        .html((button as StaticButton).getEffect())
-                        .removeClass("forAspectTree forAspectTreeAffordable")
-                        .addClass("forAspectTreeUnpurchased");
-                    context.canvas.style.cursor = "pointer";
-                }
-                return;
-            }
 
             if (!name) {
                 tooltipBox.empty().removeClass("forAspectTree forAspectTreeUnpurchased forAspectTreeAffordable");
@@ -951,9 +944,9 @@ SharkGame.AspectTree = {
     },
 
     // will loop increase and decrease levels
-    setLevel(aspect, targetLevel) {
-        if (isNaN(targetLevel)) return;
-        targetLevel = Math.ceil(targetLevel);
+    setLevel(aspect, targetLevelStr) {
+        if (targetLevelStr === null || isNaN(Number(targetLevelStr))) return;
+        const targetLevel = Math.ceil(Number(targetLevelStr));
         if (targetLevel < 0) return;
 
         if (targetLevel - aspect.level < 0) {

@@ -1211,7 +1211,7 @@ SharkGame.Resources = {
         } else {
             statusDiv.show();
             _.each(res.tokens.list, (token) => {
-                if (SharkGame.flags.tokens && SharkGame.flags.tokens[token.attr("id")] !== "NA") {
+                if (SharkGame.flags.tokens && SharkGame.flags.tokens[token.attr("id") as TokenId] !== "NA") {
                     res.tokens.reapplyToken(token);
                 }
             });
@@ -1258,7 +1258,7 @@ SharkGame.Resources = {
                                         (SharkGame.Aspects.coordinatedCooperation.level + 2) * (SharkGame.Aspects.collectiveCooperation.level + 1)
                                 );
                             }
-                            event.originalEvent.preventDefault();
+                            event.originalEvent!.preventDefault();
                         }
                     })
                     .on("dragend", res.tokens.handleDragEnd)

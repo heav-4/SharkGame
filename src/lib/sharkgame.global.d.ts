@@ -295,17 +295,37 @@ declare global {
     type CostFunction = "linear" | "constant" | "unique";
     type Operation = "multiply" | "exponentiate" | "polynomial" | "reciprocate";
 
-    type CheatButtonType = undefined | "numeric" | "up-down" | "choice";
+    type CheatButtonType = "clickable" | "numeric" | "up-down" | "choice";
     type CheatButtonCategory = "stuff" | "debug" | "modifiers" | "misc" | "nonsense";
-    type CheatButton = {
+    interface CheatButton {
         readonly name: string;
         type: CheatButtonType;
         updates: boolean;
         category: CheatButtonCategory;
+    }
+
+    interface CheatButtonNumeric extends CheatButton {
+        type: "numeric";
         click(): void;
+    }
+
+    interface CheatButtonUpDown extends CheatButton {
+        type: "up-down";
         clickUp(): void;
         clickDown(): void;
-    };
+    }
+
+    interface CheatButtonChoice extends CheatButton {
+        type: "choice";
+        choiceId: string;
+        getChoices(): ResourceName[];
+        click(): void;
+    }
+
+    interface CheatButtonClickable extends CheatButton {
+        type: "clickable";
+        click(): void;
+    }
 
     type EventCustomName =
         | "abandonedRefundInvestigators"
@@ -453,7 +473,7 @@ declare global {
         applyToInput(input: number, genDegree: number, outDegree: number, gen: ResourceName, out: ResourceName): number;
     };
 
-    type Pane = [title: string, contents: JQuery<HTMLElement>, notCloseable: boolean | undefined, fadeInTime: number, customOpacity: number];
+    type Pane = [title: string, contents: PaneContent, notCloseable: boolean | undefined, fadeInTime: number, customOpacity: number];
 
     type WorldModifier = {
         type: string;
@@ -525,7 +545,7 @@ declare global {
          * If they have not, returns a message stating why not.
          */
         getUnlocked(): string | void;
-        clicked(event: JQuery.MouseDownEvent): void;
+        clicked(event: JQuery.ClickEvent): void;
         apply?(time: string): void;
     };
 
@@ -534,6 +554,7 @@ declare global {
     };
 
     type StaticButton = {
+        isStatic: true;
         posX: number;
         posY: number;
         width: number;
@@ -561,10 +582,7 @@ declare global {
 
     //#REGION: Modules
     type AspectTreeModule = {
-        dragStart: { posX: number; posY: number };
-        cameraZoom: number;
-        cameraOffset: { posX: number; posY: number };
-        context?: CanvasRenderingContext2D;
+        context: CanvasRenderingContext2D | null;
         staticButtons: Record<string, StaticButton>;
         refundMode: boolean;
         debugMode: boolean;
@@ -576,10 +594,10 @@ declare global {
         drawTable(table?: JQuery<HTMLTableElement>): JQuery<HTMLTableElement>;
         drawCanvas(): HTMLCanvasElement;
         initTree(): void;
-        getCursorPositionInCanvas(canvas: HTMLCanvasElement, event: MouseEvent): { posX: number; posY: number };
-        getButtonUnderMouse(mouseEvent: MouseEvent): StaticButton | Aspect | void;
-        updateMouse(event: MouseEvent): void;
-        click(event: MouseEvent): void;
+        getCursorPositionInCanvas(canvas: HTMLCanvasElement, event: MouseEvent | TouchEvent): { posX: number; posY: number };
+        getButtonUnderMouse(event: MouseEvent | TouchEvent): StaticButton | Aspect | void;
+        updateMouse(event: JQuery.Event): void;
+        click(event: JQuery.ClickEvent): void;
         render(): void;
         /**
          * Helper function that draws a rounded rectangle with an icon using the current state of the canvas
@@ -591,10 +609,19 @@ declare global {
          * @param icon The icon to draw in the rectangle
          * @param name The name of the button
          */
-        renderButton(context: CanvasRenderingContext2D, posX: number, posY: number, width: number, height: number, icon: string, name: string): void;
-        getLittleLevelText(aspectName: AspectName): string | undefined;
+        renderButton(
+            context: CanvasRenderingContext2D,
+            posX: number,
+            posY: number,
+            width: number,
+            height: number,
+            icon: string,
+            eventIcon: boolean,
+            name: AspectName
+        ): void;
+        getLittleLevelText(aspectName: string): string | undefined;
         handleClickedAspect(aspect: Aspect): void;
-        increaseLevel(aspect: Aspect, ignoreRestrictions: boolean): void;
+        increaseLevel(aspect: Aspect, ignoreRestrictions?: boolean): void;
         updateEssenceCounter(): void;
         applyAspects(): void;
         respecTree(totalWipe?: boolean): void;
@@ -607,7 +634,7 @@ declare global {
         toggleRefundMode(): void;
         toggleDebugMode(): void;
         getTheoreticalRefundValue(aspect: Aspect): number;
-        setLevel(aspect: Aspect, targetLevel: number): void;
+        setLevel(aspect: Aspect, targetLevelStr: string | null): void;
     };
 
     type ButtonModule = {
@@ -838,8 +865,8 @@ declare global {
         uniqueCost(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
         uniqueCost(current: number, difference: number, cost: number): number;
         /** this takes an argument to know whether or not to return a Decimal or a Number */
-        uniqueMax(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
-        uniqueMax(current: number, difference: number, cost: number): number;
+        uniqueMax(current: Decimal): Decimal;
+        uniqueMax(current: number): number;
         getBuyAmount(nomaxBuy?: boolean): Decimal | number;
         /** This is weird */
         getPurchaseAmount(resource: ResourceName, owned?: number): Decimal | number;
@@ -960,7 +987,7 @@ declare global {
         doRKMethod(time: number, factor: number, threshold: number): number;
         recalculateIncomeTable(cheap?: boolean): void;
         getProductAmountFromGeneratorResource(generator: ResourceName, product: ResourceName, numGenerator?: number): number;
-        getNetworkIncomeModifier(network: "generator" | "resource", resource: ResourceName, baseIncome: number): number;
+        getNetworkIncomeModifier(network: "generator" | "resource", resource: ResourceName, baseIncome?: number): number;
         getGameSpeedModifier(): number;
         getSpecialMultiplier(): ResourceModule["specialMultiplier"];
         getIncome(resource: ResourceName): number;
@@ -1095,8 +1122,8 @@ declare global {
         saveFileName: "sharkGameSave";
         saveGame(): SaveString;
         decodeSave(saveDataString: string): Save;
-        loadGame(importSaveData?: string): void;
-        importData(data: SaveString): void;
+        loadGame(importSaveData?: any): void;
+        importData(data: any): void;
         exportData(): SaveString;
         savedGameExists(tag?: string): boolean;
         deleteSave(tag?: string): void;
@@ -1249,7 +1276,7 @@ declare global {
             frozen: boolean;
         };
 
-        cheatButtons: Record<string, CheatButton>;
+        cheatButtons: Record<string, CheatButtonNumeric | CheatButtonUpDown | CheatButtonChoice | CheatButtonClickable>;
 
         cycleStyles(time?: number): void;
         discoverAll(): void;
@@ -1300,26 +1327,30 @@ declare global {
         sceneOpenImage: string;
         sceneClosedButFilledImage: string;
 
-        requirements: {
+        requirements: RecursivePartial<{
             slots: Record<ResourceName, number>;
-            upgrades: Record<UpgradeName, string>;
+            upgrades: UpgradeName[];
             resources: Record<ResourceName, number>;
-        };
-        completedRequirements: Partial<{
+        }>;
+        /* 
+        If requirements has an optional property that exists, it also exists in completedRequirements */
+        completedRequirements: RecursivePartial<{
             slots: Record<ResourceName, boolean>;
             upgrades: Record<UpgradeName, boolean>;
             resources: Record<ResourceName, boolean>;
         }>;
 
+        resetSlots(): void;
         createSlots(gateRequirements: GateRequirements): void;
         getMessage(): string;
         getSlotsLeft(): number | false;
         getUpgradesLeft(): number | false;
         getResourcesLeft(): unknown[] | false; // TODO: Find better type
-        onHover(): void;
-        onUnhover(): void;
+        onSlotHover(): void;
+        onSlotUnhover(): void;
         onGateButton(): void;
         onEnterButton(): void;
+        enterGate(): void;
         shouldBeOpen(): boolean;
         checkUpgradeRequirements(upgradeName: UpgradeName): void;
         checkResourceRequirements(resourceName: ResourceName): void;
@@ -1427,7 +1458,7 @@ declare global {
         toggleSwitch(): void;
         toggleMode(): void;
         updateTableKey(): void;
-        networkTextEnter(_mouseEnterEvent: JQuery.MouseEnterEvent, networkResource: "nothing" | `#network-${ResourceName}-${string}`): void; // TODO: Fix this shitty function god
+        networkTextEnter(_mouseEnterEvent: JQuery.MouseEnterEvent | null, networkResource: `#network-${ResourceName}-${ResourceName}`): void; // TODO: Fix this shitty function god
         networkTextLeave(): void;
         updateTimers(): void;
     };
@@ -1550,6 +1581,7 @@ declare global {
             seenCheatsTab: boolean;
             everIdled: boolean;
             requestedTime: number;
+            patience: Aspect | 0;
         }>;
         savedMouseActivity: number;
         sidebarHidden: boolean;
