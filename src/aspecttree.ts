@@ -329,15 +329,8 @@ SharkGame.AspectTree = {
         tree.render();
     },
 
-    /**
-     * @param {HTMLCanvasElement} canvas
-     * @param {MouseEvent} event
-     */
     getCursorPositionInCanvas(canvas, event) {
         const rect = canvas.getBoundingClientRect();
-        // const posX = ("clientX" in event ? event.clientX : event.targetTouches[0]?.clientX || event.changedTouches[0].clientX) - rect.left;
-        // const posY = ("clientY" in event ? event.clientY : event.targetTouches[0]?.clientY || event.changedTouches[0].clientY) - rect.top;
-        console.log(event.clientX || event.targetTouches[0]?.clientX || event.changedTouches[0].clientX);
         const posX = (event.clientX || event.targetTouches[0]?.clientX || event.changedTouches[0].clientX) - rect.left;
         const posY = (event.clientY || event.targetTouches[0]?.clientY || event.changedTouches[0].clientY) - rect.top;
         const result = { posX, posY };

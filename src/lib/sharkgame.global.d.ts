@@ -140,38 +140,7 @@ declare global {
         | "basicmaterials";
     type ModifierName = string;
     type OptionCategory = "PERFORMANCE" | "LAYOUT" | "APPEARANCE" | "ACCESSIBILITY" | "OTHER" | "SAVES";
-    type OptionName =
-        | "alwaysSingularTooltip"
-        | "autosaveFrequency"
-        | "boldCosts"
-        | "buyAmount"
-        | "colorCosts"
-        | "customSetting"
-        | "doAspectTable"
-        | "enableThemes"
-        | "framerate"
-        | "grottoMode"
-        | "groupResources"
-        | "idleEnabled"
-        | "logLocation"
-        | "logMessageMax"
-        | "minimizedTopbar"
-        | "minuteHandEffects"
-        | "notation"
-        | "offlineModeActive"
-        | "showAnimations"
-        | "showIcons"
-        | "showPercentages"
-        | "showTabImages"
-        | "showTooltips"
-        | "sidebarWidth"
-        | "smallTable"
-        | "tooltipQuantityReminders"
-        | "truePause"
-        | "updateCheck"
-        | "iconPositions"
-        | "verboseTokenDescriptions"
-        | "switchStats";
+    type InternalOptionName = "buyAmount" | "grottoMode" | "showPercentages";
     type ResourceCategory =
         | "animals"
         | "breeders"
@@ -947,13 +916,50 @@ declare global {
         onChange?(): void;
     };
 
-    type SettingsModule = Record<OptionName, Option<unknown>> & {
-        current: Record<Exclude<OptionName, "current">, unknown>;
-    } & {
-        buyAmount: InternalOption<number | "custom">;
-        grottoMode: InternalOption<"simple" | "advanced">;
-        showPercentages: InternalOption<"absolute" | "percentage">;
+    type OptionTypes = {
+        buyAmount: number | "custom";
+        grottoMode: "simple" | "advanced";
+        showPercentages: "absolute" | "percentage";
+
+        alwaysSingularTooltip: boolean;
+        autosaveFrequency: number;
+        boldCosts: boolean;
+        colorCosts: "color" | "bright" | "none";
+        doAspectTable: "tree" | "table";
+        enableThemes: boolean;
+        framerate: number;
+        groupResources: "boolean";
+        idleEnabled: boolean;
+        logLocation: "right" | "left" | "top";
+        logMessageMax: boolean;
+        minimizedTopbar: boolean;
+        minuteHandEffects: boolean;
+        notation: "default" | "SI";
+        offlineModeActive: boolean;
+        showAnimations: boolean;
+        showIcons: boolean;
+        showTabImages: boolean;
+        showTooltips: boolean;
+        sidebarWidth: "25%" | "30%" | "35%";
+        smallTable: boolean;
+        tooltipQuantityReminders: boolean;
+        truePause: boolean;
+        updateCheck: boolean;
+        verboseTokenDescriptions: boolean;
     };
+
+    /*
+    confusing option types - should be flags?
+    customSetting
+    switchStats
+    iconPositions
+    */
+
+    type SettingsModule = {
+        current: { [K in keyof OptionTypes]: OptionTypes[K] };
+    } & {
+        [K in keyof OptionTypes & InternalOptionName]: InternalOption<OptionTypes[K]>;
+    } & { [K in Exclude<keyof OptionTypes, InternalOptionName>]: Option<OptionTypes[K]> };
 
     type Resource = {
         name: string;

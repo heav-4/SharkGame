@@ -1,6 +1,6 @@
 "use strict";
 SharkGame.Settings = {
-    current: {},
+    current: {} as SettingsModule["current"],
 
     // Internal / No category
     buyAmount: {
