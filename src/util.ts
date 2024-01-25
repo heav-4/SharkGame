@@ -514,6 +514,14 @@ SharkGame.MiscUtil = {
         if (obj instanceof HTMLAllCollection) {
             return obj;
         }
+        if (obj instanceof Node) {
+            console.warn(
+                "deepClone called with Node. " +
+                    "This would cause unintended side-effects (e.g. missing event listeners). " +
+                    "So we'll just return the object unchanged."
+            );
+            return obj;
+        }
         switch (typeof obj) {
             // Immutable types
             case "bigint":

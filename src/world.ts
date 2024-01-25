@@ -48,8 +48,8 @@ SharkGame.World = {
 
         // enable resources allowed on the planet
         if (worldInfo.includedResources) {
-            SharkGame.ResourceMap.forEach((resource) => {
-                resource.exists = false;
+            SharkGame.ResourceMap.forEach((_resourceData, resourceName) => {
+                worldResources.get(resourceName).exists = false;
             });
             _.each(worldInfo.includedResources, (group) => {
                 if (sharkmisc.has(SharkGame.InternalCategories, group)) {
