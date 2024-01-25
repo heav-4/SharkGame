@@ -597,3 +597,9 @@ SharkGame.MiscUtil = {
         return val;
     },
 };
+
+SharkGame.RequiredKeyMap = class extends Map {
+    get(key) {
+        return sharkmisc.assertDefined(super.get(key));
+    }
+};

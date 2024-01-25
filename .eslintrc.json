@@ -44,6 +44,7 @@
         "sharkcolor": "readonly",
         "sharkmisc": "readonly",
         "sharktime": "readonly",
+        "RequiredKeyMap": "readonly",
         "cad": "readonly"
     },
     "ignorePatterns": ["js/lib/**"],

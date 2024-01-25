@@ -33,6 +33,8 @@ declare global {
     const sharkmisc: typeof SharkGame.MiscUtil;
     const sharktime: typeof SharkGame.TimeUtil;
 
+    const RequiredKeyMap: typeof SharkGame.RequiredKeyMap;
+
     const cad: typeof SharkGame.CheatsAndDebug;
 }
 
@@ -1096,6 +1098,10 @@ declare global {
         condenseNode(resources: ResourceAmounts, treatResourcesAsAffected: boolean): void;
     };
 
+    class RequiredKeyMapModule<K, V> extends Map<K, V> {
+        get(key: K): V;
+    }
+
     type Save = {
         version: string;
         resources: Partial<Record<ResourceName, PlayerResource>>;
@@ -1509,10 +1515,11 @@ declare global {
         ResourceIncomeAffected: Partial<Record<ResourceName, Partial<Record<Operation, ResourceAmounts>>>>;
         ResourceIncomeAffectors: SharkGameModules["ResourceIncomeAffected"];
         ResourceIncomeAffectorsOriginal: SharkGameModules["ResourceIncomeAffected"];
-        ResourceMap: Map<ResourceName, Resource>;
+        ResourceMap: RequiredKeyMapModule<ResourceName, Resource>;
         Resources: ResourceModule;
         ResourceSpecialProperties: { timeImmune: ResourceName[]; incomeCap: Record<ResourceName, number> };
         ResourceTable: Record<ResourceName, Resource>;
+        RequiredKeyMap: typeof RequiredKeyMapModule;
         Save: SaveModule;
         Settings: SettingsModule;
         TabHandler: TabHandlerModule;
@@ -1667,19 +1674,19 @@ declare global {
         WorldTypes: Record<WorldName, World>;
     };
     type SharkGameRuntimeData = {
-        BreakdownIncomeTable: Map<ResourceName, Record<ResourceName, number>>;
-        FlippedBreakdownIncomeTable: Map<ResourceName, Record<ResourceName, number>>;
+        BreakdownIncomeTable: RequiredKeyMapModule<ResourceName, Record<ResourceName, number>>;
+        FlippedBreakdownIncomeTable: RequiredKeyMapModule<ResourceName, Record<ResourceName, number>>;
         GeneratorIncomeAffected: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
         GeneratorIncomeAffectors: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
         GeneratorIncomeAffectorsOriginal: Record<ResourceName, Partial<Record<Operation, Record<ResourceName, number>>>>; // TODO: Might be a better type available later;
-        ModifierMap: Map<
+        ModifierMap: RequiredKeyMapModule<
             ResourceName,
             Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>
         >;
         /** Can be indexed with the name of a modifier to return the associated data in SharkGame.ModifierTypes. */
-        ModifierReference: Map<ModifierName, Modifier>;
-        PlayerIncomeTable: Map<ResourceName, number>;
-        PlayerResources: Map<ResourceName, PlayerResource>;
+        ModifierReference: RequiredKeyMapModule<ModifierName, Modifier>;
+        PlayerIncomeTable: RequiredKeyMapModule<ResourceName, number>;
+        PlayerResources: RequiredKeyMapModule<ResourceName, PlayerResource>;
     };
 
     type SharkGame = SharkGameConstants & SharkGameUtils & SharkGameModules & SharkGameData & SharkGameRuntimeData & SharkGameTabs;

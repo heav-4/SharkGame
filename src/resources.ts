@@ -1,10 +1,4 @@
 "use strict";
-SharkGame.PlayerResources = new Map(); // stats about resources player has
-SharkGame.PlayerIncomeTable = new Map(); // every resource and how much is produced
-SharkGame.ResourceMap = new Map(); // every resource and what it produces at base income and after modifiers are applied
-SharkGame.BreakdownIncomeTable = new Map(); // a map which has every single generator and what it produces, after costScaling
-SharkGame.FlippedBreakdownIncomeTable = new Map(); // each resource and what produces it and how much
-SharkGame.ModifierMap = new Map(); // the static multipliers and modifiers to each resource from upgrades, the world, etc
 SharkGame.ResourceIncomeAffectors = {}; // these two are used to preserve the integrity of the original table in sharkgame.resourcetable
 SharkGame.GeneratorIncomeAffectors = {} as SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"]; // this allows free modification of these, in accordance with modifiers and events
 
@@ -23,6 +17,13 @@ SharkGame.Resources = {
     collapsedRows: new Set(),
 
     init() {
+        SharkGame.PlayerResources = new RequiredKeyMap(); // stats about resources player has
+        SharkGame.PlayerIncomeTable = new RequiredKeyMap(); // every resource and how much is produced
+        SharkGame.ResourceMap = new RequiredKeyMap(); // every resource and what it produces at base income and after modifiers are applied
+        SharkGame.BreakdownIncomeTable = new Map(); // a map which has every single generator and what it produces, after costScaling
+        SharkGame.FlippedBreakdownIncomeTable = new RequiredKeyMap(); // each resource and what produces it and how much
+        SharkGame.ModifierMap = new RequiredKeyMap(); // the static multipliers and modifiers to each resource from upgrades, the world, etc
+
         // set all the amounts and total amounts of resources to 0
         $.each(SharkGame.ResourceTable, (resourceId, resource) => {
             SharkGame.ResourceMap.set(resourceId, sharkmisc.cloneDeep(resource));
@@ -49,11 +50,12 @@ SharkGame.Resources = {
         });
 
         // set up the modifier reference, and also set up the object we copy to every entry in the modifier map
-        const multiplierObject = {} as RecursivePartial<
-            Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, Modifier>>>
+        const multiplierObject = {} as Record<
+            "upgrade" | "world" | "aspect",
+            Record<"multiplier" | "other", Record<ModifierName, number | string[]>>
         >;
         $.each(SharkGame.ModifierTypes, (category, types) => {
-            multiplierObject[category] = {};
+            multiplierObject[category] = {} as Record<"multiplier" | "other", Record<ModifierName, number | string[]>>;
             $.each(types, (type, modifiers) => {
                 multiplierObject[category]![type] = {};
                 $.each(modifiers, (name, object) => {
@@ -61,7 +63,7 @@ SharkGame.Resources = {
                     object.category = category;
                     object.type = type;
                     SharkGame.ModifierReference.set(name, object);
-                    multiplierObject[category][type][name] = object.defaultValue;
+                    multiplierObject[category]![type]![name] = object.defaultValue;
                 });
             });
         });
