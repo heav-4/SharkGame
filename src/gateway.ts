@@ -582,7 +582,7 @@ SharkGame.Gateway = {
             aspectTreeContent.append($("<p>").html("Your will flows into solid shapes beyond your control.<br>Focus."));
             aspectTreeContent.append(tree.drawTree(SharkGame.Settings.current.doAspectTable === "table"));
 
-            const buttonDiv = $("<div>").attr("id", "aspectTreeNavButtons").addClass("gatewayButtonList");
+            const buttonDiv = $("<div>").attr("id", "aspectTreeNavButtons").addClass("gatewayButtonList") as JQuery<HTMLDivElement>;
 
             // add return to gateway button
             SharkGame.Button.makeButton("backToGateway", "return to gateway", buttonDiv, () => {

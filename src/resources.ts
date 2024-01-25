@@ -55,7 +55,7 @@ SharkGame.Resources = {
         $.each(SharkGame.ModifierTypes, (category, types) => {
             multiplierObject[category] = {};
             $.each(types, (type, modifiers) => {
-                multiplierObject[category][type] = {};
+                multiplierObject[category]![type] = {};
                 $.each(modifiers, (name, object) => {
                     // additionally set values for the types and categories of stuff
                     object.category = category;

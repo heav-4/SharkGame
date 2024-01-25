@@ -13,11 +13,6 @@ SharkGame.Settings = {
         options: ["simple", "advanced"],
     },
 
-    showPercentages: {
-        defaultSetting: "absolute",
-        options: ["absolute", "percentage"],
-    },
-
     // PERFORMANCE
 
     framerate: {

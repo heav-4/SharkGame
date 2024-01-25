@@ -332,12 +332,9 @@ SharkGame.Keybinds = {
                 break;
             case "press all buying buttons":
                 if (!SharkGame.flags.pressedAllButtonsThisTick) {
-                    _.each(home.buttonNamesList, (actionName, actionData) => {
-                        // actionData gets immediately overwritten because
-                        // linter will yell at me if i define a variable in the switch statement
-                        // and this is a decent workaround
-                        actionData = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
-                        if (!home.doesButtonGiveNegativeThing(actionData) && home.shouldHomeButtonBeUsable() && !actionData.isRemoved) {
+                    _.each(home.buttonNamesList, (actionName, _actionData) => {
+                        const homeAction = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
+                        if (!home.doesButtonGiveNegativeThing(homeAction) && home.shouldHomeButtonBeUsable() && !homeAction.isRemoved) {
                             home.onHomeButton(null, actionName);
                         }
                     });
@@ -379,23 +376,23 @@ SharkGame.Keybinds = {
 
             $("#buttonList").children().addClass("front");
 
-            const textConatiner = $("<div>").attr("id", "keybind-overlay-container");
-            textConatiner.css("width", SharkGame.Settings.current.sidebarWidth);
+            const textContainer = $("<div>").attr("id", "keybind-overlay-container");
+            textContainer.css("width", SharkGame.Settings.current.sidebarWidth);
 
             $("#overlay").empty();
 
-            textConatiner.append($("<h1>").html("ACTION BIND MODE"));
+            textContainer.append($("<h1>").html("ACTION BIND MODE"));
             if (this.settingAction === undefined && this.settingKey === undefined) {
-                textConatiner.append($("<p>").html("<strong>Click the button you want to bind, then press a key to bind it to.</strong>"));
+                textContainer.append($("<p>").html("<strong>Click the button you want to bind, then press a key to bind it to.</strong>"));
             } else if (this.settingAction !== undefined && this.settingKey === undefined) {
-                textConatiner.append($("<p>").html(`<strong>Press a key to bind to ${this.cleanActionID(this.settingAction)}.</strong>`));
+                textContainer.append($("<p>").html(`<strong>Press a key to bind to ${this.cleanActionID(this.settingAction)}.</strong>`));
             } else if (this.settingAction === undefined && this.settingKey !== undefined) {
-                textConatiner.append($("<p>").html(`<strong>Click a button to bind to ${this.settingKey}.</strong>`));
+                textContainer.append($("<p>").html(`<strong>Click a button to bind to ${this.settingKey}.</strong>`));
             } else {
-                textConatiner.append($("<p>").html(`<strong>Bound ${this.settingKey} to ${this.cleanActionID(this.settingAction)}.</strong>`));
+                textContainer.append($("<p>").html(`<strong>Bound ${this.settingKey} to ${this.cleanActionID(this.settingAction!)}.</strong>`));
             }
 
-            $("#overlay").append(textConatiner);
+            $("#overlay").append(textContainer);
             $("#overlay")
                 .on("click", () => {
                     this.toggleBindMode(true);
@@ -424,7 +421,7 @@ SharkGame.Keybinds = {
         }
     },
 
-    updateBindModeState(toggledByKey) {
+    updateBindModeState(toggledByKey = false) {
         this.updateBindModeOverlay(toggledByKey);
         if (this.settingAction !== undefined && this.settingKey !== undefined) {
             this.addKeybind(this.composeKeys(this.settingKey), this.settingAction);

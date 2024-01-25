@@ -276,7 +276,7 @@ SharkGame.PaneHandler = {
         const optionsTable = $("<table>").attr("id", "optionTable") as JQuery<HTMLTableElement>;
 
         // add settings specified in settings.js
-        const categories = {} as Record<OptionCategory, ("current" | OptionName)[]>;
+        const categories = {} as Record<OptionCategory, Exclude<keyof OptionTypes, InternalOptionName>[]>;
         $.each(SharkGame.Settings, (name, setting) => {
             if ("category" in setting) {
                 if (!categories[setting.category]) {
@@ -292,9 +292,6 @@ SharkGame.PaneHandler = {
             );
             _.each(settings, (settingName) => {
                 const setting = SharkGame.Settings[settingName];
-                if (settingName === "current") {
-                    return;
-                }
                 const optionRow = $("<tr>");
 
                 // show setting name
@@ -307,14 +304,14 @@ SharkGame.PaneHandler = {
                 const currentSetting = SharkGame.Settings.current[settingName];
 
                 // show setting adjustment buttons
-                $.each(setting.options, (index, optionValue) => {
+                setting.options.forEach((optionValue, index) => {
                     const isSelectedOption = optionValue === currentSetting;
                     optionRow.append(
                         $("<td>").append(
                             $("<button>")
                                 .attr("id", "optionButton-" + settingName + "-" + index)
                                 .addClass("option-button" + (isSelectedOption ? " disabled" : ""))
-                                .html(typeof optionValue === "boolean" ? (optionValue ? "on" : "off") : optionValue)
+                                .text(typeof optionValue === "boolean" ? (optionValue ? "on" : "off") : optionValue)
                                 .on("click", SharkGame.PaneHandler.onOptionClick)
                         )
                     );
@@ -449,10 +446,11 @@ SharkGame.PaneHandler = {
                     .on("click", () => {
                         if (confirm("Are you absolutely sure you want to wipe your settings to default?")) {
                             $.each(SharkGame.Settings.current, (settingName) => {
-                                if (SharkGame.Settings[settingName]) {
-                                    SharkGame.Settings.current[settingName] = SharkGame.Settings[settingName].defaultSetting;
-                                    if (typeof SharkGame.Settings[settingName].onChange === "function") {
-                                        SharkGame.Settings[settingName].onChange?.();
+                                const option = SharkGame.Settings[settingName];
+                                if (option) {
+                                    SharkGame.Settings.current[settingName] = option.defaultSetting;
+                                    if ("onChange" in option) {
+                                        option.onChange?.();
                                     }
                                 }
                             });
@@ -538,11 +536,13 @@ SharkGame.PaneHandler = {
         if ($(this).hasClass("disabled")) return;
         const buttonLabel = $(this).attr("id")!;
         const settingInfo = buttonLabel.split("-");
-        const settingName = settingInfo[1];
+        const settingName = settingInfo[1] as keyof OptionTypes;
         const optionIndex = parseInt(settingInfo[2]);
 
+        const option = SharkGame.Settings[settingName];
+
         // change setting to specified setting!
-        SharkGame.Settings.current[settingName] = SharkGame.Settings[settingName].options[optionIndex];
+        SharkGame.Settings.current[settingName] = option.options[optionIndex];
 
         // update relevant table cell!
         // $('#option-' + settingName)
@@ -555,7 +555,9 @@ SharkGame.PaneHandler = {
         $(this).addClass("disabled");
 
         // if there is a callback, call it, else call the no op
-        (SharkGame.Settings[settingName].onChange || $.noop)();
+        if ("onChange" in option) {
+            option.onChange?.();
+        }
     },
 
     showKeybinds() {

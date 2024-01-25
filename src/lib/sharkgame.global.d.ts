@@ -140,7 +140,7 @@ declare global {
         | "basicmaterials";
     type ModifierName = string;
     type OptionCategory = "PERFORMANCE" | "LAYOUT" | "APPEARANCE" | "ACCESSIBILITY" | "OTHER" | "SAVES";
-    type InternalOptionName = "buyAmount" | "grottoMode" | "showPercentages";
+    type InternalOptionName = "buyAmount" | "grottoMode";
     type ResourceCategory =
         | "animals"
         | "breeders"
@@ -372,6 +372,7 @@ declare global {
         helpText: string;
         unauthorized?: boolean;
         discovered?: boolean;
+        isRemoved?: boolean;
         newlyDiscovered?: boolean;
         removedBy?: Partial<{
             totalResourceThreshold: Record<ResourceName, number>;
@@ -645,8 +646,16 @@ declare global {
         showFact(): void;
         getFact(): FunFact;
         getPool(): FunFact[];
-        worldBased: Record<WorldName, FunFact[]>;
-        resourceBased: Record<ResourceName, FunFact[]>;
+        worldBased: Partial<
+            Record<
+                WorldName,
+                Partial<{
+                    messages: FunFact[];
+                    areRequirementsMet(): boolean;
+                }>
+            >
+        >;
+        resourceBased: Partial<Record<ResourceName, FunFact[]>>;
         default: FunFact[];
     };
 
@@ -919,7 +928,6 @@ declare global {
     type OptionTypes = {
         buyAmount: number | "custom";
         grottoMode: "simple" | "advanced";
-        showPercentages: "absolute" | "percentage";
 
         alwaysSingularTooltip: boolean;
         autosaveFrequency: number;
@@ -928,10 +936,10 @@ declare global {
         doAspectTable: "tree" | "table";
         enableThemes: boolean;
         framerate: number;
-        groupResources: "boolean";
+        groupResources: boolean;
         idleEnabled: boolean;
         logLocation: "right" | "left" | "top";
-        logMessageMax: boolean;
+        logMessageMax: number;
         minimizedTopbar: boolean;
         minuteHandEffects: boolean;
         notation: "default" | "SI";
@@ -1377,6 +1385,7 @@ declare global {
         shouldRemoveHomeButton(action: HomeAction): boolean;
         addButton(actionName: HomeActionName): void;
         getButtonTabs(): HomeActionCategory[];
+        getNextButtonTab(): HomeActionCategory;
         getLastValidMessage(): HomeMessage;
         shouldBeNewlyDiscovered(actionName: HomeActionName, actionData: HomeAction): boolean | undefined;
         getActionCategory(actionName: HomeActionName): string;
@@ -1385,6 +1394,7 @@ declare global {
         onHomeUnhover(): void;
         getCost(action: HomeAction, amount: number): Record<ResourceName, number>;
         getMax(action: HomeAction): Decimal;
+        getPreviousButtonTab(): HomeActionCategory;
         tickHomeMessages(isDuringTabSwitch?: boolean): void;
         updateMemories(): void;
         updateMessageSelectors(): void;
@@ -1446,6 +1456,7 @@ declare global {
     };
 
     type ReflectionTab = SharkGameTabBase & {
+        sceneImage: string;
         updateAspectList(): void;
     };
 
@@ -1633,11 +1644,10 @@ declare global {
             handleUpBind(keyID: string): boolean;
             bindMenuNewBind(keyID: string): void;
             updateBindModeOverlay(toggledByKey: boolean): void;
-            checkForBindModeCombo(): boolean;
             init(): void;
             resetKeybindsToDefault(): void;
             toggleBindMode(toggledByKey: boolean): void;
-            updateBindModeState(toggledByKey: boolean): void;
+            updateBindModeState(toggledByKey?: boolean): void;
         };
         ModifierTypes: Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, Modifier>>>;
         Panes: Record<string, string>;
