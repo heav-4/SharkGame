@@ -445,6 +445,8 @@ declare global {
         applyToInput(input: number, genDegree: number, outDegree: number, gen: ResourceName, out: ResourceName): number;
     };
 
+    type ModifierCategory = "upgrade" | "world" | "aspect";
+
     type Pane = [title: string, contents: PaneContent, notCloseable: boolean | undefined, fadeInTime: number, customOpacity: number];
 
     type WorldModifier = {
@@ -489,6 +491,13 @@ declare global {
     };
 
     type ResourceAmounts = Partial<Record<ResourceName, number | Decimal>>;
+
+    type CondensedEffects = Record<
+        "genAffect" | "resAffect",
+        Record<"increase" | "decrease" | "multincrease" | "multdecrease", Partial<Record<ResourceName, number>>>
+    >;
+
+    type FurtherCondensedEffects = Record<"generators" | "resources", Record<"increase" | "decrease", Partial<Record<ResourceName, number>>>>;
     //#END REGION: Data structure types
 
     //#REGION: Data structure types
@@ -881,7 +890,7 @@ declare global {
         exitGateway(): void;
     };
 
-    type PaneContent = Array<JQuery.htmlString | JQuery.TypeOrArray<JQuery.Node | JQuery<JQuery.Node>>>;
+    type PaneContent = JQuery.htmlString | JQuery.TypeOrArray<JQuery.Node | JQuery<JQuery.Node>>;
     type PaneHandlerModule = {
         paneStack: Pane[];
         currentPane?: Pane;
@@ -1030,15 +1039,15 @@ declare global {
 
             setup(): void;
             makeToken(): JQuery<HTMLDivElement>;
-            tooltip(_event: JQuery.MouseEnterEvent | null): void;
-            tryReturnToken(_event: JQuery.ClickEvent | null, duringLoad: boolean, token: JQuery<HTMLDivElement>): void;
-            handleTokenDragStart(event: JQuery.DragStartEvent): void;
-            handleResourceDragStart(event: JQuery.DragStartEvent): void;
-            handleDragEnd(_event: JQuery.DragEndEvent): void;
+            tooltip(this: HTMLElement, _event: JQuery.MouseEnterEvent | null): void;
+            tryReturnToken(this: HTMLElement, _event: JQuery.ClickEvent | null, duringLoad: boolean, token: JQuery<HTMLDivElement>): void;
+            handleTokenDragStart(this: HTMLElement, event: JQuery.DragStartEvent): void;
+            handleResourceDragStart(this: HTMLElement, event: JQuery.DragStartEvent): void;
+            handleDragEnd(this: HTMLElement, _event: JQuery.DragEndEvent): void;
             updateColorfulDropZones(): void;
             updateTokenDescriptions(): false | void;
             reapplyToken(token: JQuery<HTMLDivElement>): void;
-            dropToken(event: JQuery.DropEvent): void;
+            dropToken(this: HTMLElement, event: JQuery.DropEvent): void;
             markLocation(originalId: TokenId, newId: TokenValue | TokenId): void;
             unmarkLocation(locationPrevious: TokenValue, id: TokenId): void;
             applyTokenEffect(targetId: TokenValue | TokenId, _id: TokenId, reverseOrApply: "reverse" | "apply"): void;
@@ -1092,10 +1101,10 @@ declare global {
         clearNetworks(): void;
         addNetworkNode(network: Record<string, Record<string, Record<string, number>>>, high: string, mid: string, low: string, value: number): void;
         applyModifier(name: ModifierName, target: string, degree: number): void;
-        reapplyModifiers(generator: string, generated: string): void;
-        getMultiplierProduct(category: string, generator: string, generated: string): number;
+        reapplyModifiers(generator: ResourceName, generated: ResourceName): void;
+        getMultiplierProduct(category: ModifierCategory, generator: ResourceName, generated: ResourceName): number;
         testGracePeriod(): boolean;
-        condenseNode(resources: ResourceAmounts, treatResourcesAsAffected: boolean): void;
+        condenseNode(resources: ResourceAmounts, treatResourcesAsAffected?: boolean): CondensedEffects;
     };
 
     class RequiredKeyMapModule<K, V> extends Map<K, V> {
@@ -1265,7 +1274,7 @@ declare global {
         tabName: string;
         tabBg?: string;
         discoverReq: Partial<{
-            resource: Record<ResourceName, number>;
+            resource: Partial<Record<ResourceName, number>>;
             upgrade: UpgradeName[];
             flag: SharkGame["flags"] & SharkGame["persistentFlags"];
         }>;
@@ -1656,7 +1665,7 @@ declare global {
             toggleBindMode(toggledByKey: boolean): void;
             updateBindModeState(toggledByKey?: boolean): void;
         };
-        ModifierTypes: Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, Modifier>>>;
+        ModifierTypes: Record<ModifierCategory, Record<"multiplier" | "other", Record<ModifierName, Modifier>>>;
         Panes: Record<string, string>;
         ResourceCategories: Record<ResourceCategory, ResourceCategoryObject>;
         Sprites: Record<
@@ -1681,7 +1690,7 @@ declare global {
         GeneratorIncomeAffectorsOriginal: Record<ResourceName, Partial<Record<Operation, Record<ResourceName, number>>>>; // TODO: Might be a better type available later;
         ModifierMap: RequiredKeyMapModule<
             ResourceName,
-            Record<"upgrade" | "world" | "aspect", Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>
+            Record<ModifierCategory, Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>
         >;
         /** Can be indexed with the name of a modifier to return the associated data in SharkGame.ModifierTypes. */
         ModifierReference: RequiredKeyMapModule<ModifierName, Modifier>;

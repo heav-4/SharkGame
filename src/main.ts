@@ -196,6 +196,7 @@ $.extend(SharkGame, {
 SharkGame.Main = {
     tickHandler: -1,
     autosaveHandler: -1,
+    checkForUpdateHandler: -1,
 
     applyFramerate() {
         SharkGame.INTERVAL = 1000 / SharkGame.Settings.current.framerate;
@@ -736,7 +737,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 return;
         }
         _.each(SharkGame.Settings.buyAmount.options, (amount) => {
-            if (amount < 0 && absoluteOnly) {
+            if (typeof amount === "number" && amount < 0 && absoluteOnly) {
                 return true;
             }
 
@@ -749,7 +750,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                 )
             );
             let label = customLabel ? customLabel + " " : "buy ";
-            if (amount < 0) {
+            if (typeof amount === "number" && amount < 0) {
                 if (amount < -2) {
                     label += "1/3 max";
                 } else if (amount < -1) {
@@ -772,7 +773,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                     } else {
                         $("#custom-input").attr("disabled", "true");
                     }
-                    SharkGame.Settings.current.buyAmount = amount === "custom" ? "custom" : parseInt(thisButton.attr("id").slice(4));
+                    SharkGame.Settings.current.buyAmount = amount === "custom" ? "custom" : parseInt(thisButton.attr("id")!.slice(4));
                     $("button[id^='buy-']").removeClass("disabled");
                     thisButton.addClass("disabled");
                 })

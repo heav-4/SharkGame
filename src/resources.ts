@@ -50,10 +50,7 @@ SharkGame.Resources = {
         });
 
         // set up the modifier reference, and also set up the object we copy to every entry in the modifier map
-        const multiplierObject = {} as Record<
-            "upgrade" | "world" | "aspect",
-            Record<"multiplier" | "other", Record<ModifierName, number | string[]>>
-        >;
+        const multiplierObject = {} as Record<ModifierCategory, Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>;
         $.each(SharkGame.ModifierTypes, (category, types) => {
             multiplierObject[category] = {} as Record<"multiplier" | "other", Record<ModifierName, number | string[]>>;
             $.each(types, (type, modifiers) => {
@@ -222,7 +219,7 @@ SharkGame.Resources = {
                 // for this resource, calculate the income it generates
                 if (resource.income) {
                     let costScaling = 1;
-                    const changeMap = new Map();
+                    const changeMap = new Map<ResourceName, number>();
 
                     $.each(resource.income, (generatedResource) => {
                         if (world.doesResourceExist(generatedResource)) {
@@ -253,7 +250,7 @@ SharkGame.Resources = {
                     });
 
                     if (!cheap) {
-                        const trueIncomeObject = {};
+                        const trueIncomeObject = {} as Partial<Record<ResourceName, number>>;
                         let income;
                         changeMap.forEach((amount, generatedResource) => {
                             income = amount * costScaling;
@@ -410,7 +407,9 @@ SharkGame.Resources = {
     },
 
     getCategoryOfResource(resourceName) {
-        return _.findKey(SharkGame.ResourceCategories, (category) => _.some(category.resources, (resource) => resource === resourceName));
+        return _.findKey(SharkGame.ResourceCategories, (category) =>
+            _.some(category.resources, (resource) => resource === resourceName)
+        ) as ResourceCategory;
     },
 
     getResourcesInCategory(categoryName) {
@@ -575,7 +574,7 @@ SharkGame.Resources = {
 
         tooltip(_event) {
             if (SharkGame.Settings.current.showTooltips) {
-                if (SharkGame.flags.tokens![this.id] === "NA") {
+                if (SharkGame.flags.tokens![this.id as TokenId] === "NA") {
                     $("#tooltipbox")
                         .html(
                             sharktext.boldString(
@@ -589,7 +588,7 @@ SharkGame.Resources = {
             }
         },
 
-        tryReturnToken(_event, duringLoad, token = $("#" + this.id)) {
+        tryReturnToken(this: HTMLElement, _event, duringLoad, token = $("#" + this.id)) {
             if (!token.length) {
                 log.addError("Tried to return token, but couldn't find it!");
                 log.addError("Tried to find this token: " + token.attr("id"));
@@ -608,25 +607,26 @@ SharkGame.Resources = {
         },
 
         handleTokenDragStart(event) {
-            event.originalEvent.dataTransfer.setData("tokenId", event.originalEvent.target.id);
+            const tokenId = (<HTMLElement>event.originalEvent!.target!).id;
+            event.originalEvent!.dataTransfer!.setData("tokenId", tokenId);
             // chrome forcing stinky workaround
-            res.tokens.chromeForcesWorkarounds = event.originalEvent.target.id;
+            res.tokens.chromeForcesWorkarounds = tokenId;
             // event.originalEvent.dataTransfer.setData("tokenType", event.originalEvent.target.type);
-            event.originalEvent.dataTransfer.setData("tokenLocation", SharkGame.flags.tokens[this.id]);
+            event.originalEvent!.dataTransfer!.setData("tokenLocation", SharkGame.flags.tokens![this.id as TokenId]);
             const image = document.createElement("img");
             image.src = "img/small/general/theToken.png";
-            event.originalEvent.dataTransfer.setDragImage(image, 0, 0);
+            event.originalEvent!.dataTransfer!.setDragImage(image, 0, 0);
             res.tokens.updateColorfulDropZones();
             res.tableTextLeave();
         },
 
         handleResourceDragStart(event) {
-            event.originalEvent.dataTransfer.setData("tokenId", $("#" + this.id).attr("tokenId") as TokenId);
+            event.originalEvent!.dataTransfer!.setData("tokenId", $("#" + this.id).attr("tokenId") as TokenId);
             res.tokens.chromeForcesWorkarounds = $("#" + this.id).attr("tokenId") as TokenId;
-            event.originalEvent.dataTransfer.setData("tokenLocation", event.originalEvent.target.id);
+            event.originalEvent!.dataTransfer!.setData("tokenLocation", (<HTMLElement>event.originalEvent!.target!).id);
             const image = document.createElement("img");
             image.src = "img/small/general/theToken.png";
-            event.originalEvent.dataTransfer.setDragImage(image, 0, 0);
+            event.originalEvent!.dataTransfer!.setDragImage(image, 0, 0);
             res.tokens.updateColorfulDropZones();
             res.tableTextLeave();
         },
@@ -693,15 +693,15 @@ SharkGame.Resources = {
 
         dropToken(event) {
             res.tableTextLeave();
-            const originalTokenId = event.originalEvent.dataTransfer.getData("tokenId") as TokenId;
-            const previousLocation = event.originalEvent.dataTransfer.getData("tokenLocation") as TokenValue;
+            const originalTokenId = event.originalEvent!.dataTransfer!.getData("tokenId") as TokenId;
+            const previousLocation = event.originalEvent!.dataTransfer!.getData("tokenLocation") as TokenValue;
 
             res.tokens.unmarkLocation(previousLocation, originalTokenId);
 
             if (this.id.includes("token") && this.id !== originalTokenId) {
                 res.tokens.markLocation(originalTokenId, originalTokenId);
             } else {
-                res.tokens.markLocation(originalTokenId, this.id);
+                res.tokens.markLocation(originalTokenId, this.id as TokenId);
             }
             res.updateResourcesTable();
         },
@@ -759,7 +759,7 @@ SharkGame.Resources = {
                     !$("#" + placedOnWhat).attr("tokenId") &&
                     _.some(
                         SharkGame.ResourceMap.get(resource)!.income,
-                        (amount, generatedResource) => amount !== 0 && world.doesResourceExist(generatedResource)
+                        (amount, generatedResource) => amount !== 0 && world.doesResourceExist(generatedResource as ResourceName)
                     )
                 );
             } else if (placedOnWhat.includes("income")) {
@@ -770,7 +770,7 @@ SharkGame.Resources = {
         },
 
         tryClickToPlace(event) {
-            const textId = event.originalEvent.target.id;
+            const textId = (<HTMLElement>event.originalEvent!.target!).id as TokenId;
             if (res.tokens.canBePlacedOn(textId)) {
                 $.each(SharkGame.flags.tokens, (tokenId, currentLocation) => {
                     if (currentLocation === "NA") {
@@ -1287,7 +1287,7 @@ SharkGame.Resources = {
                                     (SharkGame.Aspects.coordinatedCooperation.level + 2) * (SharkGame.Aspects.collectiveCooperation.level + 1)
                             );
                         }
-                        event.originalEvent.preventDefault();
+                        event.originalEvent!.preventDefault();
                     }
                 })
                 .on("dragend", res.tokens.handleDragEnd)
@@ -1367,10 +1367,13 @@ SharkGame.Resources = {
             }
         });
 
-        const sendObject = {};
+        const sendObject = {} as ResourceAmounts;
         sendObject[resourceName] = res.getResource(resourceName);
         const condensedEffects = res.condenseNode(sendObject);
-        const furtherCondensedEffects = { generators: { increase: {}, decrease: {} }, resources: { increase: {}, decrease: {} } };
+        const furtherCondensedEffects = {
+            generators: { increase: {}, decrease: {} },
+            resources: { increase: {}, decrease: {} },
+        } as FurtherCondensedEffects;
 
         $.each(condensedEffects.genAffect, (type, effects) => {
             switch (type) {
@@ -1381,7 +1384,7 @@ SharkGame.Resources = {
                     break;
                 case "decrease":
                     $.each(effects, (affectedGenerator, degree) => {
-                        furtherCondensedEffects.generators.decrease[affectedGenerator] = -degree;
+                        furtherCondensedEffects.generators.decrease[affectedGenerator] = -degree!;
                     });
                     break;
                 case "multincrease":
@@ -1389,20 +1392,20 @@ SharkGame.Resources = {
                         if (typeof furtherCondensedEffects.generators.increase[affectedGenerator] !== "number") {
                             furtherCondensedEffects.generators.increase[affectedGenerator] = degree;
                         } else {
-                            furtherCondensedEffects.generators.increase[affectedGenerator] += 1;
-                            furtherCondensedEffects.generators.increase[affectedGenerator] *= 1 + degree;
-                            furtherCondensedEffects.generators.increase[affectedGenerator] -= 1;
+                            furtherCondensedEffects.generators.increase[affectedGenerator]! += 1;
+                            furtherCondensedEffects.generators.increase[affectedGenerator]! *= 1 + degree!;
+                            furtherCondensedEffects.generators.increase[affectedGenerator]! -= 1;
                         }
                     });
                     break;
                 case "multdecrease":
                     $.each(effects, (affectedGenerator, degree) => {
                         if (typeof furtherCondensedEffects.generators.decrease[affectedGenerator] !== "number") {
-                            furtherCondensedEffects.generators.decrease[affectedGenerator] = -degree;
+                            furtherCondensedEffects.generators.decrease[affectedGenerator] = -degree!;
                         } else {
-                            furtherCondensedEffects.generators.decrease[affectedGenerator] += 1;
-                            furtherCondensedEffects.generators.decrease[affectedGenerator] *= 1 + -degree;
-                            furtherCondensedEffects.generators.decrease[affectedGenerator] -= 1;
+                            furtherCondensedEffects.generators.decrease[affectedGenerator]! += 1;
+                            furtherCondensedEffects.generators.decrease[affectedGenerator]! *= 1 + -degree!;
+                            furtherCondensedEffects.generators.decrease[affectedGenerator]! -= 1;
                         }
                     });
                     break;
@@ -1417,7 +1420,7 @@ SharkGame.Resources = {
                     break;
                 case "decrease":
                     $.each(effects, (affectedResource, degree) => {
-                        furtherCondensedEffects.resources.decrease[affectedResource] = -degree;
+                        furtherCondensedEffects.resources.decrease[affectedResource] = -degree!;
                     });
                     break;
                 case "multincrease":
@@ -1425,20 +1428,20 @@ SharkGame.Resources = {
                         if (typeof furtherCondensedEffects.resources.increase[affectedResource] !== "number") {
                             furtherCondensedEffects.resources.increase[affectedResource] = degree;
                         } else {
-                            furtherCondensedEffects.resources.increase[affectedResource] += 1;
-                            furtherCondensedEffects.resources.increase[affectedResource] *= 1 + degree;
-                            furtherCondensedEffects.resources.increase[affectedResource] -= 1;
+                            furtherCondensedEffects.resources.increase[affectedResource]! += 1;
+                            furtherCondensedEffects.resources.increase[affectedResource]! *= 1 + degree!;
+                            furtherCondensedEffects.resources.increase[affectedResource]! -= 1;
                         }
                     });
                     break;
                 case "multdecrease":
                     $.each(effects, (affectedResource, degree) => {
                         if (typeof furtherCondensedEffects.resources.decrease[affectedResource] !== "number") {
-                            furtherCondensedEffects.resources.decrease[affectedResource] = -degree;
+                            furtherCondensedEffects.resources.decrease[affectedResource] = -degree!;
                         } else {
-                            furtherCondensedEffects.resources.decrease[affectedResource] += 1;
-                            furtherCondensedEffects.resources.decrease[affectedResource] *= 1 + -degree;
-                            furtherCondensedEffects.resources.decrease[affectedResource] -= 1;
+                            furtherCondensedEffects.resources.decrease[affectedResource]! += 1;
+                            furtherCondensedEffects.resources.decrease[affectedResource]! *= 1 + -degree!;
+                            furtherCondensedEffects.resources.decrease[affectedResource]! -= 1;
                         }
                     });
                     break;
@@ -1453,7 +1456,7 @@ SharkGame.Resources = {
                 increaseText +=
                     sharktext.getResourceName(affectedGenerator, false, 1, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                     " speed by " +
-                    sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree))}%`);
+                    sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree!))}%`);
             }
         });
 
@@ -1463,31 +1466,31 @@ SharkGame.Resources = {
                 increaseText +=
                     sharktext.getResourceName(affectedResource, false, 1, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                     " gains by " +
-                    sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree))}%`);
+                    sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree!))}%`);
             }
         });
 
         let decreaseText = "";
 
         $.each(furtherCondensedEffects.generators.decrease, (affectedGenerator, degree) => {
-            if (degree < 0) degree = 1 + degree;
+            if (degree! < 0) degree = 1 + degree!;
             if (world.doesResourceExist(affectedGenerator) && res.getResource(affectedGenerator) > SharkGame.EPSILON) {
                 decreaseText += "<br>";
                 decreaseText +=
                     sharktext.getResourceName(affectedGenerator, false, 1, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                     " speed by " +
-                    sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree))}%`);
+                    sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree!))}%`);
             }
         });
 
         $.each(furtherCondensedEffects.resources.decrease, (affectedResource, degree) => {
-            if (degree < 0) degree = 1 + degree;
+            if (degree! < 0) degree = 1 + degree!;
             if (world.doesResourceExist(affectedResource) && res.getResource(affectedResource) > SharkGame.EPSILON) {
                 decreaseText += "<br>";
                 decreaseText +=
                     sharktext.getResourceName(affectedResource, false, 1, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                     " gains by " +
-                    sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree))}%`);
+                    sharktext.boldString(`${sharktext.beautify(Math.floor(100 * degree!))}%`);
             }
         });
 
@@ -1611,12 +1614,13 @@ SharkGame.Resources = {
      * @param {number} degree The incoming change to the modifier, or a separate value denoting the strength of a world modifier.
      */
     applyModifier(name, target, degree) {
+        let resources: ResourceName[] = [];
         if (res.isCategory(target)) {
-            target = res.getResourcesInCategory(target);
+            resources = res.getResourcesInCategory(target);
         } else if (typeof target !== "object") {
-            target = [target];
+            resources = [target as ResourceName];
         }
-        _.each(target, (resource) => {
+        _.each(resources, (resource) => {
             const modifier = SharkGame.ModifierReference.get(name);
             const type = modifier.type;
             const category = modifier.category;
@@ -1675,7 +1679,7 @@ SharkGame.Resources = {
      * @param {boolean} treatResourcesAsAffected Whether or not to condense the node with respect to the resources as affectors or as the affected.
      */
     condenseNode(resources, treatResourcesAsAffected = false) {
-        function convertType(whichType: "multiply" | "exponentiate", degree: number) {
+        function convertType(whichType: Operation, degree: number) {
             switch (whichType) {
                 case "multiply":
                     return degree > 0 ? "increase" : "decrease";

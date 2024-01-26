@@ -83,7 +83,7 @@ SharkGame.Lab = {
     },
 
     resetUpgrades() {
-        SharkGame.Upgrades.purchaseQueue = undefined;
+        SharkGame.Upgrades.purchaseQueue = [];
         SharkGame.Upgrades.purchased.splice(0);
 
         const upgradeObject = {};
