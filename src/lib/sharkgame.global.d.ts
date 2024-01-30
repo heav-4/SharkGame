@@ -490,7 +490,7 @@ declare global {
         resources: ResourceName[];
     };
 
-    type ResourceAmounts = Partial<Record<ResourceName, number | Decimal>>;
+    type ResourceAmounts = Partial<Record<ResourceName, number>>;
 
     type CondensedEffects = Record<
         "genAffect" | "resAffect",
