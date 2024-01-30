@@ -6,7 +6,7 @@ SharkGame.Home = {
     tabName: "Home Sea",
     tabBg: "img/bg/bg-homesea.png",
 
-    currentButtonTab: null,
+    currentButtonTab: null as unknown as HomeActionCategory,
 
     buttonNamesList: [],
 
@@ -108,7 +108,7 @@ SharkGame.Home = {
                             .html(category.name)
                             .on("click", function callback() {
                                 if ($(this).hasClass(".disabled")) return;
-                                const tab = $(this).attr("id").split("-")[1];
+                                const tab = $(this).attr("id")!.split("-")[1] as HomeActionCategory;
                                 home.changeButtonTab(tab);
                             })
                     );
@@ -184,7 +184,7 @@ SharkGame.Home = {
         return tabs[currentTabIndex - 1];
     },
 
-    tickHomeMessages(isDuringTabSwitch) {
+    tickHomeMessages(isDuringTabSwitch = false) {
         const lastValidMessage = home.getLastValidMessage();
         home.lastValidMessage = lastValidMessage.name;
         home.updateMemories();
@@ -209,7 +209,7 @@ SharkGame.Home = {
     getLastValidMessage() {
         const lastValidMessageData = _.findLast(SharkGame.HomeMessages.messages[world.worldType], (extraMessage) => {
             // check if all requirements met
-            if (sharkmisc.has(extraMessage, "unlock")) {
+            if ("unlock" in extraMessage && extraMessage.unlock !== undefined) {
                 let requirementsMet = true;
                 requirementsMet =
                     requirementsMet &&
@@ -236,7 +236,7 @@ SharkGame.Home = {
                 return requirementsMet;
             }
             return true;
-        });
+        }) as HomeMessage;
 
         return lastValidMessageData;
     },
@@ -609,7 +609,7 @@ SharkGame.Home = {
     addButton(actionName) {
         this.buttonNamesList.push(actionName);
 
-        const buttonListSel = $("#buttonList");
+        const buttonListSel = $("#buttonList") as JQuery<HTMLDivElement>;
         const actionData = SharkGame.HomeActions.getActionTable()[actionName];
 
         const buttonSelector = SharkGame.Button.makeHoverscriptButton(
@@ -620,7 +620,7 @@ SharkGame.Home = {
             home.onHomeHover,
             home.onHomeUnhover
         ); // box-shadow: 0 0 6px 3px #f00, 0 0 3px 1px #ff1a1a inset;
-        buttonSelector.html($("<span id='" + actionName + "Label' class='click-passthrough'></span>"));
+        buttonSelector.empty().append($("<span id='" + actionName + "Label' class='click-passthrough'></span>"));
         home.updateButton(actionName);
         if (SharkGame.Settings.current.showAnimations) {
             buttonSelector.hide().css("opacity", 0).slideDown(50).animate({ opacity: 1.0 }, 50);
@@ -664,7 +664,7 @@ SharkGame.Home = {
     getActionCategory(actionName) {
         return _.findKey(SharkGame.HomeActionCategories, (category) => {
             return _.some(category.actions, (action) => action === actionName);
-        });
+        }) as HomeActionCategory;
     },
 
     onHomeButton(_placeholder, actionName) {
@@ -673,7 +673,7 @@ SharkGame.Home = {
         if (!actionName) {
             // get related entry in home button table
             button = $(this);
-            actionName = button.attr("id");
+            actionName = button.attr("id")!;
         } else {
             button = $("#" + actionName);
         }
@@ -786,14 +786,14 @@ SharkGame.Home = {
 
         if (!actionName) {
             const button = $(this);
-            actionName = button.attr("id");
+            actionName = button.attr("id") as string;
         }
 
         $("#tooltipbox").removeClass("gives-consumer");
 
         const actionData = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
         const effects = actionData.effect;
-        const validGenerators = {};
+        const validGenerators = {} as Partial<Record<ResourceName, number>>;
         $.each(effects.resource, (resource) => {
             $.each(SharkGame.ResourceMap.get(resource).income, (incomeResource) => {
                 const genAmount = res.getProductAmountFromGeneratorResource(resource, incomeResource, 1);
@@ -811,7 +811,7 @@ SharkGame.Home = {
                 return costData.costFunction === "unique";
             })
         ) {
-            buyingHowMuch = sharkmath.getPurchaseAmount(undefined, home.getMax(actionData).toNumber());
+            buyingHowMuch = sharkmath.getPurchaseAmount(home.getMax(actionData).toNumber());
             if (buyingHowMuch < 1) {
                 buyingHowMuch = 1;
             }
@@ -819,15 +819,15 @@ SharkGame.Home = {
 
         const usePlural =
             (_.some(effects.resource, (_amount, name) => sharktext.getDeterminer(name)) &&
-                (buyingHowMuch > 1 || _.some(effects.resource, (amount) => amount > 1))) ||
+                (buyingHowMuch > 1 || _.some(effects.resource, (amount) => amount! > 1))) ||
             Object.keys(effects.resource).length > 1;
         let addedAnyLabelsYet = false; // this keeps track of whether or not little tooltip text has already been appended
 
         // append valid stuff for generators like production
         let text = "";
 
-        if (_.some(validGenerators, (amount) => amount > 0)) {
-            if (_.some(validGenerators, (amount, resourceName) => amount > 0 && res.isInCategory(resourceName, "harmful"))) {
+        if (_.some(validGenerators, (amount) => amount! > 0)) {
+            if (_.some(validGenerators, (amount, resourceName) => amount! > 0 && res.isInCategory(resourceName, "harmful"))) {
                 $("#tooltipbox").addClass("gives-consumer");
             }
             text += "<span class='littleTooltipText'>PRODUCE" + (usePlural ? "" : "S") + "</span><br/>";
@@ -835,19 +835,19 @@ SharkGame.Home = {
         }
 
         $.each(validGenerators, (incomeResource, amount) => {
-            if (amount > 0) {
+            if (amount! > 0) {
                 text +=
                     "<b>" +
                     sharktext.beautifyIncome(
-                        buyingHowMuch * amount,
+                        buyingHowMuch * amount!,
                         " " + sharktext.getResourceName(incomeResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color"))
                     ) +
                     "</b><br/>";
             }
         });
 
-        if (_.some(validGenerators, (amount) => amount < 0)) {
-            if (_.some(validGenerators, (amount, resourceName) => amount < 0 && !res.isInCategory(resourceName, "harmful"))) {
+        if (_.some(validGenerators, (amount) => amount! < 0)) {
+            if (_.some(validGenerators, (amount, resourceName) => amount! < 0 && !res.isInCategory(resourceName, "harmful"))) {
                 $("#tooltipbox").addClass("gives-consumer");
             }
             text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "and " : "") + "CONSUME" + (usePlural ? "" : "S") + "</span><br/>";
@@ -1068,7 +1068,7 @@ SharkGame.Home = {
     },
 
     getCost(action, amount) {
-        const calcCost: Record<ResourceName, number> = {};
+        const calcCost = {} as Record<ResourceName, number>;
         const rawCost = action.cost;
 
         _.each(rawCost, (costObj) => {
@@ -1116,7 +1116,7 @@ SharkGame.Home = {
                         subMax = sharkmath.linearMax(currAmount, costResource, priceIncrease).minus(currAmount);
                         break;
                     case "unique":
-                        subMax = sharkmath.uniqueMax(currAmount, costResource, priceIncrease).minus(currAmount);
+                        subMax = sharkmath.uniqueMax(currAmount).minus(currAmount);
                         break;
                 }
                 // prevent flashing action costs

@@ -63,6 +63,12 @@ SharkGame.Keybinds = {
         ControlRight: false,
     },
 
+    bindMode: false,
+    bindModeLock: false,
+    waitForKey: false,
+    settingAction: undefined,
+    settingKey: undefined,
+
     init() {
         if ($.isEmptyObject(this.keybinds)) {
             this.resetKeybindsToDefault();
@@ -90,7 +96,7 @@ SharkGame.Keybinds = {
             } else {
                 // perform a manual search to find the name of this action
                 _.each(SharkGame.HomeActions, (homeActionsObject) => {
-                    if (typeof homeActionsObject === "object" && homeActionsObject[actionID]) {
+                    if (typeof homeActionsObject === "object" && actionID in homeActionsObject) {
                         actionID = homeActionsObject[actionID].name;
                         return false;
                     }

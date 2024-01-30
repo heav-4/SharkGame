@@ -680,10 +680,12 @@ declare global {
         };
         NUM_PLANETS_TO_SHOW: number;
         transitioning: boolean;
-        selectedWorld: WorldName;
+        selectedWorld: WorldName | null;
         allowedWorlds: WorldName[];
         completedWorlds: WorldName[];
-        planetPool: WorldName[];
+        planetPool: Array<{
+            type: WorldName;
+        }>;
         badWorld?: boolean;
         ui: {
             showGateway(
@@ -716,7 +718,7 @@ declare global {
         playerHasSeenResource(resource: ResourceName): boolean;
         markWorldCompleted(worldType: WorldName): void;
         isWorldBeaten(worldType: WorldName): boolean;
-        getTimeInLastWorld(formatLess: boolean): number | string;
+        getTimeInLastWorld(): number;
         updateWasScoutingStatus(): void;
         updateScoutingStatus(): void;
         wasOnScoutingMission(): boolean;
@@ -767,7 +769,7 @@ declare global {
          * @param upgradeName The name of the upgrade
          */
         getUpgradeData(table: UpgradeTable, upgradeName: UpgradeName): Upgrade;
-        generateUpgradeTable(worldType: WorldName): UpgradeTable;
+        generateUpgradeTable(worldType: WorldName | "default"): UpgradeTable;
 
         purchaseQueue: UpgradeName[];
     };
@@ -856,9 +858,9 @@ declare global {
         /** this takes an argument to know whether or not to return a Decimal or a Number */
         uniqueMax(current: Decimal): Decimal;
         uniqueMax(current: number): number;
-        getBuyAmount(nomaxBuy?: boolean): Decimal | number;
+        getBuyAmount(nomaxBuy?: boolean): number;
         /** This is weird */
-        getPurchaseAmount(resource: ResourceName, owned?: number): Decimal | number;
+        getPurchaseAmount(owned: number): number;
     };
 
     type MiscUtilModule = {
@@ -980,7 +982,7 @@ declare global {
         [K in keyof OptionTypes & InternalOptionName]: InternalOption<OptionTypes[K]>;
     } & { [K in Exclude<keyof OptionTypes, InternalOptionName>]: Option<OptionTypes[K]> };
 
-    type Resource = {
+    type StaticResource = {
         name: string;
         singleName: string;
         desc: string;
@@ -989,8 +991,9 @@ declare global {
         forceIncome?: boolean;
         baseIncome?: ResourceAmounts;
         jobs?: ResourceName[];
-        income?: ResourceAmounts;
     };
+
+    type Resource = StaticResource & { income: ResourceAmounts };
 
     type ResourceModule = {
         INCOME_COLOR: string;
@@ -1114,7 +1117,11 @@ declare global {
     type Save = {
         version: string;
         resources: Partial<Record<ResourceName, PlayerResource>>;
-        tabs: Partial<TabsModule>;
+        tabs: Partial<
+            {
+                current: TabName;
+            } & Record<TabName, [boolean, boolean]>
+        >;
         completedRequirements: GateTab["completedRequirements"];
         world: {
             type: WorldName;
@@ -1178,19 +1185,18 @@ declare global {
         discoverTab(tab: TabName): void;
     };
 
+    type Tab = {
+        id: SharkGameTabBase["tabId"];
+        name: SharkGameTabBase["tabName"];
+        discovered: SharkGameTabBase["tabDiscovered"];
+        code: SharkGameTabBase;
+        discoverReq: SharkGameTabBase["discoverReq"];
+        seen: boolean;
+    };
+
     type TabsModule = {
         current: TabName;
-    } & Record<
-        TabName,
-        {
-            id: SharkGameTabBase["tabId"];
-            name: SharkGameTabBase["tabName"];
-            discovered: SharkGameTabBase["tabDiscovered"];
-            code: SharkGameTabBase;
-            discoverReq: SharkGameTabBase["discoverReq"];
-            seen: boolean;
-        }
-    >;
+    } & Record<TabName, Tab>;
 
     type TextUtilModule = {
         plural(number: number): "" | "s";
@@ -1243,7 +1249,7 @@ declare global {
         _worldType: WorldName;
         get worldType(): WorldName;
         set worldType(value: WorldName);
-        worldResources: Map<ResourceName, { exists: boolean }>;
+        worldResources: RequiredKeyMapModule<ResourceName, { exists: boolean }>;
         worldRestrictedCombinations: Map<unknown, unknown>;
         init(): void;
         setup(): void;
@@ -1387,14 +1393,15 @@ declare global {
     };
 
     type HomeTab = SharkGameTabBase & {
-        currentButtonTab: null | HomeActionCategory;
+        currentButtonTab: HomeActionCategory;
         lastValidMessage: HomeMessageName | "";
         buttonNamesList: HomeActionName[];
         discoverActions(): void;
         createButtonTabs(): void;
-        updateTab(tabToUpdate: string): void;
+        updateTab(tabToUpdate: HomeActionCategory): void;
         changeButtonTab(tabToChangeTo: HomeActionCategory): void;
-        updateMessage(suppressAnimation: boolean): void;
+        updateMessage(requestedMessage: string, suppressAnimation: boolean): void;
+        updateMessageTracker(): void;
         updateButton(actionName: HomeActionName): void;
         areActionPrereqsMet(actionName: HomeActionName): boolean;
         shouldRemoveHomeButton(action: HomeAction): boolean;
@@ -1403,9 +1410,9 @@ declare global {
         getNextButtonTab(): HomeActionCategory;
         getLastValidMessage(): HomeMessage;
         shouldBeNewlyDiscovered(actionName: HomeActionName, actionData: HomeAction): boolean | undefined;
-        getActionCategory(actionName: HomeActionName): string;
-        onHomeButton(mouseEnterEvent: JQuery.MouseEnterEvent | null, actionName: HomeActionName): void;
-        onHomeHover(mouseEnterEvent: JQuery.MouseEnterEvent | null, actionName: HomeActionName): void;
+        getActionCategory(actionName: HomeActionName): HomeActionCategory;
+        onHomeButton(mouseEnterEvent: JQuery.ClickEvent | null, actionName?: HomeActionName): void;
+        onHomeHover(mouseEnterEvent: JQuery.MouseEnterEvent | null, actionName?: HomeActionName): void;
         onHomeUnhover(): void;
         getCost(action: HomeAction, amount: number): Record<ResourceName, number>;
         getMax(action: HomeAction): Decimal;
@@ -1527,7 +1534,7 @@ declare global {
         ResourceMap: RequiredKeyMapModule<ResourceName, Resource>;
         Resources: ResourceModule;
         ResourceSpecialProperties: { timeImmune: ResourceName[]; incomeCap: Record<ResourceName, number> };
-        ResourceTable: Record<ResourceName, Resource>;
+        ResourceTable: Record<ResourceName, StaticResource>;
         RequiredKeyMap: typeof RequiredKeyMapModule;
         Save: SaveModule;
         Settings: SettingsModule;
@@ -1592,18 +1599,14 @@ declare global {
         missingAspects?: boolean;
         paneGenerated: boolean;
         persistentFlags: Partial<{
-            currentPausedTime: number;
             debug: boolean;
             destinyRolls: number;
-            dialSetting: number;
             individuallyBoughtSharkonium: number;
             lastRunTime: number;
-            minuteStorage: number;
             revealedButtonTabs: boolean;
             revealedBuyButtons: boolean;
             scouting: boolean;
             tooltipUnlocked: boolean;
-            totalPausedTime: number;
             unlockedDebug: boolean;
             wasOnScoutingMission: boolean;
             wasScouting: boolean;
@@ -1615,7 +1618,12 @@ declare global {
             everIdled: boolean;
             requestedTime: number;
             patience: Aspect | 0;
-        }>;
+        }> & {
+            currentPausedTime: number;
+            totalPausedTime: number;
+            dialSetting: number;
+            minuteStorage: number;
+        }; // these persistentFlags are guranteed to exist by the end of setUpGame
         savedMouseActivity: number;
         sidebarHidden: boolean;
         spriteHomeEventPath: string;
@@ -1687,7 +1695,7 @@ declare global {
         FlippedBreakdownIncomeTable: RequiredKeyMapModule<ResourceName, Record<ResourceName, number>>;
         GeneratorIncomeAffected: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
         GeneratorIncomeAffectors: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
-        GeneratorIncomeAffectorsOriginal: Record<ResourceName, Partial<Record<Operation, Record<ResourceName, number>>>>; // TODO: Might be a better type available later;
+        GeneratorIncomeAffectorsOriginal: Partial<Record<ResourceName, Partial<Record<Operation, Partial<Record<ResourceName, number>>>>>>; // TODO: Might be a better type available later;
         ModifierMap: RequiredKeyMapModule<
             ResourceName,
             Record<ModifierCategory, Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>

@@ -143,7 +143,7 @@ SharkGame.Lab = {
                     message = "The scientists rest content, sure that they're done with their work.";
             }
 
-            $("#buttonList").html(($("<p>") as JQuery<HTMLElement>).html(message));
+            $("#buttonList").empty().append($("<p>").html(message));
             if (isNotStart) lab.updateMessage();
         } else if (lab.listEmpty) {
             let message;
@@ -161,7 +161,7 @@ SharkGame.Lab = {
                 default:
                     message = "The scientists are out of ideas, but there are always more discoveries to be made.";
             }
-            $("#buttonList").html($("<p>").html(message));
+            $("#buttonList").empty().append($("<p>").html(message));
 
             const hintedUpgrade = _.find(
                 upgradeTable,
@@ -199,7 +199,7 @@ SharkGame.Lab = {
         const lab = SharkGame.Lab;
 
         // cache a selector
-        const buttonList = $("#buttonList");
+        const buttonList = $("#buttonList") as JQuery<HTMLDivElement>;
 
         const upgradeTable = SharkGame.Upgrades.getUpgradeTable();
         lab.listEmpty = true;
@@ -546,7 +546,7 @@ SharkGame.Lab = {
         const list = $("<ul>");
 
         // reverse object keys
-        const upgrades = [];
+        const upgrades = [] as UpgradeName[];
         $.each(upgradeTable, (upgradeId) => {
             if (SharkGame.Upgrades.purchased.includes(upgradeId)) {
                 upgrades.unshift(upgradeId);

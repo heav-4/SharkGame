@@ -4,7 +4,7 @@ SharkGame.Gateway = {
     NUM_PLANETS_TO_SHOW: 3,
 
     transitioning: false,
-    selectedWorld: "",
+    selectedWorld: null,
 
     allowedWorlds: ["abandoned", "haven", "frigid", "shrouded", "marine", "volcanic", "tempestuous"],
 
@@ -209,9 +209,9 @@ SharkGame.Gateway = {
         }
     },
 
-    getTimeInLastWorld(formatLess) {
+    getTimeInLastWorld() {
         if (SharkGame.persistentFlags.lastRunTime) {
-            return formatLess ? SharkGame.persistentFlags.lastRunTime : sharktext.formatTime(SharkGame.persistentFlags.lastRunTime);
+            return SharkGame.persistentFlags.lastRunTime;
         } else {
             if (!SharkGame.persistentFlags.totalPausedTime) {
                 SharkGame.persistentFlags.totalPausedTime = 0;
@@ -224,7 +224,7 @@ SharkGame.Gateway = {
                 SharkGame.timestampRunStart -
                 SharkGame.persistentFlags.totalPausedTime -
                 SharkGame.persistentFlags.currentPausedTime;
-            return formatLess ? time : sharktext.formatTime(time);
+            return time;
         }
     },
 
@@ -246,7 +246,7 @@ SharkGame.Gateway = {
         if (SharkGame.persistentFlags.scouting !== undefined) {
             gateway.updateWasScoutingStatus();
         }
-        return SharkGame.persistentFlags.wasScouting;
+        return SharkGame.persistentFlags.wasScouting!;
     },
 
     currentlyOnScoutingMission() {
@@ -280,7 +280,7 @@ SharkGame.Gateway = {
                 }
 
                 let timeBelowThreshold;
-                const rawTime = gateway.getTimeInLastWorld(true) / 60000;
+                const rawTime = gateway.getTimeInLastWorld() / 60000;
                 if (rawTime < 5) {
                     timeBelowThreshold = 5 - rawTime;
 
@@ -368,7 +368,10 @@ SharkGame.Gateway = {
 
     ui: {
         showGateway(baseReward, patienceReward, speedReward, gumptionRatio = gateway.getGumptionBonus(), forceWorldBased = false, storedTime = 0) {
-            const gumptionBonus = Math.ceil(gumptionRatio * (baseReward + speedReward));
+            let gumptionBonus;
+            if (gumptionRatio && baseReward && speedReward) {
+                gumptionBonus = Math.ceil(gumptionRatio * (baseReward + speedReward));
+            }
 
             // get some useful numbers
             const essenceHeld = res.getResource("essence");
@@ -390,7 +393,7 @@ SharkGame.Gateway = {
             );
 
             // figure out all our rewards
-            if (baseReward > 0) {
+            if (baseReward && baseReward > 0) {
                 gatewayContent.append(
                     $("<p>").html(
                         "Entering this place has changed you, granting you <span class='essenceCount'>" +
@@ -399,7 +402,7 @@ SharkGame.Gateway = {
                     )
                 );
             }
-            if (speedReward > 0) {
+            if (speedReward && speedReward > 0) {
                 gatewayContent.append(
                     $("<p>").html(
                         "You completed this world " +
@@ -423,7 +426,7 @@ SharkGame.Gateway = {
                     )
                 );
             }
-            if (patienceReward > 0) {
+            if (patienceReward && patienceReward > 0) {
                 gatewayContent.append(
                     $("<p>").html(
                         "Your patience pays off, granting you <span class='essenceCount'>" +
@@ -432,7 +435,7 @@ SharkGame.Gateway = {
                     )
                 );
             }
-            if (speedReward || gumptionBonus || patienceReward) {
+            if (speedReward && gumptionBonus && baseReward && patienceReward) {
                 gatewayContent.append(
                     $("<p>").html(
                         "You gained <span class='essenceCount'>" +
@@ -472,12 +475,12 @@ SharkGame.Gateway = {
             gatewayContent.append($("<p>").attr("id", "gatewayStatusMessage").addClass("medDesc"));
 
             // show end time
-            const endRunInfoDiv = $("<div>");
+            const endRunInfoDiv = $("<div>") as JQuery<HTMLDivElement>;
             gateway.ui.showRunEndInfo(endRunInfoDiv);
             gatewayContent.append(endRunInfoDiv);
 
             // add navigation buttons
-            const navButtons = $("<div>").addClass("gatewayButtonList");
+            const navButtons = $("<div>").addClass("gatewayButtonList") as JQuery<HTMLDivElement>;
             SharkGame.Button.makeButton("backToGateway", "aspects", navButtons, () => {
                 gateway.ui.switchViews(gateway.ui.showAspects);
             });
@@ -513,7 +516,7 @@ SharkGame.Gateway = {
         },
 
         showRunEndInfo(containerDiv) {
-            if (gateway.getTimeInLastWorld(true) < 0) {
+            if (gateway.getTimeInLastWorld() < 0) {
                 containerDiv.append(
                     $("<p>").html(
                         "You appear to have experienced a major bug that causes negative world-times.<br>" +
@@ -522,13 +525,15 @@ SharkGame.Gateway = {
                             "Enjoy the free essence, I guess?<br>" +
                             `actual start time: ${SharkGame.timestampRunStart}   true pause time: ${SharkGame.persistentFlags.totalPausedTime}   current paused time: ${SharkGame.persistentFlags.currentPausedTime}<br>` +
                             `minute hand: ${SharkGame.flags.minuteHandTimer}    hour hand: ${SharkGame.flags.hourHandLeft}    bonus: ${SharkGame.flags.bonusTime}<br>` +
-                            `calculated run time: ${gateway.getTimeInLastWorld(true)}   actual likely time: ${
+                            `calculated run time: ${gateway.getTimeInLastWorld()}   actual likely time: ${
                                 Date.now() - SharkGame.timestampRunStart
                             }<br>`
                     )
                 );
             } else {
-                containerDiv.append($("<p>").html(`<em>Time spent within last ocean:</em><br/>${gateway.getTimeInLastWorld()}`));
+                containerDiv.append(
+                    $("<p>").html(`<em>Time spent within last ocean:</em><br/>${sharktext.formatTime(gateway.getTimeInLastWorld())}`)
+                );
             }
         },
 
@@ -571,7 +576,7 @@ SharkGame.Gateway = {
                             window.getSelection().removeAllRanges();
 
                             const html = $(this).html();
-                            if (!isNaN(html)) {
+                            if (!isNaN(Number(html))) {
                                 res.setResource("essence", Number(html));
                             }
                             tree.updateEssenceCounter();
@@ -621,14 +626,14 @@ SharkGame.Gateway = {
 
         showPlanets(foregoAnimation) {
             // construct the gateway content
-            const planetSelectionContent = $("<div>");
+            const planetSelectionContent = $("<div>") as JQuery<HTMLDivElement>;
             planetSelectionContent.append($("<p>").html("Other worlds await."));
 
             // show planet pool
-            const planetPool = $("<div>").addClass("gatewayButtonList");
+            const planetPool = $("<div>").addClass("gatewayButtonList") as JQuery<HTMLDivElement>;
             _.each(gateway.planetPool, function callback(planetInfo) {
-                SharkGame.Button.makeButton("planet-" + planetInfo.type, planetInfo.type + " " + planetInfo.level, planetPool, function onClick() {
-                    gateway.selectedWorld = $(this).attr("id").split("-")[1];
+                SharkGame.Button.makeButton("planet-" + planetInfo.type, planetInfo.type, planetPool, function onClick(this: JQuery<HTMLElement>) {
+                    gateway.selectedWorld = $(this).attr("id")!.split("-")[1] as WorldName;
                     gateway.ui.switchViews(gateway.ui.confirmWorld);
                 }).addClass("planetButton");
             });
@@ -647,7 +652,7 @@ SharkGame.Gateway = {
             }
 
             // add return to gateway button
-            const returnButtonDiv = $("<div>");
+            const returnButtonDiv = $("<div>") as JQuery<HTMLDivElement>;
             SharkGame.Button.makeButton("backToGateway", "return to gateway", returnButtonDiv, () => {
                 gateway.ui.switchViews(gateway.ui.showGateway);
             });
@@ -675,8 +680,8 @@ SharkGame.Gateway = {
         },
 
         confirmWorld() {
-            const selectedWorldData = SharkGame.WorldTypes[gateway.selectedWorld];
-            const seenWorldYet = gateway.completedWorlds.includes(gateway.selectedWorld);
+            const selectedWorldData = SharkGame.WorldTypes[gateway.selectedWorld!];
+            const seenWorldYet = gateway.completedWorlds.includes(gateway.selectedWorld!);
 
             // construct the gateway content
             const gatewayContent = $("<div>").append(
@@ -707,7 +712,7 @@ SharkGame.Gateway = {
             );
 
             // add world image
-            const spritename = seenWorldYet ? "planets/" + gateway.selectedWorld : "planets/missing";
+            const spritename = seenWorldYet ? "planets/" + gateway.selectedWorld! : "planets/missing";
             const iconDiv = SharkGame.changeSprite(SharkGame.spriteIconPath, spritename, null, "planets/missing");
             if (iconDiv) {
                 iconDiv.addClass("planetDisplay");
@@ -716,7 +721,7 @@ SharkGame.Gateway = {
                 gatewayContent.append(containerDiv);
             }
 
-            const attributeDiv = $("<div>");
+            const attributeDiv = $("<div>") as JQuery<HTMLDivElement>;
             gateway.ui.showPlanetAttributes(selectedWorldData, seenWorldYet, attributeDiv);
             gatewayContent.append(attributeDiv);
 
@@ -740,14 +745,14 @@ SharkGame.Gateway = {
                 gatewayContent.append(dial);
                 const ticks = $("<datalist>")
                     .attr("id", "ticks")
-                    .append($("<option>").html(1))
-                    .append($("<option>").html(2))
-                    .append($("<option>").html(3))
-                    .append($("<option>").html(4))
-                    .append($("<option>").html(5))
-                    .append($("<option>").html(6))
-                    .append($("<option>").html(7))
-                    .append($("<option>").html(8));
+                    .append($("<option>").html("1"))
+                    .append($("<option>").html("2"))
+                    .append($("<option>").html("3"))
+                    .append($("<option>").html("4"))
+                    .append($("<option>").html("5"))
+                    .append($("<option>").html("6"))
+                    .append($("<option>").html("7"))
+                    .append($("<option>").html("8"));
                 gatewayContent.append(ticks);
                 let dialLabel;
                 if (SharkGame.persistentFlags.dialSetting > 1) {
@@ -772,7 +777,7 @@ SharkGame.Gateway = {
             }
 
             // add confirm button
-            const confirmButtonDiv = $("<div>");
+            const confirmButtonDiv = $("<div>") as JQuery<HTMLDivElement>;
             SharkGame.Button.makeButton("progress", "proceed", confirmButtonDiv, () => {
                 function checkAspects() {
                     let doProceed = true;
@@ -786,12 +791,12 @@ SharkGame.Gateway = {
                     });
                     return doProceed;
                 }
-                if (gateway.completedWorlds.includes(gateway.selectedWorld) || checkAspects()) {
+                if (gateway.completedWorlds.includes(gateway.selectedWorld!) || checkAspects()) {
                     if (SharkGame.persistentFlags.minuteStorage > 1000) {
-                        gateway.ui.showMinuteHandStorageExtraction(gateway.selectedWorld);
+                        gateway.ui.showMinuteHandStorageExtraction(gateway.selectedWorld!);
                     } else {
                         // kick back to main to start up the game again
-                        world.worldType = gateway.selectedWorld;
+                        world.worldType = gateway.selectedWorld!;
                         main.loopGame();
                     }
                 }
@@ -799,7 +804,7 @@ SharkGame.Gateway = {
             gatewayContent.append(confirmButtonDiv);
 
             // add return to planets button
-            const returnButtonDiv = $("<div>");
+            const returnButtonDiv = $("<div>") as JQuery<HTMLDivElement>;
             SharkGame.Button.makeButton("backToGateway", "reconsider", returnButtonDiv, () => {
                 gateway.ui.switchViews(gateway.ui.showPlanets);
             });
@@ -905,7 +910,7 @@ SharkGame.Gateway = {
 
         showWorldVisitMenu() {
             const menuContent = $("<div>").append($("<p>").html("Pick a world to visit:")) as JQuery<HTMLDivElement>;
-            const visitButtons = $("<div>").attr("id", "visitButtons");
+            const visitButtons = $("<div>").attr("id", "visitButtons") as JQuery<HTMLDivElement>;
 
             _.each(gateway.allowedWorlds, (planetName) => {
                 SharkGame.Button.makeButton(planetName + "VisitButton", "visit " + planetName, visitButtons, () => {
@@ -1001,7 +1006,7 @@ SharkGame.Gateway = {
 
             function updateRequestedTime() {
                 let requestedTime = getRequestedTime();
-                const storage = SharkGame.persistentFlags.minuteStorage ?? 0;
+                const storage = SharkGame.persistentFlags.minuteStorage;
 
                 if (requestedTime < 0) {
                     requestedTime = 0;
@@ -1025,7 +1030,7 @@ SharkGame.Gateway = {
 
             const menuContent = $("<div>").append(
                 $("<p>").html(`You have some ${SharkGame.Settings.current.idleEnabled ? "idle " : ""}time in storage.`)
-            );
+            ) as JQuery<HTMLDivElement>;
             const timeSelection = $("<div>").attr("id", "minute-storage-selection");
 
             const timeLeft = res.minuteHand.formatMinuteTime(SharkGame.persistentFlags.minuteStorage, true);
@@ -1197,8 +1202,8 @@ SharkGame.Gateway = {
                 $("#dial-label").html("Adjust The Dial to modify Patience rewards.<br>...or don't. If you don't want to.");
             }
 
-            const selectedWorldData = SharkGame.WorldTypes[gateway.selectedWorld];
-            const seenWorldYet = gateway.completedWorlds.includes(gateway.selectedWorld);
+            const selectedWorldData = SharkGame.WorldTypes[gateway.selectedWorld!];
+            const seenWorldYet = gateway.completedWorlds.includes(gateway.selectedWorld!);
             $("#predicted-gain").html(
                 `${seenWorldYet ? "A par time" : "This"} would grant you <strong>` +
                     sharktext.beautify(

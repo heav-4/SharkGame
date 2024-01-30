@@ -36,8 +36,8 @@ SharkGame.ModifierTypes = {
                 // documentation for just the first modifier since i cant seem to find a way to add it to the type definition
                 /**
                  * Changes the incomes of various resources in accordance with the modifier's effects, and returns how its own value should change after application.
-                 * @param {any} current Usually a number, but may also be an array. Represents the current degree/state of the modifier with respect to the resource being modified.
-                 * @param {any} degree The change to the value of the modifier.
+                 * @param {number} current Represents the current degree/state of the modifier with respect to the resource being modified.
+                 * @param {number} degree The change to the value of the modifier.
                  * @param {string} resource The resource to apply the effect to.
                  * @returns The new degree/state for the modifier. See res.applyModifier().
                  */

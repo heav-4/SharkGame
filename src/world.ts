@@ -9,10 +9,11 @@ SharkGame.World = {
         document.body.classList.add(worldType);
         this._worldType = worldType;
     },
-    worldResources: new Map(),
+    worldResources: null as unknown as WorldModule["worldResources"],
     worldRestrictedCombinations: new Map(),
 
     init() {
+        world.worldResources = new RequiredKeyMap();
         world.resetWorldProperties();
         world.worldType = "start";
     },
@@ -54,10 +55,10 @@ SharkGame.World = {
             _.each(worldInfo.includedResources, (group) => {
                 if (sharkmisc.has(SharkGame.InternalCategories, group)) {
                     _.each(SharkGame.InternalCategories[group as InternalCategoryName].resources, (resource) => {
-                        worldResources.get(resource)!.exists = true;
+                        worldResources.get(resource).exists = true;
                     });
                 } else {
-                    worldResources.get(group)!.exists = true;
+                    worldResources.get(group).exists = true;
                 }
             });
         }
@@ -85,11 +86,10 @@ SharkGame.World = {
     },
 
     doesResourceExist(resourceName) {
-        return world.worldResources.get(resourceName)?.exists ?? false;
+        return world.worldResources.get(resourceName).exists;
     },
 
     forceExistence(resourceName) {
-        const resource = world.worldResources.get(resourceName);
-        if (resource) resource.exists = true;
+        world.worldResources.get(resourceName).exists = true;
     },
 };

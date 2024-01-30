@@ -26,7 +26,8 @@ SharkGame.Resources = {
 
         // set all the amounts and total amounts of resources to 0
         $.each(SharkGame.ResourceTable, (resourceId, resource) => {
-            SharkGame.ResourceMap.set(resourceId, sharkmisc.cloneDeep(resource));
+            // The missing income property will be added immediately after
+            SharkGame.ResourceMap.set(resourceId, sharkmisc.cloneDeep(resource) as Resource);
         });
 
         SharkGame.ResourceMap.forEach((resource, resourceId) => {
@@ -305,22 +306,22 @@ SharkGame.Resources = {
         let multiplier = 1;
         if (node) {
             if (node.multiply) {
-                $.each(node.multiply, (resourceOrGroup, amount) => {
+                $.each(node.multiply as Required<typeof node.multiply>, (resourceOrGroup, amount) => {
                     multiplier = multiplier * (1 + amount * res.getResource(resourceOrGroup));
                 });
             }
             if (node.reciprocate) {
-                $.each(node.reciprocate, (resourceOrGroup, amount) => {
+                $.each(node.reciprocate as Required<typeof node.reciprocate>, (resourceOrGroup, amount) => {
                     multiplier = multiplier / (1 + amount * res.getResource(resourceOrGroup));
                 });
             }
             if (node.exponentiate) {
-                $.each(node.exponentiate, (resourceOrGroup, amount) => {
+                $.each(node.exponentiate as Required<typeof node.exponentiate>, (resourceOrGroup, amount) => {
                     multiplier = multiplier * Math.pow(amount, res.getResource(resourceOrGroup));
                 });
             }
             if (node.polynomial) {
-                $.each(node.polynomial, (resourceOrGroup, amount) => {
+                $.each(node.polynomial as Required<typeof node.polynomial>, (resourceOrGroup, amount) => {
                     multiplier = multiplier * (1 + Math.pow(res.getResource(resourceOrGroup), amount));
                 });
             }

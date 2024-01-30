@@ -34,9 +34,9 @@ SharkGame.Save = {
 
         $.each(SharkGame.Tabs, (tabId, tab) => {
             if (tabId !== "current") {
-                saveData.tabs![tabId] = [tab.discovered, tab.seen];
+                saveData.tabs![tabId] = [(<Tab>tab).discovered, (<Tab>tab).seen];
             } else {
-                saveData.tabs!.current = tab;
+                saveData.tabs!.current = <TabName>tab;
             }
         });
 
@@ -171,11 +171,11 @@ SharkGame.Save = {
             SharkGame.flags = saveData.flags ? saveData.flags : {};
             SharkGame.persistentFlags = saveData.persistentFlags ? saveData.persistentFlags : {};
 
-            $.each(saveData.resources, (resourceId, resource) => {
+            $.each(saveData.resources as Required<typeof saveData.resources>, (resourceId, resource) => {
                 // check that this isn't an old resource that's been removed from the game for whatever reason
                 if (SharkGame.PlayerResources.has(resourceId)) {
-                    SharkGame.PlayerResources.get(resourceId)!.amount = isNaN(resource.amount) ? 0 : resource.amount;
-                    SharkGame.PlayerResources.get(resourceId)!.totalAmount = isNaN(resource.totalAmount) ? 0 : resource.totalAmount;
+                    SharkGame.PlayerResources.get(resourceId).amount = isNaN(resource.amount) ? 0 : resource.amount;
+                    SharkGame.PlayerResources.get(resourceId).totalAmount = isNaN(resource.totalAmount) ? 0 : resource.totalAmount;
                 }
             });
 
@@ -214,7 +214,7 @@ SharkGame.Save = {
             }
 
             $.each(saveData.aspects, (aspectId, level) => {
-                if (sharkmisc.has(SharkGame.Aspects, aspectId)) {
+                if (aspectId in SharkGame.Aspects) {
                     SharkGame.Aspects[aspectId].level = level;
                 }
             });

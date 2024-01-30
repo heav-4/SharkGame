@@ -1222,7 +1222,7 @@ SharkGame.GeneratorIncomeAffectorsOriginal = {
 SharkGame.GeneratorIncomeAffected = {
     // This table automatically populates with the effects on every relevant resource
     // see SharkGame.Resources.buildIncomeNetwork
-};
+} as SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
 
 SharkGame.ResourceIncomeAffectorsOriginal = {
     ice: {

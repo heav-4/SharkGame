@@ -408,6 +408,13 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         });
 
         if (!SharkGame.persistentFlags.dialSetting) SharkGame.persistentFlags.dialSetting = 1;
+        if (!SharkGame.persistentFlags.currentPausedTime) {
+            SharkGame.persistentFlags.currentPausedTime = 0;
+        }
+        if (!SharkGame.persistentFlags.totalPausedTime) {
+            SharkGame.persistentFlags.totalPausedTime = 0;
+        }
+        if (!SharkGame.persistentFlags.minuteStorage) SharkGame.persistentFlags.minuteStorage = 0;
 
         if (SharkGame.persistentFlags.pause) {
             if (!cad.pause) {

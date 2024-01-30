@@ -237,7 +237,7 @@ SharkGame.Recycler = {
         const resourceName = sharkmisc.assertDefined(button.attr("id")).split("-")[1] as ResourceName;
         const resourceAmount = res.getResource(resourceName);
         const junkPerResource = SharkGame.ResourceMap.get(resourceName).value;
-        const amount = sharkmath.getPurchaseAmount(resourceName);
+        const amount = sharkmath.getPurchaseAmount(res.getResource(resourceName));
 
         if (resourceAmount >= amount * (1 - SharkGame.EPSILON)) {
             res.changeResource("junk", amount * junkPerResource * rec.getEfficiency());
@@ -507,7 +507,7 @@ SharkGame.Recycler = {
             baseEfficiency = 1;
         }
 
-        const purchaseAmount = sharkmath.getPurchaseAmount(resource);
+        const purchaseAmount = sharkmath.getPurchaseAmount(res.getResource(resource));
         // check if the amount to eat is less than the threshold
         if (purchaseAmount <= Math.pow(10, maxEfficiencyRecyclePowerOfTen)) {
             rec.efficiency = baseEfficiency;

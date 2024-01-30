@@ -95,12 +95,13 @@ SharkGame.MathUtil = {
     },
 
     // This is weird
-    getPurchaseAmount(resource, owned = res.getResource(resource)) {
+    getPurchaseAmount(owned) {
         const buy = sharkmath.getBuyAmount();
 
         if (buy > 0) {
             return buy;
         } else {
+            // This buys 50% when buy=-1, and 33% when buy=-2
             return Math.floor(owned / -buy);
         }
     },
