@@ -15,7 +15,7 @@ SharkGame.Home = {
         SharkGame.HomeActions.generated = {};
 
         home.currentButtonTab = "all";
-        home.lastValidMessage = "";
+        home.lastValidMessage = null;
     },
 
     setup() {
@@ -190,17 +190,17 @@ SharkGame.Home = {
         home.updateMemories();
 
         const currentMessageData =
-            SharkGame.HomeMessages.messages[world.worldType][SharkGame.Memories.messageLookup.get(SharkGame.flags.selectedHomeMessage)];
+            SharkGame.HomeMessages.messages[world.worldType][SharkGame.Memories.messageLookup.get(SharkGame.flags.selectedHomeMessage!)];
 
         // if there's an unseen message, change to it
         const anyUnseen = home.areThereAnyUnseenHomeMessages();
         if (anyUnseen || ((lastValidMessage.transient || currentMessageData.transient) && currentMessageData.name !== lastValidMessage.name)) {
             home.updateMessage(home.lastValidMessage, isDuringTabSwitch);
             _.each(mem.worldMemories, (memory) => {
-                if (!SharkGame.flags.seenHomeMessages.includes(memory)) SharkGame.flags.seenHomeMessages.push(memory);
+                if (!SharkGame.flags.seenHomeMessages!.includes(memory)) SharkGame.flags.seenHomeMessages!.push(memory);
             });
         } else if (isDuringTabSwitch) {
-            home.updateMessage(SharkGame.flags.selectedHomeMessage, true);
+            home.updateMessage(SharkGame.flags.selectedHomeMessage!, true);
         }
 
         home.updateMessageSelectors();
@@ -211,26 +211,27 @@ SharkGame.Home = {
             // check if all requirements met
             if ("unlock" in extraMessage && extraMessage.unlock !== undefined) {
                 let requirementsMet = true;
-                requirementsMet =
-                    requirementsMet &&
-                    _.every(extraMessage.unlock.resource, (requiredAmount, resourceId) => {
-                        return res.getResource(resourceId) >= requiredAmount;
-                    });
-                requirementsMet =
-                    requirementsMet &&
-                    _.every(extraMessage.unlock.totalResource, (requiredAmount, resourceId) => {
-                        return res.getTotalResource(resourceId) >= requiredAmount;
-                    });
-                requirementsMet =
-                    requirementsMet && _.every(extraMessage.unlock.upgrade, (upgradeId) => SharkGame.Upgrades.purchased.includes(upgradeId));
-                requirementsMet =
-                    requirementsMet &&
-                    _.every(extraMessage.unlock.homeAction, (actionName) => {
-                        const action = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
-                        return action.discovered && !action.newlyDiscovered;
-                    });
-                if (extraMessage.unlock.custom) {
+                if ("custom" in extraMessage.unlock) {
                     requirementsMet = requirementsMet && extraMessage.unlock.custom();
+                } else {
+                    requirementsMet =
+                        requirementsMet &&
+                        _.every(extraMessage.unlock.resource, (requiredAmount, resourceId) => {
+                            return res.getResource(resourceId) >= requiredAmount;
+                        });
+                    requirementsMet =
+                        requirementsMet &&
+                        _.every(extraMessage.unlock.totalResource, (requiredAmount, resourceId) => {
+                            return res.getTotalResource(resourceId) >= requiredAmount;
+                        });
+                    requirementsMet =
+                        requirementsMet && _.every(extraMessage.unlock.upgrade, (upgradeId) => SharkGame.Upgrades.purchased.includes(upgradeId));
+                    requirementsMet =
+                        requirementsMet &&
+                        _.every(extraMessage.unlock.homeAction, (actionName) => {
+                            const action = SharkGame.HomeActions.getActionData(SharkGame.HomeActions.getActionTable(), actionName);
+                            return action.discovered && !action.newlyDiscovered;
+                        });
                 }
 
                 return requirementsMet;
@@ -242,11 +243,11 @@ SharkGame.Home = {
     },
 
     updateMemories() {
-        SharkGame.Memories.addMemory(world.worldType, home.lastValidMessage);
+        SharkGame.Memories.addMemory(world.worldType, home.lastValidMessage!);
     },
 
     findNextHomeMessage() {
-        const currentIndex = SharkGame.Memories.messageLookup.get(SharkGame.flags.selectedHomeMessage);
+        const currentIndex = SharkGame.Memories.messageLookup.get(SharkGame.flags.selectedHomeMessage!);
         const messages = SharkGame.HomeMessages.messages[world.worldType].slice(
             currentIndex + 1,
             SharkGame.HomeMessages.messages[world.worldType].length
@@ -259,7 +260,7 @@ SharkGame.Home = {
     },
 
     findPreviousHomeMessage() {
-        const currentIndex = SharkGame.Memories.messageLookup.get(SharkGame.flags.selectedHomeMessage);
+        const currentIndex = SharkGame.Memories.messageLookup.get(SharkGame.flags.selectedHomeMessage!);
         const messages = SharkGame.HomeMessages.messages[world.worldType].slice(0, currentIndex);
         const previousMessage = _.findLast(messages, (messageData) => {
             return mem.worldMemories[world.worldType].includes(messageData.name);
@@ -291,7 +292,7 @@ SharkGame.Home = {
     areThereAnyUnseenHomeMessages() {
         let foundAny = false;
         _.each(mem.worldMemories[world.worldType], (memoryName) => {
-            if (!SharkGame.flags.seenHomeMessages.includes(memoryName)) foundAny = true;
+            if (!SharkGame.flags.seenHomeMessages!.includes(memoryName)) foundAny = true;
         });
         return foundAny;
     },
@@ -303,13 +304,13 @@ SharkGame.Home = {
         const messageData = homeMessages[SharkGame.Memories.messageLookup.get(requestedMessage)];
         const tabMessage = $("#tabMessage");
 
-        let sceneDiv = $("#tabSceneDiv");
-        let sceneImageDiv = $("#tabSceneImage");
+        let sceneDiv = $("#tabSceneDiv") as JQuery<HTMLDivElement>;
+        let sceneImageDiv = $("#tabSceneImage") as JQuery<HTMLDivElement>;
 
         if (tabMessage[0].children.length === 0) {
-            sceneDiv = $("<div>").attr("id", "tabSceneDiv");
+            sceneDiv = $("<div>").attr("id", "tabSceneDiv") as JQuery<HTMLDivElement>;
             if (SharkGame.Settings.current.showTabImages) {
-                sceneImageDiv = $("<div>").attr("id", "tabSceneImage");
+                sceneImageDiv = $("<div>").attr("id", "tabSceneImage") as JQuery<HTMLDivElement>;
             }
             // ⯇ ⯈
             SharkGame.Button.makeButton("sceneLeft", "⯇", sceneDiv, () => {
@@ -347,7 +348,7 @@ SharkGame.Home = {
         }
 
         SharkGame.flags.selectedHomeMessage = requestedMessage;
-        if (!SharkGame.flags.seenHomeMessages.includes(requestedMessage)) SharkGame.flags.seenHomeMessages.push(requestedMessage);
+        if (!SharkGame.flags.seenHomeMessages!.includes(requestedMessage)) SharkGame.flags.seenHomeMessages!.push(requestedMessage);
         home.updateMessageTracker();
         home.updateMessageSelectors();
     },
@@ -372,8 +373,7 @@ SharkGame.Home = {
 
         if (!home.getLastValidMessage().transient) {
             _.each(SharkGame.HomeMessages.messages[world.worldType], (messageData) => {
-                // console.log(messageData.name);
-                if (SharkGame.flags.seenHomeMessages.includes(messageData.name) && !messageData.transient) {
+                if (SharkGame.flags.seenHomeMessages!.includes(messageData.name) && !messageData.transient) {
                     tracker.append(
                         $("<div>")
                             .html("•")
@@ -586,9 +586,10 @@ SharkGame.Home = {
         return shouldBeUsable;
     },
 
+    // TODO: fix this function - should probably be either completedly rewritten or use action: any
     shouldRemoveHomeButton(action) {
         let disable = false;
-        $.each(action.removedBy, (kind, when) => {
+        $.each(action.removedBy!, (kind, when) => {
             switch (kind) {
                 case "totalResourceThreshold":
                     disable = disable || _.some(when, (resourceObject) => res.getTotalResource(resourceObject.resource) >= resourceObject.threshold);
@@ -643,7 +644,7 @@ SharkGame.Home = {
                     SharkGame.ResourceMap.get(resourceName).income,
                     (incomeAmount, resource) =>
                         world.doesResourceExist(resource) &&
-                        ((incomeAmount < 0 && !res.isInCategory(resource, "harmful")) || (res.isInCategory(resource, "harmful") && incomeAmount > 0))
+                        ((incomeAmount! < 0 && !res.isInCategory(resource, "harmful")) || (res.isInCategory(resource, "harmful") && incomeAmount > 0))
                 )
             ) {
                 givesBadThing = true;
@@ -854,7 +855,7 @@ SharkGame.Home = {
             addedAnyLabelsYet = true;
         }
 
-        $.each(validGenerators, (incomeResource, amount) => {
+        $.each(validGenerators as Required<ResourceAmounts>, (incomeResource, amount) => {
             if (amount < 0) {
                 text +=
                     "<b>" +
@@ -874,7 +875,7 @@ SharkGame.Home = {
             }
             text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "and " : "") + "INCREASE" + (usePlural ? "" : "S") + "</span><br/>";
             addedAnyLabelsYet = true;
-            $.each(condensedObject.resAffect.increase, (affectedResource, degreePerPurchase) => {
+            $.each(condensedObject.resAffect.increase as Required<ResourceAmounts>, (affectedResource, degreePerPurchase) => {
                 text +=
                     sharktext.boldString("all ") +
                     sharktext.getResourceName(affectedResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")) +
@@ -891,7 +892,7 @@ SharkGame.Home = {
             }
             text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "and " : "") + "DECREASE" + (usePlural ? "" : "S") + "</span><br/>";
             addedAnyLabelsYet = true;
-            $.each(condensedObject.resAffect.decrease, (affectedResource, degreePerPurchase) => {
+            $.each(condensedObject.resAffect.decrease as Required<ResourceAmounts>, (affectedResource, degreePerPurchase) => {
                 text +=
                     sharktext.boldString("all ") +
                     sharktext.getResourceName(affectedResource, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")) +
@@ -913,7 +914,7 @@ SharkGame.Home = {
                 (usePlural ? "" : "S") +
                 "</span><br/>";
             addedAnyLabelsYet = true;
-            $.each(condensedObject.resAffect.multincrease, (affectedResource, degreePerPurchase) => {
+            $.each(condensedObject.resAffect.multincrease as Required<ResourceAmounts>, (affectedResource, degreePerPurchase) => {
                 degreePerPurchase = degreePerPurchase ** buyingHowMuch - 1;
                 text +=
                     sharktext.boldString("all ") +
@@ -936,7 +937,7 @@ SharkGame.Home = {
                 (usePlural ? "" : "S") +
                 "</span><br/>";
             addedAnyLabelsYet = true;
-            $.each(condensedObject.resAffect.multdecrease, (affectedResource, degreePerPurchase) => {
+            $.each(condensedObject.resAffect.multdecrease as Required<ResourceAmounts>, (affectedResource, degreePerPurchase) => {
                 degreePerPurchase = 1 - degreePerPurchase ** buyingHowMuch;
                 text +=
                     sharktext.boldString("all ") +
@@ -951,7 +952,7 @@ SharkGame.Home = {
         if (!$.isEmptyObject(condensedObject.genAffect.increase)) {
             text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "and " : "") + "INCREASE" + (usePlural ? "" : "S") + "</span><br/>";
             addedAnyLabelsYet = true;
-            $.each(condensedObject.genAffect.increase, (affectedGenerator, degreePerPurchase) => {
+            $.each(condensedObject.genAffect.increase as Required<ResourceAmounts>, (affectedGenerator, degreePerPurchase) => {
                 text +=
                     sharktext.getResourceName(affectedGenerator, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                     sharktext.boldString(" speed ") +
@@ -964,7 +965,7 @@ SharkGame.Home = {
         if (!$.isEmptyObject(condensedObject.genAffect.decrease)) {
             text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "and " : "") + "DECREASE" + (usePlural ? "" : "S") + "</span><br/>";
             addedAnyLabelsYet = true;
-            $.each(condensedObject.genAffect.decrease, (affectedGenerator, degreePerPurchase) => {
+            $.each(condensedObject.genAffect.decrease as Required<ResourceAmounts>, (affectedGenerator, degreePerPurchase) => {
                 text +=
                     sharktext.getResourceName(affectedGenerator, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")) +
                     sharktext.boldString(" speed ") +
@@ -982,7 +983,7 @@ SharkGame.Home = {
                 (usePlural ? "" : "S") +
                 "</span><br/>";
             addedAnyLabelsYet = true;
-            $.each(condensedObject.genAffect.multincrease, (affectedGenerator, degreePerPurchase) => {
+            $.each(condensedObject.genAffect.multincrease as Required<ResourceAmounts>, (affectedGenerator, degreePerPurchase) => {
                 degreePerPurchase = degreePerPurchase ** buyingHowMuch - 1;
                 text +=
                     sharktext.getResourceName(affectedGenerator, false, false, sharkcolor.getElementColor("tooltipbox", "background-color")) +
@@ -1068,7 +1069,7 @@ SharkGame.Home = {
     },
 
     getCost(action, amount) {
-        const calcCost = {} as Record<ResourceName, number>;
+        const calcCost = {} as Record<ResourceName, DecimalHalfRound>;
         const rawCost = action.cost;
 
         _.each(rawCost, (costObj) => {
@@ -1110,7 +1111,7 @@ SharkGame.Home = {
 
                 switch (costObject.costFunction) {
                     case "constant":
-                        subMax = sharkmath.constantMax(typeof costResource === "object" ? new Decimal(0) : 0, costResource, priceIncrease);
+                        subMax = sharkmath.constantMax(new Decimal(0), costResource, priceIncrease);
                         break;
                     case "linear":
                         subMax = sharkmath.linearMax(currAmount, costResource, priceIncrease).minus(currAmount);

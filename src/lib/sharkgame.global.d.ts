@@ -115,8 +115,100 @@ declare global {
         | "places";
     // TODO: Replace with actual home action names
     type HomeActionName = string;
-    // TODO: Replace with actual home message names
-    type HomeMessageName = string;
+    type HomeMessageName =
+        | "start-you-are-a-shark"
+        | "start-shark"
+        | "start-sharks"
+        | "start-ray"
+        | "start-quite-the-group"
+        | "start-crab"
+        | "start-tribe"
+        | "start-crystals"
+        | "start-science"
+        | "start-discoveries"
+        | "start-nurse"
+        | "start-exploration"
+        | "start-machines"
+        | "start-chasm"
+        | "start-gate"
+        | "marine-default"
+        | "marine-noticed-lobsters"
+        | "marine-noticed-lobsters-2"
+        | "marine-lobsters"
+        | "marine-lobsters-talk"
+        | "marine-calcinium"
+        | "marine-robotics"
+        | "marine-bioengineering"
+        | "marine-sentience"
+        | "marine-abandoned"
+        | "haven-default"
+        | "haven-dolphin-observes"
+        | "haven-dolphins"
+        | "haven-dolphin-empire"
+        | "haven-papyrus"
+        | "haven-stories"
+        | "haven-whales"
+        | "haven-history"
+        | "haven-song"
+        | "haven-done"
+        | "tempestuous-default"
+        | "tempestuous-cave"
+        | "tempestuous-cave-rustling"
+        | "tempestuous-billfish"
+        | "tempestuous-sandbags"
+        | "tempestuous-stories"
+        | "tempestuous-special"
+        | "tempestuous-bottles"
+        | "tempestuous-expeditions"
+        | "tempestuous-map"
+        | "tempestuous-machine"
+        | "tempestuous-generator"
+        | "tempestuous-legends"
+        | "volcanic-default"
+        | "volcanic-shrimp-contact"
+        | "volcanic-shrimp-threat"
+        | "volcanic-shrimp-communication"
+        | "volcanic-monarchy"
+        | "volcanic-shrimps"
+        | "volcanic-smithing"
+        | "volcanic-noticed"
+        | "volcanic-acolytes"
+        | "volcanic-beauty"
+        | "volcanic-hope"
+        | "abandoned-default"
+        | "abandoned-octopus-scrutinizes"
+        | "abandoned-octopus"
+        | "abandoned-octopuses"
+        | "abandoned-production"
+        | "abandoned-spronge"
+        | "abandoned-exploration"
+        | "abandoned-gate"
+        | "abandoned-reverse-engineering"
+        | "abandoned-high-energy-fusion"
+        | "abandoned-done"
+        | "abandoned-tar-one"
+        | "abandoned-tar-two"
+        | "shrouded-default"
+        | "shrouded-eel-onlookers"
+        | "shrouded-eels"
+        | "shrouded-distant-chimaeras"
+        | "shrouded-chimaeras"
+        | "shrouded-arcana"
+        | "shrouded-power"
+        | "shrouded-city"
+        | "shrouded-truth"
+        | "frigid-default"
+        | "frigid-ice-one"
+        | "frigid-icy-doom"
+        | "frigid-distant-village"
+        | "frigid-village"
+        | "frigid-urchins"
+        | "frigid-teamwork"
+        | "frigid-machine"
+        | "frigid-squid"
+        | "frigid-suspicion"
+        | "frigid-battery"
+        | "frigid-heat-returns";
 
     type InternalCategoryName =
         | "sharks"
@@ -355,7 +447,7 @@ declare global {
     type HomeAction = {
         name: string;
         effect: Partial<{
-            resource: Partial<Record<ResourceName, number>>;
+            resource: ResourceAmounts;
             events: EventName[];
         }>;
         cost: {
@@ -365,7 +457,7 @@ declare global {
         }[];
         max?: ResourceName;
         prereq: Partial<{
-            resource: Partial<Record<ResourceName, number>>;
+            resource: ResourceAmounts;
             upgrade: UpgradeName[];
             notWorlds: WorldName[];
         }>;
@@ -395,12 +487,12 @@ declare global {
         };
     };
     type HomeMessage = {
-        name: string;
+        name: HomeMessageName;
         message: string;
         unlock?:
             | Partial<{
-                  totalResource: Partial<Record<ResourceName, number>>;
-                  resource: Partial<Record<ResourceName, number>>;
+                  totalResource: ResourceAmounts;
+                  resource: ResourceAmounts;
                   upgrade: UpgradeName[];
                   homeAction: HomeActionName[];
               }>
@@ -492,12 +584,9 @@ declare global {
 
     type ResourceAmounts = Partial<Record<ResourceName, number>>;
 
-    type CondensedEffects = Record<
-        "genAffect" | "resAffect",
-        Record<"increase" | "decrease" | "multincrease" | "multdecrease", Partial<Record<ResourceName, number>>>
-    >;
+    type CondensedEffects = Record<"genAffect" | "resAffect", Record<"increase" | "decrease" | "multincrease" | "multdecrease", ResourceAmounts>>;
 
-    type FurtherCondensedEffects = Record<"generators" | "resources", Record<"increase" | "decrease", Partial<Record<ResourceName, number>>>>;
+    type FurtherCondensedEffects = Record<"generators" | "resources", Record<"increase" | "decrease", ResourceAmounts>>;
     //#END REGION: Data structure types
 
     //#REGION: Data structure types
@@ -875,11 +964,11 @@ declare global {
     };
 
     type MemoryModule = {
-        worldMemories: Record<WorldName, string[]>;
-        persistentMemories: Record<WorldName, string[]>;
-        messageLookup: Map<string, number>;
+        worldMemories: Record<WorldName, HomeMessageName[]>;
+        persistentMemories: Record<WorldName, HomeMessageName[]>;
+        messageLookup: RequiredKeyMapModule<HomeMessageName, number>;
         init(): void;
-        addMemory(worldType: WorldName, messageName: string): void;
+        addMemory(worldType: WorldName, messageName: HomeMessageName): void;
         elevateMemories(): void;
     };
 
@@ -1043,7 +1132,8 @@ declare global {
             setup(): void;
             makeToken(): JQuery<HTMLDivElement>;
             tooltip(this: HTMLElement, _event: JQuery.MouseEnterEvent | null): void;
-            tryReturnToken(this: HTMLElement, _event: JQuery.ClickEvent | null, duringLoad: boolean, token: JQuery<HTMLDivElement>): void;
+            tryReturnToken(_event: JQuery.ClickEvent | null, duringLoad: boolean, token: JQuery<HTMLDivElement>): void;
+            tryReturnToken(this: HTMLElement, _event: JQuery.ClickEvent | null, duringLoad: boolean, token: undefined): void;
             handleTokenDragStart(this: HTMLElement, event: JQuery.DragStartEvent): void;
             handleResourceDragStart(this: HTMLElement, event: JQuery.DragStartEvent): void;
             handleDragEnd(this: HTMLElement, _event: JQuery.DragEndEvent): void;
@@ -1280,7 +1370,7 @@ declare global {
         tabName: string;
         tabBg?: string;
         discoverReq: Partial<{
-            resource: Partial<Record<ResourceName, number>>;
+            resource: ResourceAmounts;
             upgrade: UpgradeName[];
             flag: SharkGame["flags"] & SharkGame["persistentFlags"];
         }>;
@@ -1394,13 +1484,13 @@ declare global {
 
     type HomeTab = SharkGameTabBase & {
         currentButtonTab: HomeActionCategory;
-        lastValidMessage: HomeMessageName | "";
+        lastValidMessage: HomeMessageName | null;
         buttonNamesList: HomeActionName[];
         discoverActions(): void;
         createButtonTabs(): void;
         updateTab(tabToUpdate: HomeActionCategory): void;
         changeButtonTab(tabToChangeTo: HomeActionCategory): void;
-        updateMessage(requestedMessage: string, suppressAnimation: boolean): void;
+        updateMessage(requestedMessage: HomeMessageName, suppressAnimation?: boolean): void;
         updateMessageTracker(): void;
         updateButton(actionName: HomeActionName): void;
         areActionPrereqsMet(actionName: HomeActionName): boolean;
@@ -1414,7 +1504,7 @@ declare global {
         onHomeButton(mouseEnterEvent: JQuery.ClickEvent | null, actionName?: HomeActionName): void;
         onHomeHover(mouseEnterEvent: JQuery.MouseEnterEvent | null, actionName?: HomeActionName): void;
         onHomeUnhover(): void;
-        getCost(action: HomeAction, amount: number): Record<ResourceName, number>;
+        getCost(action: HomeAction, amount: Decimal): Record<ResourceName, DecimalHalfRound>;
         getMax(action: HomeAction): Decimal;
         getPreviousButtonTab(): HomeActionCategory;
         tickHomeMessages(isDuringTabSwitch?: boolean): void;
@@ -1582,13 +1672,14 @@ declare global {
             pathOfTimeApplied: true;
             pressedAllButtonsThisTick: boolean;
             prySpongeGained: number;
-            storm: Record<ResourceName, number>;
+            storm: Partial<Record<ResourceName, number>>;
             tokens: Record<TokenId, TokenValue>;
             minuteHandTimer: number;
             hourHandLeft: number;
             bonusTime: number;
             requestedTimeLeft: number;
             seenHomeMessages: HomeMessageName[];
+            /* Guranteed to exist whenever home tab has been switchedTo */
             selectedHomeMessage: HomeMessageName;
             egg: boolean;
             upgradeTimes: Partial<Record<UpgradeName, number>>;
@@ -1695,7 +1786,7 @@ declare global {
         FlippedBreakdownIncomeTable: RequiredKeyMapModule<ResourceName, Record<ResourceName, number>>;
         GeneratorIncomeAffected: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
         GeneratorIncomeAffectors: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
-        GeneratorIncomeAffectorsOriginal: Partial<Record<ResourceName, Partial<Record<Operation, Partial<Record<ResourceName, number>>>>>>; // TODO: Might be a better type available later;
+        GeneratorIncomeAffectorsOriginal: Partial<Record<ResourceName, Partial<Record<Operation, ResourceAmounts>>>>; // TODO: Might be a better type available later;
         ModifierMap: RequiredKeyMapModule<
             ResourceName,
             Record<ModifierCategory, Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>

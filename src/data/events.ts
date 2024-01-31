@@ -351,7 +351,7 @@ SharkGame.Events = {
             if (SharkGame.persistentFlags.individuallyBoughtSharkonium === -1) {
                 return "remove";
             }
-            if (SharkGame.persistentFlags.individuallyBoughtSharkonium >= 50) {
+            if (SharkGame.persistentFlags.individuallyBoughtSharkonium && SharkGame.persistentFlags.individuallyBoughtSharkonium >= 50) {
                 return "trigger";
             }
             return "pass";
@@ -454,7 +454,7 @@ SharkGame.Events = {
                     crab: -0.02,
                 };
             }
-            _.each(["fish", "sand", "crystal", "shark", "ray", "crab"], (resourceName) => {
+            _.each(["fish", "sand", "crystal", "shark", "ray", "crab"] as ResourceName[], (resourceName) => {
                 SharkGame.flags.storm![resourceName] = 0;
                 const resourceAmount = res.getResource(resourceName);
                 res.setResource(resourceName, Math.floor(resourceAmount));
@@ -511,8 +511,8 @@ SharkGame.Events = {
             _.each(res.tokens.list, (token) => {
                 if (
                     SharkGame.flags.tokens &&
-                    (SharkGame.flags.tokens[token.attr("id")].includes("chart") ||
-                        SharkGame.flags.tokens[token.attr("id")].includes("billfishExplorer"))
+                    (SharkGame.flags.tokens[token.attr("id") as TokenId].includes("chart") ||
+                        SharkGame.flags.tokens[token.attr("id") as TokenId].includes("billfishExplorer"))
                 )
                     res.tokens.tryReturnToken(null, false, token);
             });

@@ -320,7 +320,7 @@ SharkGame.Recycler = {
 
     onInputHover() {
         const button = $(this);
-        const resource = button.attr("id").split("-")[1];
+        const resource = button.attr("id")!.split("-")[1] as ResourceName;
 
         if (button.is(".disabled")) {
             return;
