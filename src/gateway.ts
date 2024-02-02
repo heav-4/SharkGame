@@ -369,7 +369,7 @@ SharkGame.Gateway = {
     ui: {
         showGateway(baseReward, patienceReward, speedReward, gumptionRatio = gateway.getGumptionBonus(), forceWorldBased = false, storedTime = 0) {
             let gumptionBonus;
-            if (gumptionRatio && baseReward && speedReward) {
+            if (gumptionRatio !== undefined && baseReward !== undefined && speedReward !== undefined) {
                 gumptionBonus = Math.ceil(gumptionRatio * (baseReward + speedReward));
             }
 
