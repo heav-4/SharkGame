@@ -1,30 +1,31 @@
 "use strict";
 
 // idea: aspect which helps to reveal more of the tree
-SharkGame.Aspects = {
-    deprecated: {
-        theMinuteHand: {
-            getCost(level: number) {
-                switch (level) {
-                    case 0:
-                        return 4;
-                    default:
-                        return 3 + level;
-                }
-            },
-        },
-        theSecondHand: {
-            getCost(level: number) {
-                return 6 * (level + 1);
-            },
-        },
-        anythingAndEverything: {
-            getCost(_level: number) {
-                return 5;
-            },
+
+SharkGame.DeprecatedAspects = {
+    theMinuteHand: {
+        getCost(level: number) {
+            switch (level) {
+                case 0:
+                    return 4;
+                default:
+                    return 3 + level;
+            }
         },
     },
+    theSecondHand: {
+        getCost(level: number) {
+            return 6 * (level + 1);
+        },
+    },
+    anythingAndEverything: {
+        getCost(_level: number) {
+            return 5;
+        },
+    },
+};
 
+SharkGame.Aspects = {
     apotheosis: {
         posX: 350,
         posY: 350,

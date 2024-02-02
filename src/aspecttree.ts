@@ -153,8 +153,7 @@ SharkGame.AspectTree = {
     setup() {
         if (SharkGame.missingAspects) {
             res.setResource("essence", res.getTotalResource("essence"));
-            _.each(SharkGame.Aspects, (aspectData, aspectId) => {
-                if (aspectId === "deprecated") return;
+            _.each(SharkGame.Aspects, (aspectData) => {
                 // wipe all levels
                 aspectData.level = 0;
             });
@@ -162,7 +161,7 @@ SharkGame.AspectTree = {
         } else {
             // FIXME: ***WHY*** is this at runtime?? Move it to a migrator.
             // try to refund deprecated aspects
-            _.each(SharkGame.Aspects.deprecated, (aspectData) => {
+            _.each(SharkGame.DeprecatedAspects, (aspectData) => {
                 tree.refundLevels(aspectData);
             });
         }
@@ -451,8 +450,7 @@ SharkGame.AspectTree = {
         // Lines between aspects
         context.save();
         context.lineWidth = 5;
-        _.each(SharkGame.Aspects, ({ level, posX, posY, width, height, requiredBy }, aspectId) => {
-            if (aspectId === "deprecated") return;
+        _.each(SharkGame.Aspects, ({ level, posX, posY, width, height, requiredBy }) => {
             if (level) {
                 // requiredBy: array of aspectId that depend on this aspect
                 _.each(requiredBy, (requiringId) => {
@@ -497,7 +495,6 @@ SharkGame.AspectTree = {
         context.fillStyle = buttonColor;
         context.strokeStyle = borderColor;
         _.each(SharkGame.Aspects, ({ posX, posY, width, height, icon, eventSprite, level }, name) => {
-            if (name === "deprecated") return;
             context.save();
             const reqref = tree.requirementReference[name];
             if (!reqref.revealed) {
@@ -661,8 +658,7 @@ SharkGame.AspectTree = {
     },
 
     applyAspects() {
-        _.each(SharkGame.Aspects, (aspectData, aspectId) => {
-            if (aspectId === "deprecated") return;
+        _.each(SharkGame.Aspects, (aspectData) => {
             if (aspectData.level && typeof aspectData.apply === "function") {
                 aspectData.apply("init");
             }
@@ -671,15 +667,13 @@ SharkGame.AspectTree = {
 
     respecTree(totalWipe) {
         if (!totalWipe) {
-            _.each(SharkGame.Aspects, (aspect, aspectId) => {
-                if (aspectId === "deprecated") return;
+            _.each(SharkGame.Aspects, (aspect) => {
                 if (!aspect.noRefunds) {
                     this.refundLevels(aspect);
                 }
             });
         } else {
-            _.each(SharkGame.Aspects, (aspect, aspectId) => {
-                if (aspectId === "deprecated") return;
+            _.each(SharkGame.Aspects, (aspect) => {
                 this.refundLevels(aspect);
             });
         }
@@ -747,7 +741,6 @@ SharkGame.AspectTree = {
             let name: AspectName | undefined;
 
             _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
-                if (aspectName === "deprecated") return;
                 if (aspectData.name === button.name) {
                     name = aspectName;
                     return false;
@@ -882,7 +875,6 @@ SharkGame.AspectTree = {
     generateRequirementReference() {
         tree.requirementReference = {};
         _.forEach(SharkGame.Aspects, (_aspectData, aspectName) => {
-            if (aspectName === "deprecated") return;
             tree.requirementReference[aspectName] = {};
         });
         tree.updateRequirementReference();
@@ -892,7 +884,6 @@ SharkGame.AspectTree = {
         const reqref = tree.requirementReference;
 
         _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
-            if (aspectName === "deprecated") return;
             reqref[aspectName].affordable = aspectData.getCost(aspectData.level) <= res.getResource("essence");
             reqref[aspectName].locked = aspectData.getUnlocked() || false;
             reqref[aspectName].prereqsMet = !_.some(aspectData.prerequisites, (prereq) => SharkGame.Aspects[prereq].level === 0);

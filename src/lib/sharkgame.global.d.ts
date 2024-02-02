@@ -1728,7 +1728,8 @@ declare global {
         wonGame: boolean;
     };
     type SharkGameData = {
-        Aspects: { deprecated: Record<string, DeprecatedAspect> } & Record<AspectName, Aspect>;
+        DeprecatedAspects: Record<string, DeprecatedAspect>;
+        Aspects: Record<AspectName, Aspect>;
         Events: Record<EventCustomName, SharkEventHandler>;
         HomeActionCategories: Record<HomeActionCategory, { name: string; actions: HomeActionName[]; hasNewItem?: boolean }>;
         HomeActions: Partial<Record<WorldName, HomeActionTableOverrides>>;

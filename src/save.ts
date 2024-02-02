@@ -28,7 +28,6 @@ SharkGame.Save = {
         saveData.upgrades = sharkmisc.cloneDeep(SharkGame.Upgrades.purchased);
         // Save non-zero artifact levels
         _.each(SharkGame.Aspects, ({ level }, aspectId) => {
-            if (aspectId === "deprecated") return;
             if (level) saveData.aspects![aspectId as AspectName] = level as number;
         });
 
@@ -167,7 +166,7 @@ SharkGame.Save = {
             SharkGame.timestampSimulated = saveData.timestampLastSave;
 
             SharkGame.flags = saveData.flags ? saveData.flags : {};
-            SharkGame.persistentFlags = saveData.persistentFlags ? saveData.persistentFlags : {};
+            SharkGame.persistentFlags = saveData.persistentFlags ? saveData.persistentFlags : ({} as SharkGame["persistentFlags"]);
 
             $.each(saveData.resources as Required<typeof saveData.resources>, (resourceId, resource) => {
                 // check that this isn't an old resource that's been removed from the game for whatever reason
