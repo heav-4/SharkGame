@@ -775,7 +775,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                     const thisButton = $(this);
                     if (thisButton.hasClass("disabled")) return;
                     if (thisButton[0].id === "buy-custom") {
-                        $("#custom-input").attr("disabled", "false");
+                        $("#custom-input").attr("disabled", null);
                     } else {
                         $("#custom-input").attr("disabled", "true");
                     }
@@ -797,7 +797,7 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
                     .attr("id", "custom-input")
                     .attr("value", 1)
                     .attr("min", "1")
-                    .attr("disabled", (SharkGame.Settings.current.buyAmount !== "custom").toString())
+                    .attr("disabled", SharkGame.Settings.current.buyAmount !== "custom" ? "true" : null)
             )
         );
         document.getElementById("custom-input")!.addEventListener("input", main.onCustomChange);

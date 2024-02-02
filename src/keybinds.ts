@@ -302,7 +302,7 @@ SharkGame.Keybinds = {
             case "switch to buy custom":
                 if (!$("#buy-custom").hasClass("disabled")) {
                     SharkGame.Settings.current.buyAmount = "custom";
-                    $("#custom-input").attr("disabled", "false");
+                    $("#custom-input").attr("disabled", null);
                     $("button[id^='buy-']").removeClass("disabled");
                     $("#buy-custom").addClass("disabled");
                 }

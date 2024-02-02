@@ -274,7 +274,7 @@ SharkGame.AspectTree = {
                 row.attr("data-aspectId", aspectId)
                     .on("click", clickCallback)
                     .attr("aria-role", "button")
-                    .attr("disabled", reqref.prereqsMet.toString());
+                    .attr("disabled", reqref.prereqsMet ? "true" : null);
             });
 
             tableBody.append(aspectTableDescriptionRow);
