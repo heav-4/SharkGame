@@ -123,24 +123,22 @@ SharkGame.Save = {
             const currentVersion = SharkGame.Save.saveUpdaters.length - 1;
             if (!sharkmisc.has(saveData, "saveVersion")) {
                 saveData = SharkGame.Save.saveUpdaters[0](saveData);
-            } else {
-                if (typeof saveData.saveVersion !== "number" || saveData.saveVersion <= 12) {
-                    // After save version 12, packing support was removed; Backwards compatibility is not maintained because gameplay changed significantly after this point.
-                    throw new Error("This is a save from before New Frontiers 0.2, after which the save system was changed.");
-                } else if (saveData.saveVersion === 15 || saveData.saveVersion === 16) {
-                    // gonna reset aspects, need to inform player
-                    SharkGame.missingAspects = true;
-                }
+            } else if (typeof saveData.saveVersion !== "number" || saveData.saveVersion <= 12) {
+                // After save version 12, packing support was removed; Backwards compatibility is not maintained because gameplay changed significantly after this point.
+                throw new Error("This is a save from before New Frontiers 0.2, after which the save system was changed.");
+            } else if (saveData.saveVersion === 15 || saveData.saveVersion === 16) {
+                // gonna reset aspects, need to inform player
+                SharkGame.missingAspects = true;
+            }
 
-                if (saveData.saveVersion < currentVersion) {
-                    for (let i = saveData.saveVersion + 1; i <= currentVersion; i++) {
-                        const updater = SharkGame.Save.saveUpdaters[i];
-                        saveData = updater(saveData);
-                        saveData.saveVersion = i;
-                    }
-                    // let player know update went fine
-                    log.addMessage("Updated save data from v " + saveData.version + " to " + SharkGame.VERSION + ".");
+            if ((saveData.saveVersion as number) < currentVersion) {
+                for (let i = (saveData.saveVersion as number) + 1; i <= currentVersion; i++) {
+                    const updater = SharkGame.Save.saveUpdaters[i];
+                    saveData = updater(saveData);
+                    saveData.saveVersion = i;
                 }
+                // let player know update went fine
+                log.addMessage("Updated save data from v " + saveData.version + " to " + SharkGame.VERSION + ".");
             }
 
             saveData = saveData as Save;
