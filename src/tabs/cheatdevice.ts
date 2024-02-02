@@ -664,18 +664,20 @@ SharkGame.CheatsAndDebug = {
     },
     rollTheDicePlease(number = Math.floor(Math.random() * 20 + 1)) {
         switch (number) {
-            case 1:
+            case 1: {
+                const worldResource = SharkGame.ResourceMap.get("world");
                 world.forceExistence("tar");
-                if (!SharkGame.ResourceMap.get("world").income) {
-                    SharkGame.ResourceMap.get("world").income = {};
+                if (!worldResource.income) {
+                    worldResource.income = {};
                 }
-                if (!SharkGame.ResourceMap.get("world").baseIncome) {
-                    SharkGame.ResourceMap.get("world").baseIncome = {};
+                if (!worldResource.baseIncome) {
+                    worldResource.baseIncome = {};
                 }
-                SharkGame.ResourceMap.get("world").income.tar = 1;
-                SharkGame.ResourceMap.get("world").baseIncome.tar = 1;
+                worldResource.income.tar = 1;
+                worldResource.baseIncome.tar = 1;
                 res.reconstructResourcesTable();
                 return "Rolled a one. Uh oh.";
+            }
             case 2:
                 res.addNetworkNode(SharkGame.GeneratorIncomeAffectors, "fish", "exponentiate", "shark", 0.999);
                 res.addNetworkNode(SharkGame.GeneratorIncomeAffectors, "sand", "exponentiate", "ray", 0.999);
@@ -685,23 +687,24 @@ SharkGame.CheatsAndDebug = {
                 return "Rolled a two. Fish make sharks slower. Sand makes rays slower. Crystal makes crabs slower. Oops.";
             case 3:
                 if (world.doesResourceExist("fish")) {
-                    if (!SharkGame.ResourceMap.get("fish").income) {
-                        SharkGame.ResourceMap.get("fish").income = {};
+                    const fishResource = SharkGame.ResourceMap.get("fish");
+                    if (!fishResource.income) {
+                        fishResource.income = {};
                     }
-                    if (!SharkGame.ResourceMap.get("fish").baseIncome) {
-                        SharkGame.ResourceMap.get("fish").baseIncome = {};
+                    if (!fishResource.baseIncome) {
+                        fishResource.baseIncome = {};
                     }
-                    SharkGame.ResourceMap.get("fish").income.shark = -0.001;
-                    SharkGame.ResourceMap.get("fish").income.ray = -0.001;
-                    SharkGame.ResourceMap.get("fish").income.crab = -0.001;
-                    SharkGame.ResourceMap.get("fish").income.whale = -0.001;
-                    SharkGame.ResourceMap.get("fish").income.squid = -0.001;
-                    SharkGame.ResourceMap.get("fish").baseIncome.shark = -0.001;
-                    SharkGame.ResourceMap.get("fish").baseIncome.ray = -0.001;
-                    SharkGame.ResourceMap.get("fish").baseIncome.crab = -0.001;
-                    SharkGame.ResourceMap.get("fish").baseIncome.whale = -0.001;
-                    SharkGame.ResourceMap.get("fish").baseIncome.squid = -0.001;
-                    SharkGame.ResourceMap.get("fish").forceIncome = true;
+                    fishResource.income.shark = -0.001;
+                    fishResource.income.ray = -0.001;
+                    fishResource.income.crab = -0.001;
+                    fishResource.income.whale = -0.001;
+                    fishResource.income.squid = -0.001;
+                    fishResource.baseIncome.shark = -0.001;
+                    fishResource.baseIncome.ray = -0.001;
+                    fishResource.baseIncome.crab = -0.001;
+                    fishResource.baseIncome.whale = -0.001;
+                    fishResource.baseIncome.squid = -0.001;
+                    fishResource.forceIncome = true;
                     return "Rolled a three. The fish are fighting back!";
                 }
                 return "Rolled a three, but fish don't exist, so nothing happened.";
@@ -737,25 +740,27 @@ SharkGame.CheatsAndDebug = {
             case 9:
                 res.changeResource("fish", 10000000000 * Math.random() ** 3);
                 return "Rolled a nine. You eat fish hooray!";
-            case 10:
-                if (!SharkGame.ResourceMap.get("shark").income) {
-                    SharkGame.ResourceMap.get("shark").income = {};
+            case 10: {
+                const sharkResource = SharkGame.ResourceMap.get("shark");
+                if (!sharkResource.income) {
+                    sharkResource.income = {};
                 }
-                if (!SharkGame.ResourceMap.get("shark").baseIncome) {
-                    SharkGame.ResourceMap.get("shark").baseIncome = {};
+                if (!sharkResource.baseIncome) {
+                    sharkResource.baseIncome = {};
                 }
-                SharkGame.ResourceMap.get("shark").income.fish = 0;
-                SharkGame.ResourceMap.get("shark").baseIncome.fish = 0;
-                SharkGame.ResourceMap.get("shark").income.shark = 0.1;
-                SharkGame.ResourceMap.get("shark").baseIncome.shark = 0.1;
-                SharkGame.ResourceMap.get("shark").income.ray = 0.05;
-                SharkGame.ResourceMap.get("shark").baseIncome.ray = 0.05;
-                SharkGame.ResourceMap.get("shark").income.crab = 0.01;
-                SharkGame.ResourceMap.get("shark").baseIncome.crab = 0.01;
+                sharkResource.income.fish = 0;
+                sharkResource.baseIncome.fish = 0;
+                sharkResource.income.shark = 0.1;
+                sharkResource.baseIncome.shark = 0.1;
+                sharkResource.income.ray = 0.05;
+                sharkResource.baseIncome.ray = 0.05;
+                sharkResource.income.crab = 0.01;
+                sharkResource.baseIncome.crab = 0.01;
                 res.reapplyModifiers("shark", "shark");
                 res.reapplyModifiers("shark", "ray");
                 res.reapplyModifiers("shark", "crab");
                 return "Rolled a ten. Sharks now produce themselves. And rays. And crabs. But not fish. Not anymore.";
+            }
             case 11:
                 res.addNetworkNode(SharkGame.GeneratorIncomeAffectors, "nurse", "exponentiate", "nurse", 1.01);
                 res.addNetworkNode(SharkGame.GeneratorIncomeAffectors, "nurse", "exponentiate", "shark", 0.98);
@@ -764,16 +769,18 @@ SharkGame.CheatsAndDebug = {
                 res.clearNetworks();
                 res.buildIncomeNetwork();
                 return "Rolled an eleven. Nurses speed up one another, but slow down sharks. Ditto for rays and makers.";
-            case 12:
-                if (!SharkGame.ResourceMap.get("world").income) {
-                    SharkGame.ResourceMap.get("world").income = {};
+            case 12: {
+                const worldResource = SharkGame.ResourceMap.get("world");
+                if (!worldResource.income) {
+                    worldResource.income = {};
                 }
-                if (!SharkGame.ResourceMap.get("world").baseIncome) {
-                    SharkGame.ResourceMap.get("world").baseIncome = {};
+                if (!worldResource.baseIncome) {
+                    worldResource.baseIncome = {};
                 }
-                SharkGame.ResourceMap.get("world").income.shark = 1;
-                SharkGame.ResourceMap.get("world").baseIncome.shark = 1;
+                worldResource.income.shark = 1;
+                worldResource.baseIncome.shark = 1;
                 return "Rolled a twelve. The world now gives you free sharks. Sweet.";
+            }
             case 13:
                 if (world.doesResourceExist("fish")) {
                     res.addNetworkNode(SharkGame.GeneratorIncomeAffectors, "fish", "multiply", "shark", 0.0005);
@@ -839,24 +846,25 @@ SharkGame.CheatsAndDebug = {
                 return "Rolled a seventeen. The crabs. They're multiplying.";
             case 18:
                 if (world.doesResourceExist("fish")) {
-                    if (!SharkGame.ResourceMap.get("fish").income) {
-                        SharkGame.ResourceMap.get("fish").income = {};
+                    const fishResource = SharkGame.ResourceMap.get("fish");
+                    if (!fishResource.income) {
+                        fishResource.income = {};
                     }
-                    SharkGame.ResourceMap.get("fish").income.shark = 0.01;
-                    SharkGame.ResourceMap.get("fish").income.ray = 0.002;
-                    SharkGame.ResourceMap.get("fish").income.crab = 0.005;
-                    SharkGame.ResourceMap.get("fish").income.squid = 0.005;
-                    SharkGame.ResourceMap.get("fish").income.whale = 0.00001;
-                    SharkGame.ResourceMap.get("fish").income.fish = -0.999;
-                    if (!SharkGame.ResourceMap.get("fish").baseIncome) {
-                        SharkGame.ResourceMap.get("fish").baseIncome = {};
+                    fishResource.income.shark = 0.01;
+                    fishResource.income.ray = 0.002;
+                    fishResource.income.crab = 0.005;
+                    fishResource.income.squid = 0.005;
+                    fishResource.income.whale = 0.00001;
+                    fishResource.income.fish = -0.999;
+                    if (!fishResource.baseIncome) {
+                        fishResource.baseIncome = {};
                     }
-                    SharkGame.ResourceMap.get("fish").baseIncome.shark = 0.01;
-                    SharkGame.ResourceMap.get("fish").baseIncome.ray = 0.002;
-                    SharkGame.ResourceMap.get("fish").baseIncome.crab = 0.005;
-                    SharkGame.ResourceMap.get("fish").baseIncome.squid = 0.005;
-                    SharkGame.ResourceMap.get("fish").baseIncome.whale = 0.00001;
-                    SharkGame.ResourceMap.get("fish").baseIncome.fish = -0.999;
+                    fishResource.baseIncome.shark = 0.01;
+                    fishResource.baseIncome.ray = 0.002;
+                    fishResource.baseIncome.crab = 0.005;
+                    fishResource.baseIncome.squid = 0.005;
+                    fishResource.baseIncome.whale = 0.00001;
+                    fishResource.baseIncome.fish = -0.999;
                     return "Rolled an eighteen. Fish will now purchase frenzy members for you. Thank me later.";
                 }
                 return "Rolled an eighteen, but fish don't exist, so nothing happened.";

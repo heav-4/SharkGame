@@ -451,7 +451,7 @@ SharkGame.Stats = {
                     }).length !== 1;
             });
 
-            $.each(headingData, (subheadingKey, subheadingValue) => {
+            $.each(headingData as Required<ResourceAmounts>, (subheadingKey, subheadingValue) => {
                 const incomeKey = SharkGame.Settings.current.switchStats ? headingName : subheadingKey;
                 const generatorName = SharkGame.Settings.current.switchStats ? subheadingKey : headingName;
                 const incomeValue = subheadingValue;

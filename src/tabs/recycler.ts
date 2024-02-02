@@ -38,7 +38,7 @@ SharkGame.Recycler = {
         stuff: "constant",
         processed: "constant",
         animals: "constant",
-    },
+    } as Record<ResourceCategory, CostFunction | undefined>,
 
     bannedResources: ["essence", "junk", "science", "seaApple", "coalescer", "ancientPart", "filter", "world", "sacrifice", "aspectAffect"],
 
@@ -203,8 +203,8 @@ SharkGame.Recycler = {
     },
 
     createButtons() {
-        const inputButtonDiv = $("#inputButtons");
-        const outputButtonDiv = $("#outputButtons");
+        const inputButtonDiv = $("#inputButtons") as JQuery<HTMLDivElement>;
+        const outputButtonDiv = $("#outputButtons") as JQuery<HTMLDivElement>;
         SharkGame.ResourceMap.forEach((_resource, resourceName) => {
             if (
                 res.getTotalResource(resourceName) > 0 &&
@@ -234,7 +234,7 @@ SharkGame.Recycler = {
     onInput() {
         const button = $(this);
         if (button.hasClass("disabled")) return;
-        const resourceName = sharkmisc.assertDefined(button.attr("id")).split("-")[1] as ResourceName;
+        const resourceName = button.attr("id")!.split("-")[1] as ResourceName;
         const resourceAmount = res.getResource(resourceName);
         const junkPerResource = SharkGame.ResourceMap.get(resourceName).value;
         const amount = sharkmath.getPurchaseAmount(res.getResource(resourceName));
@@ -257,7 +257,7 @@ SharkGame.Recycler = {
     onOutput() {
         const button = $(this);
         if (button.hasClass("disabled")) return;
-        const resourceName = button.attr("id").split("-")[1] as ResourceName;
+        const resourceName = button.attr("id")!.split("-")[1] as ResourceName;
         const junkAmount = new Decimal(res.getResource("junk"));
         const junkPerResource = new Decimal(SharkGame.ResourceMap.get(resourceName).value);
 
@@ -339,7 +339,7 @@ SharkGame.Recycler = {
 
     onOutputHover() {
         const button = $(this);
-        const resource = button.attr("id").split("-")[1];
+        const resource = button.attr("id")!.split("-")[1] as ResourceName;
 
         if (button.is(".disabled")) {
             return;
@@ -359,7 +359,7 @@ SharkGame.Recycler = {
         const buy = sharkmath.getBuyAmount();
 
         if (world.worldType === "abandoned") {
-            if (rec.efficiency === "NA") {
+            if (rec.efficiency === "NA" || rec.hoveredResource === "NA") {
                 return "<br/><br/><br/><br/>";
             }
 
@@ -491,11 +491,11 @@ SharkGame.Recycler = {
     },
 
     getEfficiency() {
-        if (rec.efficiency === "NA") {
+        if (rec.efficiency === "NA" || rec.hoveredResource === "NA") {
             return 1;
         }
         rec.updateEfficiency(rec.hoveredResource);
-        return rec.efficiency.toFixed(4);
+        return Number(rec.efficiency.toFixed(4));
     },
 
     updateEfficiency(resource) {

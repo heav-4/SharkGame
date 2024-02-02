@@ -1082,7 +1082,7 @@ declare global {
         jobs?: ResourceName[];
     };
 
-    type Resource = StaticResource & { income: ResourceAmounts };
+    type Resource = StaticResource & { income?: ResourceAmounts };
 
     type ResourceModule = {
         INCOME_COLOR: string;
@@ -1281,7 +1281,7 @@ declare global {
         discovered: SharkGameTabBase["tabDiscovered"];
         code: SharkGameTabBase;
         discoverReq: SharkGameTabBase["discoverReq"];
-        seen: boolean;
+        seen?: boolean;
     };
 
     type TabsModule = {
@@ -1364,7 +1364,7 @@ declare global {
         switchTo(): void;
         update(): void;
 
-        tabId: string;
+        tabId: TabName;
         tabDiscovered: boolean;
         tabSeen: boolean;
         tabName: string;
@@ -1372,7 +1372,7 @@ declare global {
         discoverReq: Partial<{
             resource: ResourceAmounts;
             upgrade: UpgradeName[];
-            flag: SharkGame["flags"] & SharkGame["persistentFlags"];
+            flag: SharkGame["flags"] & Partial<SharkGame["persistentFlags"]>;
         }>;
         message: string;
     };
@@ -1530,6 +1530,7 @@ declare global {
         updateLabButton(upgradeName: UpgradeName): void;
         updateMessage(suppressAnimation?: boolean): void;
         onLabButton(upgradeId?: UpgradeName): void;
+        onLabButton(this: HTMLElement, event: JQuery.ClickEvent): void;
         addUpgrade(upgradeId: UpgradeName): void;
         allResearchDone(): boolean;
         isUpgradePossible(upgradeName: UpgradeName): boolean;
@@ -1544,9 +1545,9 @@ declare global {
         recyclerInputMessages: string[];
         recyclerOutputMessages: string[];
         allowedCategories: Record<ResourceCategory, CostFunction | undefined>;
-        bannerResources: ResourceName[];
+        bannedResources: ResourceName[];
         efficiency: "NA" | number;
-        hoveredResource: "NA" | number;
+        hoveredResource: "NA" | ResourceName;
         expectedOutput: "NA" | number;
         expectedJunkSpent: "NA" | number;
         updateJunkDisplay(): void;

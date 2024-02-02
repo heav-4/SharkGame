@@ -35,21 +35,21 @@ SharkGame.TabHandler = {
 
     checkTabUnlocks() {
         $.each(SharkGame.Tabs, (tabName, tab) => {
-            if (tabName === "current" || tab.discovered) {
+            if (tabName === "current" || (<Tab>tab).discovered) {
                 return;
             }
             let reqsMet = true;
 
             // check resources
-            if (tab.discoverReq.resource) {
-                reqsMet &&= res.checkResources(tab.discoverReq.resource, true);
+            if ((<Tab>tab).discoverReq.resource) {
+                reqsMet &&= res.checkResources((<Tab>tab).discoverReq.resource!, true);
             }
 
             const upgradeTable = SharkGame.Upgrades.getUpgradeTable();
             // check upgrades
-            if (tab.discoverReq.upgrade) {
+            if ((<Tab>tab).discoverReq.upgrade) {
                 let anyUpgradeExists = false;
-                _.each(tab.discoverReq.upgrade, (upgradeName) => {
+                _.each((<Tab>tab).discoverReq.upgrade, (upgradeName) => {
                     if (upgradeTable[upgradeName]) {
                         anyUpgradeExists = true;
                         reqsMet = reqsMet && SharkGame.Upgrades.purchased.includes(upgradeName);
@@ -60,8 +60,8 @@ SharkGame.TabHandler = {
                 }
             }
 
-            if (tab.discoverReq.flag) {
-                $.each(tab.discoverReq.flag, (flagName, matchedValue) => {
+            if ((<Tab>tab).discoverReq.flag) {
+                $.each((<Tab>tab).discoverReq.flag, (flagName, matchedValue) => {
                     if (SharkGame.flags[flagName]) {
                         reqsMet = reqsMet && SharkGame.flags[flagName] === matchedValue;
                     } else if (SharkGame.persistentFlags[flagName]) {
@@ -83,7 +83,7 @@ SharkGame.TabHandler = {
                         if (!SharkGame.persistentFlags.seenCheatsTab) log.addDiscovery("Discovered " + tab.name + "!");
                         break;
                     default:
-                        log.addDiscovery("Discovered " + tab.name + "!");
+                        log.addDiscovery("Discovered " + (<Tab>tab).name + "!");
                 }
 
                 // unlock tab!
@@ -153,7 +153,7 @@ SharkGame.TabHandler = {
         // check if we have more than one discovered tab, else bypass this
         let numTabsDiscovered = 0;
         $.each(tabs, (_tabName, tab) => {
-            if (tab.discovered) {
+            if (typeof tab !== "string" && tab.discovered) {
                 numTabsDiscovered++;
             }
         });
@@ -162,7 +162,7 @@ SharkGame.TabHandler = {
             // make it a link if it's not the current tab
             $.each(tabs, (tabId, tabData) => {
                 const onThisTab = SharkGame.Tabs.current === tabId;
-                if (tabData.discovered) {
+                if (typeof tabData !== "string" && tabData.discovered) {
                     const tabListItem = $("<li>");
                     if (onThisTab) {
                         tabListItem.html(tabData.name);
@@ -173,7 +173,7 @@ SharkGame.TabHandler = {
                                 .attr("href", "javascript:;")
                                 .html(tabData.name)
                                 .on("click", function callback() {
-                                    const tab = $(this).attr("id").split("-")[1];
+                                    const tab = $(this).attr("id")!.split("-")[1] as TabName;
                                     SharkGame.TabHandler.changeTab(tab);
                                 })
                         );

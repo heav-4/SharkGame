@@ -40,14 +40,14 @@ SharkGame.Upgrades = {
                     break;
                 default:
                     $.each(data.cost, (resource) => {
-                        data.cost[resource] *= 0.5;
+                        data.cost[resource]! *= 0.5;
                     });
             }
         }
 
         if (cad.upgradePriceModifier !== 1) {
             $.each(data.cost, (resource) => {
-                data.cost[resource] *= cad.upgradePriceModifier;
+                data.cost[resource]! *= cad.upgradePriceModifier;
             });
         }
 

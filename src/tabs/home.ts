@@ -493,7 +493,7 @@ SharkGame.Home = {
             }
         }
 
-        label = $('<span id="' + actionName + 'Label" class="click-passthrough">' + label + "</span>");
+        const $label = $('<span id="' + actionName + 'Label" class="click-passthrough">' + label + "</span>");
 
         // Only redraw the whole button when necessary.
         // This is necessary when buttons are new, or the icon setting has been changed.
@@ -502,7 +502,7 @@ SharkGame.Home = {
         // The icon-off setting is a little trickier.  It needs two cases.  We check for a lack of spans to
         // see if the button is new, then check for the presence of any icon to see if the setting changed.
         if (button.html().includes("button-icon") !== SharkGame.Settings.current.showIcons) {
-            button.html(label);
+            button.empty().append($label);
 
             let spritename;
             switch (actionName) {
@@ -529,8 +529,8 @@ SharkGame.Home = {
 
             // Quote-insensitive comparison, because the helper methods beautify the labels using single quotes
             // but jquery returns the same elements back with double quotes.
-            if (label.html() !== labelSpan.html()) {
-                labelSpan.html(label.html());
+            if ($label.html() !== labelSpan.html()) {
+                labelSpan.html($label.html());
             }
         }
     },
@@ -601,7 +601,7 @@ SharkGame.Home = {
                     disable = disable || _.some(when, (upgrade) => SharkGame.Upgrades.purchased.includes(upgrade));
                     break;
                 case "custom":
-                    disable = disable || when();
+                    disable = disable || (when as () => boolean)();
             }
         });
         return disable;
@@ -643,8 +643,9 @@ SharkGame.Home = {
                 _.some(
                     SharkGame.ResourceMap.get(resourceName).income,
                     (incomeAmount, resource) =>
-                        world.doesResourceExist(resource) &&
-                        ((incomeAmount! < 0 && !res.isInCategory(resource, "harmful")) || (res.isInCategory(resource, "harmful") && incomeAmount > 0))
+                        world.doesResourceExist(resource as ResourceName) &&
+                        ((incomeAmount! < 0 && !res.isInCategory(resource as ResourceName, "harmful")) ||
+                            (res.isInCategory(resource as ResourceName, "harmful") && incomeAmount! > 0))
                 )
             ) {
                 givesBadThing = true;

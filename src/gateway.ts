@@ -258,7 +258,7 @@ SharkGame.Gateway = {
     },
 
     getMinutesBelowPar() {
-        const time = gateway.getPar() - gateway.getTimeInLastWorld(true) / 60000;
+        const time = gateway.getPar() - gateway.getTimeInLastWorld() / 60000;
         if (time < 0) {
             return 0;
         }

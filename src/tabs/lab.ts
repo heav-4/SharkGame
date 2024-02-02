@@ -168,17 +168,16 @@ SharkGame.Lab = {
                 (upgrade, upgradeId) =>
                     lab.isUpgradePossible(upgradeId) &&
                     !lab.isUpgradeVisible(upgradeId) &&
-                    sharkmisc.has(upgrade, "required") &&
-                    sharkmisc.has(upgrade.required, "upgrades") &&
+                    upgrade.required?.upgrades !== undefined &&
                     _.every(upgrade.required.upgrades, (requiredUpgradeId) => SharkGame.Upgrades.purchased.includes(requiredUpgradeId))
             );
 
             if (hintedUpgrade === undefined) return;
             let hintResource;
-            if (sharkmisc.has(hintedUpgrade, "required") && sharkmisc.has(hintedUpgrade.required, "seen")) {
+            if (hintedUpgrade.required?.seen !== undefined) {
                 hintResource = _.find(hintedUpgrade.required.seen, (resource) => world.doesResourceExist(resource));
-            } else if (sharkmisc.has(hintedUpgrade, "required") && sharkmisc.has(hintedUpgrade.required, "totals")) {
-                hintResource = _.find(Object.keys(hintedUpgrade.required.totals), (resource) => world.doesResourceExist(resource));
+            } else if (hintedUpgrade.required?.totals !== undefined) {
+                hintResource = _.find(Object.keys(hintedUpgrade.required.totals) as ResourceName[], (resource) => world.doesResourceExist(resource));
             }
 
             if (hintResource) {
@@ -427,9 +426,9 @@ SharkGame.Lab = {
             }
             const gotUpgradeTime = SharkGame.flags.upgradeTimes[upgradeId];
             if (gotUpgradeTime) {
-                console.log(`Added upgrade ${upgrade.name} at: ${sharktext.formatTime(gotUpgradeTime)}`);
+                console.debug(`Added upgrade ${upgrade.name} at: ${sharktext.formatTime(gotUpgradeTime)}`);
             } else {
-                console.log(`Added upgrade ${upgrade.name} at: ${sharktext.formatTime(sharktime.getRunTime())}`);
+                console.debug(`Added upgrade ${upgrade.name} at: ${sharktext.formatTime(sharktime.getRunTime())}`);
                 SharkGame.flags.upgradeTimes[upgradeId] = sharktime.getRunTime();
             }
 
@@ -492,7 +491,7 @@ SharkGame.Lab = {
             isPossible = isPossible && _.every(upgradeData.required.upgrades, (upgrade) => lab.isUpgradePossible(upgrade));
 
             // check resource cost
-            isPossible = isPossible && _.every(upgradeData.cost, (_amount, resource) => world.doesResourceExist(resource));
+            isPossible = isPossible && _.every(upgradeData.cost, (_amount, resource) => world.doesResourceExist(resource as ResourceName));
         }
 
         return isPossible;
@@ -508,7 +507,11 @@ SharkGame.Lab = {
         }
         if (sharkmisc.has(upgrade, "required") && sharkmisc.has(upgrade.required, "totals")) {
             isVisible =
-                isVisible && _.every(upgrade.required!.totals, (requiredTotal, resourceName) => res.getTotalResource(resourceName) >= requiredTotal);
+                isVisible &&
+                _.every(
+                    upgrade.required!.totals,
+                    (requiredTotal, resourceName) => res.getTotalResource(resourceName as ResourceName) >= requiredTotal!
+                );
         }
         return isVisible || SharkGame.Upgrades.purchased.includes(upgradeId);
     },
