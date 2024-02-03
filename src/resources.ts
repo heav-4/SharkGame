@@ -23,6 +23,7 @@ SharkGame.Resources = {
         SharkGame.BreakdownIncomeTable = new Map(); // a map which has every single generator and what it produces, after costScaling
         SharkGame.FlippedBreakdownIncomeTable = new RequiredKeyMap(); // each resource and what produces it and how much
         SharkGame.ModifierMap = new RequiredKeyMap(); // the static multipliers and modifiers to each resource from upgrades, the world, etc
+        SharkGame.ModifierTypes = sharkmisc.cloneDeep(SharkGame.StaticModifierTypes) as ModifierStructure<Modifier>;
 
         // set all the amounts and total amounts of resources to 0
         $.each(SharkGame.ResourceTable, (resourceId, resource) => {
@@ -51,9 +52,9 @@ SharkGame.Resources = {
         });
 
         // set up the modifier reference, and also set up the object we copy to every entry in the modifier map
-        const multiplierObject = {} as Record<ModifierCategory, Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>;
+        const multiplierObject = {} as ModifierStructure<number>;
         $.each(SharkGame.ModifierTypes, (category, types) => {
-            multiplierObject[category] = {} as Record<"multiplier" | "other", Record<ModifierName, number | string[]>>;
+            multiplierObject[category] = {} as ModifierStructure<number>[ModifierCategory];
             $.each(types, (type, modifiers) => {
                 multiplierObject[category]![type] = {};
                 $.each(modifiers, (name, object) => {

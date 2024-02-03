@@ -1,11 +1,13 @@
 "use strict";
-// FIXME: The entire Modifier typing system is cursed
-// I mean... wtf? Why is one of the parameters type `number | string[]`
-
 /**
  * Can be indexed with the name of a modifier to return the associated data in SharkGame.ModifierTypes.
  */
 SharkGame.ModifierReference = new Map();
+
+/**
+ * Will be a clone of StaticModifierTypes except with the category and type properties set for each modifier
+ */
+SharkGame.ModifierTypes = null as unknown as ModifierStructure<Modifier>;
 
 /**
  * @typedef {Object} modifier
@@ -28,7 +30,7 @@ SharkGame.ModifierReference = new Map();
 //
 // Most modifiers behave this way. Their code is handled independently, specifically so that there are few restrictions on what they can achieve.
 
-SharkGame.ModifierTypes = {
+SharkGame.StaticModifierTypes = {
     upgrade: {
         multiplier: {
             incomeMultiplier: {

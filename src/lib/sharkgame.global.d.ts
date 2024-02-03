@@ -528,7 +528,9 @@ declare global {
     type UpgradeOverrideTable = Partial<Record<UpgradeName, Partial<Upgrade>>>;
     type UpgradeTable = Record<UpgradeName, Upgrade>;
 
-    type Modifier = {
+    type ModifierCategory = "upgrade" | "world" | "aspect";
+    type ModifierType = "multiplier" | "other";
+    type StaticModifier = {
         defaultValue: number;
         name?: string;
         apply(current: number, degree: number, generator: ResourceName): number;
@@ -536,8 +538,11 @@ declare global {
         getEffect?(genDegree: number, outDegree: number, gen: ResourceName, out: ResourceName): number;
         applyToInput(input: number, genDegree: number, outDegree: number, gen: ResourceName, out: ResourceName): number;
     };
-
-    type ModifierCategory = "upgrade" | "world" | "aspect";
+    type Modifier = StaticModifier & {
+        category: ModifierCategory;
+        type: ModifierType;
+    };
+    type ModifierStructure<ModifierStructure> = Record<ModifierCategory, Record<ModifierType, Record<ModifierName, ModifierStructure>>>;
 
     type Pane = [title: string, contents: PaneContent, notCloseable: boolean | undefined, fadeInTime: number, customOpacity: number];
 
@@ -1768,7 +1773,8 @@ declare global {
             toggleBindMode(toggledByKey: boolean): void;
             updateBindModeState(toggledByKey?: boolean): void;
         };
-        ModifierTypes: Record<ModifierCategory, Record<"multiplier" | "other", Record<ModifierName, Modifier>>>;
+        ModifierTypes: ModifierStructure<Modifier>;
+        StaticModifierTypes: ModifierStructure<StaticModifier>;
         Panes: Record<string, string>;
         ResourceCategories: Record<ResourceCategory, ResourceCategoryObject>;
         Sprites: Record<
@@ -1791,10 +1797,7 @@ declare global {
         GeneratorIncomeAffected: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
         GeneratorIncomeAffectors: SharkGameRuntimeData["GeneratorIncomeAffectorsOriginal"];
         GeneratorIncomeAffectorsOriginal: Partial<Record<ResourceName, Partial<Record<Operation, ResourceAmounts>>>>; // TODO: Might be a better type available later;
-        ModifierMap: RequiredKeyMapModule<
-            ResourceName,
-            Record<ModifierCategory, Record<"multiplier" | "other", Record<ModifierName, number | string[]>>>
-        >;
+        ModifierMap: RequiredKeyMapModule<ResourceName, Record<ModifierCategory, Record<ModifierType, Record<ModifierName, number>>>>;
         /** Can be indexed with the name of a modifier to return the associated data in SharkGame.ModifierTypes. */
         ModifierReference: RequiredKeyMapModule<ModifierName, Modifier>;
         PlayerIncomeTable: RequiredKeyMapModule<ResourceName, number>;

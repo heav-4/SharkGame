@@ -86,7 +86,7 @@ SharkGame.Lab = {
         SharkGame.Upgrades.purchaseQueue = [];
         SharkGame.Upgrades.purchased.splice(0);
 
-        const upgradeObject = {};
+        const upgradeObject = {} as Record<ModifierType, Record<ModifierName, number>>;
         $.each(SharkGame.ModifierTypes.upgrade, (type, modifiers) => {
             upgradeObject[type] = {};
             $.each(modifiers, (modifierName, object) => {
