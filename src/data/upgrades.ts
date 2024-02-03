@@ -9,10 +9,10 @@ SharkGame.Upgrades = {
             // We don't want to generate the same upgrade table multiple times for no reason.
             worldType = "default";
         }
-        if (!sharkmisc.has(SharkGame.Upgrades.generated, worldType)) {
+        if (SharkGame.Upgrades.generated[worldType] === undefined) {
             return (SharkGame.Upgrades.generated[worldType] = SharkGame.Upgrades.generateUpgradeTable(worldType));
         }
-        return SharkGame.Upgrades.generated[worldType];
+        return SharkGame.Upgrades.generated[worldType]!;
     },
 
     getUpgradeData(table, upgradeName) {

@@ -583,6 +583,7 @@ declare global {
     };
 
     type ResourceAmounts = Partial<Record<ResourceName, number>>;
+    type DecimalResourceAmounts = Partial<Record<ResourceName, number | Decimal>>;
 
     type CondensedEffects = Record<"genAffect" | "resAffect", Record<"increase" | "decrease" | "multincrease" | "multdecrease", ResourceAmounts>>;
 
@@ -850,7 +851,7 @@ declare global {
     type UpgradesModule = {
         purchased: UpgradeName[];
         /** Generated cache on-demand */
-        generated: Partial<Record<WorldName, UpgradeTable>>;
+        generated: Partial<Record<WorldName | "default", UpgradeTable>>;
         getUpgradeTable(worldType?: WorldName | "default"): UpgradeTable;
         /**
          * Retrieves, modifies, and returns the data for an upgrade. Implemented to intercept retreival of upgrade data to handle special logic where alternatives are inconvenient or impossible.
@@ -1120,8 +1121,8 @@ declare global {
         isInCategory(resource: ResourceName, category: ResourceCategory): boolean;
         getBaseOfResource(resourceName: ResourceName): ResourceName | null;
         haveAnyResources(): boolean;
-        checkResources(resourceList: ResourceAmounts, checkTotal?: boolean): boolean;
-        changeManyResources(resourceList: ResourceAmounts, subtract?: boolean): void;
+        checkResources(resourceList: DecimalResourceAmounts, checkTotal?: boolean): boolean;
+        changeManyResources(resourceList: DecimalResourceAmounts, subtract?: boolean): void;
         scaleResourceList(resourceList: ResourceAmounts, amount: number): ResourceAmounts;
         updateResourcesTable(): void;
 
@@ -1675,16 +1676,17 @@ declare global {
             prySpongeGained: number;
             storm: Partial<Record<ResourceName, number>>;
             tokens: Record<TokenId, TokenValue>;
-            minuteHandTimer: number;
-            hourHandLeft: number;
-            bonusTime: number;
             requestedTimeLeft: number;
             seenHomeMessages: HomeMessageName[];
             /* Guranteed to exist whenever home tab has been switchedTo */
             selectedHomeMessage: HomeMessageName;
             egg: boolean;
             upgradeTimes: Partial<Record<UpgradeName, number>>;
-        }>;
+        }> & {
+            minuteHandTimer: number;
+            bonusTime: number;
+            hourHandLeft: number;
+        }; // these persistentFlags are guranteed to exist by the end of Main.init;
         gameOver: boolean;
         lastActivity: number;
         lastMouseActivity: number;
@@ -1704,7 +1706,6 @@ declare global {
             wasScouting: boolean;
             aspectStorage: Partial<Record<AspectName, Aspect["level"]>>;
             pause: boolean;
-            selectedMultiplier: number;
             seenReflection: boolean;
             seenCheatsTab: boolean;
             everIdled: boolean;
@@ -1715,7 +1716,8 @@ declare global {
             totalPausedTime: number;
             dialSetting: number;
             minuteStorage: number;
-        }; // these persistentFlags are guranteed to exist by the end of setUpGame
+            selectedMultiplier: number;
+        }; // these persistentFlags are guranteed to exist by the end of Main.init
         savedMouseActivity: number;
         sidebarHidden: boolean;
         spriteHomeEventPath: string;

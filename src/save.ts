@@ -210,7 +210,7 @@ SharkGame.Save = {
                 SharkGame.missingAspects = true;
             }
 
-            $.each(saveData.aspects, (aspectId, level) => {
+            $.each(saveData.aspects as Required<typeof saveData.aspects>, (aspectId, level) => {
                 if (aspectId in SharkGame.Aspects) {
                     SharkGame.Aspects[aspectId].level = level;
                 }
@@ -224,14 +224,14 @@ SharkGame.Save = {
                 if (typeof saveData.tabs.home === "object") {
                     $.each(saveData.tabs, (tabName, discoveryArray) => {
                         if (sharkmisc.has(SharkGame.Tabs, tabName) && tabName !== "current") {
-                            SharkGame.Tabs[tabName].discovered = discoveryArray[0];
-                            SharkGame.Tabs[tabName].seen = discoveryArray[1];
+                            SharkGame.Tabs[tabName].discovered = (<[boolean, boolean]>discoveryArray)[0];
+                            SharkGame.Tabs[tabName].seen = (<[boolean, boolean]>discoveryArray)[1];
                         }
                     });
                 } else {
                     $.each(saveData.tabs, (tabName, discovered) => {
                         if (sharkmisc.has(SharkGame.Tabs, tabName) && tabName !== "current") {
-                            SharkGame.Tabs[tabName].discovered = discovered;
+                            SharkGame.Tabs[tabName].discovered = discovered as unknown as boolean;
                             SharkGame.Tabs[tabName].seen = true;
                         }
                     });
@@ -253,8 +253,9 @@ SharkGame.Save = {
             $.each(saveData.settings, (settingId, currentvalue) => {
                 SharkGame.Settings.current[settingId] = currentvalue;
                 // update anything tied to this setting right off the bat
-                if (SharkGame.Settings[settingId] && typeof SharkGame.Settings[settingId].onChange === "function") {
-                    SharkGame.Settings[settingId].onChange!();
+                const setting = SharkGame.Settings[settingId];
+                if (setting && "onChange" in setting && typeof setting.onChange === "function") {
+                    setting.onChange();
                 }
             });
 

@@ -131,7 +131,7 @@ SharkGame.AspectTree = {
                 if (!sharkmisc.has(SharkGame.Aspects[prerequisite], "requiredBy")) {
                     SharkGame.Aspects[prerequisite].requiredBy = [];
                 }
-                SharkGame.Aspects[prerequisite].requiredBy.push(aspectId);
+                SharkGame.Aspects[prerequisite].requiredBy!.push(aspectId);
             });
             // wipe all levels
             aspectData.level = 0;
@@ -496,7 +496,7 @@ SharkGame.AspectTree = {
         context.strokeStyle = borderColor;
         _.each(SharkGame.Aspects, ({ posX, posY, width, height, icon, eventSprite, level }, name) => {
             context.save();
-            const reqref = tree.requirementReference[name];
+            const reqref = tree.requirementReference[name as AspectName];
             if (!reqref.revealed) {
                 // if any prerequisite is unmet and we dont have infinity vision, and it's level 0, don't render
                 return;

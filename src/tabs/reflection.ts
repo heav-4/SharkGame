@@ -81,7 +81,7 @@ SharkGame.Reflection = {
         }
 
         const listSelDisabled = $("#disabledAspectList");
-        $.each(SharkGame.persistentFlags.aspectStorage, (aspectId, aspectLevel) => {
+        $.each(SharkGame.persistentFlags.aspectStorage!, (aspectId, aspectLevel) => {
             const ASPECT_DATA = SharkGame.Aspects[aspectId];
             if (aspectLevel && ASPECT_DATA && !ASPECT_DATA.ignore) {
                 let aspectLabel = ASPECT_DATA.name + "<br><span class='medDesc reflectionText'>";

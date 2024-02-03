@@ -309,8 +309,8 @@ Mod of v ${SharkGame.ORIGINAL_VERSION}`
         SharkGame.CheatsAndDebug.init();
 
         // clear flags
-        SharkGame.flags = {};
-        SharkGame.persistentFlags = {};
+        SharkGame.flags = {} as SharkGame["flags"];
+        SharkGame.persistentFlags = {} as SharkGame["persistentFlags"];
 
         SharkGame.EventHandler.init();
 

@@ -448,8 +448,8 @@ SharkGame.Resources = {
     // returns true if enough resources are held (>=)
     // false if they are not
     checkResources(resourceList, checkTotal = false) {
-        return _.every(resourceList, (required, resource) => {
-            const currentAmount = checkTotal ? res.getTotalResource(resource) : res.getResource(resource);
+        return _.every(resourceList as Required<typeof resourceList>, (required, resource) => {
+            const currentAmount = checkTotal ? res.getTotalResource(resource as ResourceName) : res.getResource(resource as ResourceName);
             if (typeof required === "object") {
                 return required.lessThanOrEqualTo(currentAmount * (1 + SharkGame.EPSILON));
             }
@@ -458,7 +458,7 @@ SharkGame.Resources = {
     },
 
     changeManyResources(resourceList, subtract = false) {
-        $.each(resourceList, (resource, amount) => {
+        $.each(resourceList as Required<typeof resourceList>, (resource, amount) => {
             if (typeof amount === "object") {
                 amount = amount.toNumber();
             }
@@ -468,7 +468,7 @@ SharkGame.Resources = {
 
     scaleResourceList(resourceList, amount) {
         const newList: ResourceAmounts = {};
-        $.each(resourceList, (resource, resourceAmount) => {
+        $.each(resourceList as Required<typeof resourceList>, (resource, resourceAmount) => {
             newList[resource] = resourceAmount * amount;
         });
         return newList;
@@ -861,7 +861,7 @@ SharkGame.Resources = {
                 $("#minute-hand-div").empty();
             } else if ($("#minute-hand-toggle").length === 0) {
                 this.buildUI();
-                this.changeSelectedMultiplier(null, SharkGame.persistentFlags.selectedMultiplier!);
+                this.changeSelectedMultiplier(null, SharkGame.persistentFlags.selectedMultiplier);
                 this.updateMinuteHandLabel();
             }
         },
@@ -952,11 +952,11 @@ SharkGame.Resources = {
         },
 
         toggleMinuteHand() {
-            if (!res.minuteHand.active && SharkGame.flags.minuteHandTimer! > 0) {
+            if (!res.minuteHand.active && SharkGame.flags.minuteHandTimer > 0) {
                 main.endIdle();
                 if (cad.pause) res.pause.togglePause();
                 res.minuteHand.active = true;
-                res.minuteHand.changeRealMultiplier(SharkGame.persistentFlags.selectedMultiplier!);
+                res.minuteHand.changeRealMultiplier(SharkGame.persistentFlags.selectedMultiplier);
                 $("#minute-hand-toggle").addClass("minuteOn");
                 log.addMessage("<span class='minuteOn'>" + SharkGame.choose(res.minuteHand.onMessages) + "</span>");
             } else if (res.minuteHand.active) {
@@ -999,10 +999,10 @@ SharkGame.Resources = {
         },
 
         updateMinuteHandLabel() {
-            const multiplier = SharkGame.persistentFlags.selectedMultiplier!.toString().padStart(3, " ").replaceAll(" ", "&nbsp;&nbsp;");
+            const multiplier = SharkGame.persistentFlags.selectedMultiplier.toString().padStart(3, " ").replaceAll(" ", "&nbsp;&nbsp;");
             $("#minute-multiplier").html("<span class='click-passthrough bold'>" + multiplier + "×</span>");
             $("#minute-time").html(sharktext.boldString("(" + res.minuteHand.formatMinuteTime(SharkGame.flags.minuteHandTimer) + ")"));
-            if (SharkGame.flags.minuteHandTimer! < 100) {
+            if (SharkGame.flags.minuteHandTimer < 100) {
                 $("#minute-hand-toggle").addClass("disabled");
                 $("#minute-time").addClass("noTime");
             } else {
@@ -1014,13 +1014,13 @@ SharkGame.Resources = {
         applyHourHand() {
             const hourHand = 60000 * SharkGame.Aspects.theHourHand.level;
             SharkGame.flags.hourHandLeft = hourHand;
-            SharkGame.flags.minuteHandTimer! += hourHand;
+            SharkGame.flags.minuteHandTimer += hourHand;
             this.updateDisplay();
         },
 
         giveRequestedTime() {
             if (SharkGame.persistentFlags.requestedTime) {
-                SharkGame.flags.minuteHandTimer! += SharkGame.persistentFlags.requestedTime;
+                SharkGame.flags.minuteHandTimer += SharkGame.persistentFlags.requestedTime;
                 this.addBonusTime(SharkGame.persistentFlags.requestedTime);
                 SharkGame.flags.requestedTimeLeft = SharkGame.persistentFlags.requestedTime;
                 SharkGame.Log.addMessage(`Took ${this.formatMinuteTime(SharkGame.persistentFlags.requestedTime)} out of storage.`);
@@ -1573,8 +1573,8 @@ SharkGame.Resources = {
         const rad = SharkGame.ResourceIncomeAffected;
         // recursively parse the ria
         $.each(ria, (affectorResource) => {
-            $.each(ria[affectorResource], (type) => {
-                $.each(ria[affectorResource][type], (affectedResourceCategory, degree) => {
+            $.each(ria[affectorResource]!, (type) => {
+                $.each(ria[affectorResource]![type] as Required<ResourceAmounts>, (affectedResourceCategory, degree) => {
                     // is it a category?
                     const nodes = res.isCategory(affectedResourceCategory)
                         ? resourceCategories[affectedResourceCategory].resources
@@ -1703,7 +1703,7 @@ SharkGame.Resources = {
                 multdecrease: {},
             },
         };
-        $.each(resources, (resource, amount) => {
+        $.each(resources as Required<ResourceAmounts>, (resource, amount) => {
             let genNode;
             if (treatResourcesAsAffected) {
                 genNode = SharkGame.GeneratorIncomeAffected[resource];

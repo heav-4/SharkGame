@@ -188,12 +188,7 @@ SharkGame.Stats = {
     onDispose() {
         const resourceName = $(this).attr("id")!.split("-")[1] as ResourceName;
         const resourceAmount = res.getResource(resourceName);
-        let amountToDispose = SharkGame.Settings.current.buyAmount;
-        if (amountToDispose < 0) {
-            const max = resourceAmount;
-            const divisor = Math.floor(amountToDispose) * -1;
-            amountToDispose = max / divisor;
-        }
+        const amountToDispose = sharkmath.getPurchaseAmount(resourceAmount);
         if (resourceAmount >= amountToDispose) {
             res.changeResource(resourceName, -amountToDispose);
             const category = SharkGame.ResourceCategories[res.getCategoryOfResource(resourceName)];
@@ -762,9 +757,7 @@ SharkGame.Stats = {
         }
     },
 
-    // TODO TEST THIS FUNCTION BEFORE COMMITING
     networkTextEnter(_mouseEnterEvent, networkResource) {
-        console.log(networkResource);
         if (!networkResource) {
             networkResource = $(this).attr("id") as `#network-${ResourceName}-${ResourceName}`;
             if (!networkResource) return;
@@ -791,7 +784,7 @@ SharkGame.Stats = {
             if (!$.isEmptyObject(generatorCondensedObject.genAffect.increase)) {
                 addedAnyLabelsYet = true;
                 text += "<span class='littleTooltipText'>IS INCREASED BY</span><br>";
-                $.each(generatorCondensedObject.genAffect.increase, (affector, degree) => {
+                $.each(generatorCondensedObject.genAffect.increase as Required<ResourceAmounts>, (affector, degree) => {
                     const amount = SharkGame.Settings.current.alwaysSingularTooltip ? 1 : res.getResource(affector);
                     text +=
                         sharktext.boldString(sharktext.beautify(degree * 100 * amount) + "%") +
@@ -805,7 +798,7 @@ SharkGame.Stats = {
             if (!$.isEmptyObject(generatorCondensedObject.genAffect.decrease)) {
                 text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "<br>then " : "") + "IS DECREASED BY</span><br>";
                 addedAnyLabelsYet = true;
-                $.each(generatorCondensedObject.genAffect.decrease, (affector, degree) => {
+                $.each(generatorCondensedObject.genAffect.decrease as Required<ResourceAmounts>, (affector, degree) => {
                     const amount = SharkGame.Settings.current.alwaysSingularTooltip ? 1 : res.getResource(affector);
                     text +=
                         sharktext.boldString(sharktext.beautify(-degree * 100 * amount) + "%") +
@@ -819,7 +812,7 @@ SharkGame.Stats = {
             if (!$.isEmptyObject(generatorCondensedObject.genAffect.multincrease)) {
                 text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "<br>then " : "") + "IS MULTIPLICATIVELY INCREASED BY</span><br>";
                 addedAnyLabelsYet = true;
-                $.each(generatorCondensedObject.genAffect.multincrease, (affector, degree) => {
+                $.each(generatorCondensedObject.genAffect.multincrease as Required<ResourceAmounts>, (affector, degree) => {
                     const amount = SharkGame.Settings.current.alwaysSingularTooltip ? 1 : res.getResource(affector);
                     text +=
                         sharktext.boldString(sharktext.beautify((degree ** amount - 1) * 100) + "%") +
@@ -833,7 +826,7 @@ SharkGame.Stats = {
             if (!$.isEmptyObject(generatorCondensedObject.genAffect.multdecrease)) {
                 text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "<br>then " : "") + "IS MULTIPLICATIVELY DECREASED BY</span><br>";
                 addedAnyLabelsYet = true;
-                $.each(generatorCondensedObject.genAffect.multdecrease, (affector, degree) => {
+                $.each(generatorCondensedObject.genAffect.multdecrease as Required<ResourceAmounts>, (affector, degree) => {
                     const amount = SharkGame.Settings.current.alwaysSingularTooltip ? 1 : res.getResource(affector);
                     text +=
                         sharktext.boldString(sharktext.beautify((1 - degree ** amount) * 100) + "%") +
@@ -854,7 +847,7 @@ SharkGame.Stats = {
             if (!$.isEmptyObject(generatedCondensedObject.resAffect.increase)) {
                 addedAnyLabelsYet = true;
                 text += "<span class='littleTooltipText'>ARE INCREASED BY</span><br>";
-                $.each(generatedCondensedObject.resAffect.increase, (affector, degree) => {
+                $.each(generatedCondensedObject.resAffect.increase as Required<ResourceAmounts>, (affector, degree) => {
                     const amount = SharkGame.Settings.current.alwaysSingularTooltip ? 1 : res.getResource(affector);
                     text +=
                         sharktext.boldString(sharktext.beautify(degree * 100 * amount) + "%") +
@@ -868,7 +861,7 @@ SharkGame.Stats = {
             if (!$.isEmptyObject(generatedCondensedObject.resAffect.decrease)) {
                 text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "<br>then " : "") + "ARE DECREASED BY</span><br>";
                 addedAnyLabelsYet = true;
-                $.each(generatedCondensedObject.resAffect.decrease, (affector, degree) => {
+                $.each(generatedCondensedObject.resAffect.decrease as Required<ResourceAmounts>, (affector, degree) => {
                     const amount = SharkGame.Settings.current.alwaysSingularTooltip ? 1 : res.getResource(affector);
                     text +=
                         sharktext.boldString(sharktext.beautify(-degree * 100 * amount) + "%") +
@@ -882,7 +875,7 @@ SharkGame.Stats = {
             if (!$.isEmptyObject(generatedCondensedObject.resAffect.multincrease)) {
                 text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "<br>then " : "") + "ARE MULTIPLICATIVELY INCREASED BY</span><br>";
                 addedAnyLabelsYet = true;
-                $.each(generatedCondensedObject.resAffect.multincrease, (affector, degree) => {
+                $.each(generatedCondensedObject.resAffect.multincrease as Required<ResourceAmounts>, (affector, degree) => {
                     const amount = SharkGame.Settings.current.alwaysSingularTooltip ? 1 : res.getResource(affector);
                     text +=
                         sharktext.boldString(sharktext.beautify((degree ** amount - 1) * 100) + "%") +
@@ -896,7 +889,7 @@ SharkGame.Stats = {
             if (!$.isEmptyObject(generatedCondensedObject.resAffect.multdecrease)) {
                 text += "<span class='littleTooltipText'>" + (addedAnyLabelsYet ? "<br>then " : "") + "ARE MULTIPLICATIVELY DECREASED BY</span><br>";
                 addedAnyLabelsYet = true;
-                $.each(generatedCondensedObject.resAffect.multdecrease, (affector, degree) => {
+                $.each(generatedCondensedObject.resAffect.multdecrease as Required<ResourceAmounts>, (affector, degree) => {
                     const amount = SharkGame.Settings.current.alwaysSingularTooltip ? 1 : res.getResource(affector);
                     text +=
                         sharktext.boldString(sharktext.beautify((1 - degree ** amount) * 100) + "%") +

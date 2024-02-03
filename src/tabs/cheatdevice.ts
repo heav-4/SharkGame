@@ -807,18 +807,18 @@ SharkGame.CheatsAndDebug = {
                     res.setResource("extractionTeam", 0);
                     res.setTotalResource("extractionTeam", 0);
                     res.reconstructResourcesTable();
-                    if (world.worldType === "start") {
+                    if (world.worldType === "start" && SharkGame.HomeActions.generated.default) {
                         delete SharkGame.HomeActions.generated.default.getCrab;
                         delete SharkGame.HomeActions.generated.default.getBrood;
                         delete SharkGame.HomeActions.generated.default.getPlanter;
                         delete SharkGame.HomeActions.generated.default.getCollector;
                         delete SharkGame.HomeActions.generated.default.getExtractionTeam;
-                    } else {
-                        delete SharkGame.HomeActions.generated[world.worldType].getCrab;
-                        delete SharkGame.HomeActions.generated[world.worldType].getBrood;
-                        delete SharkGame.HomeActions.generated[world.worldType].getPlanter;
-                        delete SharkGame.HomeActions.generated[world.worldType].getCollector;
-                        delete SharkGame.HomeActions.generated[world.worldType].getExtractionTeam;
+                    } else if (SharkGame.HomeActions.generated[world.worldType]) {
+                        delete SharkGame.HomeActions.generated[world.worldType]!.getCrab;
+                        delete SharkGame.HomeActions.generated[world.worldType]!.getBrood;
+                        delete SharkGame.HomeActions.generated[world.worldType]!.getPlanter;
+                        delete SharkGame.HomeActions.generated[world.worldType]!.getCollector;
+                        delete SharkGame.HomeActions.generated[world.worldType]!.getExtractionTeam;
                     }
                     SharkGame.TabHandler.setUpTab();
                     return "Rolled a fourteen. What are you talking about? Crabs aren't real. There were never crabs to begin with.";

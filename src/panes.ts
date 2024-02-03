@@ -587,8 +587,8 @@ SharkGame.PaneHandler = {
 
             if (SharkGame.Keybinds.actions.includes(boundAction)) {
                 const selector = $("<select>").on("change", function () {
-                    SharkGame.Keybinds.addKeybind(boundKey, $(this)[0].value);
-                    console.debug(`bound ${boundKey} to ${$(this)[0].value}`);
+                    SharkGame.Keybinds.addKeybind(boundKey, $(this as HTMLSelectElement)[0].value);
+                    console.debug(`bound ${boundKey} to ${$(this as HTMLSelectElement)[0].value}`);
                 });
                 _.each(SharkGame.Keybinds.actions, (potentialBoundAction, i) => {
                     selector.append(
@@ -641,7 +641,7 @@ SharkGame.PaneHandler = {
     },
 
     showAspectWarning() {
-        const aspectWarnDiv = $("<div>");
+        const aspectWarnDiv = $("<div>") as JQuery<HTMLDivElement>;
         aspectWarnDiv.append(
             $("<div>")
                 .attr("id", "aspectInnerWarning")

@@ -216,13 +216,13 @@ SharkGame.Home = {
                 } else {
                     requirementsMet =
                         requirementsMet &&
-                        _.every(extraMessage.unlock.resource, (requiredAmount, resourceId) => {
-                            return res.getResource(resourceId) >= requiredAmount;
+                        _.every(extraMessage.unlock.resource as Required<ResourceAmounts>, (requiredAmount, resourceId) => {
+                            return res.getResource(resourceId as ResourceName) >= requiredAmount;
                         });
                     requirementsMet =
                         requirementsMet &&
-                        _.every(extraMessage.unlock.totalResource, (requiredAmount, resourceId) => {
-                            return res.getTotalResource(resourceId) >= requiredAmount;
+                        _.every(extraMessage.unlock.totalResource as Required<ResourceAmounts>, (requiredAmount, resourceId) => {
+                            return res.getTotalResource(resourceId as ResourceName) >= requiredAmount;
                         });
                     requirementsMet =
                         requirementsMet && _.every(extraMessage.unlock.upgrade, (upgradeId) => SharkGame.Upgrades.purchased.includes(upgradeId));
