@@ -31,10 +31,10 @@ EVENT_SPRITE_SHEET.src = "https://github.com/Toby222/SharkGame/blob/alpha/img/ho
 
 SharkGame.AspectTree = {
     context: null,
-    pointerType: "mouse",
     debugMode: false,
     refundMode: false,
     previousButton: undefined,
+    panzoom: null,
     staticButtons: {
         respec: {
             isStatic: true,
@@ -119,7 +119,7 @@ SharkGame.AspectTree = {
             },
         },
     } as const,
-    requirementReference: {} as requirementReference,
+    requirementReference: {} as RequirementReference,
 
     init() {
         $.each(SharkGame.Aspects, (aspectId, aspectData) => {
@@ -244,7 +244,7 @@ SharkGame.AspectTree = {
             aspectTableDescriptionRow.append($("<td>"));
             aspectTableDescriptionRow.append(
                 $("<td>")
-                    .html(!reqref.max ? aspectData.getCost(aspectData.level) : "N/A")
+                    .html(!reqref.max ? aspectData.getCost(aspectData.level).toString() : "N/A")
                     .attr("rowspan", "3")
             );
 
@@ -255,7 +255,7 @@ SharkGame.AspectTree = {
             } else {
                 aspectTableRowCurrent.append($("<td>").html("CURRENT: Not bought, no effect."));
             }
-            aspectTableRowCurrent.append($("<td>").html(aspectData.level));
+            aspectTableRowCurrent.append($("<td>").html(aspectData.level.toString()));
 
             // aspectTableRowCurrent.classList.add("aspect-table-row");
             // aspectTableRowCurrent.id = "aspect-table-row-" + aspectId;
@@ -339,7 +339,7 @@ SharkGame.AspectTree = {
     getButtonUnderMouse(event) {
         const context = sharkmisc.assertDefined(tree.context);
         const mousePos = tree.getCursorPositionInCanvas(context.canvas, event);
-        const transform = this.panzoom.getTransform();
+        const transform = sharkmisc.assertDefined(this.panzoom).getTransform();
 
         // this fixes one piece of the sticky tooltip bug on the tree
         if (gateway.transitioning) {
@@ -359,14 +359,14 @@ SharkGame.AspectTree = {
                 !SharkGame.Aspects.infinityVision.level &&
                 !level
             ) {
-                return;
+                return false;
             }
 
             const computedY = (mousePos.posY - transform.y) / transform.scale;
             const computedX = (mousePos.posX - transform.x) / transform.scale;
 
             return computedX >= posX && computedY >= posY && computedX <= posX + width && computedY <= posY + height;
-        });
+        }) as Aspect | undefined;
         return aspect;
     },
 
@@ -397,7 +397,7 @@ SharkGame.AspectTree = {
     render() {
         const context = sharkmisc.assertDefined(tree.context);
         if (context === undefined) return;
-        const transform = tree.panzoom.getTransform();
+        const transform = sharkmisc.assertDefined(tree.panzoom).getTransform();
 
         // For some reason, it scrolls indefinitely if you don't set this every frame
         // I have no idea how or why
@@ -514,7 +514,7 @@ SharkGame.AspectTree = {
                 }
             }
 
-            tree.renderButton(context, posX, posY, width, height, icon, eventSprite, name);
+            tree.renderButton(context, posX, posY, width, height, icon, eventSprite, name as AspectName);
 
             context.restore();
         });
@@ -530,13 +530,13 @@ SharkGame.AspectTree = {
         context.lineWidth = 1;
         context.fillStyle = buttonColor;
         context.strokeStyle = borderColor;
-        _.each(tree.staticButtons, ({ posX, posY, width, height, icon, eventSprite }, name) => {
+        _.each(tree.staticButtons, ({ posX, posY, width, height }, name) => {
             const button = tree.staticButtons[name];
             if (!button.getUnlocked || button.getUnlocked()) {
                 if (button.getOn && button.getOn()) {
                     context.fillStyle = borderColor;
                 }
-                tree.renderButton(context, posX, posY, width, height, icon || "aspects/static/" + name, eventSprite, name);
+                tree.renderButton(context, posX, posY, width, height, "aspects/static/" + name, undefined, name);
                 context.fillStyle = buttonColor;
             }
         });
@@ -718,9 +718,10 @@ SharkGame.AspectTree = {
             SharkGame.persistentFlags.aspectStorage = {};
         }
         $.each(SharkGame.Aspects, (aspectName) => {
-            if (SharkGame.persistentFlags.aspectStorage[aspectName] !== undefined) {
-                SharkGame.Aspects[aspectName].level = SharkGame.persistentFlags.aspectStorage[aspectName];
-                SharkGame.persistentFlags.aspectStorage[aspectName] = undefined;
+            const aspectStorage = SharkGame.persistentFlags.aspectStorage!;
+            if (aspectStorage[aspectName] !== undefined) {
+                SharkGame.Aspects[aspectName].level = aspectStorage[aspectName]!;
+                aspectStorage[aspectName] = undefined;
             }
         });
     },
@@ -742,7 +743,7 @@ SharkGame.AspectTree = {
 
             _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
                 if (aspectData.name === button.name) {
-                    name = aspectName;
+                    name = aspectName as AspectName;
                     return false;
                 }
             });
@@ -773,7 +774,7 @@ SharkGame.AspectTree = {
 
             tooltipBox.addClass("forAspectTree").removeClass("forAspectTreeUnpurchased").removeClass("forAspectTreeAffordable");
             if (reqref.locked) {
-                tooltipBox.addClass("forAspectTreeUnpurchased").html(sharktext.boldString(button.getUnlocked()));
+                tooltipBox.addClass("forAspectTreeUnpurchased").html(sharktext.boldString(sharkmisc.assertDefined(button.getUnlocked())));
                 return;
             }
 
@@ -873,9 +874,9 @@ SharkGame.AspectTree = {
     },
 
     generateRequirementReference() {
-        tree.requirementReference = {};
+        tree.requirementReference = {} as RequirementReference;
         _.forEach(SharkGame.Aspects, (_aspectData, aspectName) => {
-            tree.requirementReference[aspectName] = {};
+            tree.requirementReference[aspectName as AspectName] = {} as RequirementReference[AspectName];
         });
         tree.updateRequirementReference();
     },
@@ -884,12 +885,14 @@ SharkGame.AspectTree = {
         const reqref = tree.requirementReference;
 
         _.forEach(SharkGame.Aspects, (aspectData, aspectName) => {
-            reqref[aspectName].affordable = aspectData.getCost(aspectData.level) <= res.getResource("essence");
-            reqref[aspectName].locked = aspectData.getUnlocked() || false;
-            reqref[aspectName].prereqsMet = !_.some(aspectData.prerequisites, (prereq) => SharkGame.Aspects[prereq].level === 0);
-            reqref[aspectName].isolated = aspectData.level && !reqref[aspectName].prereqsMet;
-            reqref[aspectName].revealed = reqref[aspectName].prereqsMet || SharkGame.Aspects.infinityVision.level || aspectData.level;
-            reqref[aspectName].max = aspectData.level >= aspectData.max;
+            reqref[aspectName as AspectName].affordable = aspectData.getCost(aspectData.level) <= res.getResource("essence");
+            reqref[aspectName as AspectName].locked = aspectData.getUnlocked() !== undefined;
+            reqref[aspectName as AspectName].prereqsMet = !_.some(aspectData.prerequisites, (prereq) => SharkGame.Aspects[prereq].level === 0);
+            reqref[aspectName as AspectName].isolated = Boolean(aspectData.level && !reqref[aspectName as AspectName].prereqsMet);
+            reqref[aspectName as AspectName].revealed = Boolean(
+                reqref[aspectName as AspectName].prereqsMet || SharkGame.Aspects.infinityVision.level || aspectData.level
+            );
+            reqref[aspectName as AspectName].max = aspectData.level >= aspectData.max;
         });
     },
 

@@ -640,13 +640,13 @@ declare global {
         getEffect(): string;
         getUnlocked(): boolean;
         getOn(): boolean;
-        clicked(event: MouseEvent): void;
+        clicked(event: JQuery.ClickEvent): void;
     };
 
-    type requirementReference = Record<
+    type RequirementReference = Record<
         AspectName,
         {
-            affordable: number;
+            affordable: boolean;
             locked: boolean;
             prereqsMet: boolean;
             isolated: boolean;
@@ -662,16 +662,17 @@ declare global {
         staticButtons: Record<string, StaticButton>;
         refundMode: boolean;
         debugMode: boolean;
-        requirementReference: requirementReference;
-        panzoom: PanZoom;
+        requirementReference: RequirementReference;
+        panzoom: PanZoom | null;
+        previousButton: StaticButton | Aspect | undefined;
         setup(): void;
         init(): void;
         drawTree(disableCanvas?: boolean): JQuery<HTMLTableElement> | HTMLCanvasElement;
         drawTable(table?: JQuery<HTMLTableElement>): JQuery<HTMLTableElement>;
         drawCanvas(): HTMLCanvasElement;
         initTree(): void;
-        getCursorPositionInCanvas(canvas: HTMLCanvasElement, event: MouseEvent | TouchEvent): { posX: number; posY: number };
-        getButtonUnderMouse(event: MouseEvent | TouchEvent): StaticButton | Aspect | void;
+        getCursorPositionInCanvas(canvas: HTMLCanvasElement, event: MouseEvent | TouchEvent | JQuery.ClickEvent): { posX: number; posY: number };
+        getButtonUnderMouse(event: MouseEvent | TouchEvent | JQuery.ClickEvent): StaticButton | Aspect | undefined;
         updateMouse(event: JQuery.Event): void;
         click(event: JQuery.ClickEvent): void;
         render(): void;
@@ -685,6 +686,18 @@ declare global {
          * @param icon The icon to draw in the rectangle
          * @param name The name of the button
          */
+        // renders aspect
+        renderButton(
+            context: CanvasRenderingContext2D,
+            posX: number,
+            posY: number,
+            width: number,
+            height: number,
+            icon: string | undefined,
+            eventIcon: boolean | undefined,
+            name: AspectName
+        ): void;
+        // renders staticbutton
         renderButton(
             context: CanvasRenderingContext2D,
             posX: number,
@@ -692,8 +705,8 @@ declare global {
             width: number,
             height: number,
             icon: string,
-            eventIcon: boolean,
-            name: AspectName
+            eventIcon: boolean | undefined,
+            name: string
         ): void;
         getLittleLevelText(aspectName: string): string | undefined;
         handleClickedAspect(aspect: Aspect): void;
@@ -1378,7 +1391,7 @@ declare global {
         discoverReq: Partial<{
             resource: ResourceAmounts;
             upgrade: UpgradeName[];
-            flag: SharkGame["flags"] & Partial<SharkGame["persistentFlags"]>;
+            flag: Partial<SharkGame["flags"]> & Partial<SharkGame["persistentFlags"]>;
         }>;
         message: string;
     };
