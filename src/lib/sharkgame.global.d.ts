@@ -623,6 +623,7 @@ declare global {
         getUnlocked(): string | void;
         clicked(event: JQuery.ClickEvent): void;
         apply?(time: string): void;
+        ignore: boolean;
     };
 
     type DeprecatedAspect = {
