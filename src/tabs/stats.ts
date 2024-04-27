@@ -220,7 +220,7 @@ SharkGame.Stats = {
             if (res.getTotalResource(resourceId) > 0) {
                 if (SharkGame.ResourceMap.get(resourceId)!.income) {
                     const income = SharkGame.ResourceMap.get(resourceId)!.income;
-                    $.each(income, (incomeKey, incomeValue) => {
+                    $.each(income, (incomeKey: ResourceName, incomeValue: number) => {
                         let cell = $("#income-" + resourceId + "-" + incomeKey);
                         let realIncome;
                         if (SharkGame.BreakdownIncomeTable.get(resourceId)) {
@@ -330,7 +330,7 @@ SharkGame.Stats = {
                 // do not display the resource's income if it requires a non-existent resource (looking at you, sponge)
                 for (const incomeResourceName in generatorData.income) {
                     // skip income that doesn't exist
-                    if (SharkGame.PlayerResources.get(incomeResourceName) < generatorData.income[incomeResourceName] && !generatorData.forceIncome)
+                    if (SharkGame.PlayerResources.get(incomeResourceName as ResourceName).amount < generatorData.income[incomeResourceName as ResourceName]! && !generatorData.forceIncome)
                         return;
                 }
 
@@ -593,8 +593,6 @@ SharkGame.Stats = {
                 resourceMapRow = $("<tr>");
             });
 
-            // throw away dangling values
-            resourceMapRow = null;
             formatCounter++;
         });
 
@@ -636,9 +634,9 @@ SharkGame.Stats = {
                     )
                 );
                 if (main.isFirstTime()) {
-                    row.append($("<td>").html(undefined).addClass("evenRow"));
-                    row.append($("<td>").html(undefined).addClass("evenRow"));
-                    row.append($("<td>").html(undefined).addClass("evenRow"));
+                    row.append($("<td>").html("").addClass("evenRow"));
+                    row.append($("<td>").html("").addClass("evenRow"));
+                    row.append($("<td>").html("").addClass("evenRow"));
                 } else {
                     row.append(
                         tooltip(
@@ -669,7 +667,7 @@ SharkGame.Stats = {
             }
             while (columns > 1) {
                 columns -= 1;
-                row.append($("<td>").html(undefined).addClass("evenRow"));
+                row.append($("<td>").html("").addClass("evenRow"));
             }
 
             if (res.getSpecialMultiplier() !== 1) {

@@ -942,8 +942,8 @@ declare global {
          * @param cost constant price
          * @returns absolute max items that can be held with invested and current resources
          */
-        constantMax(current: Decimal, difference: Decimal, cost: Decimal): Decimal;
-        constantMax(current: number, difference: number, cost: number): number;
+        constantMax(current: Decimal, available: Decimal, cost: Decimal): Decimal;
+        constantMax(current: number, available: number, cost: number): number;
         /**
          * @param current current amount
          * @param desired desired amount
@@ -1059,6 +1059,7 @@ declare global {
         framerate: number;
         groupResources: boolean;
         idleEnabled: boolean;
+        incomeTotalMode: "absolute" | "percentage";
         logLocation: "right" | "left" | "top";
         logMessageMax: number;
         minimizedTopbar: boolean;
@@ -1071,6 +1072,7 @@ declare global {
         showTooltips: boolean;
         sidebarWidth: "25%" | "30%" | "35%";
         smallTable: boolean;
+        switchStats: boolean;
         tooltipQuantityReminders: boolean;
         truePause: boolean;
         updateCheck: boolean;
@@ -1083,6 +1085,8 @@ declare global {
     switchStats
     iconPositions
     */
+
+    // note from heav - i'm going to make SwitchStats a boolean. please undo this if there's some reason it shouldn't be.
 
     type SettingsModule = {
         current: { [K in keyof OptionTypes]: OptionTypes[K] };
