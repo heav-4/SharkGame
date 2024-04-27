@@ -249,7 +249,7 @@ SharkGame.Lab = {
                                 { opacity: 1.0 },
                                 {
                                     duration: 50,
-                                    done: (anim) => (anim.elem.style = null),
+                                    done: (anim) => (anim.elem.style.cssText = ""),
                                 }
                             );
                     }
@@ -528,9 +528,10 @@ SharkGame.Lab = {
         const darkerColour = "#" + red + green + blue;
 
         const effects = [];
-        $.each(upgrade.effect, (effectType, effectsList) => {
-            $.each(effectsList, (resource, degree) => {
-                const effectText = SharkGame.ModifierReference.get(effectType).effectDescription(degree, resource, darkerColour);
+        $.each(upgrade.effect, (effectType: string, effectsList) => {
+            $.each(effectsList, (resource: ResourceName, degree: number) => {
+                const modifierReference = SharkGame.ModifierReference.get(effectType)!;
+                const effectText = modifierReference.effectDescription!(degree, resource, darkerColour);
                 if (world.doesResourceExist(resource) && effectText !== "") {
                     effects.push(effectText);
                 }

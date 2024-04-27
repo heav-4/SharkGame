@@ -330,7 +330,11 @@ SharkGame.Stats = {
                 // do not display the resource's income if it requires a non-existent resource (looking at you, sponge)
                 for (const incomeResourceName in generatorData.income) {
                     // skip income that doesn't exist
-                    if (SharkGame.PlayerResources.get(incomeResourceName as ResourceName).amount < generatorData.income[incomeResourceName as ResourceName]! && !generatorData.forceIncome)
+                    if (
+                        SharkGame.PlayerResources.get(incomeResourceName as ResourceName).amount <
+                            generatorData.income[incomeResourceName as ResourceName]! &&
+                        !generatorData.forceIncome
+                    )
                         return;
                 }
 
