@@ -58,19 +58,19 @@ SharkGame.World = {
                         worldResources.get(resource).exists = true;
                     });
                 } else {
-                    worldResources.get(group).exists = true;
+                    worldResources.get(group as ResourceName).exists = true;
                 }
             });
         }
 
         // disable resources not allowed on planet
         _.each(worldInfo.absentResources, (absentResource) => {
-            worldResources.get(absentResource).exists = false;
+            worldResources.get(absentResource as ResourceName).exists = false;
         });
 
         // apply world modifiers
         _.each(worldInfo.modifiers, (modifierData) => {
-            res.applyModifier(modifierData.modifier, modifierData.resource, modifierData.amount);
+            res.applyModifier(modifierData.modifier, modifierData.resource, modifierData.amount as number);
         });
         res.buildIncomeNetwork();
     },
