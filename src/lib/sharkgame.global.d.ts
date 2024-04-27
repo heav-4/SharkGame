@@ -1756,7 +1756,7 @@ declare global {
     type SharkGameData = {
         DeprecatedAspects: Record<string, DeprecatedAspect>;
         Aspects: Record<AspectName, Aspect>;
-        Events: Record<EventCustomName, SharkEventHandler>;
+        Events: Record<EventName | EventCustomName, SharkEventHandler>;
         HomeActionCategories: Record<HomeActionCategory, { name: string; actions: HomeActionName[]; hasNewItem?: boolean }>;
         HomeActions: Partial<Record<WorldName, HomeActionTableOverrides>>;
         HomeMessageSprites: Record<string, HomeMessageSprite>;
