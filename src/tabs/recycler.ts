@@ -132,7 +132,7 @@ SharkGame.Recycler = {
                 let inputAmount = buy;
                 let outputAmount = buy;
                 const maxOutputAmount = rec.getMaxToBuy(resourceName);
-                if (buy < 0) {
+                if (buy.lessThan(0)) {
                     const divisor = buy.round().times(-1);
                     inputAmount = resourceAmount.dividedBy(divisor).round();
                     outputAmount = maxOutputAmount.dividedBy(divisor).round();
@@ -143,7 +143,7 @@ SharkGame.Recycler = {
                 let label = "Recycle ";
                 if (inputAmount.greaterThan(0)) {
                     if (rec.expectedJunkSpent !== "NA" && rec.expectedJunkSpent !== 0 && !disableButton && resourceName === rec.hoveredResource) {
-                        if (buy < 0) {
+                        if (buy.lessThan(0)) {
                             label +=
                                 "<span class='click-passthrough' style='color:#FFDE0A'>" +
                                 sharktext.beautify(Number(inputAmount.plus(outputAmount).dividedBy(buy.times(-1)))) +
@@ -175,7 +175,7 @@ SharkGame.Recycler = {
                 // update output button
                 disableButton = maxOutputAmount.lessThan(outputAmount) || outputAmount.lessThanOrEqualTo(0);
                 label = "Convert to ";
-                if (outputAmount > 0) {
+                if (outputAmount.greaterThan(0)) {
                     if (rec.expectedOutput !== "NA" && rec.expectedOutput !== 0 && !disableButton) {
                         label += "<span class='click-passthrough' style='color:#FFDE0A'>" + sharktext.beautify(Number(outputAmount)) + "</span> ";
                     } else {
@@ -267,7 +267,7 @@ SharkGame.Recycler = {
 
         const selectedAmount = new Decimal(sharkmath.getBuyAmount());
         let amount = selectedAmount;
-        if (selectedAmount < 0) {
+        if (selectedAmount.lessThan(0)) {
             const divisor = selectedAmount.round().times(-1);
             amount = rec.getMaxToBuy(resourceName).dividedBy(divisor);
         }
@@ -278,7 +278,7 @@ SharkGame.Recycler = {
         const costFunction = rec.allowedCategories[res.getCategoryOfResource(resourceName)];
         if (costFunction === "linear") {
             junkNeeded = sharkmath.linearCost(currentResourceAmount, amount, junkPerResource);
-        } else if (costFunction === "constant") {
+        } else {
             junkNeeded = sharkmath.constantCost(currentResourceAmount, amount, junkPerResource);
         }
 
@@ -458,11 +458,11 @@ SharkGame.Recycler = {
         const resourceAmount = new Decimal(res.getResource(resource));
         const value = new Decimal(SharkGame.ResourceMap.get(resource).value);
 
-        if (buy > 0) {
+        if (buy.greaterThan(0)) {
             if (buy <= max) {
                 switch (rec.allowedCategories[res.getCategoryOfResource(resource)]) {
                     case "constant":
-                        rec.expectedJunkSpent = Number(buy * value);
+                        rec.expectedJunkSpent = Number(buy.mul(value));
                         break;
                     case "linear":
                         rec.expectedJunkSpent = Number(sharkmath.linearCost(resourceAmount, buy, value));
@@ -472,7 +472,7 @@ SharkGame.Recycler = {
             }
         } else {
             const realBuy = max.dividedBy(buy.times(-1)).round();
-            if (realBuy === 0) {
+            if (realBuy.equals(0)) {
                 rec.expectedJunkSpent = 0;
                 return;
             }
@@ -485,7 +485,7 @@ SharkGame.Recycler = {
             }
         }
 
-        if (rec.expectedJunkSpent < 0) {
+        if (Number(rec.expectedJunkSpent) < 0) {
             rec.expectedJunkSpent = 0;
         }
     },

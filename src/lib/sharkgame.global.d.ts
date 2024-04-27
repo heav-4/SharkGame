@@ -345,7 +345,8 @@ declare global {
         | "collective"
         | "extractionTeam"
         | "heater"
-        | "ice";
+        | "ice"
+        | "coalescer";
     type SpriteName = string;
     type TabName = "home" | "lab" | "stats" | "recycler" | "gate" | "reflection" | "cheats";
     type UpgradeName = string;
@@ -1324,7 +1325,7 @@ declare global {
         getResourceName(
             resourceName: ResourceName | ResourceCategory,
             darken?: boolean,
-            arbitraryAmount?: false | number,
+            arbitraryAmount?: false | number | Decimal,
             background?: string,
             textToColor?: string
         ): string;
